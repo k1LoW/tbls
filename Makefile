@@ -7,6 +7,8 @@ RELEASE_BUILD_LDFLAGS = -s -w $(BUILD_LDFLAGS)
 default: test
 
 test:
+	usql pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -f test/pg.sql
+	usql my://root:mypass@localhost:33306/testdb -f test/my.sql
 	go test -cover -v $(shell go list ./... | grep -v vendor)
 
 cover: depsdev
@@ -27,6 +29,7 @@ depsdev:
 	go get github.com/Songmu/goxz/cmd/goxz
 	go get github.com/tcnksm/ghr
 	go get github.com/Songmu/ghch/cmd/ghch
+	go get -u github.com/xo/usql
 
 crossbuild: deps depsdev
 	$(eval ver = v$(shell gobump show -r version/))
