@@ -1,6 +1,12 @@
 PKG = github.com/k1LoW/tbls
 COMMIT = $$(git describe --tags --always)
-DATE = $$(date --utc '+%Y-%m-%d_%H:%M:%S')
+OSNAME=${shell uname -s}
+ifeq ($(OSNAME),Darwin)
+	DATE = $$(gdate --utc '+%Y-%m-%d_%H:%M:%S')
+else
+	DATE = $$(date --utc '+%Y-%m-%d_%H:%M:%S')
+endif
+
 BUILD_LDFLAGS = -X $(PKG).commit=$(COMMIT) -X $(PKG).date=$(DATE)
 RELEASE_BUILD_LDFLAGS = -s -w $(BUILD_LDFLAGS)
 
@@ -29,11 +35,11 @@ depsdev:
 	go get github.com/Songmu/goxz/cmd/goxz
 	go get github.com/tcnksm/ghr
 	go get github.com/Songmu/ghch/cmd/ghch
-	go get -u github.com/xo/usql
+	go get github.com/xo/usql
 
 crossbuild: deps depsdev
 	$(eval ver = v$(shell gobump show -r version/))
-	goxz -pv=$(ver) -os=linux -arch=386,amd64 -build-ldflags="$(RELEASE_BUILD_LDFLAGS)" \
+	goxz -pv=$(ver) -arch=386,amd64 -build-ldflags="$(RELEASE_BUILD_LDFLAGS)" \
 	  -d=./dist/$(ver)
 
 prerelease:
