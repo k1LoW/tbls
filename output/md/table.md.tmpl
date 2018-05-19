@@ -1,9 +1,13 @@
 # {{ .Table.Name }}
 
+## Description
+
+{{ .Table.Comment }}
+
 ## Columns
 
 | Name | Type | Default | NOT NULL | Comment |
 | ---- | ---- | ------- | -------- | ------- |
 {{- range $i, $c := .Table.Columns }}
-| {{ $c.Name }} | | | |
+| {{ $c.Name }} | {{ $c.Type }} | {{ $c.Default.String }} | {{ $c.NotNull }} | {{ $c.Comment }} |
 {{- end }}

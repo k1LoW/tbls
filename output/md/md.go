@@ -13,7 +13,7 @@ func Output(s *schema.Schema, dir string) error {
 	spew.Dump(s)
 
 	// tables
-	file, err := os.OpenFile(filepath.Join(dir, "index.md"), os.O_WRONLY|os.O_CREATE, os.ModePerm)
+	file, err := os.Create(filepath.Join(dir, "index.md"))
 	if err != nil {
 		return err
 	}
@@ -26,7 +26,7 @@ func Output(s *schema.Schema, dir string) error {
 	}
 	for _, t := range s.Tables {
 		fmt.Printf("%s\n", t.Name)
-		file, err := os.OpenFile(filepath.Join(dir, fmt.Sprintf("%s.md", t.Name)), os.O_WRONLY|os.O_CREATE, os.ModePerm)
+		file, err := os.Create(filepath.Join(dir, fmt.Sprintf("%s.md", t.Name)))
 		if err != nil {
 			return err
 		}
