@@ -13,6 +13,7 @@ func Analize(db *sql.DB, s *schema.Schema) error {
 SELECT table_name, table_type
 FROM information_schema.tables
 WHERE table_schema != 'pg_catalog' AND table_schema != 'information_schema'
+ORDER BY table_name
 `)
 	if err != nil {
 		return err

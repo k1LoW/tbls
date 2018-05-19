@@ -28,10 +28,12 @@ CREATE TABLE posts (
   created TIMESTAMP WITHOUT TIME ZONE NOT NULL,
   updated TIMESTAMP WITHOUT TIME ZONE,
   CONSTRAINT posts_id_pk PRIMARY KEY(id),
-  CONSTRAINT posts_user_id_fk FOREIGN KEY(user_id) REFERENCES users(id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE
+  CONSTRAINT posts_user_id_fk FOREIGN KEY(user_id) REFERENCES users(id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE,
+  UNIQUE(user_id, title)
 );
 COMMENT ON TABLE posts is 'Posts table';
 COMMENT ON COLUMN posts.post_type is 'public/private/draft';
+
 CREATE INDEX posts_user_id_idx ON posts USING btree(user_id);
 
 CREATE TABLE comments (
