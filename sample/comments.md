@@ -20,6 +20,7 @@
 | Name | Def |
 | ---- | --- |
 | comments_id_pk | PRIMARY KEY (id) |
+| comments_post_id_user_id_key | UNIQUE (post_id, user_id) |
 | comments_post_id_fk | FOREIGN KEY (post_id) REFERENCES posts(id) |
 | comments_user_id_fk | FOREIGN KEY (user_id) REFERENCES users(id) |
 
@@ -28,6 +29,7 @@
 | Name | Def |
 | ---- | --- |
 | comments_id_pk | CREATE UNIQUE INDEX comments_id_pk ON public.comments USING btree (id) |
+| comments_post_id_user_id_key | CREATE UNIQUE INDEX comments_post_id_user_id_key ON public.comments USING btree (post_id, user_id) |
 | comments_post_id_user_id_idx | CREATE INDEX comments_post_id_user_id_idx ON public.comments USING btree (post_id, user_id) |
 
 ---
