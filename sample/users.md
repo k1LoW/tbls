@@ -6,22 +6,22 @@ Users table
 
 ## Columns
 
-| Name | Type | Default | NOT NULL | Comment |
-| ---- | ---- | ------- | -------- | ------- |
-| id | integer | nextval('users_id_seq'::regclass) | true |  |
-| username | varchar(50) |  | true |  |
-| password | varchar(50) |  | true |  |
-| email | varchar(355) |  | true | ex. user@example.com |
-| created | timestamp without time zone |  | true |  |
-| updated | timestamp without time zone |  | false |  |
+| Name | Type | Default | NOT NULL | Children | Parents | Comment |
+| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
+| id | integer | nextval('users_id_seq'::regclass) | true | [comments](comments.md) [comment_stars](comment_stars.md) [posts](posts.md)  |  |  |
+| username | varchar(50) |  | true |  |  |  |
+| password | varchar(50) |  | true |  |  |  |
+| email | varchar(355) |  | true |  |  | ex. user@example.com |
+| created | timestamp without time zone |  | true |  |  |  |
+| updated | timestamp without time zone |  | false |  |  |  |
 
 ## Constraits
 
-| Name | Def |
-| ---- | --- |
-| users_pkey | PRIMARY KEY (id) |
-| users_username_key | UNIQUE (username) |
-| users_email_key | UNIQUE (email) |
+| Name | Type | Def |
+| ---- | ---- | --- |
+| users_pkey | PRIMARY KEY | PRIMARY KEY (id) |
+| users_username_key | UNIQUE | UNIQUE (username) |
+| users_email_key | UNIQUE | UNIQUE (email) |
 
 ## Indexes
 

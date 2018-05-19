@@ -6,21 +6,22 @@
 
 ## Columns
 
-| Name | Type | Default | NOT NULL | Comment |
-| ---- | ---- | ------- | -------- | ------- |
-| id | uuid | uuid_generate_v4() | true |  |
-| user_id | integer |  | true |  |
-| comment_post_id | integer |  | true |  |
-| comment_user_id | integer |  | true |  |
-| created | timestamp without time zone |  | true |  |
-| updated | timestamp without time zone |  | false |  |
+| Name | Type | Default | NOT NULL | Children | Parents | Comment |
+| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
+| id | uuid | uuid_generate_v4() | true |  |  |  |
+| user_id | integer |  | true |  |  |  |
+| comment_post_id | integer |  | true |  | [comments](comments.md)  |  |
+| comment_user_id | integer |  | true |  | [comments](comments.md) [users](users.md)  |  |
+| created | timestamp without time zone |  | true |  |  |  |
+| updated | timestamp without time zone |  | false |  |  |  |
 
 ## Constraits
 
-| Name | Def |
-| ---- | --- |
-| comment_stars_user_id_comment_post_id_comment_user_id_key | UNIQUE (user_id, comment_post_id, comment_user_id) |
-| comment_stars_user_id_post_id_fk | FOREIGN KEY (comment_post_id, comment_user_id) REFERENCES comments(post_id, user_id) |
+| Name | Type | Def |
+| ---- | ---- | --- |
+| comment_stars_user_id_comment_post_id_comment_user_id_key | UNIQUE | UNIQUE (user_id, comment_post_id, comment_user_id) |
+| comment_stars_user_id_post_id_fk | FOREIGN KEY | FOREIGN KEY (comment_post_id, comment_user_id) REFERENCES comments(post_id, user_id) |
+| comment_stars_user_id_fk | FOREIGN KEY | FOREIGN KEY (comment_user_id) REFERENCES users(id) |
 
 ## Indexes
 

@@ -6,24 +6,24 @@ Posts table
 
 ## Columns
 
-| Name | Type | Default | NOT NULL | Comment |
-| ---- | ---- | ------- | -------- | ------- |
-| id | bigint | nextval('posts_id_seq'::regclass) | true |  |
-| user_id | integer |  | true |  |
-| title | varchar(255) |  | true |  |
-| body | text |  | true |  |
-| post_type | post_types |  | true | public/private/draft |
-| labels | array |  | false |  |
-| created | timestamp without time zone |  | true |  |
-| updated | timestamp without time zone |  | false |  |
+| Name | Type | Default | NOT NULL | Children | Parents | Comment |
+| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
+| id | bigint | nextval('posts_id_seq'::regclass) | true | [comments](comments.md)  |  |  |
+| user_id | integer |  | true |  | [users](users.md)  |  |
+| title | varchar(255) |  | true |  |  |  |
+| body | text |  | true |  |  |  |
+| post_type | post_types |  | true |  |  | public/private/draft |
+| labels | array |  | false |  |  |  |
+| created | timestamp without time zone |  | true |  |  |  |
+| updated | timestamp without time zone |  | false |  |  |  |
 
 ## Constraits
 
-| Name | Def |
-| ---- | --- |
-| posts_id_pk | PRIMARY KEY (id) |
-| posts_user_id_title_key | UNIQUE (user_id, title) |
-| posts_user_id_fk | FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE |
+| Name | Type | Def |
+| ---- | ---- | --- |
+| posts_id_pk | PRIMARY KEY | PRIMARY KEY (id) |
+| posts_user_id_title_key | UNIQUE | UNIQUE (user_id, title) |
+| posts_user_id_fk | FOREIGN KEY | FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE |
 
 ## Indexes
 

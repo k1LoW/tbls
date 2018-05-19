@@ -6,23 +6,23 @@
 
 ## Columns
 
-| Name | Type | Default | NOT NULL | Comment |
-| ---- | ---- | ------- | -------- | ------- |
-| id | bigint | nextval('comments_id_seq'::regclass) | true |  |
-| post_id | integer |  | true |  |
-| user_id | integer |  | true |  |
-| comment | text |  | true |  |
-| created | timestamp without time zone |  | true |  |
-| updated | timestamp without time zone |  | false |  |
+| Name | Type | Default | NOT NULL | Children | Parents | Comment |
+| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
+| id | bigint | nextval('comments_id_seq'::regclass) | true |  |  |  |
+| post_id | integer |  | true | [comment_stars](comment_stars.md)  | [posts](posts.md)  |  |
+| user_id | integer |  | true | [comment_stars](comment_stars.md)  | [users](users.md)  |  |
+| comment | text |  | true |  |  |  |
+| created | timestamp without time zone |  | true |  |  |  |
+| updated | timestamp without time zone |  | false |  |  |  |
 
 ## Constraits
 
-| Name | Def |
-| ---- | --- |
-| comments_id_pk | PRIMARY KEY (id) |
-| comments_post_id_user_id_key | UNIQUE (post_id, user_id) |
-| comments_post_id_fk | FOREIGN KEY (post_id) REFERENCES posts(id) |
-| comments_user_id_fk | FOREIGN KEY (user_id) REFERENCES users(id) |
+| Name | Type | Def |
+| ---- | ---- | --- |
+| comments_id_pk | PRIMARY KEY | PRIMARY KEY (id) |
+| comments_post_id_user_id_key | UNIQUE | UNIQUE (post_id, user_id) |
+| comments_post_id_fk | FOREIGN KEY | FOREIGN KEY (post_id) REFERENCES posts(id) |
+| comments_user_id_fk | FOREIGN KEY | FOREIGN KEY (user_id) REFERENCES users(id) |
 
 ## Indexes
 

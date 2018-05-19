@@ -23,7 +23,6 @@ func Output(s *schema.Schema, dir string) error {
 	}
 	// tables
 	for _, t := range s.Tables {
-		fmt.Printf("%s\n", t.Name)
 		file, err := os.Create(filepath.Join(dir, fmt.Sprintf("%s.md", t.Name)))
 		if err != nil {
 			return err

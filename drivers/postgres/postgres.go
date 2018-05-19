@@ -4,7 +4,11 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/k1LoW/tbls/schema"
+	"regexp"
+	"strings"
 )
+
+var ReFK = regexp.MustCompile(`FOREIGN KEY \((.+)\) REFERENCES (.+)\((.+)\)`)
 
 func Analize(db *sql.DB, s *schema.Schema) error {
 
@@ -19,6 +23,8 @@ ORDER BY table_name
 		return err
 	}
 	defer tableRows.Close()
+
+	relations := []*schema.Relation{}
 
 	tables := []*schema.Table{}
 	for tableRows.Next() {
@@ -86,7 +92,7 @@ AND tablename = $1`, tableName)
 
 		// constraits
 		constraitRows, err := db.Query(`
-SELECT pc.conname AS name, pg_get_constraintdef(pc.oid) AS def
+SELECT pc.conname AS name, pg_get_constraintdef(pc.oid) AS def, contype AS type
 FROM pg_constraint AS pc
 LEFT JOIN pg_stat_user_tables AS ps ON ps.relid = pc.conrelid
 WHERE ps.relname = $1`, tableName)
@@ -100,14 +106,23 @@ WHERE ps.relname = $1`, tableName)
 			var (
 				constraitName string
 				constraitDef  string
+				constraitType string
 			)
-			err = constraitRows.Scan(&constraitName, &constraitDef)
+			err = constraitRows.Scan(&constraitName, &constraitDef, &constraitType)
 			if err != nil {
 				return err
 			}
 			constrait := &schema.Constrait{
 				Name: constraitName,
+				Type: convertConstraitType(constraitType),
 				Def:  constraitDef,
+			}
+			if constraitType == "f" {
+				relation := &schema.Relation{
+					Table: table,
+					Def:   constraitDef,
+				}
+				relations = append(relations, relation)
 			}
 			constraits = append(constraits, constrait)
 		}
@@ -165,8 +180,8 @@ WHERE table_name = $1`, tableName)
 			}
 			column := &schema.Column{
 				Name:    columnName,
-				Type:    colmunType(dataType, udtName, characterMaximumLength),
-				NotNull: columnNotNull(isNullable),
+				Type:    convertColmunType(dataType, udtName, characterMaximumLength),
+				NotNull: convertColumnNotNull(isNullable),
 				Default: columnDefault,
 			}
 			if comment, ok := columnComments[columnName]; ok {
@@ -180,12 +195,44 @@ WHERE table_name = $1`, tableName)
 	}
 
 	s.Tables = tables
+
+	// Relations
+	for _, r := range relations {
+		result := ReFK.FindAllStringSubmatch(r.Def, -1)
+		strColumns := strings.Split(result[0][1], ", ")
+		strParentTable := result[0][2]
+		strParentColumns := strings.Split(result[0][3], ", ")
+		for _, c := range strColumns {
+			column, err := r.Table.FindColumnByName(c)
+			if err != nil {
+				return err
+			}
+			r.Columns = append(r.Columns, column)
+			column.ParentRelations = append(column.ParentRelations, r)
+		}
+		parentTable, err := s.FindTableByName(strParentTable)
+		if err != nil {
+			return err
+		}
+		r.ParentTable = parentTable
+		for _, c := range strParentColumns {
+			column, err := parentTable.FindColumnByName(c)
+			if err != nil {
+				return err
+			}
+			r.ParentColumns = append(r.ParentColumns, column)
+			column.ChildRelations = append(column.ChildRelations, r)
+		}
+	}
+
+	s.Relations = relations
+
 	return nil
 }
 
-// colmunType ...
-func colmunType(dataType string, udtName string, characterMaximumLength sql.NullInt64) string {
-	switch dataType {
+// convertColmunType ...
+func convertColmunType(t string, udtName string, characterMaximumLength sql.NullInt64) string {
+	switch t {
 	case "USER-DEFINED":
 		return udtName
 	case "ARRAY":
@@ -193,11 +240,24 @@ func colmunType(dataType string, udtName string, characterMaximumLength sql.Null
 	case "character varying":
 		return fmt.Sprintf("varchar(%d)", characterMaximumLength.Int64)
 	default:
-		return dataType
+		return t
 	}
 }
 
-func columnNotNull(str string) bool {
+func convertConstraitType(t string) string {
+	switch t {
+	case "p":
+		return "PRIMARY KEY"
+	case "u":
+		return "UNIQUE"
+	case "f":
+		return "FOREIGN KEY"
+	default:
+		return t
+	}
+}
+
+func convertColumnNotNull(str string) bool {
 	if str == "NO" {
 		return true
 	}
