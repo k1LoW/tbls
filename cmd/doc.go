@@ -18,13 +18,49 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package main
+package cmd
 
 import (
-	"github.com/k1LoW/tbls/cmd"
-	_ "github.com/lib/pq"
+	"fmt"
+	"github.com/k1LoW/tbls/db"
+	"github.com/k1LoW/tbls/output/md"
+	"github.com/spf13/cobra"
+	"os"
+	"path/filepath"
 )
 
-func main() {
-	cmd.Execute()
+// DSN is database schema url ex. mysql://user:pass@localhost/dbname
+var DSN string
+
+var OutputPath string
+
+// docCmd represents the doc command
+var docCmd = &cobra.Command{
+	Use:   "doc",
+	Short: "doc",
+	Long:  `doc`,
+	Run: func(cmd *cobra.Command, args []string) {
+		s, err := db.Analyze(DSN)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		path, err := filepath.Abs(OutputPath)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		err = md.Output(s, path)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+	},
+}
+
+func init() {
+	rootCmd.AddCommand(docCmd)
+	pwd, _ := filepath.Abs(".")
+	docCmd.Flags().StringVarP(&DSN, "dsn", "u", "", "URL like DSN. ex. mysql://user:pass@localhost/dbname")
+	docCmd.Flags().StringVarP(&OutputPath, "output", "o", pwd, "output filepath")
 }

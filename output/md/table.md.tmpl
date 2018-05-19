@@ -1,0 +1,9 @@
+# {{ .Table.Name }}
+
+## Columns
+
+| Name | Type | Default | NOT NULL | Comment |
+| ---- | ---- | ------- | -------- | ------- |
+{{- range $i, $c := .Table.Columns }}
+| {{ $c.Name }} | | | |
+{{- end }}

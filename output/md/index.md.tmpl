@@ -1,0 +1,9 @@
+# Tables
+
+## Tables
+
+| Name | Columns | Comment | Type |
+| ---- | ------- | ------- | ---- |
+{{- range $i, $t := .Schema.Tables }}
+| [{{ $t.Name }}]({{ $t.Name }}.md) | {{ len $t.Columns }} | | {{ $t.Type }} |
+{{- end }}
