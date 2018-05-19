@@ -8,6 +8,7 @@ import (
 	"text/template"
 )
 
+// Output generate markdown files.
 func Output(s *schema.Schema, dir string) error {
 	// README.md
 	file, err := os.Create(filepath.Join(dir, "README.md"))

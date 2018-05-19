@@ -230,7 +230,6 @@ WHERE table_name = $1`, tableName)
 	return nil
 }
 
-// convertColmunType ...
 func convertColmunType(t string, udtName string, characterMaximumLength sql.NullInt64) string {
 	switch t {
 	case "USER-DEFINED":
