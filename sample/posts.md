@@ -12,8 +12,8 @@
 | user_id | integer |  | true |  |
 | title | varchar(255) |  | true |  |
 | body | text |  | true |  |
-| post_type | post_types |  | true |  |
-| labels | ARRAY |  | false |  |
+| post_type | post_types |  | true | public/private/draft |
+| labels | array |  | false |  |
 | created | timestamp without time zone |  | true |  |
 | updated | timestamp without time zone |  | false |  |
 

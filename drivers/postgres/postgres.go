@@ -30,12 +30,41 @@ WHERE table_schema != 'pg_catalog' AND table_schema != 'information_schema'
 			Type: tableType,
 		}
 
-		var columnName string
-		var columnDefault sql.NullString
-		var isNullable string
-		var dataType string
-		var udtName string
-		var characterMaximumLength sql.NullInt64
+		// columns comments
+		columnCommentRows, err := db.Query(`
+SELECT pa.attname AS column_name, pd.description AS comment
+FROM pg_stat_all_tables AS ps ,pg_description AS pd ,pg_attribute AS pa
+WHERE ps.relid=pd.objoid
+AND pd.objsubid != 0
+AND pd.objoid=pa.attrelid
+AND pd.objsubid=pa.attnum
+AND ps.relname = $1`, tableName)
+		if err != nil {
+			return err
+		}
+		defer columnCommentRows.Close()
+
+		columnComments := make(map[string]string)
+		for columnCommentRows.Next() {
+			var (
+				columnName    string
+				columnComment string
+			)
+			err = columnCommentRows.Scan(&columnName, &columnComment)
+			if err != nil {
+				return err
+			}
+			columnComments[columnName] = columnComment
+		}
+
+		var (
+			columnName             string
+			columnDefault          sql.NullString
+			isNullable             string
+			dataType               string
+			udtName                string
+			characterMaximumLength sql.NullInt64
+		)
 
 		columnRows, err := db.Query(`
 SELECT column_name, column_default, is_nullable, data_type, udt_name, character_maximum_length
@@ -54,9 +83,12 @@ WHERE table_name = $1`, tableName)
 			}
 			column := &schema.Column{
 				Name:    columnName,
-				Type:    colmunDateType(dataType, udtName, characterMaximumLength),
+				Type:    colmunType(dataType, udtName, characterMaximumLength),
 				NotNull: columnNotNull(isNullable),
 				Default: columnDefault,
+			}
+			if comment, ok := columnComments[columnName]; ok {
+				column.Comment = comment
 			}
 			columns = append(columns, column)
 		}
@@ -69,11 +101,13 @@ WHERE table_name = $1`, tableName)
 	return nil
 }
 
-// colmunDateType ...
-func colmunDateType(dataType string, udtName string, characterMaximumLength sql.NullInt64) string {
+// colmunType ...
+func colmunType(dataType string, udtName string, characterMaximumLength sql.NullInt64) string {
 	switch dataType {
 	case "USER-DEFINED":
 		return udtName
+	case "ARRAY":
+		return "array"
 	case "character varying":
 		return fmt.Sprintf("varchar(%d)", characterMaximumLength.Int64)
 	default:
