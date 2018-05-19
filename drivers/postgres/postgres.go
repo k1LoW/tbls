@@ -7,6 +7,8 @@ import (
 )
 
 func Analize(db *sql.DB, s *schema.Schema) error {
+
+	// tables
 	tableRows, err := db.Query(`
 SELECT table_name, table_type
 FROM information_schema.tables
@@ -30,6 +32,26 @@ WHERE table_schema != 'pg_catalog' AND table_schema != 'information_schema'
 		table := &schema.Table{
 			Name: tableName,
 			Type: tableType,
+		}
+
+		// table comment
+		tableCommentRows, err := db.Query(`
+SELECT pd.description as comment
+FROM pg_stat_user_tables AS ps, pg_description AS pd
+WHERE ps.relid=pd.objoid
+AND pd.objsubid=0
+AND ps.relname = $1`, tableName)
+		if err != nil {
+			return err
+		}
+		defer tableCommentRows.Close()
+		for tableCommentRows.Next() {
+			var tableComment string
+			err = tableCommentRows.Scan(&tableComment)
+			if err != nil {
+				return err
+			}
+			table.Comment = tableComment
 		}
 
 		// indexes

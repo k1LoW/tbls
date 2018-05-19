@@ -2,7 +2,7 @@
 
 ## Description
 
-
+Posts table
 
 ## Columns
 
