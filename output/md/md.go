@@ -2,7 +2,6 @@ package md
 
 import (
 	"fmt"
-	"github.com/davecgh/go-spew/spew"
 	"github.com/k1LoW/tbls/schema"
 	"os"
 	"path/filepath"
@@ -10,10 +9,8 @@ import (
 )
 
 func Output(s *schema.Schema, dir string) error {
-	spew.Dump(s)
-
-	// tables
-	file, err := os.Create(filepath.Join(dir, "index.md"))
+	// README.md
+	file, err := os.Create(filepath.Join(dir, "README.md"))
 	if err != nil {
 		return err
 	}
@@ -24,6 +21,7 @@ func Output(s *schema.Schema, dir string) error {
 	if err != nil {
 		return err
 	}
+	// tables
 	for _, t := range s.Tables {
 		fmt.Printf("%s\n", t.Name)
 		file, err := os.Create(filepath.Join(dir, fmt.Sprintf("%s.md", t.Name)))
