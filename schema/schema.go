@@ -6,6 +6,7 @@ import (
 
 type Index struct {
 	Name string
+	Def  string
 }
 
 type Column struct {

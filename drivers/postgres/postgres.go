@@ -19,8 +19,10 @@ WHERE table_schema != 'pg_catalog' AND table_schema != 'information_schema'
 
 	tables := []*schema.Table{}
 	for tableRows.Next() {
-		var tableName string
-		var tableType string
+		var (
+			tableName string
+			tableType string
+		)
 		err := tableRows.Scan(&tableName, &tableType)
 		if err != nil {
 			return err
@@ -29,6 +31,35 @@ WHERE table_schema != 'pg_catalog' AND table_schema != 'information_schema'
 			Name: tableName,
 			Type: tableType,
 		}
+
+		// indexes
+		indexRows, err := db.Query(`
+SELECT indexname, indexdef
+FROM pg_indexes
+WHERE schemaname != 'pg_catalog'
+AND tablename = $1`, tableName)
+		if err != nil {
+			return err
+		}
+		defer indexRows.Close()
+
+		indexes := []*schema.Index{}
+		for indexRows.Next() {
+			var (
+				indexName string
+				indexDef  string
+			)
+			err = indexRows.Scan(&indexName, &indexDef)
+			if err != nil {
+				return err
+			}
+			index := &schema.Index{
+				Name: indexName,
+				Def:  indexDef,
+			}
+			indexes = append(indexes, index)
+		}
+		table.Indexes = indexes
 
 		// columns comments
 		columnCommentRows, err := db.Query(`
@@ -57,15 +88,6 @@ AND ps.relname = $1`, tableName)
 			columnComments[columnName] = columnComment
 		}
 
-		var (
-			columnName             string
-			columnDefault          sql.NullString
-			isNullable             string
-			dataType               string
-			udtName                string
-			characterMaximumLength sql.NullInt64
-		)
-
 		columnRows, err := db.Query(`
 SELECT column_name, column_default, is_nullable, data_type, udt_name, character_maximum_length
 FROM information_schema.columns
@@ -77,6 +99,14 @@ WHERE table_name = $1`, tableName)
 
 		columns := []*schema.Column{}
 		for columnRows.Next() {
+			var (
+				columnName             string
+				columnDefault          sql.NullString
+				isNullable             string
+				dataType               string
+				udtName                string
+				characterMaximumLength sql.NullInt64
+			)
 			err = columnRows.Scan(&columnName, &columnDefault, &isNullable, &dataType, &udtName, &characterMaximumLength)
 			if err != nil {
 				return err
