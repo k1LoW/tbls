@@ -12,6 +12,14 @@
 | {{ $c.Name }} | {{ $c.Type }} | {{ $c.Default.String }} | {{ $c.NotNull }} | {{ $c.Comment }} |
 {{- end }}
 
+## Constraits
+
+| Name | Def |
+| ---- | --- |
+{{- range $i, $c := .Table.Constraits }}
+| {{ $c.Name }} | {{ $c.Def }} |
+{{- end }}
+
 ## Indexes
 
 | Name | Def |

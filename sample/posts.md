@@ -17,6 +17,13 @@
 | created | timestamp without time zone |  | true |  |
 | updated | timestamp without time zone |  | false |  |
 
+## Constraits
+
+| Name | Def |
+| ---- | --- |
+| posts_id_pk | PRIMARY KEY (id) |
+| posts_user_id_fk | FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE |
+
 ## Indexes
 
 | Name | Def |

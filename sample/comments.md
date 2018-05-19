@@ -15,6 +15,14 @@
 | created | timestamp without time zone |  | true |  |
 | updated | timestamp without time zone |  | false |  |
 
+## Constraits
+
+| Name | Def |
+| ---- | --- |
+| comments_id_pk | PRIMARY KEY (id) |
+| comments_post_id_fk | FOREIGN KEY (post_id) REFERENCES posts(id) |
+| comments_user_id_fk | FOREIGN KEY (user_id) REFERENCES users(id) |
+
 ## Indexes
 
 | Name | Def |

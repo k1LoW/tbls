@@ -61,6 +61,35 @@ AND tablename = $1`, tableName)
 		}
 		table.Indexes = indexes
 
+		// constraits
+		constraitRows, err := db.Query(`
+SELECT pc.conname AS name, pg_get_constraintdef(pc.oid) AS def
+FROM pg_constraint AS pc
+LEFT JOIN pg_stat_user_tables AS ps ON ps.relid = pc.conrelid
+WHERE ps.relname = $1`, tableName)
+		if err != nil {
+			return err
+		}
+		defer constraitRows.Close()
+
+		constraits := []*schema.Constrait{}
+		for constraitRows.Next() {
+			var (
+				constraitName string
+				constraitDef  string
+			)
+			err = constraitRows.Scan(&constraitName, &constraitDef)
+			if err != nil {
+				return err
+			}
+			constrait := &schema.Constrait{
+				Name: constraitName,
+				Def:  constraitDef,
+			}
+			constraits = append(constraits, constrait)
+		}
+		table.Constraits = constraits
+
 		// columns comments
 		columnCommentRows, err := db.Query(`
 SELECT pa.attname AS column_name, pd.description AS comment

@@ -9,6 +9,11 @@ type Index struct {
 	Def  string
 }
 
+type Constrait struct {
+	Name string
+	Def  string
+}
+
 type Column struct {
 	Name    string
 	Type    string
@@ -18,11 +23,12 @@ type Column struct {
 }
 
 type Table struct {
-	Name    string
-	Type    string
-	Comment string
-	Columns []*Column
-	Indexes []*Index
+	Name       string
+	Type       string
+	Comment    string
+	Columns    []*Column
+	Indexes    []*Index
+	Constraits []*Constrait
 }
 
 type Schema struct {

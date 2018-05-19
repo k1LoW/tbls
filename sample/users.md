@@ -15,6 +15,14 @@
 | created | timestamp without time zone |  | true |  |
 | updated | timestamp without time zone |  | false |  |
 
+## Constraits
+
+| Name | Def |
+| ---- | --- |
+| users_pkey | PRIMARY KEY (id) |
+| users_username_key | UNIQUE (username) |
+| users_email_key | UNIQUE (email) |
+
 ## Indexes
 
 | Name | Def |
