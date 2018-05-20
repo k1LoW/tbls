@@ -3,21 +3,40 @@
 
 `tbls` is a tool for document a database, written in Go.
 
-The key of Features of tbls are:
+The key of Features of `tbls` are:
 
-- Single binary.
-- Document in GitHub Friendly Markdown format.
-- CI friendly.
+- Single binary
+- Document in GitHub Friendly Markdown format
+- CI friendly
 
 [Usage](#usage) | [Sample](sample/) | [Integration with CI tools](#integration-with-ci-tools) | [Installation](#installation) | [Database Support](#database-support)
 
 ## Usage
 
+```console
+$ tbls
+tbls is a tool for document a database, written in Go.
+
+Usage:
+  tbls [command]
+
+Available Commands:
+  diff        diff database and document
+  doc         document a database
+  help        Help about any command
+  version     print tbls version
+
+Flags:
+  -h, --help   help for tbls
+
+Use "tbls [command] --help" for more information about a command.
+```
+
 ### Document a database schema
 
 `tbls doc` analyzes a database and generate document in GitHub Friendly Markdown format.
 
-``` sh
+```console
 $ tbls doc postgres://user:pass@hostname:5432/dbname ./dbdoc
 ```
 
@@ -27,7 +46,7 @@ Sample [document](sample/) and [schema](test/pg.sql).
 
 `tbls diff` shows the difference between database schema and generated document.
 
-``` sh
+```console
 $ tbls diff postgres://user:pass@hostname:5432/dbname ./dbdoc
 ```
 
@@ -38,13 +57,13 @@ $ tbls diff postgres://user:pass@hostname:5432/dbname ./dbdoc
 
 Set following code to [`your-ci-config.yml`](.travis.yml).
 
-``` sh
-DIFF=`./tbls diff postgres://user:pass@localhost:5432/testdb?sslmode=disable ./dbdoc` && if [ ! -z "$DIFF" ]; then echo "document does not updated."; echo $DIFF; exit 1; fi
+```sh
+DIFF=`tbls diff postgres://user:pass@localhost:5432/testdb?sslmode=disable ./dbdoc` && if [ ! -z "$DIFF" ]; then echo "document does not updated."; echo $DIFF; exit 1; fi
 ```
 
 ## Installation
 
-``` sh
+```console
 $ go get github.com/k1LoW/tbls
 ```
 
