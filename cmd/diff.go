@@ -22,29 +22,36 @@ package cmd
 
 import (
 	"fmt"
-	"os"
-
+	"github.com/k1LoW/tbls/db"
+	"github.com/k1LoW/tbls/output/md"
 	"github.com/spf13/cobra"
+	"os"
 )
 
-// dsn is database schema url ex. mysql://user:pass@localhost/dbname
-var dsn string
+// targetPath is path target document
+var targetPath string
 
-// rootCmd represents the base command when called without any subcommands
-var rootCmd = &cobra.Command{
-	Use:   "tbls",
-	Short: "tbls",
-	Long:  `tbls.`,
-}
-
-// Execute adds all child commands to the root command and sets flags appropriately.
-// This is called by main.main(). It only needs to happen once to the rootCmd.
-func Execute() {
-	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
+// diffCmd represents the diff command
+var diffCmd = &cobra.Command{
+	Use:   "diff",
+	Short: "diff database and document",
+	Long:  `diff database and document.`,
+	Run: func(cmd *cobra.Command, args []string) {
+		s, err := db.Analyze(dsn)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		err = md.Diff(s, targetPath)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+	},
 }
 
 func init() {
+	rootCmd.AddCommand(diffCmd)
+	diffCmd.Flags().StringVarP(&dsn, "dsn", "u", "", "URL like DSN. ex. postgres://user:pass@localhost/dbname")
+	diffCmd.Flags().StringVarP(&targetPath, "target", "t", ".", "target filepath")
 }

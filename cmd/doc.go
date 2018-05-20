@@ -28,14 +28,11 @@ import (
 	"os"
 )
 
-// DSN is database schema url ex. mysql://user:pass@localhost/dbname
-var DSN string
+// outputPath is path to generate document
+var outputPath string
 
-// OutputPath is path to generate document
-var OutputPath string
-
-// Force is a flag on whether to force genarate
-var Force bool
+// force is a flag on whether to force genarate
+var force bool
 
 // docCmd represents the doc command
 var docCmd = &cobra.Command{
@@ -43,12 +40,12 @@ var docCmd = &cobra.Command{
 	Short: "document a database.",
 	Long:  `'tbls doc' analyze a database and generate document in GitHub Friendly Markdown format.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		s, err := db.Analyze(DSN)
+		s, err := db.Analyze(dsn)
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
 		}
-		err = md.Output(s, OutputPath, Force)
+		err = md.Output(s, outputPath, force)
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
@@ -58,7 +55,7 @@ var docCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(docCmd)
-	docCmd.Flags().StringVarP(&DSN, "dsn", "u", "", "URL like DSN. ex. postgres://user:pass@localhost/dbname")
-	docCmd.Flags().StringVarP(&OutputPath, "output", "o", ".", "output filepath")
-	docCmd.Flags().BoolVarP(&Force, "force", "f", false, "force")
+	docCmd.Flags().StringVarP(&dsn, "dsn", "u", "", "URL like DSN. ex. postgres://user:pass@localhost/dbname")
+	docCmd.Flags().StringVarP(&outputPath, "output", "o", ".", "output filepath")
+	docCmd.Flags().BoolVarP(&force, "force", "f", false, "force")
 }
