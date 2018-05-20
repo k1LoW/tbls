@@ -1,19 +1,27 @@
 # tbls
 
-`tbls` is a tool for analyze database schema. It's one binary, so CI friendly.
+`tbls` is a tool for analyze database schema, written in Go.
 
 ## Usage
 
-### Document a database
+### Document a database schema
 
 Use `tbls doc`.
 
 ``` sh
-$ tbls doc --dsn postgres://user:pass@hostname:3306/dbname --output ./dbdoc
+$ tbls doc postgres://user:pass@hostname:3306/dbname ./dbdoc
 ```
 
-Sample [schema](test/pg.sql) and [output](sample/).
+Sample [schema](test/pg.sql) and [documented markdown files](sample/).
 
-## Database driver support
+### Diff database schema and document
+
+Use `tbls diff`.
+
+``` sh
+$ tbls diff postgres://user:pass@hostname:3306/dbname ./dbdoc
+```
+
+## Database support
 
 - PostgreSQL

@@ -28,15 +28,20 @@ import (
 	"os"
 )
 
-// targetPath is path target document
-var targetPath string
-
 // diffCmd represents the diff command
 var diffCmd = &cobra.Command{
-	Use:   "diff",
+	Use:   "diff [DSN] [DOCMENT_PATH]",
 	Short: "diff database and document",
 	Long:  `diff database and document.`,
+	Args: func(cmd *cobra.Command, args []string) error {
+		if len(args) != 2 {
+			return fmt.Errorf("requires two args")
+		}
+		return nil
+	},
 	Run: func(cmd *cobra.Command, args []string) {
+		dsn := args[0]
+		targetPath := args[1]
 		s, err := db.Analyze(dsn)
 		if err != nil {
 			fmt.Println(err)
@@ -52,6 +57,4 @@ var diffCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(diffCmd)
-	diffCmd.Flags().StringVarP(&dsn, "dsn", "u", "", "URL like DSN. ex. postgres://user:pass@localhost/dbname")
-	diffCmd.Flags().StringVarP(&targetPath, "target", "t", ".", "target filepath")
 }

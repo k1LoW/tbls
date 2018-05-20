@@ -28,18 +28,23 @@ import (
 	"os"
 )
 
-// outputPath is path to generate document
-var outputPath string
-
 // force is a flag on whether to force genarate
 var force bool
 
 // docCmd represents the doc command
 var docCmd = &cobra.Command{
-	Use:   "doc",
+	Use:   "doc [DSN] [DOCMENT_PATH]",
 	Short: "document a database.",
 	Long:  `'tbls doc' analyze a database and generate document in GitHub Friendly Markdown format.`,
+	Args: func(cmd *cobra.Command, args []string) error {
+		if len(args) != 2 {
+			return fmt.Errorf("requires two args")
+		}
+		return nil
+	},
 	Run: func(cmd *cobra.Command, args []string) {
+		dsn := args[0]
+		outputPath := args[1]
 		s, err := db.Analyze(dsn)
 		if err != nil {
 			fmt.Println(err)
@@ -55,7 +60,5 @@ var docCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(docCmd)
-	docCmd.Flags().StringVarP(&dsn, "dsn", "u", "", "URL like DSN. ex. postgres://user:pass@localhost/dbname")
-	docCmd.Flags().StringVarP(&outputPath, "output", "o", ".", "output filepath")
 	docCmd.Flags().BoolVarP(&force, "force", "f", false, "force")
 }

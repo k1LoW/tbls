@@ -27,9 +27,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// dsn is database schema url ex. mysql://user:pass@localhost/dbname
-var dsn string
-
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "tbls",
