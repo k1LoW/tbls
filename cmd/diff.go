@@ -35,7 +35,7 @@ var diffCmd = &cobra.Command{
 	Long:  `'tbls diff' shows the difference between database schema and generated document.`,
 	Args: func(cmd *cobra.Command, args []string) error {
 		if len(args) != 2 {
-			return fmt.Errorf("requires two args")
+			return fmt.Errorf("Error: %s", "requires two args")
 		}
 		return nil
 	},
