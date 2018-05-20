@@ -58,7 +58,7 @@ $ tbls diff postgres://user:pass@hostname:5432/dbname ./dbdoc
 Set following code to [`your-ci-config.yml`](.travis.yml).
 
 ```sh
-DIFF=`tbls diff postgres://user:pass@localhost:5432/testdb?sslmode=disable ./dbdoc` && if [ ! -z "$DIFF" ]; then echo "document does not updated."; echo $DIFF; exit 1; fi
+DIFF=`./tbls diff pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable ./sample` && if [ ! -z "$DIFF" ]; then echo "document does not match database." >&2 ; echo $DIFF; exit 1; fi
 ```
 
 ## Installation
