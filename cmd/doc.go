@@ -26,7 +26,6 @@ import (
 	"github.com/k1LoW/tbls/output/md"
 	"github.com/spf13/cobra"
 	"os"
-	"path/filepath"
 )
 
 // DSN is database schema url ex. mysql://user:pass@localhost/dbname
@@ -49,12 +48,7 @@ var docCmd = &cobra.Command{
 			fmt.Println(err)
 			os.Exit(1)
 		}
-		path, err := filepath.Abs(OutputPath)
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-		err = md.Output(s, path, Force)
+		err = md.Output(s, OutputPath, Force)
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
@@ -64,8 +58,7 @@ var docCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(docCmd)
-	pwd, _ := filepath.Abs(".")
 	docCmd.Flags().StringVarP(&DSN, "dsn", "u", "", "URL like DSN. ex. postgres://user:pass@localhost/dbname")
-	docCmd.Flags().StringVarP(&OutputPath, "output", "o", pwd, "output filepath")
+	docCmd.Flags().StringVarP(&OutputPath, "output", "o", ".", "output filepath")
 	docCmd.Flags().BoolVarP(&Force, "force", "f", false, "force")
 }
