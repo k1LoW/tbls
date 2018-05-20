@@ -6,14 +6,14 @@
 
 ## Columns
 
-| Name | Type | Default | NOT NULL | Children | Parents | Comment |
+| Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | bigint | nextval('comments_id_seq'::regclass) | true |  |  |  |
-| post_id | integer |  | true | [comment_stars](comment_stars.md)  | [posts](posts.md)  |  |
-| user_id | integer |  | true | [comment_stars](comment_stars.md)  | [users](users.md)  |  |
-| comment | text |  | true |  |  |  |
-| created | timestamp without time zone |  | true |  |  |  |
-| updated | timestamp without time zone |  | false |  |  |  |
+| id | bigint | nextval('comments_id_seq'::regclass) | false |  |  |  |
+| post_id | integer |  | false | [comment_stars](comment_stars.md)  | [posts](posts.md)  |  |
+| user_id | integer |  | false | [comment_stars](comment_stars.md)  | [users](users.md)  |  |
+| comment | text |  | false |  |  |  |
+| created | timestamp without time zone |  | false |  |  |  |
+| updated | timestamp without time zone |  | true |  |  |  |
 
 ## Constraits
 

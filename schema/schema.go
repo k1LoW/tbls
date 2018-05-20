@@ -19,7 +19,7 @@ type Constrait struct {
 type Column struct {
 	Name            string
 	Type            string
-	NotNull         bool
+	Nullable         bool
 	Default         sql.NullString
 	Comment         string
 	ParentRelations []*Relation

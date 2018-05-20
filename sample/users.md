@@ -6,14 +6,14 @@ Users table
 
 ## Columns
 
-| Name | Type | Default | NOT NULL | Children | Parents | Comment |
+| Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | integer | nextval('users_id_seq'::regclass) | true | [comments](comments.md) [comment_stars](comment_stars.md) [posts](posts.md)  |  |  |
-| username | varchar(50) |  | true |  |  |  |
-| password | varchar(50) |  | true |  |  |  |
-| email | varchar(355) |  | true |  |  | ex. user@example.com |
-| created | timestamp without time zone |  | true |  |  |  |
-| updated | timestamp without time zone |  | false |  |  |  |
+| id | integer | nextval('users_id_seq'::regclass) | false | [comments](comments.md) [comment_stars](comment_stars.md) [posts](posts.md)  |  |  |
+| username | varchar(50) |  | false |  |  |  |
+| password | varchar(50) |  | false |  |  |  |
+| email | varchar(355) |  | false |  |  | ex. user@example.com |
+| created | timestamp without time zone |  | false |  |  |  |
+| updated | timestamp without time zone |  | true |  |  |  |
 
 ## Constraits
 

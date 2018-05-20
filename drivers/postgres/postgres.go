@@ -179,10 +179,10 @@ WHERE table_name = $1`, tableName)
 				return err
 			}
 			column := &schema.Column{
-				Name:    columnName,
-				Type:    convertColmunType(dataType, udtName, characterMaximumLength),
-				NotNull: convertColumnNotNull(isNullable),
-				Default: columnDefault,
+				Name:     columnName,
+				Type:     convertColmunType(dataType, udtName, characterMaximumLength),
+				Nullable: convertColumnNullable(isNullable),
+				Default:  columnDefault,
 			}
 			if comment, ok := columnComments[columnName]; ok {
 				column.Comment = comment
@@ -256,9 +256,9 @@ func convertConstraitType(t string) string {
 	}
 }
 
-func convertColumnNotNull(str string) bool {
+func convertColumnNullable(str string) bool {
 	if str == "NO" {
-		return true
+		return false
 	}
-	return false
+	return true
 }

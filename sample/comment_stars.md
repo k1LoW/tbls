@@ -6,14 +6,14 @@
 
 ## Columns
 
-| Name | Type | Default | NOT NULL | Children | Parents | Comment |
+| Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | uuid | uuid_generate_v4() | true |  |  |  |
-| user_id | integer |  | true |  |  |  |
-| comment_post_id | integer |  | true |  | [comments](comments.md)  |  |
-| comment_user_id | integer |  | true |  | [comments](comments.md) [users](users.md)  |  |
-| created | timestamp without time zone |  | true |  |  |  |
-| updated | timestamp without time zone |  | false |  |  |  |
+| id | uuid | uuid_generate_v4() | false |  |  |  |
+| user_id | integer |  | false |  |  |  |
+| comment_post_id | integer |  | false |  | [comments](comments.md)  |  |
+| comment_user_id | integer |  | false |  | [comments](comments.md) [users](users.md)  |  |
+| created | timestamp without time zone |  | false |  |  |  |
+| updated | timestamp without time zone |  | true |  |  |  |
 
 ## Constraits
 

@@ -6,16 +6,16 @@ Posts table
 
 ## Columns
 
-| Name | Type | Default | NOT NULL | Children | Parents | Comment |
+| Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | bigint | nextval('posts_id_seq'::regclass) | true | [comments](comments.md)  |  |  |
-| user_id | integer |  | true |  | [users](users.md)  |  |
-| title | varchar(255) |  | true |  |  |  |
-| body | text |  | true |  |  |  |
-| post_type | post_types |  | true |  |  | public/private/draft |
-| labels | array |  | false |  |  |  |
-| created | timestamp without time zone |  | true |  |  |  |
-| updated | timestamp without time zone |  | false |  |  |  |
+| id | bigint | nextval('posts_id_seq'::regclass) | false | [comments](comments.md)  |  |  |
+| user_id | integer |  | false |  | [users](users.md)  |  |
+| title | varchar(255) |  | false |  |  |  |
+| body | text |  | false |  |  |  |
+| post_type | post_types |  | false |  |  | public/private/draft |
+| labels | array |  | true |  |  |  |
+| created | timestamp without time zone |  | false |  |  |  |
+| updated | timestamp without time zone |  | true |  |  |  |
 
 ## Constraits
 
