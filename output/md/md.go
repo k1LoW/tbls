@@ -9,9 +9,12 @@ import (
 )
 
 // Output generate markdown files.
-func Output(s *schema.Schema, dir string) error {
+func Output(s *schema.Schema, path string, force bool) error {
+	if !force && outputExists(s, path) {
+		return fmt.Errorf("Error: %s", "output files already exists.")
+	}
 	// README.md
-	file, err := os.Create(filepath.Join(dir, "README.md"))
+	file, err := os.Create(filepath.Join(path, "README.md"))
 	if err != nil {
 		return err
 	}
@@ -24,7 +27,7 @@ func Output(s *schema.Schema, dir string) error {
 	}
 	// tables
 	for _, t := range s.Tables {
-		file, err := os.Create(filepath.Join(dir, fmt.Sprintf("%s.md", t.Name)))
+		file, err := os.Create(filepath.Join(path, fmt.Sprintf("%s.md", t.Name)))
 		if err != nil {
 			return err
 		}
@@ -37,4 +40,18 @@ func Output(s *schema.Schema, dir string) error {
 		}
 	}
 	return nil
+}
+
+func outputExists(s *schema.Schema, path string) bool {
+	// README.md
+	if _, err := os.Lstat(filepath.Join(path, "README.md")); err == nil {
+		return true
+	}
+	// tables
+	for _, t := range s.Tables {
+		if _, err := os.Lstat(filepath.Join(path, fmt.Sprintf("%s.md", t.Name))); err == nil {
+			return true
+		}
+	}
+	return false
 }
