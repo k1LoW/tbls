@@ -35,7 +35,7 @@ var force bool
 var docCmd = &cobra.Command{
 	Use:   "doc [DSN] [DOCMENT_PATH]",
 	Short: "document a database.",
-	Long:  `'tbls doc' analyze a database and generate document in GitHub Friendly Markdown format.`,
+	Long:  `'tbls doc' analyzes a database and generate document in GitHub Friendly Markdown format.`,
 	Args: func(cmd *cobra.Command, args []string) error {
 		if len(args) != 2 {
 			return fmt.Errorf("requires two args")
