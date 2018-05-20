@@ -13,6 +13,6 @@ before_script:
 script:
   - make test
   - make build
-  - DIFF=`./tbls diff pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable ./sample` && if [ ! -z "$DIFF" ]; then echo "document does not updated."; echo $DIFF; exit 1; fi
+  - DIFF=`./tbls diff pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable ./sample` && if [ ! -z "$DIFF" ]; then echo "document does not match database." >&2 ; echo $DIFF; exit 1; fi
 after_script:
   - make cover
