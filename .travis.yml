@@ -1,0 +1,13 @@
+language: go
+go:
+  - 1.10.x
+services:
+  - docker
+before_script:
+  - docker-compose up -d
+  - sleep 5s
+script:
+  - make test
+  - DIFF=`./tbls diff pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable ./sample` && if [ ! -z "$DIFF" ]; then echo "document does not updated."; echo $DIFF; exit 1; fi
+after_script:
+  - make cover
