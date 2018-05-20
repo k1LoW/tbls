@@ -8,8 +8,9 @@ import (
 	"strings"
 )
 
-var ReFK = regexp.MustCompile(`FOREIGN KEY \((.+)\) REFERENCES (.+)\((.+)\)`)
+var reFK = regexp.MustCompile(`FOREIGN KEY \((.+)\) REFERENCES (.+)\((.+)\)`)
 
+// Analize PostgreSQL database schema
 func Analize(db *sql.DB, s *schema.Schema) error {
 
 	// tables
@@ -198,7 +199,7 @@ WHERE table_name = $1`, tableName)
 
 	// Relations
 	for _, r := range relations {
-		result := ReFK.FindAllStringSubmatch(r.Def, -1)
+		result := reFK.FindAllStringSubmatch(r.Def, -1)
 		strColumns := strings.Split(result[0][1], ", ")
 		strParentTable := result[0][2]
 		strParentColumns := strings.Split(result[0][3], ", ")
