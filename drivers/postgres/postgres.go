@@ -22,10 +22,10 @@ FROM information_schema.tables
 WHERE table_schema != 'pg_catalog' AND table_schema != 'information_schema'
 ORDER BY table_name
 `)
+	defer tableRows.Close()
 	if err != nil {
 		return err
 	}
-	defer tableRows.Close()
 
 	relations := []*schema.Relation{}
 
@@ -51,10 +51,11 @@ FROM pg_stat_user_tables AS ps, pg_description AS pd
 WHERE ps.relid=pd.objoid
 AND pd.objsubid=0
 AND ps.relname = $1`, tableName)
+		defer tableCommentRows.Close()
 		if err != nil {
 			return err
 		}
-		defer tableCommentRows.Close()
+
 		for tableCommentRows.Next() {
 			var tableComment string
 			err = tableCommentRows.Scan(&tableComment)
@@ -70,10 +71,10 @@ SELECT indexname, indexdef
 FROM pg_indexes
 WHERE schemaname != 'pg_catalog'
 AND tablename = $1`, tableName)
+		defer indexRows.Close()
 		if err != nil {
 			return err
 		}
-		defer indexRows.Close()
 
 		indexes := []*schema.Index{}
 		for indexRows.Next() {
@@ -99,10 +100,10 @@ SELECT pc.conname AS name, pg_get_constraintdef(pc.oid) AS def, contype AS type
 FROM pg_constraint AS pc
 LEFT JOIN pg_stat_user_tables AS ps ON ps.relid = pc.conrelid
 WHERE ps.relname = $1`, tableName)
+		defer constraitRows.Close()
 		if err != nil {
 			return err
 		}
-		defer constraitRows.Close()
 
 		constraits := []*schema.Constrait{}
 		for constraitRows.Next() {
@@ -140,10 +141,10 @@ AND pd.objsubid != 0
 AND pd.objoid=pa.attrelid
 AND pd.objsubid=pa.attnum
 AND ps.relname = $1`, tableName)
+		defer columnCommentRows.Close()
 		if err != nil {
 			return err
 		}
-		defer columnCommentRows.Close()
 
 		columnComments := make(map[string]string)
 		for columnCommentRows.Next() {
@@ -162,10 +163,10 @@ AND ps.relname = $1`, tableName)
 SELECT column_name, column_default, is_nullable, data_type, udt_name, character_maximum_length
 FROM information_schema.columns
 WHERE table_name = $1`, tableName)
+		defer columnRows.Close()
 		if err != nil {
 			return err
 		}
-		defer columnRows.Close()
 
 		columns := []*schema.Column{}
 		for columnRows.Next() {

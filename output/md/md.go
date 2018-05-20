@@ -24,6 +24,7 @@ func Output(s *schema.Schema, path string, force bool) error {
 
 	// README.md
 	file, err := os.Create(filepath.Join(fullPath, "README.md"))
+	defer file.Close()
 	if err != nil {
 		return err
 	}
@@ -39,6 +40,7 @@ func Output(s *schema.Schema, path string, force bool) error {
 	// tables
 	for _, t := range s.Tables {
 		file, err := os.Create(filepath.Join(fullPath, fmt.Sprintf("%s.md", t.Name)))
+		defer file.Close()
 		if err != nil {
 			return err
 		}
