@@ -30,7 +30,7 @@ import (
 
 // diffCmd represents the diff command
 var diffCmd = &cobra.Command{
-	Use:   "diff [DSN] [DOCMENT_PATH]",
+	Use:   "diff [DSN] [DOCUMENT_PATH]",
 	Short: "diff database and document",
 	Long:  `'tbls diff' shows the difference between database schema and generated document.`,
 	Args: func(cmd *cobra.Command, args []string) error {

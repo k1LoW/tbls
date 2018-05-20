@@ -33,7 +33,7 @@ var force bool
 
 // docCmd represents the doc command
 var docCmd = &cobra.Command{
-	Use:   "doc [DSN] [DOCMENT_PATH]",
+	Use:   "doc [DSN] [DOCUMENT_PATH]",
 	Short: "document a database",
 	Long:  `'tbls doc' analyzes a database and generate document in GitHub Friendly Markdown format.`,
 	Args: func(cmd *cobra.Command, args []string) error {
