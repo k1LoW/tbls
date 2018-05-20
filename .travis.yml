@@ -3,11 +3,16 @@ go:
   - 1.10.x
 services:
   - docker
+addons:
+  apt:
+    update: true
 before_script:
+  - go get github.com/xo/usql
   - docker-compose up -d
-  - sleep 5s
+  - sleep 15s
 script:
   - make test
+  - make build
   - DIFF=`./tbls diff pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable ./sample` && if [ ! -z "$DIFF" ]; then echo "document does not updated."; echo $DIFF; exit 1; fi
 after_script:
   - make cover
