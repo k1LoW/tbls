@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.2.1](https://github.com/k1LoW/tbls/compare/v0.2.0...v0.2.1) (2018-05-22)
+
+* Fix query for tables [#6](https://github.com/k1LoW/tbls/pull/6) ([k1LoW](https://github.com/k1LoW))
+
 ## [v0.2.0](https://github.com/k1LoW/tbls/compare/v0.1.2...v0.2.0) (2018-05-21)
 
 * Add `--sort` option for CI easily [#5](https://github.com/k1LoW/tbls/pull/5) ([k1LoW](https://github.com/k1LoW))
