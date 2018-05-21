@@ -8,7 +8,7 @@ Users table
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | integer | nextval('users_id_seq'::regclass) | false | [posts](posts.md) [comments](comments.md) [comment_stars](comment_stars.md)  |  |  |
+| id | integer | nextval('users_id_seq'::regclass) | false | [comment_stars](comment_stars.md) [posts](posts.md) [comments](comments.md)  |  |  |
 | username | varchar(50) |  | false |  |  |  |
 | password | varchar(50) |  | false |  |  |  |
 | email | varchar(355) |  | false |  |  | ex. user@example.com |
