@@ -50,6 +50,15 @@ var docCmd = &cobra.Command{
 			fmt.Println(err)
 			os.Exit(1)
 		}
+
+		if sort {
+			err = s.Sort()
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+		}
+
 		err = md.Output(s, outputPath, force)
 		if err != nil {
 			fmt.Println(err)
@@ -61,4 +70,5 @@ var docCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(docCmd)
 	docCmd.Flags().BoolVarP(&force, "force", "f", false, "force")
+	docCmd.Flags().BoolVarP(&sort, "sort", "", false, "sort")
 }
