@@ -20,8 +20,10 @@ test:
 cover: depsdev
 	goveralls -service=travis-ci
 
-build:
+template:
 	go generate
+
+build:
 	go build -ldflags="$(BUILD_LDFLAGS)"
 
 deps:
