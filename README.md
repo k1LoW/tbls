@@ -58,18 +58,18 @@ $ tbls diff postgres://user:pass@hostname:5432/dbname ./dbdoc
 Set following code to [`your-ci-config.yml`](.travis.yml).
 
 ```sh
-DIFF=`tbls diff pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable ./sample` && if [ ! -z "$DIFF" ]; then echo "document does not match database." >&2 ; echo tbls diff pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable ./sample; exit 1; fi
+DIFF=`tbls diff postgres://user:pass@localhost:5432/testdb?sslmode=disable ./sample` && if [ ! -z "$DIFF" ]; then echo "document does not match database." >&2 ; echo tbls diff postgres://user:pass@localhost:5432/testdb?sslmode=disable ./sample; exit 1; fi
 ```
 
 Makefile sample is following
 
 ``` makefile
 doc: ## Document database schema
-	tbls doc postgres://postgres:pgpass@localhost:55432/testdb?sslmode=disable ./doc --sort
+	tbls doc postgres://user:pass@localhost:5432/testdb?sslmode=disable ./doc
 
 testdoc: ## Test database schema document
-	$(eval DIFF := $(shell tbls diff postgres://postgres:pgpass@localhost:55432/testdb?sslmode=disable ./doc --sort))
-	@test -z "$(DIFF)" || (echo "document does not match database." && postgres://postgres:pgpass@localhost:55432/testdb?sslmode=disable ./doc --sort && exit 1)
+	$(eval DIFF := $(shell tbls diff postgres://user:pass@localhost:5432/testdb?sslmode=disable ./doc))
+	@test -z "$(DIFF)" || (echo "document does not match database." && postgres://user:pass@localhost:5432/testdb?sslmode=disable ./doc && exit 1)
 ```
 
 **Tips:** If the order of the columns does not match, you can use the `--sort` option.
