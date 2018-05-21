@@ -5,9 +5,9 @@
 | Name | Columns | Comment | Type |
 | ---- | ------- | ------- | ---- |
 | [users](users.md) | 6 | Users table | BASE TABLE |
-| [comment_stars](comment_stars.md) | 6 |  | BASE TABLE |
 | [posts](posts.md) | 8 | Posts table | BASE TABLE |
 | [comments](comments.md) | 6 |  | BASE TABLE |
+| [comment_stars](comment_stars.md) | 6 |  | BASE TABLE |
 
 ---
 
