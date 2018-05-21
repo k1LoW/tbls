@@ -25,6 +25,8 @@ import (
 	_ "github.com/lib/pq"
 )
 
+//go:generate go-assets-builder -p md -s="/output/md/templates" output/md/templates -o output/md/templates.go
+
 func main() {
 	cmd.Execute()
 }
