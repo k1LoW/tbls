@@ -21,6 +21,7 @@ cover: depsdev
 	goveralls -service=travis-ci
 
 build:
+	go generate
 	go build -ldflags="$(BUILD_LDFLAGS)"
 
 deps:
@@ -36,6 +37,7 @@ depsdev:
 	go get github.com/tcnksm/ghr
 	go get github.com/Songmu/ghch/cmd/ghch
 	go get github.com/xo/usql
+	go get github.com/jessevdk/go-assets-builder
 
 crossbuild: deps depsdev
 	$(eval ver = v$(shell gobump show -r version/))

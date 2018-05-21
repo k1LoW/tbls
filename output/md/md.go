@@ -28,7 +28,12 @@ func Output(s *schema.Schema, path string, force bool) error {
 	if err != nil {
 		return err
 	}
-	tmpl := template.Must(template.ParseFiles(filepath.Join("output", "md", "index.md.tmpl")))
+	f, _ := Assets.Open(filepath.Join("/", "index.md.tmpl"))
+	bs, _ := ioutil.ReadAll(f)
+	tmpl, err := template.New("index").Parse(string(bs))
+	if err != nil {
+		return err
+	}
 	err = tmpl.Execute(file, map[string]interface{}{
 		"Schema": s,
 	})
@@ -44,7 +49,12 @@ func Output(s *schema.Schema, path string, force bool) error {
 		if err != nil {
 			return err
 		}
-		tmpl := template.Must(template.ParseFiles(filepath.Join("output", "md", "table.md.tmpl")))
+		f, _ := Assets.Open(filepath.Join("/", "table.md.tmpl"))
+		bs, _ := ioutil.ReadAll(f)
+		tmpl, err := template.New(t.Name).Parse(string(bs))
+		if err != nil {
+			return err
+		}
 		err = tmpl.Execute(file, map[string]interface{}{
 			"Table": t,
 		})
@@ -71,7 +81,9 @@ func Diff(s *schema.Schema, path string) error {
 
 	// README.md
 	a := new(bytes.Buffer)
-	tmpl := template.Must(template.ParseFiles("output/md/index.md.tmpl"))
+	f, _ := Assets.Open(filepath.Join("/", "index.md.tmpl"))
+	bs, _ := ioutil.ReadAll(f)
+	tmpl, err := template.New("index").Parse(string(bs))
 	err = tmpl.Execute(a, map[string]interface{}{
 		"Schema": s,
 	})
@@ -96,7 +108,9 @@ func Diff(s *schema.Schema, path string) error {
 	// tables
 	for _, t := range s.Tables {
 		a := new(bytes.Buffer)
-		tmpl := template.Must(template.ParseFiles(filepath.Join("output", "md", "table.md.tmpl")))
+		f, _ := Assets.Open(filepath.Join("/", "table.md.tmpl"))
+		bs, _ := ioutil.ReadAll(f)
+		tmpl, err := template.New(t.Name).Parse(string(bs))
 		err = tmpl.Execute(a, map[string]interface{}{
 			"Table": t,
 		})
