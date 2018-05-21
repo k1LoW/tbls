@@ -19,6 +19,7 @@ func (p *Postgres) Analize(db *sql.DB, s *schema.Schema) error {
 	tableRows, err := db.Query(`
 SELECT relname, table_type FROM pg_stat_user_tables AS p
 LEFT JOIN information_schema.tables AS i ON p.relname = i.table_name
+WHERE p.schemaname = i.table_schema
 ORDER BY relid
 `)
 	defer tableRows.Close()
