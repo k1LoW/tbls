@@ -52,13 +52,24 @@ $ tbls diff postgres://user:pass@hostname:5432/dbname ./dbdoc
 
 ## Integration with CI tools
 
-1. Commit document using `tbls doc`.
-2. Check document updates using `tbls diff`
+1. Commit document using `tbls doc --sort`.
+2. Check document updates using `tbls diff --sort`
 
 Set following code to [`your-ci-config.yml`](.travis.yml).
 
 ```sh
-DIFF=`./tbls diff pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable ./sample` && if [ ! -z "$DIFF" ]; then echo "document does not match database." >&2 ; echo $DIFF; exit 1; fi
+DIFF=`tbls diff pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable ./sample --sort` && if [ ! -z "$DIFF" ]; then echo "document does not match database." >&2 ; echo tbls diff pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable ./sample --sort; exit 1; fi
+```
+
+Makefile sample is following
+
+``` makefile
+doc: ## Document database schema
+	tbls doc postgres://postgres:pgpass@localhost:55432/testdb?sslmode=disable ./doc --sort
+
+testdoc: ## Test database schema document
+	$(eval DIFF := $(shell tbls diff postgres://postgres:pgpass@localhost:55432/testdb?sslmode=disable ./doc --sort))
+	@test -z "$(DIFF)" || (echo "document does not match database." && postgres://postgres:pgpass@localhost:55432/testdb?sslmode=disable ./doc --sort && exit 1)
 ```
 
 ## Installation

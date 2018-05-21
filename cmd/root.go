@@ -27,6 +27,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// sort is a flag on whether to sort tables, columns, and more
+var sort bool
+
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "tbls",

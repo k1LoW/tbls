@@ -47,6 +47,15 @@ var diffCmd = &cobra.Command{
 			fmt.Println(err)
 			os.Exit(1)
 		}
+
+		if sort {
+			err = s.Sort()
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+		}
+
 		err = md.Diff(s, targetPath)
 		if err != nil {
 			fmt.Println(err)
@@ -57,4 +66,5 @@ var diffCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(diffCmd)
+	diffCmd.Flags().BoolVarP(&sort, "sort", "", false, "sort")
 }
