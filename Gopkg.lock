@@ -9,6 +9,12 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/jessevdk/go-assets"
+  packages = ["."]
+  revision = "4f4301a06e153ff90e17793577ab6bf79f8dc5c5"
+
+[[projects]]
+  branch = "master"
   name = "github.com/lib/pq"
   packages = [
     ".",
@@ -43,6 +49,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "528c0afe4b9dc5360b9bebe3e7daf680e6acdeef557b63a52384a451f47824c1"
+  inputs-digest = "63807754fc610934b848f8d95bed25bb81c950aee0f4f8b026fe8cb55800e02e"
   solver-name = "gps-cdcl"
   solver-version = 1
