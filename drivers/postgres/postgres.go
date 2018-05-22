@@ -12,8 +12,8 @@ var reFK = regexp.MustCompile(`FOREIGN KEY \((.+)\) REFERENCES (.+)\((.+)\)`)
 
 type Postgres struct{}
 
-// Analize PostgreSQL database schema
-func (p *Postgres) Analize(db *sql.DB, s *schema.Schema) error {
+// Analyze PostgreSQL database schema
+func (p *Postgres) Analyze(db *sql.DB, s *schema.Schema) error {
 
 	// tables
 	tableRows, err := db.Query(`

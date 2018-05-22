@@ -10,7 +10,7 @@ import (
 )
 
 type Driver interface {
-	Analize(*sql.DB, *schema.Schema) error
+	Analyze(*sql.DB, *schema.Schema) error
 }
 
 func Analyze(urlstr string) (*schema.Schema, error) {
@@ -36,7 +36,7 @@ func Analyze(urlstr string) (*schema.Schema, error) {
 	default:
 		return s, fmt.Errorf("Error: %s", "unsupported driver")
 	}
-	err = driver.Analize(db, s)
+	err = driver.Analyze(db, s)
 	if err != nil {
 		return s, err
 	}
