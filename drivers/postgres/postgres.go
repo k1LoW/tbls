@@ -10,6 +10,7 @@ import (
 
 var reFK = regexp.MustCompile(`FOREIGN KEY \((.+)\) REFERENCES (.+)\((.+)\)`)
 
+// Postgres struct
 type Postgres struct{}
 
 // Analyze PostgreSQL database schema
@@ -159,6 +160,7 @@ AND ps.relname = $1`, tableName)
 			columnComments[columnName] = columnComment
 		}
 
+		// columns
 		columnRows, err := db.Query(`
 SELECT column_name, column_default, is_nullable, data_type, udt_name, character_maximum_length
 FROM information_schema.columns

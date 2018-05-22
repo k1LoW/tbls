@@ -21,6 +21,7 @@
 package main
 
 import (
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/k1LoW/tbls/cmd"
 	_ "github.com/lib/pq"
 )
