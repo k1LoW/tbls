@@ -2,6 +2,12 @@
 
 
 [[projects]]
+  name = "github.com/go-sql-driver/mysql"
+  packages = ["."]
+  revision = "a0583e0143b1624142adab07e0e97fe106d99561"
+  version = "v1.3"
+
+[[projects]]
   name = "github.com/inconshreveable/mousetrap"
   packages = ["."]
   revision = "76626ae9c91c4f2a10f34cad8ce83ea42c93bb75"
@@ -49,6 +55,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "63807754fc610934b848f8d95bed25bb81c950aee0f4f8b026fe8cb55800e02e"
+  inputs-digest = "5001891f7e9fbb1090ffd331333be1412f47b81f718fbb6ef366a6bd9258a6a7"
   solver-name = "gps-cdcl"
   solver-version = 1

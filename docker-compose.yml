@@ -11,7 +11,7 @@ services:
       - POSTGRES_PASSWORD=pgpass
       - POSTGRES_DB=testdb
   mysql:
-    image: mysql:8
+    image: mysql:5.7
     restart: always
     ports:
       - "33306:3306"
