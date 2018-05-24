@@ -9,7 +9,7 @@ The key of Features of `tbls` are:
 - Document in GitHub Friendly Markdown format
 - CI friendly
 
-[Usage](#usage) | [Sample](sample/) | [Integration with CI tools](#integration-with-ci-tools) | [Installation](#installation) | [Database Support](#database-support)
+[Usage](#usage) | [Sample](sample/pg/) | [Integration with CI tools](#integration-with-ci-tools) | [Installation](#installation) | [Database Support](#database-support)
 
 ## Usage
 
@@ -40,7 +40,7 @@ Use "tbls [command] --help" for more information about a command.
 $ tbls doc postgres://user:pass@hostname:5432/dbname ./dbdoc
 ```
 
-Sample [document](sample/) and [schema](test/pg.sql).
+Sample [document](sample/pg/) and [schema](test/pg.sql).
 
 ### Diff database schema and document
 
