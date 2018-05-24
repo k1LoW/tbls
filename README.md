@@ -83,3 +83,4 @@ $ go get github.com/k1LoW/tbls
 ## Database Support
 
 - PostgreSQL
+- MySQL
