@@ -12,11 +12,11 @@
 | {{ $c.Name }} | {{ $c.Type }} | {{ $c.Default.String }} | {{ $c.Nullable }} | {{ range $ii, $r := $c.ChildRelations -}}[{{ $r.Table.Name }}]({{ $r.Table.Name }}.md) {{ end }} | {{ range $ii, $r := $c.ParentRelations -}}[{{ $r.ParentTable.Name }}]({{ $r.ParentTable.Name }}.md) {{ end }} | {{ $c.Comment }} |
 {{- end }}
 
-## Constraits
+## Constraints
 
 | Name | Type | Def |
 | ---- | ---- | --- |
-{{- range $i, $c := .Table.Constraits }}
+{{- range $i, $c := .Table.Constraints }}
 | {{ $c.Name }} | {{ $c.Type }} | {{ $c.Def }} |
 {{- end }}
 
