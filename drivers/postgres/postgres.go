@@ -95,43 +95,43 @@ AND tablename = $1`, tableName)
 		}
 		table.Indexes = indexes
 
-		// constraits
-		constraitRows, err := db.Query(`
+		// constraints
+		constraintRows, err := db.Query(`
 SELECT pc.conname AS name, pg_get_constraintdef(pc.oid) AS def, contype AS type
 FROM pg_constraint AS pc
 LEFT JOIN pg_stat_user_tables AS ps ON ps.relid = pc.conrelid
 WHERE ps.relname = $1`, tableName)
-		defer constraitRows.Close()
+		defer constraintRows.Close()
 		if err != nil {
 			return err
 		}
 
-		constraits := []*schema.Constrait{}
-		for constraitRows.Next() {
+		constraints := []*schema.Constraint{}
+		for constraintRows.Next() {
 			var (
-				constraitName string
-				constraitDef  string
-				constraitType string
+				constraintName string
+				constraintDef  string
+				constraintType string
 			)
-			err = constraitRows.Scan(&constraitName, &constraitDef, &constraitType)
+			err = constraintRows.Scan(&constraintName, &constraintDef, &constraintType)
 			if err != nil {
 				return err
 			}
-			constrait := &schema.Constrait{
-				Name: constraitName,
-				Type: convertConstraitType(constraitType),
-				Def:  constraitDef,
+			constraint := &schema.Constraint{
+				Name: constraintName,
+				Type: convertConstraintType(constraintType),
+				Def:  constraintDef,
 			}
-			if constraitType == "f" {
+			if constraintType == "f" {
 				relation := &schema.Relation{
 					Table: table,
-					Def:   constraitDef,
+					Def:   constraintDef,
 				}
 				relations = append(relations, relation)
 			}
-			constraits = append(constraits, constrait)
+			constraints = append(constraints, constraint)
 		}
-		table.Constraits = constraits
+		table.Constraints = constraints
 
 		// columns comments
 		columnCommentRows, err := db.Query(`
@@ -249,7 +249,7 @@ func convertColmunType(t string, udtName string, characterMaximumLength sql.Null
 	}
 }
 
-func convertConstraitType(t string) string {
+func convertConstraintType(t string) string {
 	switch t {
 	case "p":
 		return "PRIMARY KEY"
