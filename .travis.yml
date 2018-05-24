@@ -10,7 +10,7 @@ before_script:
   - go get github.com/xo/usql
   - go get github.com/jessevdk/go-assets-builder
   - docker-compose up -d
-  - sleep 15s
+  - sleep 20s
 script:
   - make test
   - make build
