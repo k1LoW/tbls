@@ -15,7 +15,7 @@ Users table
 | created | timestamp without time zone |  | false |  |  |  |
 | updated | timestamp without time zone |  | true |  |  |  |
 
-## Constraits
+## Constraints
 
 | Name | Type | Def |
 | ---- | ---- | --- |
