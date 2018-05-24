@@ -10,12 +10,12 @@
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
 | id | uuid | uuid_generate_v4() | false |  |  |  |
 | user_id | integer |  | false |  |  |  |
-| comment_post_id | integer |  | false |  | [comments](comments.md)  |  |
+| comment_post_id | bigint |  | false |  | [comments](comments.md)  |  |
 | comment_user_id | integer |  | false |  | [comments](comments.md) [users](users.md)  |  |
 | created | timestamp without time zone |  | false |  |  |  |
 | updated | timestamp without time zone |  | true |  |  |  |
 
-## Constraits
+## Constraints
 
 | Name | Type | Def |
 | ---- | ---- | --- |

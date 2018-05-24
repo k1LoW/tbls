@@ -11,7 +11,7 @@ type Index struct {
 	Def  string
 }
 
-type Constrait struct {
+type Constraint struct {
 	Name string
 	Type string
 	Def  string
@@ -33,7 +33,7 @@ type Table struct {
 	Comment    string
 	Columns    []*Column
 	Indexes    []*Index
-	Constraits []*Constrait
+	Constraints []*Constraint
 }
 
 type Relation struct {
@@ -84,8 +84,8 @@ func (s *Schema) Sort() error {
 		sort.SliceStable(t.Indexes, func(i, j int) bool {
 			return t.Indexes[i].Name < t.Indexes[j].Name
 		})
-		sort.SliceStable(t.Constraits, func(i, j int) bool {
-			return t.Constraits[i].Name < t.Constraits[j].Name
+		sort.SliceStable(t.Constraints, func(i, j int) bool {
+			return t.Constraints[i].Name < t.Constraints[j].Name
 		})
 	}
 	sort.SliceStable(s.Tables, func(i, j int) bool {
