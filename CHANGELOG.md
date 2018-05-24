@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.3.0](https://github.com/k1LoW/tbls/compare/v0.2.2...v0.3.0) (2018-05-24)
+
+* MySQL driver support [#8](https://github.com/k1LoW/tbls/pull/8) ([k1LoW](https://github.com/k1LoW))
+
 ## [v0.2.2](https://github.com/k1LoW/tbls/compare/v0.2.1...v0.2.2) (2018-05-24)
 
 * Fix typo ;; [#7](https://github.com/k1LoW/tbls/pull/7) ([k1LoW](https://github.com/k1LoW))
