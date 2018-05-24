@@ -23,6 +23,10 @@ cover: depsdev
 template:
 	go generate
 
+doc: build
+	./tbls doc pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -f sample/postgres
+	./tbls doc my://root:mypass@localhost:33306/testdb -f -f sample/mysql
+
 build:
 	go build -ldflags="$(BUILD_LDFLAGS)"
 
