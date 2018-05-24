@@ -39,7 +39,7 @@ CREATE TABLE comments (
   CONSTRAINT comments_user_id_fk FOREIGN KEY(user_id) REFERENCES users(id) MATCH SIMPLE,
   UNIQUE(post_id, user_id)
 );
-CREATE INDEX comments_post_id_user_id_idx ON comments(post_id, user_id) USING BTREE;
+CREATE INDEX comments_post_id_user_id_idx ON comments(post_id, user_id) USING HASH;
 
 CREATE TABLE comment_stars (
   id bigint AUTO_INCREMENT,

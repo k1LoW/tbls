@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-var reFK = regexp.MustCompile(`FOREIGN KEY \((.+)\) REFERENCES (.+)\((.+)\)`)
+var reFK = regexp.MustCompile(`FOREIGN KEY \((.+)\) REFERENCES ([^\s]+)\s?\((.+)\)`)
 
 // Postgres struct
 type Postgres struct{}
