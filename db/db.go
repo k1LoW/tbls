@@ -29,7 +29,9 @@ func Analyze(urlstr string) (*schema.Schema, error) {
 	if err != nil {
 		return s, err
 	}
-	defer db.Close()
+	if err = db.Ping(); err != nil {
+		return s, err
+	}
 
 	var driver Driver
 
