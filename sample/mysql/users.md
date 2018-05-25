@@ -12,8 +12,8 @@ Users table
 | username | varchar(50) |  | false |  |  |  |
 | password | varchar(50) |  | false |  |  |  |
 | email | varchar(355) |  | false |  |  | ex. user@example.com |
-| created | timestamp | CURRENT_TIMESTAMP | false |  |  |  |
-| updated | timestamp | 0000-00-00 00:00:00 | false |  |  |  |
+| created | timestamp |  | false |  |  |  |
+| updated | timestamp |  | true |  |  |  |
 
 ## Constraints
 

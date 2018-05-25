@@ -10,21 +10,27 @@ package mysql
 
 import (
 	"crypto/sha1"
+	"crypto/sha256"
 	"crypto/tls"
 	"database/sql/driver"
 	"encoding/binary"
 	"fmt"
 	"io"
 	"strings"
+	"sync"
+	"sync/atomic"
 	"time"
 )
 
 var (
+	tlsConfigLock     sync.RWMutex
 	tlsConfigRegister map[string]*tls.Config // Register for custom tls.Configs
 )
 
 // RegisterTLSConfig registers a custom tls.Config to be used with sql.Open.
 // Use the key as a value in the DSN where tls=value.
+//
+// Note: The tls.Config provided to needs to be exclusively owned by the driver after registering.
 //
 //  rootCertPool := x509.NewCertPool()
 //  pem, err := ioutil.ReadFile("/path/ca-cert.pem")
@@ -51,19 +57,32 @@ func RegisterTLSConfig(key string, config *tls.Config) error {
 		return fmt.Errorf("key '%s' is reserved", key)
 	}
 
+	tlsConfigLock.Lock()
 	if tlsConfigRegister == nil {
 		tlsConfigRegister = make(map[string]*tls.Config)
 	}
 
 	tlsConfigRegister[key] = config
+	tlsConfigLock.Unlock()
 	return nil
 }
 
 // DeregisterTLSConfig removes the tls.Config associated with key.
 func DeregisterTLSConfig(key string) {
+	tlsConfigLock.Lock()
 	if tlsConfigRegister != nil {
 		delete(tlsConfigRegister, key)
 	}
+	tlsConfigLock.Unlock()
+}
+
+func getTLSConfigClone(key string) (config *tls.Config) {
+	tlsConfigLock.RLock()
+	if v, ok := tlsConfigRegister[key]; ok {
+		config = cloneTLSConfig(v)
+	}
+	tlsConfigLock.RUnlock()
+	return
 }
 
 // Returns the bool value of the input.
@@ -191,6 +210,34 @@ func scrambleOldPassword(scramble, password []byte) []byte {
 	}
 
 	return out[:]
+}
+
+// Encrypt password using 8.0 default method
+func scrambleCachingSha2Password(scramble, password []byte) []byte {
+	if len(password) == 0 {
+		return nil
+	}
+
+	// XOR(SHA256(password), SHA256(SHA256(SHA256(password)), scramble))
+
+	crypt := sha256.New()
+	crypt.Write(password)
+	message1 := crypt.Sum(nil)
+
+	crypt.Reset()
+	crypt.Write(message1)
+	message1Hash := crypt.Sum(nil)
+
+	crypt.Reset()
+	crypt.Write(message1Hash)
+	crypt.Write(scramble)
+	message2 := crypt.Sum(nil)
+
+	for i := range message1 {
+		message1[i] ^= message2[i]
+	}
+
+	return message1
 }
 
 /******************************************************************************
@@ -519,7 +566,7 @@ func readLengthEncodedString(b []byte) ([]byte, bool, int, error) {
 
 	// Check data length
 	if len(b) >= n {
-		return b[n-int(num) : n], false, n, nil
+		return b[n-int(num) : n : n], false, n, nil
 	}
 	return nil, false, n, io.EOF
 }
@@ -548,8 +595,8 @@ func readLengthEncodedInteger(b []byte) (uint64, bool, int) {
 	if len(b) == 0 {
 		return 0, true, 1
 	}
-	switch b[0] {
 
+	switch b[0] {
 	// 251: NULL
 	case 0xfb:
 		return 0, true, 1
@@ -737,4 +784,68 @@ func escapeStringQuotes(buf []byte, v string) []byte {
 	}
 
 	return buf[:pos]
+}
+
+/******************************************************************************
+*                               Sync utils                                    *
+******************************************************************************/
+
+// noCopy may be embedded into structs which must not be copied
+// after the first use.
+//
+// See https://github.com/golang/go/issues/8005#issuecomment-190753527
+// for details.
+type noCopy struct{}
+
+// Lock is a no-op used by -copylocks checker from `go vet`.
+func (*noCopy) Lock() {}
+
+// atomicBool is a wrapper around uint32 for usage as a boolean value with
+// atomic access.
+type atomicBool struct {
+	_noCopy noCopy
+	value   uint32
+}
+
+// IsSet returns wether the current boolean value is true
+func (ab *atomicBool) IsSet() bool {
+	return atomic.LoadUint32(&ab.value) > 0
+}
+
+// Set sets the value of the bool regardless of the previous value
+func (ab *atomicBool) Set(value bool) {
+	if value {
+		atomic.StoreUint32(&ab.value, 1)
+	} else {
+		atomic.StoreUint32(&ab.value, 0)
+	}
+}
+
+// TrySet sets the value of the bool and returns wether the value changed
+func (ab *atomicBool) TrySet(value bool) bool {
+	if value {
+		return atomic.SwapUint32(&ab.value, 1) == 0
+	}
+	return atomic.SwapUint32(&ab.value, 0) > 0
+}
+
+// atomicError is a wrapper for atomically accessed error values
+type atomicError struct {
+	_noCopy noCopy
+	value   atomic.Value
+}
+
+// Set sets the error value regardless of the previous value.
+// The value must not be nil
+func (ae *atomicError) Set(value error) {
+	ae.value.Store(value)
+}
+
+// Value returns the current error value
+func (ae *atomicError) Value() error {
+	if v := ae.value.Load(); v != nil {
+		// this will panic if the value doesn't implement the error interface
+		return v.(error)
+	}
+	return nil
 }
