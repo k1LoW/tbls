@@ -18,3 +18,11 @@ services:
     environment:
       - MYSQL_DATABASE=testdb
       - MYSQL_ROOT_PASSWORD=mypass
+  mysql8:
+    image: mysql:8
+    restart: always
+    ports:
+      - "33308:3306"
+    environment:
+      - MYSQL_DATABASE=testdb
+      - MYSQL_ROOT_PASSWORD=mypass

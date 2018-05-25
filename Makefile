@@ -15,6 +15,7 @@ default: test
 test:
 	usql pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -f test/pg.sql
 	usql my://root:mypass@localhost:33306/testdb -f test/my.sql
+	usql my://root:mypass@localhost:33308/testdb -f test/my.sql
 	go test -cover -v $(shell go list ./... | grep -v vendor)
 
 cover: depsdev
@@ -25,16 +26,17 @@ template:
 
 doc: build
 	./tbls doc pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -f sample/postgres
-	./tbls doc mysql://root:mypass@localhost:33306/testdb -f sample/mysql
+	./tbls doc my://root:mypass@localhost:33306/testdb -f -f sample/mysql
+	./tbls doc my://root:mypass@localhost:33308/testdb -f -f sample/mysql8
 
-build:
+build: deps
 	go build -ldflags="$(BUILD_LDFLAGS)"
 
 deps:
 	go get -u github.com/golang/dep/cmd/dep
 	dep ensure
 
-depsdev:
+depsdev: deps
 	go get golang.org/x/tools/cmd/cover
 	go get github.com/mattn/goveralls
 	go get github.com/golang/lint/golint
