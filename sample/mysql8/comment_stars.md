@@ -12,8 +12,8 @@
 | user_id | int(11) |  | false |  |  |  |
 | comment_post_id | bigint(20) |  | false |  | [comments](comments.md)  |  |
 | comment_user_id | int(11) |  | false |  | [users](users.md) [comments](comments.md)  |  |
-| created | timestamp | CURRENT_TIMESTAMP | false |  |  |  |
-| updated | timestamp | 0000-00-00 00:00:00 | false |  |  |  |
+| created | timestamp |  | false |  |  |  |
+| updated | timestamp |  | true |  |  |  |
 
 ## Constraints
 
