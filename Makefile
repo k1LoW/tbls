@@ -25,7 +25,7 @@ template:
 
 doc: build
 	./tbls doc pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -f sample/postgres
-	./tbls doc my://root:mypass@localhost:33306/testdb -f -f sample/mysql
+	./tbls doc mysql://root:mypass@localhost:33306/testdb -f sample/mysql
 
 build:
 	go build -ldflags="$(BUILD_LDFLAGS)"
