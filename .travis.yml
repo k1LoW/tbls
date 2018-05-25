@@ -1,20 +1,35 @@
 language: go
 go:
   - 1.10.x
-services:
-  - docker
-addons:
-  apt:
-    update: true
+  - master
 before_script:
   - go get github.com/xo/usql
   - go get github.com/jessevdk/go-assets-builder
-  - docker-compose up -d
-  - sleep 20s
-script:
-  - make test
-  - make build
-  - DIFF=`./tbls diff pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable ./sample/postgres` && if [ ! -z "$DIFF" ]; then echo "document does not match database." >&2 ; echo $DIFF; exit 1; fi
-  - DIFF=`./tbls diff my://root:mypass@localhost:33306/testdb ./sample/mysql` && if [ ! -z "$DIFF" ]; then echo "document does not match database." >&2 ; echo $DIFF; exit 1; fi
+matrix:
+  include:
+    - services:
+        - docker
+      addons:
+        apt:
+          update: true
+      before_script:
+        - docker-compose up postgres -d
+        - sleep 20s
+      script:
+        - make test
+        - make build
+        - DIFF=`./tbls diff pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable ./sample/postgres` && if [ ! -z "$DIFF" ]; then echo "document does not match database." >&2 ; echo $DIFF; exit 1; fi
+    - services:
+        - docker
+      addons:
+        apt:
+          update: true
+      before_script:
+        - docker-compose up mysql -d
+        - sleep 20s
+      script:
+        - make test
+        - make build
+        - DIFF=`./tbls diff my://root:mypass@localhost:33306/testdb ./sample/mysql` && if [ ! -z "$DIFF" ]; then echo "document does not match database." >&2 ; echo $DIFF; exit 1; fi
 after_script:
   - make cover
