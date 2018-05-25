@@ -2,10 +2,11 @@
 
 
 [[projects]]
+  branch = "master"
   name = "github.com/go-sql-driver/mysql"
   packages = ["."]
-  revision = "a0583e0143b1624142adab07e0e97fe106d99561"
-  version = "v1.3"
+  revision = "ceae19ce1c5ac766abad8db04d649a7a83e91ced"
+  source = "github.com/go-sql-driver/mysql"
 
 [[projects]]
   name = "github.com/inconshreveable/mousetrap"
@@ -52,9 +53,15 @@
   packages = ["."]
   revision = "6a21934dd3de290069382e550e1f7959e5892909"
 
+[[projects]]
+  name = "google.golang.org/appengine"
+  packages = ["cloudsql"]
+  revision = "150dc57a1b433e64154302bdc40b6bb8aefa313a"
+  version = "v1.0.0"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "5001891f7e9fbb1090ffd331333be1412f47b81f718fbb6ef366a6bd9258a6a7"
+  inputs-digest = "b6de6b930071faf7d193264f36220346ab9b57c01f3a6b1f81a605d342abdb8f"
   solver-name = "gps-cdcl"
   solver-version = 1

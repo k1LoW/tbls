@@ -170,7 +170,7 @@ GROUP BY kcu.constraint_name, sub.costraint_type, kcu.referenced_table_name`, ta
 		columnRows, err := db.Query(`
 SELECT column_name, column_default, is_nullable, column_type, column_comment
 FROM information_schema.columns
-WHERE table_schema = ? AND table_name = ?`, s.Name, tableName)
+WHERE table_schema = ? AND table_name = ? ORDER BY ordinal_position`, s.Name, tableName)
 		defer columnRows.Close()
 		if err != nil {
 			return err
