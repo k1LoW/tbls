@@ -1,0 +1,30 @@
+---
+relations:
+  -
+    table: logs
+    columns:
+      - user_id
+    parentTable: users
+    parentColumns:
+      - id
+  -
+    table: logs
+    columns:
+      - post_id
+    parentTable: posts
+    parentColumns:
+      - id
+  -
+    table: logs
+    columns:
+      - comment_id
+    parentTable: comments
+    parentColumns:
+      - id
+  -
+    table: logs
+    columns:
+      - comment_star_id
+    parentTable: comment_stars
+    parentColumns:
+      - id

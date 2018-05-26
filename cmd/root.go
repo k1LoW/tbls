@@ -30,6 +30,9 @@ import (
 // sort is a flag on whether to sort tables, columns, and more
 var sort bool
 
+// additionalDataPath is a additional data path
+var additionalDataPath string
+
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "tbls",

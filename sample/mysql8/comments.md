@@ -8,7 +8,7 @@
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | bigint(20) |  | false |  |  |  |
+| id | bigint(20) |  | false | [logs](logs.md)  |  |  |
 | post_id | bigint(20) |  | false | [comment_stars](comment_stars.md)  | [posts](posts.md)  |  |
 | user_id | int(11) |  | false | [comment_stars](comment_stars.md)  | [users](users.md)  |  |
 | comment | text |  | false |  |  |  |
