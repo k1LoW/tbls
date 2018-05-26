@@ -16,8 +16,8 @@ before_install:
 script:
   - make test
   - make build
-  - DIFF=`./tbls diff pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable ./sample/postgres` && if [ ! -z "$DIFF" ]; then echo "document does not match database." >&2 ; echo $DIFF; exit 1; fi
-  - DIFF=`./tbls diff my://root:mypass@localhost:33306/testdb ./sample/mysql` && if [ ! -z "$DIFF" ]; then echo "document does not match database." >&2 ; echo $DIFF; exit 1; fi
-  - DIFF=`./tbls diff my://root:mypass@localhost:33308/testdb ./sample/mysql8` && if [ ! -z "$DIFF" ]; then echo "document does not match database." >&2 ; ./tbls diff my://root:mypass@localhost:33308/testdb ./sample/mysql8; exit 1; fi
+  - DIFF=`./tbls diff pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -a test/relations.yml ./sample/postgres` && if [ ! -z "$DIFF" ]; then echo "document does not match database." >&2 ; echo $DIFF; exit 1; fi
+  - DIFF=`./tbls diff my://root:mypass@localhost:33306/testdb -a test/relations.yml ./sample/mysql` && if [ ! -z "$DIFF" ]; then echo "document does not match database." >&2 ; echo $DIFF; exit 1; fi
+  - DIFF=`./tbls diff my://root:mypass@localhost:33308/testdb -a test/relations.yml ./sample/mysql8` && if [ ! -z "$DIFF" ]; then echo "document does not match database." >&2 ; echo $DIFF; exit 1; fi
 after_script:
   - make cover

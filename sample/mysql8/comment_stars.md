@@ -8,7 +8,7 @@
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | bigint(20) |  | false |  |  |  |
+| id | bigint(20) |  | false | [logs](logs.md)  |  |  |
 | user_id | int(11) |  | false |  |  |  |
 | comment_post_id | bigint(20) |  | false |  | [comments](comments.md)  |  |
 | comment_user_id | int(11) |  | false |  | [users](users.md) [comments](comments.md)  |  |

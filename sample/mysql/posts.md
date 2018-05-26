@@ -8,7 +8,7 @@ Posts table
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | bigint(20) |  | false | [comments](comments.md)  |  |  |
+| id | bigint(20) |  | false | [comments](comments.md) [logs](logs.md)  |  |  |
 | user_id | int(11) |  | false |  | [users](users.md)  |  |
 | title | varchar(255) |  | false |  |  |  |
 | body | text |  | false |  |  |  |

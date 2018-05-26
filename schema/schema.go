@@ -3,6 +3,9 @@ package schema
 import (
 	"database/sql"
 	"fmt"
+	yaml "gopkg.in/yaml.v2"
+	"io/ioutil"
+	"path/filepath"
 	"sort"
 )
 
@@ -56,6 +59,19 @@ type Schema struct {
 	Relations []*Relation
 }
 
+// AdditionalData is the struct for table relations from yaml
+type AdditionalData struct {
+	Relations []AdditionalRelation `yaml:"relations"`
+}
+
+// AdditionalRelation is the struct for table relation from yaml
+type AdditionalRelation struct {
+	Table         string   `yaml:"table"`
+	Columns       []string `yaml:"columns"`
+	ParentTable   string   `yaml:"parentTable"`
+	ParentColumns []string `yaml:"parentColumns"`
+}
+
 // FindTableByName find table by table name
 func (s *Schema) FindTableByName(name string) (*Table, error) {
 	for _, t := range s.Tables {
@@ -103,5 +119,58 @@ func (s *Schema) Sort() error {
 	sort.SliceStable(s.Relations, func(i, j int) bool {
 		return s.Relations[i].Table.Name < s.Relations[j].Table.Name
 	})
+	return nil
+}
+
+// LoadAdditionalRelations load additional relations from yaml file
+func (s *Schema) LoadAdditionalRelations(path string) error {
+	fullPath, err := filepath.Abs(path)
+	if err != nil {
+		return err
+	}
+
+	buf, err := ioutil.ReadFile(fullPath)
+	if err != nil {
+		return err
+	}
+
+	var data AdditionalData
+	err = yaml.Unmarshal(buf, &data)
+	if err != nil {
+		return err
+	}
+
+	for _, r := range data.Relations {
+		relation := &Relation{
+			Def: "Additional Relation",
+		}
+		relation.Table, err = s.FindTableByName(r.Table)
+		if err != nil {
+			return err
+		}
+		for _, c := range r.Columns {
+			column, err := relation.Table.FindColumnByName(c)
+			if err != nil {
+				return err
+			}
+			relation.Columns = append(relation.Columns, column)
+			column.ParentRelations = append(column.ParentRelations, relation)
+		}
+		relation.ParentTable, err = s.FindTableByName(r.ParentTable)
+		if err != nil {
+			return err
+		}
+		for _, c := range r.ParentColumns {
+			column, err := relation.ParentTable.FindColumnByName(c)
+			if err != nil {
+				return err
+			}
+			relation.ParentColumns = append(relation.ParentColumns, column)
+			column.ChildRelations = append(column.ChildRelations, relation)
+		}
+
+		s.Relations = append(s.Relations, relation)
+	}
+
 	return nil
 }
