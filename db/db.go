@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-// Driver interface
+// Driver is the common interface for database driver
 type Driver interface {
 	Analyze(*sql.DB, *schema.Schema) error
 }
