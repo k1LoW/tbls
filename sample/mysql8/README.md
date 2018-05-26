@@ -6,6 +6,7 @@
 | ---- | ------- | ------- | ---- |
 | [comment_stars](comment_stars.md) | 6 |  | BASE TABLE |
 | [comments](comments.md) | 6 |  | BASE TABLE |
+| [logs](logs.md) | 7 |  | BASE TABLE |
 | [posts](posts.md) | 7 | Posts table | BASE TABLE |
 | [users](users.md) | 6 | Users table | BASE TABLE |
 

@@ -1,7 +1,7 @@
+DROP TABLE IF EXISTS logs;
 DROP TABLE IF EXISTS comment_stars;
 DROP TABLE IF EXISTS comments;
 DROP TABLE IF EXISTS posts;
-
 DROP TABLE IF EXISTS users;
 
 CREATE TABLE users (
@@ -52,4 +52,14 @@ CREATE TABLE comment_stars (
   CONSTRAINT comment_stars_user_id_post_id_fk FOREIGN KEY(comment_post_id, comment_user_id) REFERENCES comments(post_id, user_id) MATCH SIMPLE,
   CONSTRAINT comment_stars_user_id_fk FOREIGN KEY(comment_user_id) REFERENCES users(id) MATCH SIMPLE,
   UNIQUE(user_id, comment_post_id, comment_user_id)
+);
+
+CREATE TABLE logs (
+  id bigint PRIMARY KEY AUTO_INCREMENT,
+  user_id int NOT NULL,
+  post_id bigint,
+  comment_id bigint,
+  comment_star_id bigint,
+  payload text,
+  created datetime NOT NULL
 );

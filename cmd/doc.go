@@ -51,6 +51,14 @@ var docCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
+		if additionalDataPath != "" {
+			err = s.LoadAdditionalRelations(additionalDataPath)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+		}
+
 		if sort {
 			err = s.Sort()
 			if err != nil {
@@ -71,4 +79,5 @@ func init() {
 	rootCmd.AddCommand(docCmd)
 	docCmd.Flags().BoolVarP(&force, "force", "f", false, "force")
 	docCmd.Flags().BoolVarP(&sort, "sort", "", false, "sort")
+	docCmd.Flags().StringVarP(&additionalDataPath, "add", "a", "", "additional schema data path")
 }

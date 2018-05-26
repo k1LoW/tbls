@@ -8,7 +8,7 @@ Users table
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | int(11) |  | false | [comment_stars](comment_stars.md) [comments](comments.md) [posts](posts.md)  |  |  |
+| id | int(11) |  | false | [comment_stars](comment_stars.md) [comments](comments.md) [posts](posts.md) [logs](logs.md)  |  |  |
 | username | varchar(50) |  | false |  |  |  |
 | password | varchar(50) |  | false |  |  |  |
 | email | varchar(355) |  | false |  |  | ex. user@example.com |
