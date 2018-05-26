@@ -74,6 +74,14 @@ testdoc: ## Test database schema document
 
 **Tips:** If the order of the columns does not match, you can use the `--sort` option.
 
+## Add additional data (relations) to schema
+
+To add additional to the schema, specify [the yaml file](test/relations.yml) with the `--add` option as follows
+
+``` console
+$ tbls diff mysql://user:pass@hostname:3306/dbname --add test/relations.yml ./dbdoc
+```
+
 ## Installation
 
 ```console
