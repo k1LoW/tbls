@@ -6,17 +6,20 @@ import (
 	"sort"
 )
 
+// Index is the struct for database index
 type Index struct {
 	Name string
 	Def  string
 }
 
+// Constraint is the struct for database constraint
 type Constraint struct {
 	Name string
 	Type string
 	Def  string
 }
 
+// Column is the struct for table column
 type Column struct {
 	Name            string
 	Type            string
@@ -27,15 +30,17 @@ type Column struct {
 	ChildRelations  []*Relation
 }
 
+// Table is the struct for database table
 type Table struct {
-	Name       string
-	Type       string
-	Comment    string
-	Columns    []*Column
-	Indexes    []*Index
+	Name        string
+	Type        string
+	Comment     string
+	Columns     []*Column
+	Indexes     []*Index
 	Constraints []*Constraint
 }
 
+// Relation is the struct for table relation
 type Relation struct {
 	Table         *Table
 	Columns       []*Column
@@ -44,12 +49,14 @@ type Relation struct {
 	Def           string
 }
 
+// Schema is the struct for database schema
 type Schema struct {
 	Name      string
 	Tables    []*Table
 	Relations []*Relation
 }
 
+// FindTableByName find table by table name
 func (s *Schema) FindTableByName(name string) (*Table, error) {
 	for _, t := range s.Tables {
 		if t.Name == name {
@@ -59,6 +66,7 @@ func (s *Schema) FindTableByName(name string) (*Table, error) {
 	return nil, fmt.Errorf("Error: not found table '%s'", name)
 }
 
+// FindColumnByName find column by column name
 func (t *Table) FindColumnByName(name string) (*Column, error) {
 	for _, c := range t.Columns {
 		if c.Name == name {
@@ -68,6 +76,7 @@ func (t *Table) FindColumnByName(name string) (*Column, error) {
 	return nil, fmt.Errorf("Error: not found column '%s'", name)
 }
 
+// Sort schema tables, columns, relations, and constrains
 func (s *Schema) Sort() error {
 	for _, t := range s.Tables {
 		for _, c := range t.Columns {
