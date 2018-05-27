@@ -1,0 +1,21 @@
+digraph {{ .Schema.Name }} {
+  // Config
+  graph [rankdir=TB, layout=dot, margin=0.2, fontname="Arial"];
+  node [shape=record, fontsize=14, fontname="Arial"];
+  edge [fontsize=10, labelfloat=false, splines=none, fontname="Arial"];
+
+  // Tables
+  {{- range $i, $t := .Schema.Tables }}
+  {{ $t.Name }} [shape=none, margin=0.2, label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="4">
+                 <tr><td><b>{{ $t.Name }}</b> <font color="#666666">[{{ $t.Type }}]</font></td></tr>
+                 {{- range $ii, $c := $t.Columns }}
+                 <tr><td port="{{ $c.Name }}" align="left">{{ $c.Name }} <font color="#666666">[{{ $c.Type }}]</font></td></tr>
+                 {{- end }}
+              </table>>];
+  {{- end }}
+
+  // Relations
+  {{- range $j, $r := .Schema.Relations }}
+  {{ $r.Table.Name }}:{{ $c := index $r.Columns 0 }}{{ $c.Name }} -> {{ $r.ParentTable.Name }}:{{ $pc := index $r.ParentColumns 0 }}{{ $pc.Name }} [taillabel=<<table cellpadding="5" border="0" cellborder="0"><tr><td>{{ $r.Def }}</td></tr></table>>];
+  {{- end }}
+}
