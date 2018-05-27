@@ -28,9 +28,6 @@ import (
 	"os"
 )
 
-// force is a flag on whether to force genarate
-var force bool
-
 // docCmd represents the doc command
 var docCmd = &cobra.Command{
 	Use:   "doc [DSN] [DOCUMENT_PATH]",
@@ -67,7 +64,13 @@ var docCmd = &cobra.Command{
 			}
 		}
 
-		err = md.Output(s, outputPath, force)
+		switch outputFormat {
+		case "md":
+			err = md.Output(s, outputPath, force)
+		default:
+			err = fmt.Errorf("Error: %s", "unsupported output format")
+		}
+
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
@@ -80,4 +83,5 @@ func init() {
 	docCmd.Flags().BoolVarP(&force, "force", "f", false, "force")
 	docCmd.Flags().BoolVarP(&sort, "sort", "", false, "sort")
 	docCmd.Flags().StringVarP(&additionalDataPath, "add", "a", "", "additional schema data path")
+	docCmd.Flags().StringVarP(&outputFormat, "output", "o", "md", "output format")
 }
