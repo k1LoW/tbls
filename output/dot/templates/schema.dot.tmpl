@@ -16,6 +16,6 @@ digraph {{ .Schema.Name }} {
 
   // Relations
   {{- range $j, $r := .Schema.Relations }}
-  {{ $r.Table.Name }}:{{ $c := index $r.Columns 0 }}{{ $c.Name }} -> {{ $r.ParentTable.Name }}:{{ $pc := index $r.ParentColumns 0 }}{{ $pc.Name }} [taillabel=<<table cellpadding="5" border="0" cellborder="0"><tr><td>{{ $r.Def }}</td></tr></table>>];
+  {{ $r.Table.Name }}:{{ $c := index $r.Columns 0 }}{{ $c.Name }} -> {{ $r.ParentTable.Name }}:{{ $pc := index $r.ParentColumns 0 }}{{ $pc.Name }} [arrowhead=crow, taillabel=<<table cellpadding="5" border="0" cellborder="0"><tr><td>{{ $r.Def }}</td></tr></table>>];
   {{- end }}
 }
