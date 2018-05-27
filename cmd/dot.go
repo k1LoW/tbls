@@ -22,38 +22,59 @@ package cmd
 
 import (
 	"fmt"
-	"os"
-
+	"github.com/k1LoW/tbls/db"
+	"github.com/k1LoW/tbls/output/dot"
 	"github.com/spf13/cobra"
+	"os"
 )
 
-// force is a flag on whether to force genarate
-var force bool
+// dotCmd represents the doc command
+var dotCmd = &cobra.Command{
+	Use:   "dot [DSN] [OUTPUT_PATH]",
+	Short: "generate dot file",
+	Long:  `'tbls dot' analyzes a database and generate dot file.`,
+	Args: func(cmd *cobra.Command, args []string) error {
+		if len(args) != 2 {
+			return fmt.Errorf("Error: %s", "requires two args")
+		}
+		return nil
+	},
+	Run: func(cmd *cobra.Command, args []string) {
+		dsn := args[0]
+		outputPath := args[1]
+		s, err := db.Analyze(dsn)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
 
-// sort is a flag on whether to sort tables, columns, and more
-var sort bool
+		if additionalDataPath != "" {
+			err = s.LoadAdditionalRelations(additionalDataPath)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+		}
 
-// additionalDataPath is a additional data path
-var additionalDataPath string
+		if sort {
+			err = s.Sort()
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+		}
 
-// outputFormat is output format
-var outputFormat string
+		err = dot.Output(s, outputPath, force)
 
-// rootCmd represents the base command when called without any subcommands
-var rootCmd = &cobra.Command{
-	Use:   "tbls",
-	Short: "tbls is a tool for document a database, written in Go.",
-	Long:  `tbls is a tool for document a database, written in Go.`,
-}
-
-// Execute adds all child commands to the root command and sets flags appropriately.
-// This is called by main.main(). It only needs to happen once to the rootCmd.
-func Execute() {
-	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+	},
 }
 
 func init() {
+	rootCmd.AddCommand(dotCmd)
+	dotCmd.Flags().BoolVarP(&force, "force", "f", false, "force")
+	dotCmd.Flags().StringVarP(&additionalDataPath, "add", "a", "", "additional schema data path")
 }

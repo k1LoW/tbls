@@ -27,6 +27,7 @@ import (
 )
 
 //go:generate go-assets-builder -p md -s="/output/md/templates" output/md/templates -o output/md/templates.go
+//go:generate go-assets-builder -p dot -s="/output/dot/templates" output/dot/templates -o output/dot/templates.go
 
 func main() {
 	cmd.Execute()
