@@ -1,3 +1,4 @@
+DROP VIEW IF EXISTS post_comments;
 DROP TABLE IF EXISTS logs;
 DROP TABLE IF EXISTS comment_stars;
 DROP TABLE IF EXISTS comments;
@@ -75,4 +76,12 @@ CREATE TABLE logs (
   comment_star_id uuid,
   payload text,
   created timestamp NOT NULL
+);
+
+CREATE VIEW post_comments AS (
+  SELECT c.id, p.title, u2.username AS post_user, c.comment, u2.username AS comment_user, c.created, c.updated
+  FROM posts AS p
+  LEFT JOIN comments AS c on p.id = c.post_id
+  LEFT JOIN users AS u on u.id = p.user_id
+  LEFT JOIN users AS u2 on u2.id = c.user_id
 );
