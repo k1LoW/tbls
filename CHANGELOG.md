@@ -1,5 +1,11 @@
 # Changelog
 
+## [v0.5.0](https://github.com/k1LoW/tbls/compare/v0.4.0...v0.5.0) (2018-05-28)
+
+* Support CHECK constraints [#14](https://github.com/k1LoW/tbls/pull/14) ([k1LoW](https://github.com/k1LoW))
+* Support view table [#13](https://github.com/k1LoW/tbls/pull/13) ([k1LoW](https://github.com/k1LoW))
+* Add `tbls dot` command [#12](https://github.com/k1LoW/tbls/pull/12) ([k1LoW](https://github.com/k1LoW))
+
 ## [v0.4.0](https://github.com/k1LoW/tbls/compare/v0.3.0...v0.4.0) (2018-05-26)
 
 * Add `--add` option for add extra data (relations) to schema [#11](https://github.com/k1LoW/tbls/pull/11) ([k1LoW](https://github.com/k1LoW))
