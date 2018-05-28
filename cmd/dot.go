@@ -30,18 +30,21 @@ import (
 
 // dotCmd represents the doc command
 var dotCmd = &cobra.Command{
-	Use:   "dot [DSN] [OUTPUT_PATH]",
+	Use:   "dot [DSN] [TABLE NAME]",
 	Short: "generate dot file",
 	Long:  `'tbls dot' analyzes a database and generate dot file.`,
 	Args: func(cmd *cobra.Command, args []string) error {
-		if len(args) != 2 {
-			return fmt.Errorf("Error: %s", "requires two args")
+		if len(args) < 1 {
+			return fmt.Errorf("Error: %s", "requires at least one arg")
 		}
 		return nil
 	},
 	Run: func(cmd *cobra.Command, args []string) {
+		tableName := ""
 		dsn := args[0]
-		outputPath := args[1]
+		if len(args) == 2 {
+			tableName = args[1]
+		}
 		s, err := db.Analyze(dsn)
 		if err != nil {
 			fmt.Println(err)
@@ -64,7 +67,7 @@ var dotCmd = &cobra.Command{
 			}
 		}
 
-		err = dot.Output(s, outputPath, force)
+		err = dot.Output(os.Stdout, s, tableName)
 
 		if err != nil {
 			fmt.Println(err)
@@ -75,6 +78,5 @@ var dotCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(dotCmd)
-	dotCmd.Flags().BoolVarP(&force, "force", "f", false, "force")
 	dotCmd.Flags().StringVarP(&additionalDataPath, "add", "a", "", "additional schema data path")
 }
