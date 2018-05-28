@@ -19,7 +19,7 @@ Users table
 
 | Name | Type | Def |
 | ---- | ---- | --- |
-| users_username_check | c | CHECK ((char_length((username)::text) > 4)) |
+| users_username_check | CHECK | CHECK ((char_length((username)::text) > 4)) |
 | users_pkey | PRIMARY KEY | PRIMARY KEY (id) |
 | users_username_key | UNIQUE | UNIQUE (username) |
 | users_email_key | UNIQUE | UNIQUE (email) |
