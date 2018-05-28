@@ -18,11 +18,11 @@ func (p *Postgres) Analyze(db *sql.DB, s *schema.Schema) error {
 
 	// tables
 	tableRows, err := db.Query(`
-SELECT relname, table_type FROM pg_stat_user_tables AS p
-LEFT JOIN information_schema.tables AS i ON p.relname = i.table_name
-WHERE p.schemaname = i.table_schema
-ORDER BY relid
-`)
+SELECT CONCAT(table_schema, '.', table_name)::regclass::oid AS oid, table_name, table_type
+FROM information_schema.tables
+WHERE table_schema != 'pg_catalog' AND table_schema != 'information_schema'
+AND table_catalog = $1
+ORDER BY oid`, s.Name)
 	defer tableRows.Close()
 	if err != nil {
 		return err
@@ -33,10 +33,11 @@ ORDER BY relid
 	tables := []*schema.Table{}
 	for tableRows.Next() {
 		var (
+			tableOid  string
 			tableName string
 			tableType string
 		)
-		err := tableRows.Scan(&tableName, &tableType)
+		err := tableRows.Scan(&tableOid, &tableName, &tableType)
 		if err != nil {
 			return err
 		}
