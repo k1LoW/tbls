@@ -9,6 +9,7 @@
 | [comments](comments.md) | 6 |  | BASE TABLE |
 | [comment_stars](comment_stars.md) | 6 |  | BASE TABLE |
 | [logs](logs.md) | 7 |  | BASE TABLE |
+| [post_comments](post_comments.md) | 7 |  | VIEW |
 
 ---
 
