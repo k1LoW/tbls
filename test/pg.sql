@@ -15,7 +15,7 @@ CREATE TYPE post_types AS ENUM (
 
 CREATE TABLE users (
   id serial PRIMARY KEY,
-  username varchar (50) UNIQUE NOT NULL,
+  username varchar (50) UNIQUE NOT NULL CHECK(char_length(username) > 4),
   password varchar (50) NOT NULL,
   email varchar (355) UNIQUE NOT NULL,
   created timestamp NOT NULL,
