@@ -258,6 +258,8 @@ func convertConstraintType(t string) string {
 		return "UNIQUE"
 	case "f":
 		return "FOREIGN KEY"
+	case "c":
+		return "CHECK"
 	default:
 		return t
 	}
