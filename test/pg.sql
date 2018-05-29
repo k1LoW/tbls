@@ -1,4 +1,5 @@
 DROP VIEW IF EXISTS post_comments;
+DROP TABLE IF EXISTS "CamelizeTable";
 DROP TABLE IF EXISTS logs;
 DROP TABLE IF EXISTS comment_stars;
 DROP TABLE IF EXISTS comments;
@@ -84,4 +85,9 @@ CREATE VIEW post_comments AS (
   LEFT JOIN comments AS c on p.id = c.post_id
   LEFT JOIN users AS u on u.id = p.user_id
   LEFT JOIN users AS u2 on u2.id = c.user_id
+);
+
+CREATE TABLE "CamelizeTable" (
+  id uuid NOT NULL DEFAULT uuid_generate_v4(),
+  created timestamp NOT NULL
 );
