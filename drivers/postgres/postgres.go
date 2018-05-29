@@ -18,7 +18,7 @@ func (p *Postgres) Analyze(db *sql.DB, s *schema.Schema) error {
 
 	// tables
 	tableRows, err := db.Query(`
-SELECT CONCAT(table_schema, '.', table_name)::regclass::oid AS oid, table_name, table_type
+SELECT CONCAT(table_schema, '."', table_name, '"')::regclass::oid AS oid, table_name, table_type
 FROM information_schema.tables
 WHERE table_schema != 'pg_catalog' AND table_schema != 'information_schema'
 AND table_catalog = $1
