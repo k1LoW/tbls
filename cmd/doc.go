@@ -23,9 +23,13 @@ package cmd
 import (
 	"fmt"
 	"github.com/k1LoW/tbls/db"
+	"github.com/k1LoW/tbls/output/dot"
 	"github.com/k1LoW/tbls/output/md"
+	"github.com/k1LoW/tbls/schema"
 	"github.com/spf13/cobra"
 	"os"
+	"os/exec"
+	"path/filepath"
 )
 
 // docCmd represents the doc command
@@ -64,12 +68,15 @@ var docCmd = &cobra.Command{
 			}
 		}
 
-		switch outputFormat {
-		case "md":
-			err = md.Output(s, outputPath, force)
-		default:
-			err = fmt.Errorf("Error: %s", "unsupported output format")
+		_, err = exec.Command("which", "dot").Output()
+		if err == nil {
+			err := withDot(s, outputPath)
+			if err != nil {
+				fmt.Println(err)
+			}
 		}
+
+		err = md.Output(s, outputPath, force)
 
 		if err != nil {
 			fmt.Println(err)
@@ -78,10 +85,46 @@ var docCmd = &cobra.Command{
 	},
 }
 
+// withDot ...
+func withDot(s *schema.Schema, outputPath string) error {
+	fullPath, err := filepath.Abs(outputPath)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("%s\n", filepath.Join(outputPath, "schema.png"))
+	c := exec.Command("dot", "-Tpng", "-o", filepath.Join(fullPath, "schema.png"))
+	stdin, _ := c.StdinPipe()
+	err = dot.OutputSchema(stdin, s)
+	if err != nil {
+		return err
+	}
+	stdin.Close()
+	err = c.Run()
+	if err != nil {
+		return err
+	}
+	// tables
+	for _, t := range s.Tables {
+		fmt.Printf("%s\n", filepath.Join(outputPath, fmt.Sprintf("%s.png", t.Name)))
+		c := exec.Command("dot", "-Tpng", "-o", filepath.Join(fullPath, fmt.Sprintf("%s.png", t.Name)))
+		stdin, _ := c.StdinPipe()
+		err = dot.OutputTable(stdin, t)
+		if err != nil {
+			return err
+		}
+		stdin.Close()
+		err = c.Run()
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 func init() {
 	rootCmd.AddCommand(docCmd)
 	docCmd.Flags().BoolVarP(&force, "force", "f", false, "force")
 	docCmd.Flags().BoolVarP(&sort, "sort", "", false, "sort")
 	docCmd.Flags().StringVarP(&additionalDataPath, "add", "a", "", "additional schema data path")
-	docCmd.Flags().StringVarP(&outputFormat, "output", "o", "md", "output format")
 }
