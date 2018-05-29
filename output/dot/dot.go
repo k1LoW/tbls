@@ -1,50 +1,67 @@
 package dot
 
 import (
-	"fmt"
 	"github.com/k1LoW/tbls/schema"
+	"io"
 	"io/ioutil"
-	"os"
 	"path/filepath"
 	"text/template"
 )
 
-// Output generate dot file for full relation.
-func Output(s *schema.Schema, path string, force bool) error {
-	fullPath, err := filepath.Abs(path)
-	if err != nil {
-		return err
-	}
-
-	if !force && outputExists(s, fullPath) {
-		return fmt.Errorf("Error: %s", "output file already exists.")
-	}
-
-	file, err := os.Create(filepath.Join(fullPath, "schema.dot"))
-	defer file.Close()
-	if err != nil {
-		return err
-	}
+// OutputSchema generate dot format for full relation.
+func OutputSchema(wr io.Writer, s *schema.Schema) error {
 	f, _ := Assets.Open(filepath.Join("/", "schema.dot.tmpl"))
 	bs, _ := ioutil.ReadAll(f)
-	tmpl, err := template.New("index").Parse(string(bs))
+	tmpl, err := template.New(s.Name).Parse(string(bs))
 	if err != nil {
 		return err
 	}
-	err = tmpl.Execute(file, map[string]interface{}{
+	err = tmpl.Execute(wr, map[string]interface{}{
 		"Schema": s,
 	})
 	if err != nil {
 		return err
 	}
-	fmt.Printf("%s\n", filepath.Join(path, "schema.dot"))
 
 	return nil
 }
 
-func outputExists(s *schema.Schema, path string) bool {
-	if _, err := os.Lstat(filepath.Join(path, "schema.dot")); err == nil {
-		return true
+// OutputTable generate dot format for table.
+func OutputTable(wr io.Writer, t *schema.Table) error {
+	encountered := make(map[string]bool)
+	tables := []*schema.Table{}
+	relations := []*schema.Relation{}
+	for _, c := range t.Columns {
+		for _, r := range c.ParentRelations {
+			if !encountered[r.ParentTable.Name] {
+				encountered[r.ParentTable.Name] = true
+				tables = append(tables, r.ParentTable)
+			}
+			relations = append(relations, r)
+		}
+		for _, r := range c.ChildRelations {
+			if !encountered[r.Table.Name] {
+				encountered[r.Table.Name] = true
+				tables = append(tables, r.Table)
+			}
+			relations = append(relations, r)
+		}
 	}
-	return false
+
+	f, _ := Assets.Open(filepath.Join("/", "table.dot.tmpl"))
+	bs, _ := ioutil.ReadAll(f)
+	tmpl, err := template.New(t.Name).Parse(string(bs))
+	if err != nil {
+		return err
+	}
+	err = tmpl.Execute(wr, map[string]interface{}{
+		"Table":     t,
+		"Tables":    tables,
+		"Relations": relations,
+	})
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
