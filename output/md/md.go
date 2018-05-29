@@ -34,8 +34,13 @@ func Output(s *schema.Schema, path string, force bool) error {
 	if err != nil {
 		return err
 	}
+	er := false
+	if _, err := os.Lstat(filepath.Join(fullPath, "schema.png")); err == nil {
+		er = true
+	}
 	err = tmpl.Execute(file, map[string]interface{}{
 		"Schema": s,
+		"er":     er,
 	})
 	if err != nil {
 		return err
@@ -55,8 +60,13 @@ func Output(s *schema.Schema, path string, force bool) error {
 		if err != nil {
 			return err
 		}
+		er := false
+		if _, err := os.Lstat(filepath.Join(fullPath, fmt.Sprintf("%s.png", t.Name))); err == nil {
+			er = true
+		}
 		err = tmpl.Execute(file, map[string]interface{}{
 			"Table": t,
+			"er":    er,
 		})
 		if err != nil {
 			return err
@@ -84,8 +94,16 @@ func Diff(s *schema.Schema, path string) error {
 	f, _ := Assets.Open(filepath.Join("/", "index.md.tmpl"))
 	bs, _ := ioutil.ReadAll(f)
 	tmpl, err := template.New("index").Parse(string(bs))
+	if err != nil {
+		return err
+	}
+	er := false
+	if _, err := os.Lstat(filepath.Join(fullPath, "schema.png")); err == nil {
+		er = true
+	}
 	err = tmpl.Execute(a, map[string]interface{}{
 		"Schema": s,
+		"er":     er,
 	})
 	if err != nil {
 		return err
@@ -111,8 +129,16 @@ func Diff(s *schema.Schema, path string) error {
 		f, _ := Assets.Open(filepath.Join("/", "table.md.tmpl"))
 		bs, _ := ioutil.ReadAll(f)
 		tmpl, err := template.New(t.Name).Parse(string(bs))
+		if err != nil {
+			return err
+		}
+		er := false
+		if _, err := os.Lstat(filepath.Join(fullPath, fmt.Sprintf("%s.png", t.Name))); err == nil {
+			er = true
+		}
 		err = tmpl.Execute(a, map[string]interface{}{
 			"Table": t,
+			"er":    er,
 		})
 		if err != nil {
 			return err

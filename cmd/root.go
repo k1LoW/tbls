@@ -36,9 +36,6 @@ var sort bool
 // additionalDataPath is a additional data path
 var additionalDataPath string
 
-// outputFormat is output format
-var outputFormat string
-
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "tbls",
