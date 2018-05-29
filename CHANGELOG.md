@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.5.1](https://github.com/k1LoW/tbls/compare/v0.5.0...v0.5.1) (2018-05-29)
+
+* Support Camelize table name like "CamelizeTable" [#16](https://github.com/k1LoW/tbls/pull/16) ([k1LoW](https://github.com/k1LoW))
+
 ## [v0.5.0](https://github.com/k1LoW/tbls/compare/v0.4.0...v0.5.0) (2018-05-28)
 
 * Support CHECK constraints [#14](https://github.com/k1LoW/tbls/pull/14) ([k1LoW](https://github.com/k1LoW))
