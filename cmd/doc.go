@@ -23,10 +23,17 @@ package cmd
 import (
 	"fmt"
 	"github.com/k1LoW/tbls/db"
+	"github.com/k1LoW/tbls/output/dot"
 	"github.com/k1LoW/tbls/output/md"
+	"github.com/k1LoW/tbls/schema"
 	"github.com/spf13/cobra"
 	"os"
+	"os/exec"
+	"path/filepath"
 )
+
+// noViz
+var noViz bool
 
 // docCmd represents the doc command
 var docCmd = &cobra.Command{
@@ -64,12 +71,18 @@ var docCmd = &cobra.Command{
 			}
 		}
 
-		switch outputFormat {
-		case "md":
-			err = md.Output(s, outputPath, force)
-		default:
-			err = fmt.Errorf("Error: %s", "unsupported output format")
+		if !noViz {
+			_, err = exec.Command("which", "dot").Output()
+			if err == nil {
+				err := withDot(s, outputPath, force)
+				if err != nil {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+			}
 		}
+
+		err = md.Output(s, outputPath, force)
 
 		if err != nil {
 			fmt.Println(err)
@@ -78,10 +91,71 @@ var docCmd = &cobra.Command{
 	},
 }
 
+func withDot(s *schema.Schema, outputPath string, force bool) error {
+	fullPath, err := filepath.Abs(outputPath)
+	if err != nil {
+		return err
+	}
+
+	if !force && outputPngExists(s, fullPath) {
+		return fmt.Errorf("Error: %s", "output png files already exists.")
+	}
+
+	fmt.Printf("%s\n", filepath.Join(outputPath, "schema.png"))
+	c := exec.Command("dot", "-Tpng", "-o", filepath.Join(fullPath, "schema.png"))
+	stdin, _ := c.StdinPipe()
+	err = dot.OutputSchema(stdin, s)
+	if err != nil {
+		return err
+	}
+	err = stdin.Close()
+	if err != nil {
+		return err
+	}
+	err = c.Run()
+	if err != nil {
+		return err
+	}
+	// tables
+	for _, t := range s.Tables {
+		fmt.Printf("%s\n", filepath.Join(outputPath, fmt.Sprintf("%s.png", t.Name)))
+		c := exec.Command("dot", "-Tpng", "-o", filepath.Join(fullPath, fmt.Sprintf("%s.png", t.Name)))
+		stdin, _ := c.StdinPipe()
+		err = dot.OutputTable(stdin, t)
+		if err != nil {
+			return err
+		}
+		err = stdin.Close()
+		if err != nil {
+			return err
+		}
+		err = c.Run()
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func outputPngExists(s *schema.Schema, path string) bool {
+	// schema.png
+	if _, err := os.Lstat(filepath.Join(path, "schema.png")); err == nil {
+		return true
+	}
+	// tables
+	for _, t := range s.Tables {
+		if _, err := os.Lstat(filepath.Join(path, fmt.Sprintf("%s.png", t.Name))); err == nil {
+			return true
+		}
+	}
+	return false
+}
+
 func init() {
 	rootCmd.AddCommand(docCmd)
 	docCmd.Flags().BoolVarP(&force, "force", "f", false, "force")
 	docCmd.Flags().BoolVarP(&sort, "sort", "", false, "sort")
+	docCmd.Flags().BoolVarP(&noViz, "no-viz", "", false, "don't use Graphviz 'dot' command")
 	docCmd.Flags().StringVarP(&additionalDataPath, "add", "a", "", "additional schema data path")
-	docCmd.Flags().StringVarP(&outputFormat, "output", "o", "md", "output format")
 }

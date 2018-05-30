@@ -41,6 +41,8 @@ Use "tbls [command] --help" for more information about a command.
 $ tbls doc postgres://user:pass@hostname:5432/dbname ./dbdoc
 ```
 
+If you can use Graphviz `dot` command, `tbls doc` generate ER diagram images at the same time.
+
 Sample [document](sample/postgres/) and [schema](test/pg.sql).
 
 ### Diff database schema and document
@@ -50,6 +52,8 @@ Sample [document](sample/postgres/) and [schema](test/pg.sql).
 ```console
 $ tbls diff postgres://user:pass@hostname:5432/dbname ./dbdoc
 ```
+
+**Notice:** `tbls diff` shows the difference Markdown documents only.
 
 ## Integration with CI tools
 
