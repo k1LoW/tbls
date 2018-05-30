@@ -32,6 +32,9 @@ import (
 	"path/filepath"
 )
 
+// noViz
+var noViz bool
+
 // docCmd represents the doc command
 var docCmd = &cobra.Command{
 	Use:   "doc [DSN] [DOCUMENT_PATH]",
@@ -68,12 +71,14 @@ var docCmd = &cobra.Command{
 			}
 		}
 
-		_, err = exec.Command("which", "dot").Output()
-		if err == nil {
-			err := withDot(s, outputPath, force)
-			if err != nil {
-				fmt.Println(err)
-				os.Exit(1)
+		if !noViz {
+			_, err = exec.Command("which", "dot").Output()
+			if err == nil {
+				err := withDot(s, outputPath, force)
+				if err != nil {
+					fmt.Println(err)
+					os.Exit(1)
+				}
 			}
 		}
 
@@ -151,5 +156,6 @@ func init() {
 	rootCmd.AddCommand(docCmd)
 	docCmd.Flags().BoolVarP(&force, "force", "f", false, "force")
 	docCmd.Flags().BoolVarP(&sort, "sort", "", false, "sort")
+	docCmd.Flags().BoolVarP(&noViz, "no-viz", "", false, "don't use Graphviz 'dot' command")
 	docCmd.Flags().StringVarP(&additionalDataPath, "add", "a", "", "additional schema data path")
 }
