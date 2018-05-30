@@ -14,16 +14,16 @@ var Assets = assets.NewFileSystem(map[string][]string{"/": []string{"index.md.tm
 	"/": &assets.File{
 		Path:     "/",
 		FileMode: 0x800001ed,
-		Mtime:    time.Unix(1527597737, 1527597737000000000),
+		Mtime:    time.Unix(1527684406, 1527684406000000000),
 		Data:     nil,
 	}, "/index.md.tmpl": &assets.File{
 		Path:     "/index.md.tmpl",
 		FileMode: 0x1a4,
-		Mtime:    time.Unix(1527597737, 1527597737000000000),
+		Mtime:    time.Unix(1527684406, 1527684406000000000),
 		Data:     []byte(_Assets43889384df1c6f74d764c29d91b9d5637eb46061),
 	}, "/table.md.tmpl": &assets.File{
 		Path:     "/table.md.tmpl",
 		FileMode: 0x1a4,
-		Mtime:    time.Unix(1527597735, 1527597735000000000),
+		Mtime:    time.Unix(1527684406, 1527684406000000000),
 		Data:     []byte(_Assetsac44302fb6150a621aa9d04a0350aac972bf7e18),
 	}}, "")
