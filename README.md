@@ -41,7 +41,7 @@ Use "tbls [command] --help" for more information about a command.
 $ tbls doc postgres://user:pass@hostname:5432/dbname ./dbdoc
 ```
 
-If you can use `dot` command, `tbls doc` generate ER diagram images.
+If you can use Graphviz `dot` command, `tbls doc` generate ER diagram images at the same time.
 
 Sample [document](sample/postgres/) and [schema](test/pg.sql).
 
