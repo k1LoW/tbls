@@ -1,5 +1,10 @@
 # Changelog
 
+## [v0.6.1](https://github.com/k1LoW/tbls/compare/v0.6.0...v0.6.1) (2018-05-30)
+
+* Escape tmpl value because dot file use <TABLE> [#19](https://github.com/k1LoW/tbls/pull/19) ([k1LoW](https://github.com/k1LoW))
+* Change style of additional relation edges / can set relation def [#18](https://github.com/k1LoW/tbls/pull/18) ([k1LoW](https://github.com/k1LoW))
+
 ## [v0.6.0](https://github.com/k1LoW/tbls/compare/v0.5.1...v0.6.0) (2018-05-30)
 
 * Use Graphviz `dot` to generate ER diagram .png [#17](https://github.com/k1LoW/tbls/pull/17) ([k1LoW](https://github.com/k1LoW))
