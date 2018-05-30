@@ -50,6 +50,7 @@ type Relation struct {
 	ParentTable   *Table
 	ParentColumns []*Column
 	Def           string
+	IsAdditional  bool
 }
 
 // Schema is the struct for database schema
@@ -142,7 +143,8 @@ func (s *Schema) LoadAdditionalRelations(path string) error {
 
 	for _, r := range data.Relations {
 		relation := &Relation{
-			Def: "Additional Relation",
+			Def:          "Additional Relation",
+			IsAdditional: true,
 		}
 		relation.Table, err = s.FindTableByName(r.Table)
 		if err != nil {
