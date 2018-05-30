@@ -70,9 +70,10 @@ var docCmd = &cobra.Command{
 
 		_, err = exec.Command("which", "dot").Output()
 		if err == nil {
-			err := withDot(s, outputPath)
+			err := withDot(s, outputPath, force)
 			if err != nil {
 				fmt.Println(err)
+				os.Exit(1)
 			}
 		}
 
@@ -85,12 +86,16 @@ var docCmd = &cobra.Command{
 	},
 }
 
-// withDot ...
-func withDot(s *schema.Schema, outputPath string) error {
+func withDot(s *schema.Schema, outputPath string, force bool) error {
 	fullPath, err := filepath.Abs(outputPath)
 	if err != nil {
 		return err
 	}
+
+	if !force && outputPngExists(s, fullPath) {
+		return fmt.Errorf("Error: %s", "output png files already exists.")
+	}
+
 	fmt.Printf("%s\n", filepath.Join(outputPath, "schema.png"))
 	c := exec.Command("dot", "-Tpng", "-o", filepath.Join(fullPath, "schema.png"))
 	stdin, _ := c.StdinPipe()
@@ -98,7 +103,10 @@ func withDot(s *schema.Schema, outputPath string) error {
 	if err != nil {
 		return err
 	}
-	stdin.Close()
+	err = stdin.Close()
+	if err != nil {
+		return err
+	}
 	err = c.Run()
 	if err != nil {
 		return err
@@ -112,7 +120,10 @@ func withDot(s *schema.Schema, outputPath string) error {
 		if err != nil {
 			return err
 		}
-		stdin.Close()
+		err = stdin.Close()
+		if err != nil {
+			return err
+		}
 		err = c.Run()
 		if err != nil {
 			return err
@@ -120,6 +131,20 @@ func withDot(s *schema.Schema, outputPath string) error {
 	}
 
 	return nil
+}
+
+func outputPngExists(s *schema.Schema, path string) bool {
+	// schema.png
+	if _, err := os.Lstat(filepath.Join(path, "schema.png")); err == nil {
+		return true
+	}
+	// tables
+	for _, t := range s.Tables {
+		if _, err := os.Lstat(filepath.Join(path, fmt.Sprintf("%s.png", t.Name))); err == nil {
+			return true
+		}
+	}
+	return false
 }
 
 func init() {
