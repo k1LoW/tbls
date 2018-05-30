@@ -1,5 +1,10 @@
 # Changelog
 
+## [v0.6.0](https://github.com/k1LoW/tbls/compare/v0.5.1...v0.6.0) (2018-05-30)
+
+* Use Graphviz `dot` to generate ER diagram .png [#17](https://github.com/k1LoW/tbls/pull/17) ([k1LoW](https://github.com/k1LoW))
+* `tbls dot` generate dot to STDOUT [#15](https://github.com/k1LoW/tbls/pull/15) ([k1LoW](https://github.com/k1LoW))
+
 ## [v0.5.1](https://github.com/k1LoW/tbls/compare/v0.5.0...v0.5.1) (2018-05-29)
 
 * Support Camelize table name like "CamelizeTable" [#16](https://github.com/k1LoW/tbls/pull/16) ([k1LoW](https://github.com/k1LoW))
