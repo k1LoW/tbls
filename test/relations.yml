@@ -7,7 +7,7 @@ relations:
     parentTable: users
     parentColumns:
       - id
-    def: logs to users
+    def: logs->users
   -
     table: logs
     columns:
