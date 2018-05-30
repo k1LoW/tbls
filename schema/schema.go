@@ -71,6 +71,7 @@ type AdditionalRelation struct {
 	Columns       []string `yaml:"columns"`
 	ParentTable   string   `yaml:"parentTable"`
 	ParentColumns []string `yaml:"parentColumns"`
+	Def           string   `yaml:"def"`
 }
 
 // FindTableByName find table by table name
@@ -143,8 +144,12 @@ func (s *Schema) LoadAdditionalRelations(path string) error {
 
 	for _, r := range data.Relations {
 		relation := &Relation{
-			Def:          "Additional Relation",
 			IsAdditional: true,
+		}
+		if r.Def != "" {
+			relation.Def = r.Def
+		} else {
+			relation.Def = "Additional Relation"
 		}
 		relation.Table, err = s.FindTableByName(r.Table)
 		if err != nil {
