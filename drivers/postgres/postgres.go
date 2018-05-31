@@ -69,10 +69,18 @@ AND ps.relname = $1`, tableName)
 
 		// indexes
 		indexRows, err := db.Query(`
-SELECT indexname, indexdef
-FROM pg_indexes
-WHERE schemaname != 'pg_catalog'
-AND tablename = $1`, tableName)
+SELECT
+i.relname AS indexname,
+pg_get_indexdef(i.oid) AS indexdef
+FROM ((((pg_index x
+JOIN pg_class c ON ((c.oid = x.indrelid)))
+JOIN pg_class i ON ((i.oid = x.indexrelid)))
+LEFT JOIN pg_namespace n ON ((n.oid = c.relnamespace))))
+WHERE ((c.relkind = ANY (ARRAY['r'::"char", 'm'::"char"])) AND (i.relkind = 'i'::"char"))
+AND n.nspname != 'pg_catalog'
+AND c.relname = $1
+ORDER BY x.indexrelid
+`, tableName)
 		defer indexRows.Close()
 		if err != nil {
 			return err
@@ -101,7 +109,8 @@ AND tablename = $1`, tableName)
 SELECT pc.conname AS name, pg_get_constraintdef(pc.oid) AS def, contype AS type
 FROM pg_constraint AS pc
 LEFT JOIN pg_stat_user_tables AS ps ON ps.relid = pc.conrelid
-WHERE ps.relname = $1`, tableName)
+WHERE ps.relname = $1
+ORDER BY pc.conrelid`, tableName)
 		defer constraintRows.Close()
 		if err != nil {
 			return err
@@ -165,7 +174,9 @@ AND ps.relname = $1`, tableName)
 		columnRows, err := db.Query(`
 SELECT column_name, column_default, is_nullable, data_type, udt_name, character_maximum_length
 FROM information_schema.columns
-WHERE table_name = $1`, tableName)
+WHERE table_name = $1
+ORDER BY ordinal_position
+`, tableName)
 		defer columnRows.Close()
 		if err != nil {
 			return err
