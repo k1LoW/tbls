@@ -39,8 +39,8 @@ var additionalDataPath string
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "tbls",
-	Short: "tbls is a tool for document a database, written in Go.",
-	Long:  `tbls is a tool for document a database, written in Go.`,
+	Short: "tbls is a CI-Friendly tool for document a database, written in Go.",
+	Long:  `tbls is a CI-Friendly tool for document a database, written in Go.`,
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
