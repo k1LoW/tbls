@@ -26,17 +26,17 @@ template:
 	go generate
 
 doc: build
-	./tbls doc pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -a test/relations.yml -f sample/postgres
-	./tbls doc my://root:mypass@localhost:33306/testdb -a test/relations.yml -f sample/mysql
-	./tbls doc my://root:mypass@localhost:33308/testdb -a test/relations.yml -f sample/mysql8
+	./tbls doc pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -a test/additional_data.yml -f sample/postgres
+	./tbls doc my://root:mypass@localhost:33306/testdb -a test/additional_data.yml -f sample/mysql
+	./tbls doc my://root:mypass@localhost:33308/testdb -a test/additional_data.yml -f sample/mysql8
 
 testdoc: build
-	$(eval DIFF := $(shell ./tbls diff pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -a test/relations.yml sample/postgres))
-	@test -z "$(DIFF)" || (echo "document does not match database." && ./tbls diff pg://postgres:pgpass@localhost:55432?sslmode=disable -a test/relations.yml sample/postgres && exit 1)
-	$(eval DIFF := $(shell ./tbls diff my://root:mypass@localhost:33306/testdb -a test/relations.yml sample/mysql))
-	@test -z "$(DIFF)" || (echo "document does not match database." && ./tbls diff my://root:mypass@localhost:33306/testdb -a test/relations.yml sample/mysql && exit 1)
-	$(eval DIFF := $(shell ./tbls diff my://root:mypass@localhost:33308/testdb -a test/relations.yml sample/mysql8))
-	@test -z "$(DIFF)" || (echo "document does not match database." && ./tbls diff my://root:mypass@localhost:33308/testdb -a test/relations.yml sample/mysql8 && exit 1)
+	$(eval DIFF := $(shell ./tbls diff pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -a test/additional_data.yml sample/postgres))
+	@test -z "$(DIFF)" || (echo "document does not match database." && ./tbls diff pg://postgres:pgpass@localhost:55432?sslmode=disable -a test/additional_data.yml sample/postgres && exit 1)
+	$(eval DIFF := $(shell ./tbls diff my://root:mypass@localhost:33306/testdb -a test/additional_data.yml sample/mysql))
+	@test -z "$(DIFF)" || (echo "document does not match database." && ./tbls diff my://root:mypass@localhost:33306/testdb -a test/additional_data.yml sample/mysql && exit 1)
+	$(eval DIFF := $(shell ./tbls diff my://root:mypass@localhost:33308/testdb -a test/additional_data.yml sample/mysql8))
+	@test -z "$(DIFF)" || (echo "document does not match database." && ./tbls diff my://root:mypass@localhost:33308/testdb -a test/additional_data.yml sample/mysql8 && exit 1)
 
 build:
 	go build -ldflags="$(BUILD_LDFLAGS)"

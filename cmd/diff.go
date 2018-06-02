@@ -49,7 +49,7 @@ var diffCmd = &cobra.Command{
 		}
 
 		if additionalDataPath != "" {
-			err = s.LoadAdditionalRelations(additionalDataPath)
+			err = s.LoadAdditionalData(additionalDataPath)
 			if err != nil {
 				fmt.Println(err)
 				os.Exit(1)
