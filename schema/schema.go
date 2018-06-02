@@ -144,17 +144,7 @@ func (s *Schema) LoadAdditionalData(path string) error {
 		return err
 	}
 
-	var data AdditionalData
-	err = yaml.Unmarshal(buf, &data)
-	if err != nil {
-		return err
-	}
-
-	err = loadAdditionalRelations(s, data.Relations)
-	if err != nil {
-		return err
-	}
-	err = loadAdditionalComments(s, data.Comments)
+	err = s.AddAdditionalData(buf)
 	if err != nil {
 		return err
 	}
@@ -162,7 +152,27 @@ func (s *Schema) LoadAdditionalData(path string) error {
 	return nil
 }
 
-func loadAdditionalRelations(s *Schema, relations []AdditionalRelation) error {
+// AddAdditionalData add additional data (relations, comments) from yaml buffer
+func (s *Schema) AddAdditionalData(buf []byte) error {
+	var data AdditionalData
+	err := yaml.Unmarshal(buf, &data)
+	if err != nil {
+		return err
+	}
+
+	err = addAdditionalRelations(s, data.Relations)
+	if err != nil {
+		return err
+	}
+	err = addAdditionalComments(s, data.Comments)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func addAdditionalRelations(s *Schema, relations []AdditionalRelation) error {
 	for _, r := range relations {
 		relation := &Relation{
 			IsAdditional: true,
@@ -203,7 +213,7 @@ func loadAdditionalRelations(s *Schema, relations []AdditionalRelation) error {
 	return nil
 }
 
-func loadAdditionalComments(s *Schema, comments []AdditionalComment) error {
+func addAdditionalComments(s *Schema, comments []AdditionalComment) error {
 	for _, c := range comments {
 		table, err := s.FindTableByName(c.Table)
 		if err != nil {
