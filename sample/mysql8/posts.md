@@ -11,7 +11,7 @@ Posts table
 | id | bigint(20) |  | false | [comments](comments.md) [logs](logs.md)  |  |  |
 | user_id | int(11) |  | false |  | [users](users.md)  |  |
 | title | varchar(255) |  | false |  |  |  |
-| body | text |  | false |  |  |  |
+| body | text |  | false |  |  | post body |
 | post_type | enum('public','private','draft') |  | false |  |  | public/private/draft |
 | created | datetime |  | false |  |  |  |
 | updated | datetime |  | true |  |  |  |
