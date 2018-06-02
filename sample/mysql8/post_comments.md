@@ -2,19 +2,19 @@
 
 ## Description
 
-VIEW
+post and comments View table
 
 ## Columns
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | bigint(20) | 0 | true |  |  |  |
-| title | varchar(255) |  | false |  |  |  |
-| post_user | varchar(50) |  | true |  |  |  |
+| id | bigint(20) | 0 | true |  |  | comments.id |
+| title | varchar(255) |  | false |  |  | posts.title |
+| post_user | varchar(50) |  | true |  |  | posts.users.username |
 | comment | text |  | true |  |  |  |
-| comment_user | varchar(50) |  | true |  |  |  |
-| created | datetime |  | true |  |  |  |
-| updated | datetime |  | true |  |  |  |
+| comment_user | varchar(50) |  | true |  |  | comments.users.username |
+| created | datetime |  | true |  |  | comments.created |
+| updated | datetime |  | true |  |  | comments.updated |
 
 ## Constraints
 

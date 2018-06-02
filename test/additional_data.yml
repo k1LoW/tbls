@@ -29,3 +29,21 @@ relations:
     parentTable: comment_stars
     parentColumns:
       - id
+comments:
+  -
+    table: posts
+    columnComments:
+      body: post body
+  -
+    table: logs
+    tableComment: audit log table
+  -
+    table: post_comments
+    tableComment: post and comments View table
+    columnComments:
+      id: comments.id
+      title: posts.title
+      post_user: posts.users.username
+      comment_user: comments.users.username
+      created: comments.created
+      updated: comments.updated

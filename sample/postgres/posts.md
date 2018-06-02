@@ -11,7 +11,7 @@ Posts table
 | id | bigint | nextval('posts_id_seq'::regclass) | false | [comments](comments.md) [logs](logs.md)  |  |  |
 | user_id | integer |  | false |  | [users](users.md)  |  |
 | title | varchar(255) |  | false |  |  |  |
-| body | text |  | false |  |  |  |
+| body | text |  | false |  |  | post body |
 | post_type | post_types |  | false |  |  | public/private/draft |
 | labels | array |  | true |  |  |  |
 | created | timestamp without time zone |  | false |  |  |  |
