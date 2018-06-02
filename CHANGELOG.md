@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.7.0](https://github.com/k1LoW/tbls/compare/v0.6.2...v0.7.0) (2018-06-02)
+
+* `--add` option support additional comments [#21](https://github.com/k1LoW/tbls/pull/21) ([k1LoW](https://github.com/k1LoW))
+
 ## [v0.6.2](https://github.com/k1LoW/tbls/compare/v0.6.1...v0.6.2) (2018-05-31)
 
 * Add `ORDER BY` to sort columns, constraints [#20](https://github.com/k1LoW/tbls/pull/20) ([k1LoW](https://github.com/k1LoW))
