@@ -41,6 +41,7 @@ type Table struct {
 	Columns     []*Column
 	Indexes     []*Index
 	Constraints []*Constraint
+	Def         string
 }
 
 // Relation is the struct for table relation

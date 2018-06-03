@@ -42,6 +42,27 @@ SELECT table_name, table_type, table_comment FROM information_schema.tables WHER
 			Comment: tableComment,
 		}
 
+		// view definition
+		if tableType == "VIEW" {
+			viewDefRows, err := db.Query(`
+SELECT view_definition FROM information_schema.views
+WHERE table_schema = ?
+AND table_name = ?;
+		`, s.Name, tableName)
+			defer viewDefRows.Close()
+			if err != nil {
+				return err
+			}
+			for viewDefRows.Next() {
+				var tableDef string
+				err := viewDefRows.Scan(&tableDef)
+				if err != nil {
+					return err
+				}
+				table.Def = tableDef
+			}
+		}
+
 		// indexes
 		indexRows, err := db.Query(`
 SELECT
