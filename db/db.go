@@ -26,6 +26,7 @@ func Analyze(urlstr string) (*schema.Schema, error) {
 	s.Name = splitted[1]
 
 	db, err := dburl.Open(urlstr)
+	defer db.Close()
 	if err != nil {
 		return s, err
 	}
