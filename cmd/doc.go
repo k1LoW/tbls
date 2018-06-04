@@ -30,6 +30,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"io/ioutil"
 )
 
 // noViz
@@ -102,37 +103,48 @@ func withDot(s *schema.Schema, outputPath string, force bool) error {
 	}
 
 	fmt.Printf("%s\n", filepath.Join(outputPath, "schema.png"))
-	c := exec.Command("dot", "-Tpng", "-o", filepath.Join(fullPath, "schema.png"))
-	stdin, _ := c.StdinPipe()
-	err = dot.OutputSchema(stdin, s)
+	tmpfile, _ := ioutil.TempFile("","tblstmp")
+	c := exec.Command("dot", "-Tpng", "-o", filepath.Join(fullPath, "schema.png"),tmpfile.Name())
+
+	err = dot.OutputSchema(tmpfile, s)
 	if err != nil {
+		tmpfile.Close()
+		os.Remove(tmpfile.Name())
 		return err
 	}
-	err = stdin.Close()
+	err = tmpfile.Close()
 	if err != nil {
+		os.Remove(tmpfile.Name())
 		return err
 	}
 	err = c.Run()
 	if err != nil {
+		os.Remove(tmpfile.Name())
 		return err
 	}
+	os.Remove(tmpfile.Name())
 	// tables
 	for _, t := range s.Tables {
 		fmt.Printf("%s\n", filepath.Join(outputPath, fmt.Sprintf("%s.png", t.Name)))
-		c := exec.Command("dot", "-Tpng", "-o", filepath.Join(fullPath, fmt.Sprintf("%s.png", t.Name)))
-		stdin, _ := c.StdinPipe()
-		err = dot.OutputTable(stdin, t)
+		tmpfile, _ := ioutil.TempFile("","tblstmp");
+		c := exec.Command("dot", "-Tpng", "-o", filepath.Join(fullPath, fmt.Sprintf("%s.png", t.Name)),tmpfile.Name())
+		err = dot.OutputSchema(tmpfile, s)
 		if err != nil {
+			tmpfile.Close()
+		        os.Remove(tmpfile.Name())
 			return err
 		}
-		err = stdin.Close()
+		err = tmpfile.Close()
 		if err != nil {
+		        os.Remove(tmpfile.Name())
 			return err
 		}
 		err = c.Run()
 		if err != nil {
+		        os.Remove(tmpfile.Name())
 			return err
 		}
+	        os.Remove(tmpfile.Name())
 	}
 
 	return nil
