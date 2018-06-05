@@ -42,6 +42,26 @@ SELECT table_name, table_type, table_comment FROM information_schema.tables WHER
 			Comment: tableComment,
 		}
 
+		// table definition
+		if tableType == "BASE TABLE" {
+			tableDefRows, err := db.Query(fmt.Sprintf("SHOW CREATE TABLE %s", tableName))
+			defer tableDefRows.Close()
+			if err != nil {
+				return err
+			}
+			for tableDefRows.Next() {
+				var (
+					tableName string
+					tableDef  string
+				)
+				err := tableDefRows.Scan(&tableName, &tableDef)
+				if err != nil {
+					return err
+				}
+				table.Def = tableDef
+			}
+		}
+
 		// view definition
 		if tableType == "VIEW" {
 			viewDefRows, err := db.Query(`
@@ -59,7 +79,7 @@ AND table_name = ?;
 				if err != nil {
 					return err
 				}
-				table.Def = tableDef
+				table.Def = fmt.Sprintf("CREATE VIEW %s AS (%s)", tableName, tableDef)
 			}
 		}
 

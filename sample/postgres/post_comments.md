@@ -7,6 +7,7 @@ post and comments View table
 <summary><strong>Table Definition</strong></summary>
 
 ```sql
+CREATE VIEW post_comments AS (
  SELECT c.id,
     p.title,
     u2.username AS post_user,
@@ -17,7 +18,8 @@ post and comments View table
    FROM (((posts p
      LEFT JOIN comments c ON ((p.id = c.post_id)))
      LEFT JOIN users u ON ((u.id = p.user_id)))
-     LEFT JOIN users u2 ON ((u2.id = c.user_id)));
+     LEFT JOIN users u2 ON ((u2.id = c.user_id)))
+)
 ```
 
 </details>
