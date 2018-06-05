@@ -59,7 +59,7 @@ $ tbls diff postgres://user:pass@hostname:5432/dbname ./dbdoc
 1. Commit document using `tbls doc`.
 2. Check document updates using `tbls diff`
 
-Set following code to [`your-ci-config.yml`](.travis.yml).
+Set following code to [`your-ci-config.yml`](https://github.com/k1LoW/tbls/blob/ffad9d7463bb22baa236c7b673fd679f1850f37d/.travis.yml#L19).
 
 ```sh
 DIFF=`tbls diff postgres://user:pass@localhost:5432/testdb?sslmode=disable ./dbdoc` && if [ ! -z "$DIFF" ]; then echo "document does not match database." >&2 ; echo tbls diff postgres://user:pass@localhost:5432/testdb?sslmode=disable ./dbdoc; exit 1; fi
