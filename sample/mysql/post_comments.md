@@ -27,12 +27,12 @@ CREATE VIEW post_comments AS ((select `c`.`id` AS `id`,`p`.`title` AS `title`,`u
 
 ## Constraints
 
-| Name | Type | Def |
+| Name | Type | Definition |
 | ---- | ---- | --- |
 
 ## Indexes
 
-| Name | Def |
+| Name | Definition |
 | ---- | --- |
 
 ## Relations
