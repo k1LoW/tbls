@@ -84,7 +84,7 @@ AND table_name = $2;
 				if err != nil {
 					return err
 				}
-				table.Def = tableDef
+				table.Def = fmt.Sprintf("CREATE VIEW %s AS (\n%s\n)", tableName, strings.TrimRight(tableDef, ";"))
 			}
 		}
 
