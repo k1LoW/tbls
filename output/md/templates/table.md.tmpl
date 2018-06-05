@@ -24,7 +24,7 @@
 
 ## Constraints
 
-| Name | Type | Def |
+| Name | Type | Definition |
 | ---- | ---- | --- |
 {{- range $i, $c := .Table.Constraints }}
 | {{ $c.Name }} | {{ $c.Type }} | {{ $c.Def }} |
@@ -32,7 +32,7 @@
 
 ## Indexes
 
-| Name | Def |
+| Name | Definition |
 | ---- | --- |
 {{- range $i, $idx := .Table.Indexes }}
 | {{ $idx.Name }} | {{ $idx.Def }} |
