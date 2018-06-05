@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.8.2](https://github.com/k1LoW/tbls/compare/v0.8.1...v0.8.2) (2018-06-06)
+
+* Fix output dot bug [#25](https://github.com/k1LoW/tbls/pull/25) ([k1LoW](https://github.com/k1LoW))
+
 ## [v0.8.1](https://github.com/k1LoW/tbls/compare/v0.8.0...v0.8.1) (2018-06-06)
 
 * Fix table template [#24](https://github.com/k1LoW/tbls/pull/24) ([k1LoW](https://github.com/k1LoW))
