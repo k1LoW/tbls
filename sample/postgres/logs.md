@@ -18,12 +18,12 @@ audit log table
 
 ## Constraints
 
-| Name | Type | Def |
+| Name | Type | Definition |
 | ---- | ---- | --- |
 
 ## Indexes
 
-| Name | Def |
+| Name | Definition |
 | ---- | --- |
 
 ## Relations

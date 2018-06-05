@@ -26,13 +26,13 @@ CREATE TABLE `CamelizeTable` (
 
 ## Constraints
 
-| Name | Type | Def |
+| Name | Type | Definition |
 | ---- | ---- | --- |
 | PRIMARY | PRIMARY KEY | PRIMARY KEY (id) |
 
 ## Indexes
 
-| Name | Def |
+| Name | Definition |
 | ---- | --- |
 | PRIMARY | PRIMARY KEY (id) USING BTREE |
 

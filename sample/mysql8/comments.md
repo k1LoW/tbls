@@ -39,7 +39,7 @@ CREATE TABLE `comments` (
 
 ## Constraints
 
-| Name | Type | Def |
+| Name | Type | Definition |
 | ---- | ---- | --- |
 | comments_post_id_fk | FOREIGN KEY | FOREIGN KEY (post_id) REFERENCES posts (id) |
 | comments_user_id_fk | FOREIGN KEY | FOREIGN KEY (user_id) REFERENCES users (id) |
@@ -48,7 +48,7 @@ CREATE TABLE `comments` (
 
 ## Indexes
 
-| Name | Def |
+| Name | Definition |
 | ---- | --- |
 | comments_post_id_user_id_idx | KEY comments_post_id_user_id_idx (post_id, user_id) USING BTREE |
 | comments_user_id_fk | KEY comments_user_id_fk (user_id) USING BTREE |
