@@ -39,7 +39,7 @@ CREATE TABLE `posts` (
 
 ## Constraints
 
-| Name | Type | Def |
+| Name | Type | Definition |
 | ---- | ---- | --- |
 | posts_user_id_fk | FOREIGN KEY | FOREIGN KEY (user_id) REFERENCES users (id) |
 | PRIMARY | PRIMARY KEY | PRIMARY KEY (id) |
@@ -47,7 +47,7 @@ CREATE TABLE `posts` (
 
 ## Indexes
 
-| Name | Def |
+| Name | Definition |
 | ---- | --- |
 | posts_user_id_idx | KEY posts_user_id_idx (id) USING BTREE |
 | PRIMARY | PRIMARY KEY (id) USING BTREE |

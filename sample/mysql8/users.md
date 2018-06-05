@@ -36,7 +36,7 @@ CREATE TABLE `users` (
 
 ## Constraints
 
-| Name | Type | Def |
+| Name | Type | Definition |
 | ---- | ---- | --- |
 | email | UNIQUE | UNIQUE KEY email (email) |
 | PRIMARY | PRIMARY KEY | PRIMARY KEY (id) |
@@ -44,7 +44,7 @@ CREATE TABLE `users` (
 
 ## Indexes
 
-| Name | Def |
+| Name | Definition |
 | ---- | --- |
 | PRIMARY | PRIMARY KEY (id) USING BTREE |
 | email | UNIQUE KEY email (email) USING BTREE |

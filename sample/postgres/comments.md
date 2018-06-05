@@ -17,7 +17,7 @@
 
 ## Constraints
 
-| Name | Type | Def |
+| Name | Type | Definition |
 | ---- | ---- | --- |
 | comments_id_pk | PRIMARY KEY | PRIMARY KEY (id) |
 | comments_post_id_user_id_key | UNIQUE | UNIQUE (post_id, user_id) |
@@ -26,7 +26,7 @@
 
 ## Indexes
 
-| Name | Def |
+| Name | Definition |
 | ---- | --- |
 | comments_id_pk | CREATE UNIQUE INDEX comments_id_pk ON public.comments USING btree (id) |
 | comments_post_id_user_id_key | CREATE UNIQUE INDEX comments_post_id_user_id_key ON public.comments USING btree (post_id, user_id) |
