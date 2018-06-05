@@ -3,6 +3,25 @@
 ## Description
 
 Users table
+<details>
+<summary><strong>Table Definition</strong></summary>
+
+```sql
+CREATE TABLE `users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(50) NOT NULL,
+  `password` varchar(50) NOT NULL,
+  `email` varchar(355) NOT NULL COMMENT 'ex. user@example.com',
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username` (`username`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Users table'
+```
+
+</details>
+
 
 ## Columns
 
