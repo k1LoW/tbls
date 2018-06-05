@@ -4,7 +4,7 @@
 
 post and comments View table
 <details>
-<summary>Definition</summary>
+<summary>**Definition**</summary>
 
 ```sql
  SELECT c.id,
