@@ -67,6 +67,27 @@ AND ps.relname = $1`, tableName)
 			table.Comment = tableComment
 		}
 
+		// view definition
+		if tableType == "VIEW" {
+			viewDefRows, err := db.Query(`
+SELECT view_definition FROM information_schema.views
+WHERE table_catalog = $1
+AND table_name = $2;
+		`, s.Name, tableName)
+			defer viewDefRows.Close()
+			if err != nil {
+				return err
+			}
+			for viewDefRows.Next() {
+				var tableDef string
+				err := viewDefRows.Scan(&tableDef)
+				if err != nil {
+					return err
+				}
+				table.Def = fmt.Sprintf("CREATE VIEW %s AS (\n%s\n)", tableName, strings.TrimRight(tableDef, ";"))
+			}
+		}
+
 		// indexes
 		indexRows, err := db.Query(`
 SELECT

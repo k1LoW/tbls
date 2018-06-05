@@ -2,7 +2,17 @@
 
 ## Description
 
-{{ .Table.Comment }}
+{{ .Table.Comment -}}
+{{ if .Table.Def }}
+<details>
+<summary><strong>Table Definition</strong></summary>
+
+```sql
+{{ .Table.Def }}
+```
+
+</details>
+{{ end }}
 
 ## Columns
 
