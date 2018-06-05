@@ -17,7 +17,7 @@ Users table
 
 ## Constraints
 
-| Name | Type | Def |
+| Name | Type | Definition |
 | ---- | ---- | --- |
 | users_username_check | CHECK | CHECK ((char_length((username)::text) > 4)) |
 | users_pkey | PRIMARY KEY | PRIMARY KEY (id) |
@@ -26,7 +26,7 @@ Users table
 
 ## Indexes
 
-| Name | Def |
+| Name | Definition |
 | ---- | --- |
 | users_pkey | CREATE UNIQUE INDEX users_pkey ON public.users USING btree (id) |
 | users_username_key | CREATE UNIQUE INDEX users_username_key ON public.users USING btree (username) |

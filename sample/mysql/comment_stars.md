@@ -39,7 +39,7 @@ CREATE TABLE `comment_stars` (
 
 ## Constraints
 
-| Name | Type | Def |
+| Name | Type | Definition |
 | ---- | ---- | --- |
 | comment_stars_user_id_fk | FOREIGN KEY | FOREIGN KEY (comment_user_id) REFERENCES users (id) |
 | comment_stars_user_id_post_id_fk | FOREIGN KEY | FOREIGN KEY (comment_post_id, comment_user_id) REFERENCES comments (post_id, user_id) |
@@ -48,7 +48,7 @@ CREATE TABLE `comment_stars` (
 
 ## Indexes
 
-| Name | Def |
+| Name | Definition |
 | ---- | --- |
 | comment_stars_user_id_fk | KEY comment_stars_user_id_fk (comment_user_id) USING BTREE |
 | comment_stars_user_id_post_id_fk | KEY comment_stars_user_id_post_id_fk (comment_post_id, comment_user_id) USING BTREE |
