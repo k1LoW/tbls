@@ -3,6 +3,28 @@
 ## Description
 
 
+<details>
+<summary><strong>Table Definition</strong></summary>
+
+```sql
+CREATE TABLE `comments` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `post_id` bigint(20) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `comment` text NOT NULL,
+  `created` datetime NOT NULL,
+  `updated` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `post_id` (`post_id`,`user_id`),
+  KEY `comments_user_id_fk` (`user_id`),
+  KEY `comments_post_id_user_id_idx` (`post_id`,`user_id`),
+  CONSTRAINT `comments_post_id_fk` FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`),
+  CONSTRAINT `comments_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+```
+
+</details>
+
 
 ## Columns
 
