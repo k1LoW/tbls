@@ -3,6 +3,25 @@
 ## Description
 
 post and comments View table
+<details>
+<summary>Definition</summary>
+
+```sql
+ SELECT c.id,
+    p.title,
+    u2.username AS post_user,
+    c.comment,
+    u2.username AS comment_user,
+    c.created,
+    c.updated
+   FROM (((posts p
+     LEFT JOIN comments c ON ((p.id = c.post_id)))
+     LEFT JOIN users u ON ((u.id = p.user_id)))
+     LEFT JOIN users u2 ON ((u2.id = c.user_id)));
+```
+
+</details>
+
 
 ## Columns
 
