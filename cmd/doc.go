@@ -129,7 +129,7 @@ func withDot(s *schema.Schema, outputPath string, force bool) error {
 		fmt.Printf("%s\n", filepath.Join(outputPath, fmt.Sprintf("%s.png", t.Name)))
 		tmpfile, _ := ioutil.TempFile("", "tblstmp")
 		c := exec.Command("dot", "-Tpng", "-o", filepath.Join(fullPath, fmt.Sprintf("%s.png", t.Name)), tmpfile.Name())
-		err = dot.OutputSchema(tmpfile, s)
+		err = dot.OutputTable(tmpfile, t)
 		if err != nil {
 			tmpfile.Close()
 			os.Remove(tmpfile.Name())
