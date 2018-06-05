@@ -1,5 +1,10 @@
 # Changelog
 
+## [v0.8.0](https://github.com/k1LoW/tbls/compare/v0.7.0...v0.8.0) (2018-06-05)
+
+* Add schema.Table.Def for show table/view definition [#22](https://github.com/k1LoW/tbls/pull/22) ([k1LoW](https://github.com/k1LoW))
+* call dot command with temporary file , graph name in dot file must be quoted [#23](https://github.com/k1LoW/tbls/pull/23) ([kenichiro-kimura](https://github.com/kenichiro-kimura))
+
 ## [v0.7.0](https://github.com/k1LoW/tbls/compare/v0.6.2...v0.7.0) (2018-06-02)
 
 * `--add` option support additional comments [#21](https://github.com/k1LoW/tbls/pull/21) ([k1LoW](https://github.com/k1LoW))
