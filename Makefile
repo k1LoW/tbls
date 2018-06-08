@@ -38,7 +38,7 @@ testdoc: build
 	$(eval DIFF := $(shell ./tbls diff my://root:mypass@localhost:33308/testdb -a test/additional_data.yml sample/mysql8))
 	@test -z "$(DIFF)" || (echo "document does not match database." && ./tbls diff my://root:mypass@localhost:33308/testdb -a test/additional_data.yml sample/mysql8 && exit 1)
 
-build:
+build: template
 	go build -ldflags="$(BUILD_LDFLAGS)"
 
 deps:
