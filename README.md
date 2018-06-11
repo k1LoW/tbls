@@ -92,6 +92,13 @@ $ tbls diff mysql://user:pass@hostname:3306/dbname --add path/to/additional_data
 $ go get github.com/k1LoW/tbls
 ```
 
+or
+
+```console
+$ brew tap k1LoW/tbls
+$ brew install tbls
+```
+
 ## Database Support
 
 - PostgreSQL
