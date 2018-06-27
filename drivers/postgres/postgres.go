@@ -3,9 +3,10 @@ package postgres
 import (
 	"database/sql"
 	"fmt"
-	"github.com/k1LoW/tbls/schema"
 	"regexp"
 	"strings"
+
+	"github.com/k1LoW/tbls/schema"
 )
 
 var reFK = regexp.MustCompile(`FOREIGN KEY \((.+)\) REFERENCES ([^\s]+)\s?\((.+)\)`)
@@ -18,10 +19,13 @@ func (p *Postgres) Analyze(db *sql.DB, s *schema.Schema) error {
 
 	// tables
 	tableRows, err := db.Query(`
-SELECT CONCAT(table_schema, '."', table_name, '"')::regclass::oid AS oid, table_name, table_type
+SELECT DISTINCT cls.oid AS oid, cls.relname AS table_name, tbl.table_type AS table_type
+FROM pg_catalog.pg_class cls
+INNER JOIN pg_namespace ns ON cls.relnamespace = ns.oid
+INNER JOIN (SELECT table_name, table_type
 FROM information_schema.tables
 WHERE table_schema != 'pg_catalog' AND table_schema != 'information_schema'
-AND table_catalog = $1
+AND table_catalog = $1) tbl ON pg_class.relname = tbl.table_name
 ORDER BY oid`, s.Name)
 	defer tableRows.Close()
 	if err != nil {
