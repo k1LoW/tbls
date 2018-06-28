@@ -25,7 +25,7 @@ INNER JOIN pg_namespace ns ON cls.relnamespace = ns.oid
 INNER JOIN (SELECT table_name, table_type
 FROM information_schema.tables
 WHERE table_schema != 'pg_catalog' AND table_schema != 'information_schema'
-AND table_catalog = $1) tbl ON pg_class.relname = tbl.table_name
+AND table_catalog = $1) tbl ON cls.relname = tbl.table_name
 ORDER BY oid`, s.Name)
 	defer tableRows.Close()
 	if err != nil {
