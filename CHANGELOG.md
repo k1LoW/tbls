@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.9.0](https://github.com/k1LoW/tbls/compare/v0.8.2...v0.9.0) (2018-06-29)
+
+* Work with Amazon Redshift [#29](https://github.com/k1LoW/tbls/pull/29) ([watarukura](https://github.com/watarukura))
+
 ## [v0.8.2](https://github.com/k1LoW/tbls/compare/v0.8.1...v0.8.2) (2018-06-06)
 
 * Fix output dot bug [#25](https://github.com/k1LoW/tbls/pull/25) ([k1LoW](https://github.com/k1LoW))
