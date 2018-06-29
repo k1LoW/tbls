@@ -3,10 +3,11 @@ package schema
 import (
 	"database/sql"
 	"fmt"
-	yaml "gopkg.in/yaml.v2"
 	"io/ioutil"
 	"path/filepath"
 	"sort"
+
+	yaml "gopkg.in/yaml.v2"
 )
 
 // Index is the struct for database index
