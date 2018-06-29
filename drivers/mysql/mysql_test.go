@@ -2,11 +2,12 @@ package mysql
 
 import (
 	"database/sql"
+	"os"
+	"testing"
+
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/xo/dburl"
-	"os"
-	"testing"
 )
 
 var s *schema.Schema

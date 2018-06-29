@@ -3,11 +3,12 @@ package db
 import (
 	"database/sql"
 	"fmt"
+	"strings"
+
 	"github.com/k1LoW/tbls/drivers/mysql"
 	"github.com/k1LoW/tbls/drivers/postgres"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/xo/dburl"
-	"strings"
 )
 
 // Driver is the common interface for database driver

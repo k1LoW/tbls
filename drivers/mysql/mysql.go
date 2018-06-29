@@ -3,9 +3,10 @@ package mysql
 import (
 	"database/sql"
 	"fmt"
-	"github.com/k1LoW/tbls/schema"
 	"regexp"
 	"strings"
+
+	"github.com/k1LoW/tbls/schema"
 )
 
 var reFK = regexp.MustCompile(`FOREIGN KEY \((.+)\) REFERENCES ([^\s]+)\s?\((.+)\)`)
