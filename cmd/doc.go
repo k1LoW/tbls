@@ -22,15 +22,16 @@ package cmd
 
 import (
 	"fmt"
+	"io/ioutil"
+	"os"
+	"os/exec"
+	"path/filepath"
+
 	"github.com/k1LoW/tbls/db"
 	"github.com/k1LoW/tbls/output/dot"
 	"github.com/k1LoW/tbls/output/md"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/spf13/cobra"
-	"io/ioutil"
-	"os"
-	"os/exec"
-	"path/filepath"
 )
 
 // noViz
