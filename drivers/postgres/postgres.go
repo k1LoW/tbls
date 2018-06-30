@@ -10,6 +10,7 @@ import (
 )
 
 var reFK = regexp.MustCompile(`FOREIGN KEY \((.+)\) REFERENCES ([^\s]+)\s?\((.+)\)`)
+var defaultSchemaName = "public"
 
 // Postgres struct
 type Postgres struct{}
@@ -19,10 +20,10 @@ func (p *Postgres) Analyze(db *sql.DB, s *schema.Schema) error {
 
 	// tables
 	tableRows, err := db.Query(`
-SELECT DISTINCT cls.oid AS oid, cls.relname AS table_name, tbl.table_type AS table_type
+SELECT DISTINCT cls.oid AS oid, cls.relname AS table_name, tbl.table_type AS table_type, tbl.table_schema AS table_schema
 FROM pg_catalog.pg_class cls
 INNER JOIN pg_namespace ns ON cls.relnamespace = ns.oid
-INNER JOIN (SELECT table_name, table_type
+INNER JOIN (SELECT table_name, table_type, table_schema
 FROM information_schema.tables
 WHERE table_schema != 'pg_catalog' AND table_schema != 'information_schema'
 AND table_catalog = $1) tbl ON cls.relname = tbl.table_name
@@ -37,16 +38,23 @@ ORDER BY oid`, s.Name)
 	tables := []*schema.Table{}
 	for tableRows.Next() {
 		var (
-			tableOid  string
-			tableName string
-			tableType string
+			tableOid    string
+			tableName   string
+			tableType   string
+			tableSchema string
 		)
-		err := tableRows.Scan(&tableOid, &tableName, &tableType)
+		err := tableRows.Scan(&tableOid, &tableName, &tableType, &tableSchema)
 		if err != nil {
 			return err
 		}
+
+		name := tableName
+		if tableSchema != defaultSchemaName {
+			name = fmt.Sprintf("%s.%s", tableSchema, tableName)
+		}
+
 		table := &schema.Table{
-			Name: tableName,
+			Name: name,
 			Type: tableType,
 		}
 
@@ -56,7 +64,8 @@ SELECT pd.description as comment
 FROM pg_stat_user_tables AS ps, pg_description AS pd
 WHERE ps.relid=pd.objoid
 AND pd.objsubid=0
-AND ps.relname = $1`, tableName)
+AND ps.relname = $1
+AND ps.schemaname = $2`, tableName, tableSchema)
 		defer tableCommentRows.Close()
 		if err != nil {
 			return err
@@ -76,8 +85,9 @@ AND ps.relname = $1`, tableName)
 			viewDefRows, err := db.Query(`
 SELECT view_definition FROM information_schema.views
 WHERE table_catalog = $1
-AND table_name = $2;
-		`, s.Name, tableName)
+AND table_name = $2
+AND table_schema = $3;
+		`, s.Name, tableName, tableSchema)
 			defer viewDefRows.Close()
 			if err != nil {
 				return err
@@ -102,10 +112,10 @@ JOIN pg_class c ON ((c.oid = x.indrelid)))
 JOIN pg_class i ON ((i.oid = x.indexrelid)))
 LEFT JOIN pg_namespace n ON ((n.oid = c.relnamespace))))
 WHERE ((c.relkind = ANY (ARRAY['r'::"char", 'm'::"char"])) AND (i.relkind = 'i'::"char"))
-AND n.nspname != 'pg_catalog'
 AND c.relname = $1
+AND n.nspname = $2
 ORDER BY x.indexrelid
-`, tableName)
+`, tableName, tableSchema)
 		defer indexRows.Close()
 		if err != nil {
 			return err
@@ -135,7 +145,8 @@ SELECT pc.conname AS name, pg_get_constraintdef(pc.oid) AS def, contype AS type
 FROM pg_constraint AS pc
 LEFT JOIN pg_stat_user_tables AS ps ON ps.relid = pc.conrelid
 WHERE ps.relname = $1
-ORDER BY pc.conrelid`, tableName)
+AND ps.schemaname = $2
+ORDER BY pc.conrelid`, tableName, tableSchema)
 		defer constraintRows.Close()
 		if err != nil {
 			return err
@@ -176,7 +187,8 @@ WHERE ps.relid=pd.objoid
 AND pd.objsubid != 0
 AND pd.objoid=pa.attrelid
 AND pd.objsubid=pa.attnum
-AND ps.relname = $1`, tableName)
+AND ps.relname = $1
+AND ps.schemaname = $2`, tableName, tableSchema)
 		defer columnCommentRows.Close()
 		if err != nil {
 			return err
@@ -200,8 +212,9 @@ AND ps.relname = $1`, tableName)
 SELECT column_name, column_default, is_nullable, data_type, udt_name, character_maximum_length
 FROM information_schema.columns
 WHERE table_name = $1
+AND table_schema = $2
 ORDER BY ordinal_position
-`, tableName)
+`, tableName, tableSchema)
 		defer columnRows.Close()
 		if err != nil {
 			return err

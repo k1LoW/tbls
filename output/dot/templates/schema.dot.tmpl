@@ -6,7 +6,7 @@ digraph "{{ .Schema.Name }}" {
 
   // Tables
   {{- range $i, $t := .Schema.Tables }}
-  {{ $t.Name }} [shape=none, label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="6">
+  "{{ $t.Name }}" [shape=none, label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="6">
                  <tr><td bgcolor="#EFEFEF"><font face="Arial Bold" point-size="18">{{ $t.Name | html }}</font> <font color="#666666">[{{ $t.Type | html }}]</font></td></tr>
                  {{- range $ii, $c := $t.Columns }}
                  <tr><td port="{{ $c.Name | html }}" align="left">{{ $c.Name | html }} <font color="#666666">[{{ $c.Type | html }}]</font></td></tr>
@@ -16,6 +16,6 @@ digraph "{{ .Schema.Name }}" {
 
   // Relations
   {{- range $j, $r := .Schema.Relations }}
-  {{ $r.Table.Name }}:{{ $c := index $r.Columns 0 }}{{ $c.Name }} -> {{ $r.ParentTable.Name }}:{{ $pc := index $r.ParentColumns 0 }}{{ $pc.Name }} [dir=back, arrowtail=crow, {{ if $r.IsAdditional }}style="dashed",{{ end }} taillabel=<<table cellpadding="5" border="0" cellborder="0"><tr><td>{{ $r.Def | html }}</td></tr></table>>];
+  "{{ $r.Table.Name }}":{{ $c := index $r.Columns 0 }}{{ $c.Name }} -> "{{ $r.ParentTable.Name }}":{{ $pc := index $r.ParentColumns 0 }}{{ $pc.Name }} [dir=back, arrowtail=crow, {{ if $r.IsAdditional }}style="dashed",{{ end }} taillabel=<<table cellpadding="5" border="0" cellborder="0"><tr><td>{{ $r.Def | html }}</td></tr></table>>];
   {{- end }}
 }
