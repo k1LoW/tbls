@@ -1,11 +1,12 @@
 package dot
 
 import (
-	"github.com/k1LoW/tbls/schema"
 	"io"
 	"io/ioutil"
 	"path/filepath"
 	"text/template"
+
+	"github.com/k1LoW/tbls/schema"
 )
 
 // OutputSchema generate dot format for full relation.
