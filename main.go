@@ -22,8 +22,9 @@ package main
 
 import (
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/k1LoW/tbls/cmd"
 	_ "github.com/lib/pq"
+
+	"github.com/k1LoW/tbls/cmd"
 )
 
 //go:generate go-assets-builder -p md -s="/output/md/templates" output/md/templates -o output/md/templates.go

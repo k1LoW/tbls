@@ -3,12 +3,13 @@ package md
 import (
 	"bytes"
 	"fmt"
-	"github.com/k1LoW/tbls/schema"
-	"github.com/sergi/go-diff/diffmatchpatch"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"text/template"
+
+	"github.com/k1LoW/tbls/schema"
+	"github.com/sergi/go-diff/diffmatchpatch"
 )
 
 // Output generate markdown files.

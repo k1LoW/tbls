@@ -22,10 +22,11 @@ package cmd
 
 import (
 	"fmt"
+	"os"
+
 	"github.com/k1LoW/tbls/db"
 	"github.com/k1LoW/tbls/output/md"
 	"github.com/spf13/cobra"
-	"os"
 )
 
 // diffCmd represents the diff command
