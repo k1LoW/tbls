@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.9.1](https://github.com/k1LoW/tbls/compare/v0.9.0...v0.9.1) (2018-06-30)
+
+* Support PostgreSQL non-default schema [#30](https://github.com/k1LoW/tbls/pull/30) ([k1LoW](https://github.com/k1LoW))
+
 ## [v0.9.0](https://github.com/k1LoW/tbls/compare/v0.8.2...v0.9.0) (2018-06-29)
 
 * Work with Amazon Redshift [#29](https://github.com/k1LoW/tbls/pull/29) ([watarukura](https://github.com/watarukura))
