@@ -15,5 +15,6 @@ before_install:
   - sleep 20s
 script:
   - make test
+  - make test_too_many_tables
 after_script:
   - make cover
