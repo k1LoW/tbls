@@ -5,7 +5,7 @@
 | Name | Columns | Comment | Type |
 | ---- | ------- | ------- | ---- |
 {{- range $i, $t := .Schema.Tables }}
-| [{{ $t.Name }}]({{ $t.Name }}.md) | {{ len $t.Columns }} | {{ $t.Comment }} | {{ $t.Type }} |
+| [{{ $t.Name }}]({{ $t.Name }}.md) | {{ len $t.Columns }} | {{ $t.Comment | nl2br }} | {{ $t.Type }} |
 {{- end }}
 
 {{ if .er -}}
