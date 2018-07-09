@@ -33,14 +33,14 @@ CREATE TABLE comments (
   id bigint AUTO_INCREMENT,
   post_id bigint NOT NULL,
   user_id int NOT NULL,
-  comment text NOT NULL,
+  comment text NOT NULL COMMENT 'Comment\nMulti-line column comment',
   created datetime NOT NULL,
   updated datetime,
   CONSTRAINT comments_id_pk PRIMARY KEY(id),
   CONSTRAINT comments_post_id_fk FOREIGN KEY(post_id) REFERENCES posts(id) MATCH SIMPLE,
   CONSTRAINT comments_user_id_fk FOREIGN KEY(user_id) REFERENCES users(id) MATCH SIMPLE,
   UNIQUE(post_id, user_id)
-);
+) COMMENT = 'Comments\nMulti-line table comment';
 CREATE INDEX comments_post_id_user_id_idx ON comments(post_id, user_id) USING HASH;
 
 CREATE TABLE comment_stars (

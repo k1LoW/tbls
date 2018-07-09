@@ -2,7 +2,8 @@
 
 ## Description
 
-
+Comments
+Multi-line table comment
 <details>
 <summary><strong>Table Definition</strong></summary>
 
@@ -11,7 +12,7 @@ CREATE TABLE `comments` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `post_id` bigint(20) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `comment` text NOT NULL,
+  `comment` text NOT NULL COMMENT 'Comment\nMulti-line column comment',
   `created` datetime NOT NULL,
   `updated` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -20,7 +21,7 @@ CREATE TABLE `comments` (
   KEY `comments_post_id_user_id_idx` (`post_id`,`user_id`),
   CONSTRAINT `comments_post_id_fk` FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`),
   CONSTRAINT `comments_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Comments\nMulti-line table comment'
 ```
 
 </details>
@@ -33,7 +34,7 @@ CREATE TABLE `comments` (
 | id | bigint(20) |  | false | [logs](logs.md)  |  |  |
 | post_id | bigint(20) |  | false | [comment_stars](comment_stars.md)  | [posts](posts.md)  |  |
 | user_id | int(11) |  | false | [comment_stars](comment_stars.md)  | [users](users.md)  |  |
-| comment | text |  | false |  |  |  |
+| comment | text |  | false |  |  | Comment<br>Multi-line column comment |
 | created | datetime |  | false |  |  |  |
 | updated | datetime |  | true |  |  |  |
 

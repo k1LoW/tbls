@@ -11,12 +11,7 @@ var _Assets5bd148e6149bb9adcdddfcf8cc46d6e3047dbe26 = "digraph \"{{ .Table.Name 
 
 // Assets returns go-assets FileSystem
 var Assets = assets.NewFileSystem(map[string][]string{"/": []string{"schema.dot.tmpl", "table.dot.tmpl"}}, map[string]*assets.File{
-	"/": &assets.File{
-		Path:     "/",
-		FileMode: 0x800001ed,
-		Mtime:    time.Unix(1530370605, 1530370605000000000),
-		Data:     nil,
-	}, "/schema.dot.tmpl": &assets.File{
+	"/schema.dot.tmpl": &assets.File{
 		Path:     "/schema.dot.tmpl",
 		FileMode: 0x1a4,
 		Mtime:    time.Unix(1530370605, 1530370605000000000),
@@ -26,4 +21,9 @@ var Assets = assets.NewFileSystem(map[string][]string{"/": []string{"schema.dot.
 		FileMode: 0x1a4,
 		Mtime:    time.Unix(1530370605, 1530370605000000000),
 		Data:     []byte(_Assets5bd148e6149bb9adcdddfcf8cc46d6e3047dbe26),
+	}, "/": &assets.File{
+		Path:     "/",
+		FileMode: 0x800001ed,
+		Mtime:    time.Unix(1530370605, 1530370605000000000),
+		Data:     nil,
 	}}, "")
