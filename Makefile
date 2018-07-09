@@ -41,8 +41,8 @@ testdoc: build
 test_too_many_tables: build
 	usql pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -f test/createdb_too_many.sql
 	usql pg://postgres:pgpass@localhost:55432/too_many?sslmode=disable -f test/createtable_too_many.sql
-	./tbls doc pg://postgres:pgpass@localhost:55432/too_many?sslmode=disable -f /tmp
-	./tbls diff pg://postgres:pgpass@localhost:55432/too_many?sslmode=disable /tmp
+	ulimit -n 256 && ./tbls doc pg://postgres:pgpass@localhost:55432/too_many?sslmode=disable -f /tmp
+	ulimit -n 256 && ./tbls diff pg://postgres:pgpass@localhost:55432/too_many?sslmode=disable /tmp
 
 build: template
 	go build -ldflags="$(BUILD_LDFLAGS)"
