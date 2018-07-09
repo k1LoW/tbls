@@ -184,5 +184,8 @@ func funcMap() map[string]interface{} {
 		"nl2br": func(text string) string {
 			return strings.Replace(text, "\n", "<br>", -1)
 		},
+		"nl2mdnl": func(text string) string {
+			return strings.Replace(text, "\n", "  \n", -1)
+		},
 	}
 }
