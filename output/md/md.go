@@ -10,6 +10,7 @@ import (
 
 	"github.com/k1LoW/tbls/schema"
 	"github.com/sergi/go-diff/diffmatchpatch"
+	"strings"
 )
 
 // Output generate markdown files.
@@ -31,7 +32,7 @@ func Output(s *schema.Schema, path string, force bool) error {
 	}
 	f, _ := Assets.Open(filepath.Join("/", "index.md.tmpl"))
 	bs, _ := ioutil.ReadAll(f)
-	tmpl, err := template.New("index").Parse(string(bs))
+	tmpl, err := template.New("index").Funcs(funcMap()).Parse(string(bs))
 	if err != nil {
 		return err
 	}
@@ -57,7 +58,7 @@ func Output(s *schema.Schema, path string, force bool) error {
 		}
 		f, _ := Assets.Open(filepath.Join("/", "table.md.tmpl"))
 		bs, _ := ioutil.ReadAll(f)
-		tmpl, err := template.New(t.Name).Parse(string(bs))
+		tmpl, err := template.New(t.Name).Funcs(funcMap()).Parse(string(bs))
 		if err != nil {
 			file.Close()
 			return err
@@ -97,7 +98,7 @@ func Diff(s *schema.Schema, path string) error {
 	a := new(bytes.Buffer)
 	f, _ := Assets.Open(filepath.Join("/", "index.md.tmpl"))
 	bs, _ := ioutil.ReadAll(f)
-	tmpl, err := template.New("index").Parse(string(bs))
+	tmpl, err := template.New("index").Funcs(funcMap()).Parse(string(bs))
 	if err != nil {
 		return err
 	}
@@ -132,7 +133,7 @@ func Diff(s *schema.Schema, path string) error {
 		a := new(bytes.Buffer)
 		f, _ := Assets.Open(filepath.Join("/", "table.md.tmpl"))
 		bs, _ := ioutil.ReadAll(f)
-		tmpl, err := template.New(t.Name).Parse(string(bs))
+		tmpl, err := template.New(t.Name).Funcs(funcMap()).Parse(string(bs))
 		if err != nil {
 			return err
 		}
@@ -176,4 +177,15 @@ func outputExists(s *schema.Schema, path string) bool {
 		}
 	}
 	return false
+}
+
+func funcMap() map[string]interface{} {
+	return template.FuncMap{
+		"nl2br": func(text string) string {
+			return strings.Replace(text, "\n", "<br>", -1)
+		},
+		"nl2mdnl": func(text string) string {
+			return strings.Replace(text, "\n", "  \n", -1)
+		},
+	}
 }
