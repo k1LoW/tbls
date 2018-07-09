@@ -1,5 +1,11 @@
 # Changelog
 
+## [v0.9.2](https://github.com/k1LoW/tbls/compare/v0.9.1...v0.9.2) (2018-07-09)
+
+* Support multi-line comment [#34](https://github.com/k1LoW/tbls/pull/34) ([k1LoW](https://github.com/k1LoW))
+* Fix `too many open files` [#33](https://github.com/k1LoW/tbls/pull/33) ([k1LoW](https://github.com/k1LoW))
+* Add test for many tables [#31](https://github.com/k1LoW/tbls/pull/31) ([k1LoW](https://github.com/k1LoW))
+
 ## [v0.9.1](https://github.com/k1LoW/tbls/compare/v0.9.0...v0.9.1) (2018-06-30)
 
 * Support PostgreSQL non-default schema [#30](https://github.com/k1LoW/tbls/pull/30) ([k1LoW](https://github.com/k1LoW))
