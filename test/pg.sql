@@ -24,8 +24,8 @@ CREATE TABLE users (
   created timestamp NOT NULL,
   updated timestamp
 );
-COMMENT ON TABLE users is 'Users table';
-COMMENT ON COLUMN users.email is 'ex. user@example.com';
+COMMENT ON TABLE users IS 'Users table';
+COMMENT ON COLUMN users.email IS 'ex. user@example.com';
 
 CREATE TABLE posts (
   id bigserial NOT NULL,
@@ -40,8 +40,8 @@ CREATE TABLE posts (
   CONSTRAINT posts_user_id_fk FOREIGN KEY(user_id) REFERENCES users(id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE,
   UNIQUE(user_id, title)
 );
-COMMENT ON TABLE posts is 'Posts table';
-COMMENT ON COLUMN posts.post_type is 'public/private/draft';
+COMMENT ON TABLE posts IS 'Posts table';
+COMMENT ON COLUMN posts.post_type IS 'public/private/draft';
 
 CREATE INDEX posts_user_id_idx ON posts USING btree(user_id);
 
@@ -57,6 +57,9 @@ CREATE TABLE comments (
   CONSTRAINT comments_user_id_fk FOREIGN KEY(user_id) REFERENCES users(id) MATCH SIMPLE,
   UNIQUE(post_id, user_id)
 );
+COMMENT ON TABLE comments IS E'Comments\nMulti-line table comment';
+COMMENT ON COLUMN comments.comment IS E'Comment\nMulti-line column comment';
+
 CREATE INDEX comments_post_id_user_id_idx ON comments USING btree(post_id, user_id);
 
 CREATE TABLE comment_stars (
