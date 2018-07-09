@@ -51,14 +51,15 @@ func Output(s *schema.Schema, path string, force bool) error {
 	// tables
 	for _, t := range s.Tables {
 		file, err := os.Create(filepath.Join(fullPath, fmt.Sprintf("%s.md", t.Name)))
-		defer file.Close()
 		if err != nil {
+			file.Close()
 			return err
 		}
 		f, _ := Assets.Open(filepath.Join("/", "table.md.tmpl"))
 		bs, _ := ioutil.ReadAll(f)
 		tmpl, err := template.New(t.Name).Parse(string(bs))
 		if err != nil {
+			file.Close()
 			return err
 		}
 		er := false
@@ -70,9 +71,11 @@ func Output(s *schema.Schema, path string, force bool) error {
 			"er":    er,
 		})
 		if err != nil {
+			file.Close()
 			return err
 		}
 		fmt.Printf("%s\n", filepath.Join(path, fmt.Sprintf("%s.md", t.Name)))
+		file.Close()
 	}
 	return nil
 }
