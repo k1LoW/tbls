@@ -2,7 +2,7 @@
 
 ## Description
 
-Comments
+Comments  
 Multi-line table comment
 <details>
 <summary><strong>Table Definition</strong></summary>
