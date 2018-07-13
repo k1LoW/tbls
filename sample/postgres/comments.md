@@ -3,7 +3,9 @@
 ## Description
 
 Comments  
-Multi-line table comment
+Multi-line  
+table  
+comment
 
 ## Columns
 
@@ -12,7 +14,7 @@ Multi-line table comment
 | id | bigint | nextval('comments_id_seq'::regclass) | false | [logs](logs.md)  |  |  |
 | post_id | bigint |  | false | [comment_stars](comment_stars.md)  | [posts](posts.md)  |  |
 | user_id | integer |  | false | [comment_stars](comment_stars.md)  | [users](users.md)  |  |
-| comment | text |  | false |  |  | Comment<br>Multi-line column comment |
+| comment | text |  | false |  |  | Comment<br>Multi-line<br>column<br>comment |
 | created | timestamp without time zone |  | false |  |  |  |
 | updated | timestamp without time zone |  | true |  |  |  |
 
