@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.9.3](https://github.com/k1LoW/tbls/compare/v0.9.2...v0.9.3) (2018-07-13)
+
+* Support CR `\r` and CRLF `\r\n` [#35](https://github.com/k1LoW/tbls/pull/35) ([k1LoW](https://github.com/k1LoW))
+
 ## [v0.9.2](https://github.com/k1LoW/tbls/compare/v0.9.1...v0.9.2) (2018-07-09)
 
 * Support multi-line comment [#34](https://github.com/k1LoW/tbls/pull/34) ([k1LoW](https://github.com/k1LoW))
