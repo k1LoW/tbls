@@ -57,8 +57,8 @@ CREATE TABLE comments (
   CONSTRAINT comments_user_id_fk FOREIGN KEY(user_id) REFERENCES users(id) MATCH SIMPLE,
   UNIQUE(post_id, user_id)
 );
-COMMENT ON TABLE comments IS E'Comments\nMulti-line table comment';
-COMMENT ON COLUMN comments.comment IS E'Comment\nMulti-line column comment';
+COMMENT ON TABLE comments IS E'Comments\nMulti-line\r\ntable\rcomment';
+COMMENT ON COLUMN comments.comment IS E'Comment\nMulti-line\r\ncolumn\rcomment';
 
 CREATE INDEX comments_post_id_user_id_idx ON comments USING btree(post_id, user_id);
 
