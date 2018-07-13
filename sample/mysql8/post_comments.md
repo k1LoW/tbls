@@ -20,7 +20,7 @@ CREATE VIEW post_comments AS (select `c`.`id` AS `id`,`p`.`title` AS `title`,`u2
 | id | bigint(20) | 0 | true |  |  | comments.id |
 | title | varchar(255) |  | false |  |  | posts.title |
 | post_user | varchar(50) |  | true |  |  | posts.users.username |
-| comment | text |  | true |  |  | Comment<br>Multi-line column comment |
+| comment | text |  | true |  |  | Comment<br>Multi-line<br>column<br>comment |
 | comment_user | varchar(50) |  | true |  |  | comments.users.username |
 | created | datetime |  | true |  |  | comments.created |
 | updated | datetime |  | true |  |  | comments.updated |
