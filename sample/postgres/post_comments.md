@@ -40,12 +40,12 @@ CREATE VIEW post_comments AS (
 ## Constraints
 
 | Name | Type | Definition |
-| ---- | ---- | --- |
+| ---- | ---- | ---------- |
 
 ## Indexes
 
 | Name | Definition |
-| ---- | --- |
+| ---- | ---------- |
 
 ## Relations
 

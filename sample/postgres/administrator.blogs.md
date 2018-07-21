@@ -9,7 +9,7 @@
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
 | id | integer | nextval('administrator.blogs_id_seq'::regclass) | false |  |  |  |
-| user_id | integer |  | false |  | [users](users.md)  |  |
+| user_id | integer |  | false |  | [users](users.md) |  |
 | name | text |  | false |  |  |  |
 | description | text |  | true |  |  |  |
 | created | timestamp without time zone |  | false |  |  |  |
@@ -18,14 +18,14 @@
 ## Constraints
 
 | Name | Type | Definition |
-| ---- | ---- | --- |
+| ---- | ---- | ---------- |
 | blogs_pkey | PRIMARY KEY | PRIMARY KEY (id) |
 | blogs_user_id_fk | FOREIGN KEY | FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE |
 
 ## Indexes
 
 | Name | Definition |
-| ---- | --- |
+| ---- | ---------- |
 | blogs_pkey | CREATE UNIQUE INDEX blogs_pkey ON administrator.blogs USING btree (id) |
 
 ## Relations

@@ -14,12 +14,12 @@
 ## Constraints
 
 | Name | Type | Definition |
-| ---- | ---- | --- |
+| ---- | ---- | ---------- |
 
 ## Indexes
 
 | Name | Definition |
-| ---- | --- |
+| ---- | ---------- |
 
 ## Relations
 

@@ -29,8 +29,8 @@ CREATE TABLE `posts` (
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | bigint(20) |  | false | [comments](comments.md) [logs](logs.md)  |  |  |
-| user_id | int(11) |  | false |  | [users](users.md)  |  |
+| id | bigint(20) |  | false | [comments](comments.md) [logs](logs.md) |  |  |
+| user_id | int(11) |  | false |  | [users](users.md) |  |
 | title | varchar(255) |  | false |  |  |  |
 | body | text |  | false |  |  | post body |
 | post_type | enum('public','private','draft') |  | false |  |  | public/private/draft |
@@ -40,7 +40,7 @@ CREATE TABLE `posts` (
 ## Constraints
 
 | Name | Type | Definition |
-| ---- | ---- | --- |
+| ---- | ---- | ---------- |
 | posts_user_id_fk | FOREIGN KEY | FOREIGN KEY (user_id) REFERENCES users (id) |
 | PRIMARY | PRIMARY KEY | PRIMARY KEY (id) |
 | user_id | UNIQUE | UNIQUE KEY user_id (user_id, title) |
@@ -48,7 +48,7 @@ CREATE TABLE `posts` (
 ## Indexes
 
 | Name | Definition |
-| ---- | --- |
+| ---- | ---------- |
 | posts_user_id_idx | KEY posts_user_id_idx (id) USING BTREE |
 | PRIMARY | PRIMARY KEY (id) USING BTREE |
 | user_id | UNIQUE KEY user_id (user_id, title) USING BTREE |

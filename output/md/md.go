@@ -32,18 +32,16 @@ func Output(s *schema.Schema, path string, force bool) error {
 	}
 	f, _ := Assets.Open(filepath.Join("/", "index.md.tmpl"))
 	bs, _ := ioutil.ReadAll(f)
-	tmpl, err := template.New("index").Funcs(funcMap()).Parse(string(bs))
-	if err != nil {
-		return err
-	}
+	tmpl := template.Must(template.New("index").Funcs(funcMap()).Parse(string(bs)))
 	er := false
 	if _, err := os.Lstat(filepath.Join(fullPath, "schema.png")); err == nil {
 		er = true
 	}
-	err = tmpl.Execute(file, map[string]interface{}{
-		"Schema": s,
-		"er":     er,
-	})
+
+	templateData := makeSchemaTemplateData(s)
+	templateData["er"] = er
+
+	err = tmpl.Execute(file, templateData)
 	if err != nil {
 		return err
 	}
@@ -58,19 +56,16 @@ func Output(s *schema.Schema, path string, force bool) error {
 		}
 		f, _ := Assets.Open(filepath.Join("/", "table.md.tmpl"))
 		bs, _ := ioutil.ReadAll(f)
-		tmpl, err := template.New(t.Name).Funcs(funcMap()).Parse(string(bs))
-		if err != nil {
-			file.Close()
-			return err
-		}
+		tmpl := template.Must(template.New(t.Name).Funcs(funcMap()).Parse(string(bs)))
 		er := false
 		if _, err := os.Lstat(filepath.Join(fullPath, fmt.Sprintf("%s.png", t.Name))); err == nil {
 			er = true
 		}
-		err = tmpl.Execute(file, map[string]interface{}{
-			"Table": t,
-			"er":    er,
-		})
+
+		templateData := makeTableTemplateData(t)
+		templateData["er"] = er
+
+		err = tmpl.Execute(file, templateData)
 		if err != nil {
 			file.Close()
 			return err
@@ -98,18 +93,16 @@ func Diff(s *schema.Schema, path string) error {
 	a := new(bytes.Buffer)
 	f, _ := Assets.Open(filepath.Join("/", "index.md.tmpl"))
 	bs, _ := ioutil.ReadAll(f)
-	tmpl, err := template.New("index").Funcs(funcMap()).Parse(string(bs))
-	if err != nil {
-		return err
-	}
+	tmpl := template.Must(template.New("index").Funcs(funcMap()).Parse(string(bs)))
 	er := false
 	if _, err := os.Lstat(filepath.Join(fullPath, "schema.png")); err == nil {
 		er = true
 	}
-	err = tmpl.Execute(a, map[string]interface{}{
-		"Schema": s,
-		"er":     er,
-	})
+
+	templateData := makeSchemaTemplateData(s)
+	templateData["er"] = er
+
+	err = tmpl.Execute(a, templateData)
 	if err != nil {
 		return err
 	}
@@ -133,18 +126,17 @@ func Diff(s *schema.Schema, path string) error {
 		a := new(bytes.Buffer)
 		f, _ := Assets.Open(filepath.Join("/", "table.md.tmpl"))
 		bs, _ := ioutil.ReadAll(f)
-		tmpl, err := template.New(t.Name).Funcs(funcMap()).Parse(string(bs))
-		if err != nil {
-			return err
-		}
+		tmpl := template.Must(template.New(t.Name).Funcs(funcMap()).Parse(string(bs)))
 		er := false
 		if _, err := os.Lstat(filepath.Join(fullPath, fmt.Sprintf("%s.png", t.Name))); err == nil {
 			er = true
 		}
-		err = tmpl.Execute(a, map[string]interface{}{
-			"Table": t,
-			"er":    er,
-		})
+
+		templateData := makeTableTemplateData(t)
+		templateData["er"] = er
+
+		err = tmpl.Execute(a, templateData)
+
 		if err != nil {
 			return err
 		}
@@ -189,5 +181,88 @@ func funcMap() map[string]interface{} {
 			r := strings.NewReplacer("\r\n", "  \n", "\n", "  \n", "\r", "  \n")
 			return r.Replace(text)
 		},
+	}
+}
+
+func makeSchemaTemplateData(s *schema.Schema) map[string]interface{} {
+	tablesData := [][]string{
+		[]string{"Name", "Columns", "Comment", "Type"},
+		[]string{"----", "-------", "-------", "----"},
+	}
+	for _, t := range s.Tables {
+		data := []string{
+			fmt.Sprintf("[%s](%s.md)", t.Name, t.Name),
+			fmt.Sprintf("%d", len(t.Columns)),
+			t.Comment,
+			t.Type,
+		}
+		tablesData = append(tablesData, data)
+	}
+
+	return map[string]interface{}{
+		"Schema": s,
+		"Tables": tablesData,
+	}
+}
+
+func makeTableTemplateData(t *schema.Table) map[string]interface{} {
+	// Columns
+	columnsData := [][]string{
+		[]string{"Name", "Type", "Default", "Nullable", "Children", "Parents", "Comment"},
+		[]string{"----", "----", "-------", "--------", "--------", "-------", "-------"},
+	}
+	for _, c := range t.Columns {
+		childRelations := []string{}
+		for _, r := range c.ChildRelations {
+			childRelations = append(childRelations, fmt.Sprintf("[%s](%s.md)", r.Table.Name, r.Table.Name))
+		}
+		parentRelations := []string{}
+		for _, r := range c.ParentRelations {
+			parentRelations = append(parentRelations, fmt.Sprintf("[%s](%s.md)", r.ParentTable.Name, r.ParentTable.Name))
+		}
+		data := []string{
+			c.Name,
+			c.Type,
+			c.Default.String,
+			fmt.Sprintf("%v", c.Nullable),
+			strings.Join(childRelations, " "),
+			strings.Join(parentRelations, " "),
+			c.Comment,
+		}
+		columnsData = append(columnsData, data)
+	}
+
+	// Constraints
+	constraintsData := [][]string{
+		[]string{"Name", "Type", "Definition"},
+		[]string{"----", "----", "----------"},
+	}
+	for _, c := range t.Constraints {
+		data := []string{
+			c.Name,
+			c.Type,
+			c.Def,
+		}
+		constraintsData = append(constraintsData, data)
+	}
+
+	// Indexes
+	indexesData := [][]string{
+		[]string{"Name", "Definition"},
+		[]string{"----", "----------"},
+	}
+	for _, i := range t.Indexes {
+		data := []string{
+			i.Name,
+			i.Def,
+		}
+		indexesData = append(indexesData, data)
+	}
+
+	return map[string]interface{}{
+		"Table":       t,
+		"Columns":     columnsData,
+		"Constraints": constraintsData,
+		"Indexes":     indexesData,
 	}
 }

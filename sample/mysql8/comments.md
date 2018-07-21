@@ -33,9 +33,9 @@ CREATE TABLE `comments` (
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | bigint(20) |  | false | [logs](logs.md)  |  |  |
-| post_id | bigint(20) |  | false | [comment_stars](comment_stars.md)  | [posts](posts.md)  |  |
-| user_id | int(11) |  | false | [comment_stars](comment_stars.md)  | [users](users.md)  |  |
+| id | bigint(20) |  | false | [logs](logs.md) |  |  |
+| post_id | bigint(20) |  | false | [comment_stars](comment_stars.md) | [posts](posts.md) |  |
+| user_id | int(11) |  | false | [comment_stars](comment_stars.md) | [users](users.md) |  |
 | comment | text |  | false |  |  | Comment<br>Multi-line<br>column<br>comment |
 | created | datetime |  | false |  |  |  |
 | updated | datetime |  | true |  |  |  |
@@ -43,7 +43,7 @@ CREATE TABLE `comments` (
 ## Constraints
 
 | Name | Type | Definition |
-| ---- | ---- | --- |
+| ---- | ---- | ---------- |
 | comments_post_id_fk | FOREIGN KEY | FOREIGN KEY (post_id) REFERENCES posts (id) |
 | comments_user_id_fk | FOREIGN KEY | FOREIGN KEY (user_id) REFERENCES users (id) |
 | post_id | UNIQUE | UNIQUE KEY post_id (post_id, user_id) |
@@ -52,7 +52,7 @@ CREATE TABLE `comments` (
 ## Indexes
 
 | Name | Definition |
-| ---- | --- |
+| ---- | ---------- |
 | comments_post_id_user_id_idx | KEY comments_post_id_user_id_idx (post_id, user_id) USING BTREE |
 | comments_user_id_fk | KEY comments_user_id_fk (user_id) USING BTREE |
 | PRIMARY | PRIMARY KEY (id) USING BTREE |
