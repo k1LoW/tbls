@@ -27,23 +27,23 @@ CREATE TABLE `logs` (
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
 | id | bigint(20) |  | false |  |  |  |
-| user_id | int(11) |  | false |  | [users](users.md)  |  |
-| post_id | bigint(20) |  | true |  | [posts](posts.md)  |  |
-| comment_id | bigint(20) |  | true |  | [comments](comments.md)  |  |
-| comment_star_id | bigint(20) |  | true |  | [comment_stars](comment_stars.md)  |  |
+| user_id | int(11) |  | false |  | [users](users.md) |  |
+| post_id | bigint(20) |  | true |  | [posts](posts.md) |  |
+| comment_id | bigint(20) |  | true |  | [comments](comments.md) |  |
+| comment_star_id | bigint(20) |  | true |  | [comment_stars](comment_stars.md) |  |
 | payload | text |  | true |  |  |  |
 | created | datetime |  | false |  |  |  |
 
 ## Constraints
 
 | Name | Type | Definition |
-| ---- | ---- | --- |
+| ---- | ---- | ---------- |
 | PRIMARY | PRIMARY KEY | PRIMARY KEY (id) |
 
 ## Indexes
 
 | Name | Definition |
-| ---- | --- |
+| ---- | ---------- |
 | PRIMARY | PRIMARY KEY (id) USING BTREE |
 
 ## Relations

@@ -27,7 +27,7 @@ CREATE TABLE `users` (
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | int(11) |  | false | [comment_stars](comment_stars.md) [comments](comments.md) [posts](posts.md) [logs](logs.md)  |  |  |
+| id | int(11) |  | false | [comment_stars](comment_stars.md) [comments](comments.md) [posts](posts.md) [logs](logs.md) |  |  |
 | username | varchar(50) |  | false |  |  |  |
 | password | varchar(50) |  | false |  |  |  |
 | email | varchar(355) |  | false |  |  | ex. user@example.com |
@@ -37,7 +37,7 @@ CREATE TABLE `users` (
 ## Constraints
 
 | Name | Type | Definition |
-| ---- | ---- | --- |
+| ---- | ---- | ---------- |
 | email | UNIQUE | UNIQUE KEY email (email) |
 | PRIMARY | PRIMARY KEY | PRIMARY KEY (id) |
 | username | UNIQUE | UNIQUE KEY username (username) |
@@ -45,7 +45,7 @@ CREATE TABLE `users` (
 ## Indexes
 
 | Name | Definition |
-| ---- | --- |
+| ---- | ---------- |
 | PRIMARY | PRIMARY KEY (id) USING BTREE |
 | email | UNIQUE KEY email (email) USING BTREE |
 | username | UNIQUE KEY username (username) USING BTREE |

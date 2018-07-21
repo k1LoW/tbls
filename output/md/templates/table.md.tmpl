@@ -15,27 +15,18 @@
 {{ end }}
 
 ## Columns
-
-| Name | Type | Default | Nullable | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-{{- range $i, $c := .Table.Columns }}
-| {{ $c.Name }} | {{ $c.Type }} | {{ $c.Default.String }} | {{ $c.Nullable }} | {{ range $ii, $r := $c.ChildRelations -}}[{{ $r.Table.Name }}]({{ $r.Table.Name }}.md) {{ end }} | {{ range $ii, $r := $c.ParentRelations -}}[{{ $r.ParentTable.Name }}]({{ $r.ParentTable.Name }}.md) {{ end }} | {{ $c.Comment | nl2br }} |
+{{ range $l := .Columns }}
+|{{ range $d := $l }} {{ $d | nl2br }} |{{ end }}
 {{- end }}
 
 ## Constraints
-
-| Name | Type | Definition |
-| ---- | ---- | --- |
-{{- range $i, $c := .Table.Constraints }}
-| {{ $c.Name }} | {{ $c.Type }} | {{ $c.Def }} |
+{{ range $l := .Constraints }}
+|{{ range $d := $l }} {{ $d | nl2br }} |{{ end }}
 {{- end }}
 
 ## Indexes
-
-| Name | Definition |
-| ---- | --- |
-{{- range $i, $idx := .Table.Indexes }}
-| {{ $idx.Name }} | {{ $idx.Def }} |
+{{ range $l := .Indexes }}
+|{{ range $d := $l }} {{ $d | nl2br }} |{{ end }}
 {{- end }}
 
 {{ if .er -}}
