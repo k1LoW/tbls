@@ -2,7 +2,7 @@
 
 `tbls` is a CI-Friendly tool for document a database, written in Go.
 
-The key of Features of `tbls` are:
+Key features of `tbls` are:
 
 - Single binary
 - Document in GitHub Friendly Markdown format
