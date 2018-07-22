@@ -28,7 +28,7 @@ CREATE VIEW post_comments AS (
 ## Columns
 
 | Name         | Type                        | Default | Nullable | Children | Parents | Comment                 |
-| ----         | ----                        | ------- | -------- | -------- | ------- | -------                 |
+| ------------ | --------------------------- | ------- | -------- | -------- | ------- | ----------------------- |
 | id           | bigint                      |         | true     |          |         | comments.id             |
 | title        | varchar(255)                |         | true     |          |         | posts.title             |
 | post_user    | varchar(50)                 |         | true     |          |         | posts.users.username    |

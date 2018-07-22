@@ -7,7 +7,7 @@
 ## Columns
 
 | Name            | Type                        | Default            | Nullable | Children        | Parents                                   | Comment |
-| ----            | ----                        | -------            | -------- | --------        | -------                                   | ------- |
+| --------------- | --------------------------- | ------------------ | -------- | --------------- | ----------------------------------------- | ------- |
 | id              | uuid                        | uuid_generate_v4() | false    | [logs](logs.md) |                                           |         |
 | user_id         | integer                     |                    | false    |                 |                                           |         |
 | comment_post_id | bigint                      |                    | false    |                 | [comments](comments.md)                   |         |
@@ -18,7 +18,7 @@
 ## Constraints
 
 | Name                                                      | Type        | Definition                                                                           |
-| ----                                                      | ----        | ----------                                                                           |
+| --------------------------------------------------------- | ----------- | ------------------------------------------------------------------------------------ |
 | comment_stars_user_id_comment_post_id_comment_user_id_key | UNIQUE      | UNIQUE (user_id, comment_post_id, comment_user_id)                                   |
 | comment_stars_user_id_post_id_fk                          | FOREIGN KEY | FOREIGN KEY (comment_post_id, comment_user_id) REFERENCES comments(post_id, user_id) |
 | comment_stars_user_id_fk                                  | FOREIGN KEY | FOREIGN KEY (comment_user_id) REFERENCES users(id)                                   |
@@ -26,7 +26,7 @@
 ## Indexes
 
 | Name                                                      | Definition                                                                                                                                                    |
-| ----                                                      | ----------                                                                                                                                                    |
+| --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | comment_stars_user_id_comment_post_id_comment_user_id_key | CREATE UNIQUE INDEX comment_stars_user_id_comment_post_id_comment_user_id_key ON public.comment_stars USING btree (user_id, comment_post_id, comment_user_id) |
 
 ## Relations
