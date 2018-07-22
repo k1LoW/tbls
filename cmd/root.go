@@ -23,10 +23,9 @@ package cmd
 import (
 	"fmt"
 	"os"
-
-	//"github.com/pkg/errors"
-	"github.com/spf13/cobra"
 	"strconv"
+
+	"github.com/spf13/cobra"
 )
 
 // adjust is a flag on whethre to adjust the notation width of the table
