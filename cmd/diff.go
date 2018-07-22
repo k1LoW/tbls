@@ -45,14 +45,14 @@ var diffCmd = &cobra.Command{
 		targetPath := args[1]
 		s, err := db.Analyze(dsn)
 		if err != nil {
-			fmt.Println(err)
+			printError(err)
 			os.Exit(1)
 		}
 
 		if additionalDataPath != "" {
 			err = s.LoadAdditionalData(additionalDataPath)
 			if err != nil {
-				fmt.Println(err)
+				printError(err)
 				os.Exit(1)
 			}
 		}
@@ -60,14 +60,14 @@ var diffCmd = &cobra.Command{
 		if sort {
 			err = s.Sort()
 			if err != nil {
-				fmt.Println(err)
+				printError(err)
 				os.Exit(1)
 			}
 		}
 
 		err = md.Diff(s, targetPath, adjust)
 		if err != nil {
-			fmt.Println(err)
+			printError(err)
 			os.Exit(1)
 		}
 	},
