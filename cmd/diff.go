@@ -76,6 +76,6 @@ var diffCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(diffCmd)
 	diffCmd.Flags().BoolVarP(&sort, "sort", "", false, "sort")
-	diffCmd.Flags().BoolVarP(&adjust, "adjust", "", false, "adjust the notation width of the table")
+	diffCmd.Flags().BoolVarP(&adjust, "adjust", "j", false, "adjust the notation width of the table")
 	diffCmd.Flags().StringVarP(&additionalDataPath, "add", "a", "", "additional schema data path")
 }
