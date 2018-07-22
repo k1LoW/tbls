@@ -66,6 +66,7 @@
 //   PostgreSQL (postgres)        | pg, postgresql, pgsql
 //   SQLite3 (sqlite3)            | sq, sqlite, file
 //   -----------------------------|-------------------------------------------
+//   Amazon Redshift (redshift)   | rs [postgres]
 //   CockroachDB (cockroachdb)    | cr, cockroach, crdb, cdb [postgres]
 //   MemSQL (memsql)              | me [mysql]
 //   TiDB (tidb)                  | ti [mysql]
@@ -77,6 +78,8 @@
 //   PostgreSQL (pgx)             | px
 //   -----------------------------|-------------------------------------------
 //   Apache Avatica (avatica)     | av, phoenix
+//   Apache Ignite (ignite)       | ig, gridgain
+//   Cassandra (cql)              | ca, cassandra, datastax, scy, scylla
 //   ClickHouse (clickhouse)      | ch
 //   Couchbase (n1ql)             | n1, couchbase
 //   Cznic QL (ql)                | ql, cznic, cznicql
@@ -86,6 +89,7 @@
 //   OLE ODBC (oleodbc)           | oo, ole, oleodbc [adodb]
 //   Presto (presto)              | pr, prestodb, prestos, prs, prestodbs
 //   SAP HANA (hdb)               | sa, saphana, sap, hana
+//   Snowflake (snowflake)        | sf
 //   VoltDB (voltdb)              | vo, volt, vdb
 //
 // Any protocol scheme alias:// can be used in place of protocol://, and will
@@ -107,6 +111,7 @@
 //   PostgreSQL (postgres)        | github.com/lib/pq
 //   SQLite3 (sqlite3)            | github.com/mattn/go-sqlite3
 //   -----------------------------|-------------------------------------------------
+//   Amazon Redshift (redshift)   | github.com/lib/pq
 //   CockroachDB (cockroachdb)    | github.com/lib/pq
 //   MemSQL (memsql)              | github.com/go-sql-driver/mysql
 //   TiDB (tidb)                  | github.com/go-sql-driver/mysql
@@ -118,6 +123,8 @@
 //   PostgreSQL (pgx)             | github.com/jackc/pgx/stdlib
 //   -----------------------------|-------------------------------------------------
 //   Apache Avatica (avatica)     | github.com/Boostport/avatica
+//   Apache Ignite (ignite)       | github.com/amsokol/ignite-go-client/sql
+//   Cassandra (cql)              | github.com/MichaelS11/go-cql-driver
 //   ClickHouse (clickhouse)      | github.com/kshvakov/clickhouse
 //   Couchbase (n1ql)             | github.com/couchbase/go_n1ql
 //   Cznic QL (ql)                | github.com/cznic/ql
@@ -127,6 +134,7 @@
 //   OLE ODBC (oleodbc)*          | github.com/mattn/go-adodb
 //   Presto (presto)              | github.com/prestodb/presto-go-client
 //   SAP HANA (hdb)               | github.com/SAP/go-hdb/driver
+//   Snowflake (snowflake)        | github.com/snowflakedb/gosnowflake
 //   VoltDB (voltdb)              | github.com/VoltDB/voltdb-client-go/voltdbclient
 //
 // * OLE ODBC is not an actual protocol, but instead is an alias for using the
@@ -174,6 +182,9 @@ const (
 
 	// ErrRelativePathNotSupported is the relative paths not supported error.
 	ErrRelativePathNotSupported Error = "relative path not supported"
+
+	// ErrMissingHost is the missing host error.
+	ErrMissingHost Error = "missing host"
 
 	// ErrMissingPath is the missing path error.
 	ErrMissingPath Error = "missing path"
