@@ -24,7 +24,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/pkg/errors"
+	//"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"strconv"
 )
@@ -64,7 +64,7 @@ func printError(err error) {
 	env := os.Getenv("DEBUG")
 	debug, _ := strconv.ParseBool(env)
 	if env != "" && debug {
-		fmt.Printf("%+v\n", errors.WithStack(err))
+		fmt.Printf("%+v\n", err)
 	} else {
 		fmt.Println(err)
 	}

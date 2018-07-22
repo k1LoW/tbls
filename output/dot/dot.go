@@ -7,21 +7,19 @@ import (
 	"text/template"
 
 	"github.com/k1LoW/tbls/schema"
+	"github.com/pkg/errors"
 )
 
 // OutputSchema generate dot format for full relation.
 func OutputSchema(wr io.Writer, s *schema.Schema) error {
 	f, _ := Assets.Open(filepath.Join("/", "schema.dot.tmpl"))
 	bs, _ := ioutil.ReadAll(f)
-	tmpl, err := template.New(s.Name).Parse(string(bs))
-	if err != nil {
-		return err
-	}
-	err = tmpl.Execute(wr, map[string]interface{}{
+	tmpl := template.Must(template.New(s.Name).Parse(string(bs)))
+	err := tmpl.Execute(wr, map[string]interface{}{
 		"Schema": s,
 	})
 	if err != nil {
-		return err
+		return errors.WithStack(err)
 	}
 
 	return nil
@@ -51,17 +49,14 @@ func OutputTable(wr io.Writer, t *schema.Table) error {
 
 	f, _ := Assets.Open(filepath.Join("/", "table.dot.tmpl"))
 	bs, _ := ioutil.ReadAll(f)
-	tmpl, err := template.New(t.Name).Parse(string(bs))
-	if err != nil {
-		return err
-	}
-	err = tmpl.Execute(wr, map[string]interface{}{
+	tmpl := template.Must(template.New(t.Name).Parse(string(bs)))
+	err := tmpl.Execute(wr, map[string]interface{}{
 		"Table":     t,
 		"Tables":    tables,
 		"Relations": relations,
 	})
 	if err != nil {
-		return err
+		return errors.WithStack(err)
 	}
 
 	return nil

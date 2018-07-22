@@ -31,6 +31,7 @@ import (
 	"github.com/k1LoW/tbls/output/dot"
 	"github.com/k1LoW/tbls/output/md"
 	"github.com/k1LoW/tbls/schema"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -96,7 +97,7 @@ var docCmd = &cobra.Command{
 func withDot(s *schema.Schema, outputPath string, force bool) error {
 	fullPath, err := filepath.Abs(outputPath)
 	if err != nil {
-		return err
+		return errors.WithStack(err)
 	}
 
 	if !force && outputPngExists(s, fullPath) {
@@ -111,17 +112,17 @@ func withDot(s *schema.Schema, outputPath string, force bool) error {
 	if err != nil {
 		tmpfile.Close()
 		os.Remove(tmpfile.Name())
-		return err
+		return errors.WithStack(err)
 	}
 	err = tmpfile.Close()
 	if err != nil {
 		os.Remove(tmpfile.Name())
-		return err
+		return errors.WithStack(err)
 	}
 	err = c.Run()
 	if err != nil {
 		os.Remove(tmpfile.Name())
-		return err
+		return errors.WithStack(err)
 	}
 	os.Remove(tmpfile.Name())
 
@@ -134,17 +135,17 @@ func withDot(s *schema.Schema, outputPath string, force bool) error {
 		if err != nil {
 			tmpfile.Close()
 			os.Remove(tmpfile.Name())
-			return err
+			return errors.WithStack(err)
 		}
 		err = tmpfile.Close()
 		if err != nil {
 			os.Remove(tmpfile.Name())
-			return err
+			return errors.WithStack(err)
 		}
 		err = c.Run()
 		if err != nil {
 			os.Remove(tmpfile.Name())
-			return err
+			return errors.WithStack(err)
 		}
 		os.Remove(tmpfile.Name())
 	}
