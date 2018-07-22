@@ -7,7 +7,7 @@ audit log table
 ## Columns
 
 | Name            | Type                        | Default            | Nullable | Children | Parents                           | Comment |
-| ----            | ----                        | -------            | -------- | -------- | -------                           | ------- |
+| --------------- | --------------------------- | ------------------ | -------- | -------- | --------------------------------- | ------- |
 | id              | uuid                        | uuid_generate_v4() | false    |          |                                   |         |
 | user_id         | integer                     |                    | false    |          | [users](users.md)                 |         |
 | post_id         | bigint                      |                    | true     |          | [posts](posts.md)                 |         |
