@@ -297,7 +297,11 @@ func adjustTable(data [][]string) [][]string {
 	}
 	for i := range data {
 		for j := range w {
-			data[i][j] = fmt.Sprintf(fmt.Sprintf("%%-%ds", w[j]), r.Replace(data[i][j]))
+			if i == 1 {
+				data[i][j] = strings.Repeat("-", w[j])
+			} else {
+				data[i][j] = fmt.Sprintf(fmt.Sprintf("%%-%ds", w[j]), r.Replace(data[i][j]))
+			}
 		}
 	}
 
