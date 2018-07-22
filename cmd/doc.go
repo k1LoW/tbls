@@ -171,6 +171,6 @@ func init() {
 	docCmd.Flags().BoolVarP(&force, "force", "f", false, "force")
 	docCmd.Flags().BoolVarP(&sort, "sort", "", false, "sort")
 	docCmd.Flags().BoolVarP(&noViz, "no-viz", "", false, "don't use Graphviz 'dot' command")
-	docCmd.Flags().BoolVarP(&adjust, "adjust", "j", false, "adjust the notation width of the table")
+	docCmd.Flags().BoolVarP(&adjust, "adjust-table", "j", false, "adjust column width of table")
 	docCmd.Flags().StringVarP(&additionalDataPath, "add", "a", "", "additional schema data path")
 }
