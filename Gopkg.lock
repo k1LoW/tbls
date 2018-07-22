@@ -46,6 +46,14 @@
   version = "v0.0.2"
 
 [[projects]]
+  digest = "1:40e195917a951a8bf867cd05de2a46aaf1806c50cf92eebf4c16f78cd196f747"
+  name = "github.com/pkg/errors"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
+  version = "v0.8.0"
+
+[[projects]]
   digest = "1:d917313f309bda80d27274d53985bc65651f81a5b66b820749ac7f8ef061fd04"
   name = "github.com/sergi/go-diff"
   packages = ["diffmatchpatch"]
@@ -101,6 +109,7 @@
     "github.com/jessevdk/go-assets",
     "github.com/lib/pq",
     "github.com/mattn/go-runewidth",
+    "github.com/pkg/errors",
     "github.com/sergi/go-diff/diffmatchpatch",
     "github.com/spf13/cobra",
     "github.com/xo/dburl",
