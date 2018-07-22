@@ -163,7 +163,7 @@ LEFT JOIN
   ) AS sub
 ON kcu.constraint_name = sub.constraint_name
 WHERE kcu.table_name = c.table_name
-AND kcu.constraint_schema= ?
+AND kcu.table_schema= ?
 AND kcu.table_name = ?
 GROUP BY kcu.constraint_name, sub.costraint_type, kcu.referenced_table_name`, tableName, s.Name, tableName)
 		defer constraintRows.Close()
