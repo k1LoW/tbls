@@ -1,5 +1,9 @@
 # Changelog
 
+## [v0.10.1](https://github.com/k1LoW/tbls/compare/v0.10.0...v0.10.1) (2018-07-22)
+
+* Fix error handling [#39](https://github.com/k1LoW/tbls/pull/39) ([k1LoW](https://github.com/k1LoW))
+
 ## [v0.10.0](https://github.com/k1LoW/tbls/compare/v0.9.3...v0.10.0) (2018-07-22)
 
 * Show errors with stack when `DEBUG=1` [#38](https://github.com/k1LoW/tbls/pull/38) ([k1LoW](https://github.com/k1LoW))
