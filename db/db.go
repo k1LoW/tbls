@@ -8,6 +8,7 @@ import (
 	"github.com/k1LoW/tbls/drivers/mysql"
 	"github.com/k1LoW/tbls/drivers/postgres"
 	"github.com/k1LoW/tbls/schema"
+	"github.com/pkg/errors"
 	"github.com/xo/dburl"
 )
 
@@ -21,7 +22,7 @@ func Analyze(urlstr string) (*schema.Schema, error) {
 	s := &schema.Schema{}
 	u, err := dburl.Parse(urlstr)
 	if err != nil {
-		return s, err
+		return s, errors.WithStack(err)
 	}
 	splitted := strings.Split(u.Short(), "/")
 	s.Name = splitted[1]
@@ -29,10 +30,10 @@ func Analyze(urlstr string) (*schema.Schema, error) {
 	db, err := dburl.Open(urlstr)
 	defer db.Close()
 	if err != nil {
-		return s, err
+		return s, errors.WithStack(err)
 	}
 	if err = db.Ping(); err != nil {
-		return s, err
+		return s, errors.WithStack(err)
 	}
 
 	var driver Driver
@@ -47,7 +48,7 @@ func Analyze(urlstr string) (*schema.Schema, error) {
 	}
 	err = driver.Analyze(db, s)
 	if err != nil {
-		return s, err
+		return s, errors.WithStack(err)
 	}
 	return s, nil
 }
