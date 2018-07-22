@@ -21,6 +21,7 @@
 package cmd
 
 import (
+	"bytes"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -107,6 +108,8 @@ func withDot(s *schema.Schema, outputPath string, force bool) error {
 	fmt.Printf("%s\n", filepath.Join(outputPath, "schema.png"))
 	tmpfile, _ := ioutil.TempFile("", "tblstmp")
 	c := exec.Command("dot", "-Tpng", "-o", filepath.Join(fullPath, "schema.png"), tmpfile.Name())
+	var stderr bytes.Buffer
+	c.Stderr = &stderr
 
 	err = dot.OutputSchema(tmpfile, s)
 	if err != nil {
@@ -122,7 +125,7 @@ func withDot(s *schema.Schema, outputPath string, force bool) error {
 	err = c.Run()
 	if err != nil {
 		os.Remove(tmpfile.Name())
-		return errors.WithStack(err)
+		return errors.WithStack(errors.Wrap(err, stderr.String()))
 	}
 	os.Remove(tmpfile.Name())
 
@@ -131,6 +134,9 @@ func withDot(s *schema.Schema, outputPath string, force bool) error {
 		fmt.Printf("%s\n", filepath.Join(outputPath, fmt.Sprintf("%s.png", t.Name)))
 		tmpfile, _ := ioutil.TempFile("", "tblstmp")
 		c := exec.Command("dot", "-Tpng", "-o", filepath.Join(fullPath, fmt.Sprintf("%s.png", t.Name)), tmpfile.Name())
+		var stderr bytes.Buffer
+		c.Stderr = &stderr
+
 		err = dot.OutputTable(tmpfile, t)
 		if err != nil {
 			tmpfile.Close()
@@ -145,7 +151,7 @@ func withDot(s *schema.Schema, outputPath string, force bool) error {
 		err = c.Run()
 		if err != nil {
 			os.Remove(tmpfile.Name())
-			return errors.WithStack(err)
+			return errors.WithStack(errors.Wrap(err, stderr.String()))
 		}
 		os.Remove(tmpfile.Name())
 	}
