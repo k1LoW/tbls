@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/k1LoW/tbls/schema"
+	"github.com/pkg/errors"
 )
 
 var reFK = regexp.MustCompile(`FOREIGN KEY \((.+)\) REFERENCES ([^\s]+)\s?\((.+)\)`)
@@ -30,7 +31,7 @@ AND table_catalog = $1) tbl ON cls.relname = tbl.table_name
 ORDER BY oid`, s.Name)
 	defer tableRows.Close()
 	if err != nil {
-		return err
+		return errors.WithStack(err)
 	}
 
 	relations := []*schema.Relation{}
@@ -45,7 +46,7 @@ ORDER BY oid`, s.Name)
 		)
 		err := tableRows.Scan(&tableOid, &tableName, &tableType, &tableSchema)
 		if err != nil {
-			return err
+			return errors.WithStack(err)
 		}
 
 		name := tableName
@@ -68,14 +69,14 @@ AND ps.relname = $1
 AND ps.schemaname = $2`, tableName, tableSchema)
 		defer tableCommentRows.Close()
 		if err != nil {
-			return err
+			return errors.WithStack(err)
 		}
 
 		for tableCommentRows.Next() {
 			var tableComment string
 			err = tableCommentRows.Scan(&tableComment)
 			if err != nil {
-				return err
+				return errors.WithStack(err)
 			}
 			table.Comment = tableComment
 		}
@@ -90,13 +91,13 @@ AND table_schema = $3;
 		`, s.Name, tableName, tableSchema)
 			defer viewDefRows.Close()
 			if err != nil {
-				return err
+				return errors.WithStack(err)
 			}
 			for viewDefRows.Next() {
 				var tableDef string
 				err := viewDefRows.Scan(&tableDef)
 				if err != nil {
-					return err
+					return errors.WithStack(err)
 				}
 				table.Def = fmt.Sprintf("CREATE VIEW %s AS (\n%s\n)", tableName, strings.TrimRight(tableDef, ";"))
 			}
@@ -118,7 +119,7 @@ ORDER BY x.indexrelid
 `, tableName, tableSchema)
 		defer indexRows.Close()
 		if err != nil {
-			return err
+			return errors.WithStack(err)
 		}
 
 		indexes := []*schema.Index{}
@@ -129,7 +130,7 @@ ORDER BY x.indexrelid
 			)
 			err = indexRows.Scan(&indexName, &indexDef)
 			if err != nil {
-				return err
+				return errors.WithStack(err)
 			}
 			index := &schema.Index{
 				Name: indexName,
@@ -149,7 +150,7 @@ AND ps.schemaname = $2
 ORDER BY pc.conrelid`, tableName, tableSchema)
 		defer constraintRows.Close()
 		if err != nil {
-			return err
+			return errors.WithStack(err)
 		}
 
 		constraints := []*schema.Constraint{}
@@ -161,7 +162,7 @@ ORDER BY pc.conrelid`, tableName, tableSchema)
 			)
 			err = constraintRows.Scan(&constraintName, &constraintDef, &constraintType)
 			if err != nil {
-				return err
+				return errors.WithStack(err)
 			}
 			constraint := &schema.Constraint{
 				Name: constraintName,
@@ -191,7 +192,7 @@ AND ps.relname = $1
 AND ps.schemaname = $2`, tableName, tableSchema)
 		defer columnCommentRows.Close()
 		if err != nil {
-			return err
+			return errors.WithStack(err)
 		}
 
 		columnComments := make(map[string]string)
@@ -202,7 +203,7 @@ AND ps.schemaname = $2`, tableName, tableSchema)
 			)
 			err = columnCommentRows.Scan(&columnName, &columnComment)
 			if err != nil {
-				return err
+				return errors.WithStack(err)
 			}
 			columnComments[columnName] = columnComment
 		}
@@ -217,7 +218,7 @@ ORDER BY ordinal_position
 `, tableName, tableSchema)
 		defer columnRows.Close()
 		if err != nil {
-			return err
+			return errors.WithStack(err)
 		}
 
 		columns := []*schema.Column{}
@@ -232,7 +233,7 @@ ORDER BY ordinal_position
 			)
 			err = columnRows.Scan(&columnName, &columnDefault, &isNullable, &dataType, &udtName, &characterMaximumLength)
 			if err != nil {
-				return err
+				return errors.WithStack(err)
 			}
 			column := &schema.Column{
 				Name:     columnName,
@@ -261,20 +262,20 @@ ORDER BY ordinal_position
 		for _, c := range strColumns {
 			column, err := r.Table.FindColumnByName(c)
 			if err != nil {
-				return err
+				return errors.WithStack(err)
 			}
 			r.Columns = append(r.Columns, column)
 			column.ParentRelations = append(column.ParentRelations, r)
 		}
 		parentTable, err := s.FindTableByName(strParentTable)
 		if err != nil {
-			return err
+			return errors.WithStack(err)
 		}
 		r.ParentTable = parentTable
 		for _, c := range strParentColumns {
 			column, err := parentTable.FindColumnByName(c)
 			if err != nil {
-				return err
+				return errors.WithStack(err)
 			}
 			r.ParentColumns = append(r.ParentColumns, column)
 			column.ChildRelations = append(column.ChildRelations, r)
