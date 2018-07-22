@@ -11,9 +11,9 @@ comment
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | bigint | nextval('comments_id_seq'::regclass) | false | [logs](logs.md)  |  |  |
-| post_id | bigint |  | false | [comment_stars](comment_stars.md)  | [posts](posts.md)  |  |
-| user_id | integer |  | false | [comment_stars](comment_stars.md)  | [users](users.md)  |  |
+| id | bigint | nextval('comments_id_seq'::regclass) | false | [logs](logs.md) |  |  |
+| post_id | bigint |  | false | [comment_stars](comment_stars.md) | [posts](posts.md) |  |
+| user_id | integer |  | false | [comment_stars](comment_stars.md) | [users](users.md) |  |
 | comment | text |  | false |  |  | Comment<br>Multi-line<br>column<br>comment |
 | created | timestamp without time zone |  | false |  |  |  |
 | updated | timestamp without time zone |  | true |  |  |  |
@@ -21,7 +21,7 @@ comment
 ## Constraints
 
 | Name | Type | Definition |
-| ---- | ---- | --- |
+| ---- | ---- | ---------- |
 | comments_id_pk | PRIMARY KEY | PRIMARY KEY (id) |
 | comments_post_id_user_id_key | UNIQUE | UNIQUE (post_id, user_id) |
 | comments_post_id_fk | FOREIGN KEY | FOREIGN KEY (post_id) REFERENCES posts(id) |
@@ -30,7 +30,7 @@ comment
 ## Indexes
 
 | Name | Definition |
-| ---- | --- |
+| ---- | ---------- |
 | comments_id_pk | CREATE UNIQUE INDEX comments_id_pk ON public.comments USING btree (id) |
 | comments_post_id_user_id_key | CREATE UNIQUE INDEX comments_post_id_user_id_key ON public.comments USING btree (post_id, user_id) |
 | comments_post_id_user_id_idx | CREATE INDEX comments_post_id_user_id_idx ON public.comments USING btree (post_id, user_id) |

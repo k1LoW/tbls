@@ -30,17 +30,17 @@ CREATE TABLE `comment_stars` (
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | bigint(20) |  | false | [logs](logs.md)  |  |  |
+| id | bigint(20) |  | false | [logs](logs.md) |  |  |
 | user_id | int(11) |  | false |  |  |  |
-| comment_post_id | bigint(20) |  | false |  | [comments](comments.md)  |  |
-| comment_user_id | int(11) |  | false |  | [users](users.md) [comments](comments.md)  |  |
+| comment_post_id | bigint(20) |  | false |  | [comments](comments.md) |  |
+| comment_user_id | int(11) |  | false |  | [users](users.md) [comments](comments.md) |  |
 | created | timestamp | CURRENT_TIMESTAMP | false |  |  |  |
 | updated | timestamp | 0000-00-00 00:00:00 | false |  |  |  |
 
 ## Constraints
 
 | Name | Type | Definition |
-| ---- | ---- | --- |
+| ---- | ---- | ---------- |
 | comment_stars_user_id_fk | FOREIGN KEY | FOREIGN KEY (comment_user_id) REFERENCES users (id) |
 | comment_stars_user_id_post_id_fk | FOREIGN KEY | FOREIGN KEY (comment_post_id, comment_user_id) REFERENCES comments (post_id, user_id) |
 | PRIMARY | PRIMARY KEY | PRIMARY KEY (id) |
@@ -49,7 +49,7 @@ CREATE TABLE `comment_stars` (
 ## Indexes
 
 | Name | Definition |
-| ---- | --- |
+| ---- | ---------- |
 | comment_stars_user_id_fk | KEY comment_stars_user_id_fk (comment_user_id) USING BTREE |
 | comment_stars_user_id_post_id_fk | KEY comment_stars_user_id_post_id_fk (comment_post_id, comment_user_id) USING BTREE |
 | PRIMARY | PRIMARY KEY (id) USING BTREE |

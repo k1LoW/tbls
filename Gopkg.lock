@@ -3,11 +3,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:3bc111f9519648e70f28a44a09c96f8436541db4d1ce194ebbbf67f351dfefca"
+  digest = "1:70a20b8adf085489a342d033b68b7fc27f4017c51e015b857387249493ee0561"
   name = "github.com/go-sql-driver/mysql"
   packages = ["."]
   pruneopts = "UT"
-  revision = "ceae19ce1c5ac766abad8db04d649a7a83e91ced"
+  revision = "99ff426eb706cffe92ff3d058e168b278cabf7c7"
   source = "github.com/go-sql-driver/mysql"
 
 [[projects]]
@@ -38,6 +38,14 @@
   revision = "90697d60dd844d5ef6ff15135d0203f65d2f53b8"
 
 [[projects]]
+  digest = "1:e2d1d410fb367567c2b53ed9e2d719d3c1f0891397bb2fa49afd747cfbf1e8e4"
+  name = "github.com/mattn/go-runewidth"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "9e777a8366cce605130a531d2cd6363d07ad7317"
+  version = "v0.0.2"
+
+[[projects]]
   digest = "1:d917313f309bda80d27274d53985bc65651f81a5b66b820749ac7f8ef061fd04"
   name = "github.com/sergi/go-diff"
   packages = ["diffmatchpatch"]
@@ -63,19 +71,19 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:955a5a85da42efc5236c836d0c92be3479691090aea4c07fd75877b85ca1da2a"
+  digest = "1:4904b183bb8ac483dbebc13ff8df5cc35b27f2ab726ca52477d7f05231f52685"
   name = "github.com/xo/dburl"
   packages = ["."]
   pruneopts = "UT"
-  revision = "6a21934dd3de290069382e550e1f7959e5892909"
+  revision = "cd61869a0c089d2d6fa2f73676dceeaa958132ca"
 
 [[projects]]
   digest = "1:c25289f43ac4a68d88b02245742347c94f1e108c534dda442188015ff80669b3"
   name = "google.golang.org/appengine"
   packages = ["cloudsql"]
   pruneopts = "UT"
-  revision = "150dc57a1b433e64154302bdc40b6bb8aefa313a"
-  version = "v1.0.0"
+  revision = "b1f26356af11148e710935ed1ac8a7f5702c7612"
+  version = "v1.1.0"
 
 [[projects]]
   digest = "1:342378ac4dcb378a5448dd723f0784ae519383532f5e70ade24132c4c8693202"
@@ -92,6 +100,7 @@
     "github.com/go-sql-driver/mysql",
     "github.com/jessevdk/go-assets",
     "github.com/lib/pq",
+    "github.com/mattn/go-runewidth",
     "github.com/sergi/go-diff/diffmatchpatch",
     "github.com/spf13/cobra",
     "github.com/xo/dburl",
