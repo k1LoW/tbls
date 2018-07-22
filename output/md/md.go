@@ -6,12 +6,12 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 	"text/template"
 
 	"github.com/k1LoW/tbls/schema"
 	"github.com/mattn/go-runewidth"
 	"github.com/sergi/go-diff/diffmatchpatch"
-	"strings"
 )
 
 // Output generate markdown files.
