@@ -11,6 +11,7 @@ import (
 
 	"github.com/k1LoW/tbls/schema"
 	"github.com/mattn/go-runewidth"
+	"github.com/pkg/errors"
 	"github.com/sergi/go-diff/diffmatchpatch"
 )
 
@@ -18,7 +19,7 @@ import (
 func Output(s *schema.Schema, path string, force bool, adjust bool) error {
 	fullPath, err := filepath.Abs(path)
 	if err != nil {
-		return err
+		return errors.WithStack(err)
 	}
 
 	if !force && outputExists(s, fullPath) {
@@ -29,7 +30,7 @@ func Output(s *schema.Schema, path string, force bool, adjust bool) error {
 	file, err := os.Create(filepath.Join(fullPath, "README.md"))
 	defer file.Close()
 	if err != nil {
-		return err
+		return errors.WithStack(err)
 	}
 	f, _ := Assets.Open(filepath.Join("/", "index.md.tmpl"))
 	bs, _ := ioutil.ReadAll(f)
@@ -44,7 +45,7 @@ func Output(s *schema.Schema, path string, force bool, adjust bool) error {
 
 	err = tmpl.Execute(file, templateData)
 	if err != nil {
-		return err
+		return errors.WithStack(err)
 	}
 	fmt.Printf("%s\n", filepath.Join(path, "README.md"))
 
@@ -53,7 +54,7 @@ func Output(s *schema.Schema, path string, force bool, adjust bool) error {
 		file, err := os.Create(filepath.Join(fullPath, fmt.Sprintf("%s.md", t.Name)))
 		if err != nil {
 			file.Close()
-			return err
+			return errors.WithStack(err)
 		}
 		f, _ := Assets.Open(filepath.Join("/", "table.md.tmpl"))
 		bs, _ := ioutil.ReadAll(f)
@@ -69,7 +70,7 @@ func Output(s *schema.Schema, path string, force bool, adjust bool) error {
 		err = tmpl.Execute(file, templateData)
 		if err != nil {
 			file.Close()
-			return err
+			return errors.WithStack(err)
 		}
 		fmt.Printf("%s\n", filepath.Join(path, fmt.Sprintf("%s.md", t.Name)))
 		file.Close()
@@ -81,7 +82,7 @@ func Output(s *schema.Schema, path string, force bool, adjust bool) error {
 func Diff(s *schema.Schema, path string, adjust bool) error {
 	fullPath, err := filepath.Abs(path)
 	if err != nil {
-		return err
+		return errors.WithStack(err)
 	}
 
 	if !outputExists(s, fullPath) {
@@ -105,7 +106,7 @@ func Diff(s *schema.Schema, path string, adjust bool) error {
 
 	err = tmpl.Execute(a, templateData)
 	if err != nil {
-		return err
+		return errors.WithStack(err)
 	}
 
 	targetPath := filepath.Join(fullPath, "README.md")
@@ -139,7 +140,7 @@ func Diff(s *schema.Schema, path string, adjust bool) error {
 		err = tmpl.Execute(a, templateData)
 
 		if err != nil {
-			return err
+			return errors.WithStack(err)
 		}
 		targetPath := filepath.Join(fullPath, fmt.Sprintf("%s.md", t.Name))
 		b, err := ioutil.ReadFile(targetPath)

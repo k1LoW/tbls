@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/k1LoW/tbls/schema"
+	"github.com/pkg/errors"
 )
 
 var reFK = regexp.MustCompile(`FOREIGN KEY \((.+)\) REFERENCES ([^\s]+)\s?\((.+)\)`)
@@ -21,7 +22,7 @@ func (m *Mysql) Analyze(db *sql.DB, s *schema.Schema) error {
 SELECT table_name, table_type, table_comment FROM information_schema.tables WHERE table_schema = ?;`, s.Name)
 	defer tableRows.Close()
 	if err != nil {
-		return err
+		return errors.WithStack(err)
 	}
 
 	relations := []*schema.Relation{}
@@ -35,7 +36,7 @@ SELECT table_name, table_type, table_comment FROM information_schema.tables WHER
 		)
 		err := tableRows.Scan(&tableName, &tableType, &tableComment)
 		if err != nil {
-			return err
+			return errors.WithStack(err)
 		}
 		table := &schema.Table{
 			Name:    tableName,
@@ -48,7 +49,7 @@ SELECT table_name, table_type, table_comment FROM information_schema.tables WHER
 			tableDefRows, err := db.Query(fmt.Sprintf("SHOW CREATE TABLE %s", tableName))
 			defer tableDefRows.Close()
 			if err != nil {
-				return err
+				return errors.WithStack(err)
 			}
 			for tableDefRows.Next() {
 				var (
@@ -57,7 +58,7 @@ SELECT table_name, table_type, table_comment FROM information_schema.tables WHER
 				)
 				err := tableDefRows.Scan(&tableName, &tableDef)
 				if err != nil {
-					return err
+					return errors.WithStack(err)
 				}
 				table.Def = tableDef
 			}
@@ -72,13 +73,13 @@ AND table_name = ?;
 		`, s.Name, tableName)
 			defer viewDefRows.Close()
 			if err != nil {
-				return err
+				return errors.WithStack(err)
 			}
 			for viewDefRows.Next() {
 				var tableDef string
 				err := viewDefRows.Scan(&tableDef)
 				if err != nil {
-					return err
+					return errors.WithStack(err)
 				}
 				table.Def = fmt.Sprintf("CREATE VIEW %s AS (%s)", tableName, tableDef)
 			}
@@ -101,7 +102,7 @@ AND s.table_name = ?
 GROUP BY key_type, s.table_name, s.index_name, s.index_type`, s.Name, tableName)
 		defer indexRows.Close()
 		if err != nil {
-			return err
+			return errors.WithStack(err)
 		}
 
 		indexes := []*schema.Index{}
@@ -115,7 +116,7 @@ GROUP BY key_type, s.table_name, s.index_name, s.index_type`, s.Name, tableName)
 			)
 			err = indexRows.Scan(&indexKeyType, &indexName, &indexColumnName, &indexType)
 			if err != nil {
-				return err
+				return errors.WithStack(err)
 			}
 
 			if indexKeyType == "PRIMARY KEY" {
@@ -167,7 +168,7 @@ AND kcu.table_name = ?
 GROUP BY kcu.constraint_name, sub.costraint_type, kcu.referenced_table_name`, tableName, s.Name, tableName)
 		defer constraintRows.Close()
 		if err != nil {
-			return err
+			return errors.WithStack(err)
 		}
 
 		constraints := []*schema.Constraint{}
@@ -182,7 +183,7 @@ GROUP BY kcu.constraint_name, sub.costraint_type, kcu.referenced_table_name`, ta
 			)
 			err = constraintRows.Scan(&constraintName, &constraintType, &constraintColumnName, &constraintRefTableName, &constraintRefColumnName)
 			if err != nil {
-				return err
+				return errors.WithStack(err)
 			}
 			switch constraintType {
 			case "PRIMARY KEY":
@@ -215,7 +216,7 @@ FROM information_schema.columns
 WHERE table_schema = ? AND table_name = ? ORDER BY ordinal_position`, s.Name, tableName)
 		defer columnRows.Close()
 		if err != nil {
-			return err
+			return errors.WithStack(err)
 		}
 		columns := []*schema.Column{}
 		for columnRows.Next() {
@@ -228,7 +229,7 @@ WHERE table_schema = ? AND table_name = ? ORDER BY ordinal_position`, s.Name, ta
 			)
 			err = columnRows.Scan(&columnName, &columnDefault, &isNullable, &columnType, &columnComment)
 			if err != nil {
-				return err
+				return errors.WithStack(err)
 			}
 			column := &schema.Column{
 				Name:     columnName,
@@ -256,20 +257,20 @@ WHERE table_schema = ? AND table_name = ? ORDER BY ordinal_position`, s.Name, ta
 		for _, c := range strColumns {
 			column, err := r.Table.FindColumnByName(c)
 			if err != nil {
-				return err
+				return errors.WithStack(err)
 			}
 			r.Columns = append(r.Columns, column)
 			column.ParentRelations = append(column.ParentRelations, r)
 		}
 		parentTable, err := s.FindTableByName(strParentTable)
 		if err != nil {
-			return err
+			return errors.WithStack(err)
 		}
 		r.ParentTable = parentTable
 		for _, c := range strParentColumns {
 			column, err := parentTable.FindColumnByName(c)
 			if err != nil {
-				return err
+				return errors.WithStack(err)
 			}
 			r.ParentColumns = append(r.ParentColumns, column)
 			column.ChildRelations = append(column.ChildRelations, r)
