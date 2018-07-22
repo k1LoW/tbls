@@ -47,14 +47,14 @@ var dotCmd = &cobra.Command{
 		dsn := args[0]
 		s, err := db.Analyze(dsn)
 		if err != nil {
-			fmt.Println(err)
+			printError(err)
 			os.Exit(1)
 		}
 
 		if additionalDataPath != "" {
 			err = s.LoadAdditionalData(additionalDataPath)
 			if err != nil {
-				fmt.Println(err)
+				printError(err)
 				os.Exit(1)
 			}
 		}
@@ -62,7 +62,7 @@ var dotCmd = &cobra.Command{
 		if sort {
 			err = s.Sort()
 			if err != nil {
-				fmt.Println(err)
+				printError(err)
 				os.Exit(1)
 			}
 		}
@@ -72,14 +72,14 @@ var dotCmd = &cobra.Command{
 		} else {
 			t, err := s.FindTableByName(tableName)
 			if err != nil {
-				fmt.Println(err)
+				printError(err)
 				os.Exit(1)
 			}
 			err = dot.OutputTable(os.Stdout, t)
 		}
 
 		if err != nil {
-			fmt.Println(err)
+			printError(err)
 			os.Exit(1)
 		}
 	},

@@ -11,19 +11,19 @@ var _Assetsac44302fb6150a621aa9d04a0350aac972bf7e18 = "# {{ .Table.Name }}\n\n##
 
 // Assets returns go-assets FileSystem
 var Assets = assets.NewFileSystem(map[string][]string{"/": []string{"index.md.tmpl", "table.md.tmpl"}}, map[string]*assets.File{
-	"/": &assets.File{
+	"/table.md.tmpl": &assets.File{
+		Path:     "/table.md.tmpl",
+		FileMode: 0x1a4,
+		Mtime:    time.Unix(1532239511, 1532239511000000000),
+		Data:     []byte(_Assetsac44302fb6150a621aa9d04a0350aac972bf7e18),
+	}, "/": &assets.File{
 		Path:     "/",
 		FileMode: 0x800001ed,
-		Mtime:    time.Unix(1532186069, 1532186069000000000),
+		Mtime:    time.Unix(1532239511, 1532239511000000000),
 		Data:     nil,
 	}, "/index.md.tmpl": &assets.File{
 		Path:     "/index.md.tmpl",
 		FileMode: 0x1a4,
-		Mtime:    time.Unix(1532183585, 1532183585000000000),
+		Mtime:    time.Unix(1532239511, 1532239511000000000),
 		Data:     []byte(_Assets43889384df1c6f74d764c29d91b9d5637eb46061),
-	}, "/table.md.tmpl": &assets.File{
-		Path:     "/table.md.tmpl",
-		FileMode: 0x1a4,
-		Mtime:    time.Unix(1532186069, 1532186069000000000),
-		Data:     []byte(_Assetsac44302fb6150a621aa9d04a0350aac972bf7e18),
 	}}, "")
