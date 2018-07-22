@@ -152,7 +152,7 @@ LEFT JOIN
         WHEN c.column_key='UNI' THEN 'UNIQUE'
         WHEN c.column_key='MUL' AND kcu.referenced_table_name IS NULL THEN 'UNIQUE'
         WHEN c.column_key='MUL' AND kcu.referenced_table_name IS NOT NULL THEN 'FOREIGN KEY'
-        ELSE null
+        ELSE 'UNKNOWN'
    END) AS costraint_type
    FROM information_schema.key_column_usage AS kcu
    LEFT JOIN information_schema.columns AS c ON kcu.column_name = c.column_name
@@ -163,7 +163,7 @@ LEFT JOIN
   ) AS sub
 ON kcu.constraint_name = sub.constraint_name
 WHERE kcu.table_name = c.table_name
-AND kcu.constraint_schema= ?
+AND kcu.table_schema= ?
 AND kcu.table_name = ?
 GROUP BY kcu.constraint_name, sub.costraint_type, kcu.referenced_table_name`, tableName, s.Name, tableName)
 		defer constraintRows.Close()
@@ -197,6 +197,8 @@ GROUP BY kcu.constraint_name, sub.costraint_type, kcu.referenced_table_name`, ta
 					Def:   constraintDef,
 				}
 				relations = append(relations, relation)
+			case "UNKNOWN":
+				constraintDef = fmt.Sprintf("UNKNOWN CONSTRAINT (%s) (%s) (%s)", constraintColumnName, constraintRefTableName.String, constraintRefColumnName.String)
 			}
 
 			constraint := &schema.Constraint{
