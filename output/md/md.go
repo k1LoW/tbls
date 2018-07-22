@@ -9,12 +9,13 @@ import (
 	"text/template"
 
 	"github.com/k1LoW/tbls/schema"
+	"github.com/mattn/go-runewidth"
 	"github.com/sergi/go-diff/diffmatchpatch"
 	"strings"
 )
 
 // Output generate markdown files.
-func Output(s *schema.Schema, path string, force bool) error {
+func Output(s *schema.Schema, path string, force bool, adjust bool) error {
 	fullPath, err := filepath.Abs(path)
 	if err != nil {
 		return err
@@ -38,7 +39,7 @@ func Output(s *schema.Schema, path string, force bool) error {
 		er = true
 	}
 
-	templateData := makeSchemaTemplateData(s)
+	templateData := makeSchemaTemplateData(s, adjust)
 	templateData["er"] = er
 
 	err = tmpl.Execute(file, templateData)
@@ -62,7 +63,7 @@ func Output(s *schema.Schema, path string, force bool) error {
 			er = true
 		}
 
-		templateData := makeTableTemplateData(t)
+		templateData := makeTableTemplateData(t, adjust)
 		templateData["er"] = er
 
 		err = tmpl.Execute(file, templateData)
@@ -77,7 +78,7 @@ func Output(s *schema.Schema, path string, force bool) error {
 }
 
 // Diff database and markdown files.
-func Diff(s *schema.Schema, path string) error {
+func Diff(s *schema.Schema, path string, adjust bool) error {
 	fullPath, err := filepath.Abs(path)
 	if err != nil {
 		return err
@@ -99,7 +100,7 @@ func Diff(s *schema.Schema, path string) error {
 		er = true
 	}
 
-	templateData := makeSchemaTemplateData(s)
+	templateData := makeSchemaTemplateData(s, adjust)
 	templateData["er"] = er
 
 	err = tmpl.Execute(a, templateData)
@@ -132,7 +133,7 @@ func Diff(s *schema.Schema, path string) error {
 			er = true
 		}
 
-		templateData := makeTableTemplateData(t)
+		templateData := makeTableTemplateData(t, adjust)
 		templateData["er"] = er
 
 		err = tmpl.Execute(a, templateData)
@@ -184,7 +185,7 @@ func funcMap() map[string]interface{} {
 	}
 }
 
-func makeSchemaTemplateData(s *schema.Schema) map[string]interface{} {
+func makeSchemaTemplateData(s *schema.Schema, adjust bool) map[string]interface{} {
 	tablesData := [][]string{
 		[]string{"Name", "Columns", "Comment", "Type"},
 		[]string{"----", "-------", "-------", "----"},
@@ -199,13 +200,20 @@ func makeSchemaTemplateData(s *schema.Schema) map[string]interface{} {
 		tablesData = append(tablesData, data)
 	}
 
+	if adjust {
+		return map[string]interface{}{
+			"Schema": s,
+			"Tables": adjustTable(tablesData),
+		}
+	}
+
 	return map[string]interface{}{
 		"Schema": s,
 		"Tables": tablesData,
 	}
 }
 
-func makeTableTemplateData(t *schema.Table) map[string]interface{} {
+func makeTableTemplateData(t *schema.Table, adjust bool) map[string]interface{} {
 	// Columns
 	columnsData := [][]string{
 		[]string{"Name", "Type", "Default", "Nullable", "Children", "Parents", "Comment"},
@@ -259,10 +267,39 @@ func makeTableTemplateData(t *schema.Table) map[string]interface{} {
 		indexesData = append(indexesData, data)
 	}
 
+	if adjust {
+		return map[string]interface{}{
+			"Table":       t,
+			"Columns":     adjustTable(columnsData),
+			"Constraints": adjustTable(constraintsData),
+			"Indexes":     adjustTable(indexesData),
+		}
+	}
+
 	return map[string]interface{}{
 		"Table":       t,
 		"Columns":     columnsData,
 		"Constraints": constraintsData,
 		"Indexes":     indexesData,
 	}
+}
+
+func adjustTable(data [][]string) [][]string {
+	r := strings.NewReplacer("\r\n", "<br>", "\n", "<br>", "\r", "<br>")
+	w := make([]int, len(data[0]))
+	for i := range data {
+		for j := range w {
+			l := runewidth.StringWidth(r.Replace(data[i][j]))
+			if l > w[j] {
+				w[j] = l
+			}
+		}
+	}
+	for i := range data {
+		for j := range w {
+			data[i][j] = fmt.Sprintf(fmt.Sprintf("%%-%ds", w[j]), r.Replace(data[i][j]))
+		}
+	}
+
+	return data
 }
