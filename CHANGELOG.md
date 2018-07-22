@@ -1,5 +1,10 @@
 # Changelog
 
+## [v0.10.0](https://github.com/k1LoW/tbls/compare/v0.9.3...v0.10.0) (2018-07-22)
+
+* Show errors with stack when `DEBUG=1` [#38](https://github.com/k1LoW/tbls/pull/38) ([k1LoW](https://github.com/k1LoW))
+* Add `--adjust-table` option for adjust column width of table [#37](https://github.com/k1LoW/tbls/pull/37) ([k1LoW](https://github.com/k1LoW))
+
 ## [v0.9.3](https://github.com/k1LoW/tbls/compare/v0.9.2...v0.9.3) (2018-07-13)
 
 * Support CR `\r` and CRLF `\r\n` [#35](https://github.com/k1LoW/tbls/pull/35) ([k1LoW](https://github.com/k1LoW))
