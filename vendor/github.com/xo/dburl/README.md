@@ -81,6 +81,7 @@ supported out of the box:
 | PostgreSQL (postgres)        | pg, postgresql, pgsql                 |
 | SQLite3 (sqlite3)            | sq, sqlite, file                      |
 |                              |                                       |
+| Amazon Redshift (redshift)   | rs [postgres]                         |
 | CockroachDB (cockroachdb)    | cr, cockroach, crdb, cdb [postgres]   |
 | MemSQL (memsql)              | me [mysql]                            |
 | TiDB (tidb)                  | ti [mysql]                            |
@@ -92,6 +93,8 @@ supported out of the box:
 | PostgreSQL (pgx)             | px                                    |
 |                              |                                       |
 | Apache Avatica (avatica)     | av, phoenix                           |
+| Apache Ignite (ignite)       | ig, gridgain                          |
+| Cassandra (cql)              | ca, cassandra, datastax, scy, scylla  |
 | ClickHouse (clickhouse)      | ch                                    |
 | Couchbase (n1ql)             | n1, couchbase                         |
 | Cznic QL (ql)                | ql, cznic, cznicql                    |
@@ -101,6 +104,7 @@ supported out of the box:
 | OLE ODBC (oleodbc)           | oo, ole, oleodbc [adodb]              |
 | Presto (presto)              | pr, prestodb, prestos, prs, prestodbs |
 | SAP HANA (hdb)               | sa, saphana, sap, hana                |
+| Snowflake (snowflake)        | sf                                    |
 | VoltDB (voltdb)              | vo, volt, vdb                         |
 
 Any protocol scheme `alias://` can be used in place of `protocol://`, and will work
@@ -130,6 +134,7 @@ to be imported:
 | PostgreSQL (postgres)        | [github.com/lib/pq](https://github.com/lib/pq)                                              |
 | SQLite3 (sqlite3)            | [github.com/mattn/go-sqlite3](https://github.com/mattn/go-sqlite3)                          |
 |                              |                                                                                             |
+| Amazon Redshift (redshift)   | [github.com/lib/pq](https://github.com/lib/pq)                                              |
 | CockroachDB (cockroachdb)    | [github.com/lib/pq](https://github.com/lib/pq)                                              |
 | MemSQL (memsql)              | [github.com/go-sql-driver/mysql](https://github.com/go-sql-driver/mysql)                    |
 | TiDB (tidb)                  | [github.com/go-sql-driver/mysql](https://github.com/go-sql-driver/mysql)                    |
@@ -141,6 +146,8 @@ to be imported:
 | PostgreSQL (pgx)             | [github.com/jackc/pgx/stdlib](https://github.com/jackc/pgx)                                 |
 |                              |                                                                                             |
 | Apache Avatica (avatica)     | [github.com/Boostport/avatica](https://github.com/Boostport/avatica)                        |
+| Apache Ignite (ignite)       | [github.com/amsokol/ignite-go-client/sql](https://github.com/amsokol/ignite-go-client)      |
+| Cassandra (cql)              | [github.com/MichaelS11/go-cql-driver](https://github.com/MichaelS11/go-cql-driver)          |
 | ClickHouse (clickhouse)      | [github.com/kshvakov/clickhouse](https://github.com/kshvakov/clickhouse)                    |
 | Couchbase (n1ql)             | [github.com/couchbase/go_n1ql](https://github.com/couchbase/go_n1ql)                        |
 | Cznic QL (ql)                | [github.com/cznic/ql](https://github.com/cznic/ql)                                          |
@@ -150,6 +157,7 @@ to be imported:
 | OLE ODBC (oleodbc)           | [github.com/mattn/go-adodb](https://github.com/mattn/go-adodb)                              |
 | Presto (presto)              | [github.com/prestodb/presto-go-client/presto](https://github.com/prestodb/presto-go-client) |
 | SAP HANA (hdb)               | [github.com/SAP/go-hdb/driver](https://github.com/SAP/go-hdb)                               |
+| Snowflake (snowflake)        | [github.com/snowflakedb/gosnowflake](https://github.com/snowflakedb/gosnowflake)            |
 | VoltDB (voltdb)              | [github.com/VoltDB/voltdb-client-go/voltdbclient](github.com/VoltDB/voltdb-client-go])      |
 
 Please see [the GoDoc API page](http://godoc.org/github.com/xo/dburl) for a
