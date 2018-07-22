@@ -1,11 +1,8 @@
 # {{ .Schema.Name }}
 
 ## Tables
-
-| Name | Columns | Comment | Type |
-| ---- | ------- | ------- | ---- |
-{{- range $i, $t := .Schema.Tables }}
-| [{{ $t.Name }}]({{ $t.Name }}.md) | {{ len $t.Columns }} | {{ $t.Comment | nl2br }} | {{ $t.Type }} |
+{{ range $t := .Tables }}
+|{{ range $d := $t }} {{ $d | nl2br }} |{{ end }}
 {{- end }}
 
 {{ if .er -}}

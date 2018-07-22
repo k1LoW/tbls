@@ -202,8 +202,7 @@ func GenSQLServer(u *URL) (string, error) {
 func GenMySQL(u *URL) (string, error) {
 	host, port, dbname := hostname(u.Host), hostport(u.Host), strings.TrimPrefix(u.Path, "/")
 
-	// create dsn
-	dsn := ""
+	var dsn string
 
 	// build user/pass
 	if u.User != nil {
@@ -519,4 +518,78 @@ func GenPresto(u *URL) (string, error) {
 	z.RawQuery = q.Encode()
 
 	return z.String(), nil
+}
+
+// GenCassandra generates a cassandra DSN from the passed URL.
+func GenCassandra(u *URL) (string, error) {
+	host, port, dbname := "localhost", "9042", strings.TrimPrefix(u.Path, "/")
+	if h := hostname(u.Host); h != "" {
+		host = h
+	}
+	if p := hostport(u.Host); p != "" {
+		port = p
+	}
+	q := u.Query()
+	// add user/pass
+	if u.User != nil {
+		q.Set("username", u.User.Username())
+		if pass, _ := u.User.Password(); pass != "" {
+			q.Set("password", pass)
+		}
+	}
+	// add dbname
+	if dbname != "" {
+		q.Set("keyspace", dbname)
+	}
+	return host + ":" + port + genQueryOptions(q), nil
+}
+
+// GenIgnite generates an ignite DSN from the passed URL.
+func GenIgnite(u *URL) (string, error) {
+	host, port, dbname := "localhost", "10800", strings.TrimPrefix(u.Path, "/")
+	if h := hostname(u.Host); h != "" {
+		host = h
+	}
+	if p := hostport(u.Host); p != "" {
+		port = p
+	}
+	q := u.Query()
+	// add user/pass
+	if u.User != nil {
+		q.Set("username", u.User.Username())
+		if pass, _ := u.User.Password(); pass != "" {
+			q.Set("password", pass)
+		}
+	}
+	// add dbname
+	if dbname != "" {
+		dbname = "/" + dbname
+	}
+	return "tcp://" + host + ":" + port + dbname + genQueryOptions(q), nil
+}
+
+// GenSnowflake generates a snowflake DSN from the passed URL.
+func GenSnowflake(u *URL) (string, error) {
+	host, port, dbname := hostname(u.Host), hostport(u.Host), strings.TrimPrefix(u.Path, "/")
+	if host == "" {
+		return "", ErrMissingHost
+	}
+	if dbname == "" {
+		return "", ErrMissingPath
+	}
+	if port != "" {
+		port = ":" + port
+	}
+
+	// add user/pass
+	var user string
+	if u.User != nil {
+		user = u.User.Username()
+		if pass, _ := u.User.Password(); pass != "" {
+			user += ":" + pass
+		}
+		user += "@"
+	}
+
+	return user + host + port + "/" + dbname + genQueryOptions(u.Query()), nil
 }

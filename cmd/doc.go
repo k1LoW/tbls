@@ -84,7 +84,7 @@ var docCmd = &cobra.Command{
 			}
 		}
 
-		err = md.Output(s, outputPath, force)
+		err = md.Output(s, outputPath, force, adjust)
 
 		if err != nil {
 			fmt.Println(err)
@@ -171,5 +171,6 @@ func init() {
 	docCmd.Flags().BoolVarP(&force, "force", "f", false, "force")
 	docCmd.Flags().BoolVarP(&sort, "sort", "", false, "sort")
 	docCmd.Flags().BoolVarP(&noViz, "no-viz", "", false, "don't use Graphviz 'dot' command")
+	docCmd.Flags().BoolVarP(&adjust, "adjust-table", "j", false, "adjust column width of table")
 	docCmd.Flags().StringVarP(&additionalDataPath, "add", "a", "", "additional schema data path")
 }
