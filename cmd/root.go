@@ -24,7 +24,9 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
+	"strconv"
 )
 
 // adjust is a flag on whethre to adjust the notation width of the table
@@ -50,10 +52,20 @@ var rootCmd = &cobra.Command{
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
+		printError(err)
 		os.Exit(1)
 	}
 }
 
 func init() {
+}
+
+func printError(err error) {
+	env := os.Getenv("DEBUG")
+	debug, _ := strconv.ParseBool(env)
+	if env != "" && debug {
+		fmt.Printf("%+v\n", errors.WithStack(err))
+	} else {
+		fmt.Println(err)
+	}
 }
