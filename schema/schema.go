@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"sort"
 
+	"github.com/pkg/errors"
 	yaml "gopkg.in/yaml.v2"
 )
 
@@ -91,7 +92,7 @@ func (s *Schema) FindTableByName(name string) (*Table, error) {
 			return t, nil
 		}
 	}
-	return nil, fmt.Errorf("Error: not found table '%s'", name)
+	return nil, errors.WithStack(fmt.Errorf("Error: not found table '%s'", name))
 }
 
 // FindColumnByName find column by column name
@@ -101,7 +102,7 @@ func (t *Table) FindColumnByName(name string) (*Column, error) {
 			return c, nil
 		}
 	}
-	return nil, fmt.Errorf("Error: not found column '%s'", name)
+	return nil, errors.WithStack(fmt.Errorf("Error: not found column '%s.%s'", t.Name, name))
 }
 
 // Sort schema tables, columns, relations, and constrains
@@ -138,12 +139,12 @@ func (s *Schema) Sort() error {
 func (s *Schema) LoadAdditionalData(path string) error {
 	fullPath, err := filepath.Abs(path)
 	if err != nil {
-		return err
+		return errors.WithStack(err)
 	}
 
 	buf, err := ioutil.ReadFile(fullPath)
 	if err != nil {
-		return err
+		return errors.WithStack(err)
 	}
 
 	err = s.AddAdditionalData(buf)
@@ -159,7 +160,7 @@ func (s *Schema) AddAdditionalData(buf []byte) error {
 	var data AdditionalData
 	err := yaml.Unmarshal(buf, &data)
 	if err != nil {
-		return err
+		return errors.WithStack(err)
 	}
 
 	err = addAdditionalRelations(s, data.Relations)
