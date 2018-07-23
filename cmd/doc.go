@@ -46,7 +46,7 @@ var docCmd = &cobra.Command{
 	Long:  `'tbls doc' analyzes a database and generate document in GitHub Friendly Markdown format.`,
 	Args: func(cmd *cobra.Command, args []string) error {
 		if len(args) != 2 {
-			return fmt.Errorf("Error: %s", "requires two args")
+			return errors.WithStack(fmt.Errorf("Error: %s", "requires two args"))
 		}
 		return nil
 	},
@@ -115,7 +115,7 @@ func withDot(s *schema.Schema, outputPath string, force bool) error {
 	if err != nil {
 		tmpfile.Close()
 		os.Remove(tmpfile.Name())
-		return errors.WithStack(err)
+		return err
 	}
 	err = tmpfile.Close()
 	if err != nil {
@@ -141,7 +141,7 @@ func withDot(s *schema.Schema, outputPath string, force bool) error {
 		if err != nil {
 			tmpfile.Close()
 			os.Remove(tmpfile.Name())
-			return errors.WithStack(err)
+			return err
 		}
 		err = tmpfile.Close()
 		if err != nil {

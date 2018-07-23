@@ -262,20 +262,20 @@ ORDER BY ordinal_position
 		for _, c := range strColumns {
 			column, err := r.Table.FindColumnByName(c)
 			if err != nil {
-				return errors.WithStack(err)
+				return err
 			}
 			r.Columns = append(r.Columns, column)
 			column.ParentRelations = append(column.ParentRelations, r)
 		}
 		parentTable, err := s.FindTableByName(strParentTable)
 		if err != nil {
-			return errors.WithStack(err)
+			return err
 		}
 		r.ParentTable = parentTable
 		for _, c := range strParentColumns {
 			column, err := parentTable.FindColumnByName(c)
 			if err != nil {
-				return errors.WithStack(err)
+				return err
 			}
 			r.ParentColumns = append(r.ParentColumns, column)
 			column.ChildRelations = append(column.ChildRelations, r)

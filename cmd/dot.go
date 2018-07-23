@@ -26,6 +26,7 @@ import (
 
 	"github.com/k1LoW/tbls/db"
 	"github.com/k1LoW/tbls/output/dot"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -39,7 +40,7 @@ var dotCmd = &cobra.Command{
 	Long:  `'tbls dot' analyzes a database and generate dot file.`,
 	Args: func(cmd *cobra.Command, args []string) error {
 		if len(args) != 1 {
-			return fmt.Errorf("Error: %s", "requires one arg")
+			return errors.WithStack(fmt.Errorf("Error: %s", "requires two args"))
 		}
 		return nil
 	},
