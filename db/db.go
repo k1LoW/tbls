@@ -44,11 +44,11 @@ func Analyze(urlstr string) (*schema.Schema, error) {
 	case "mysql":
 		driver = new(mysql.Mysql)
 	default:
-		return s, fmt.Errorf("Error: %s", "unsupported driver")
+		return s, errors.WithStack(fmt.Errorf("Error: %s", "unsupported driver"))
 	}
 	err = driver.Analyze(db, s)
 	if err != nil {
-		return s, errors.WithStack(err)
+		return s, err
 	}
 	return s, nil
 }
