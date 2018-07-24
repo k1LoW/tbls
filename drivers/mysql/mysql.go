@@ -95,7 +95,7 @@ SELECT
   END) AS key_type,
 s.index_name, GROUP_CONCAT(s.column_name ORDER BY s.seq_in_index SEPARATOR ', '), s.index_type
 FROM information_schema.statistics AS s
-LEFT JOIN information_schema.columns AS c ON s.column_name = c.column_name
+LEFT JOIN information_schema.columns AS c ON s.table_schema = c.table_schema AND s.table_name = c.table_name AND s.column_name = c.column_name
 WHERE s.table_name = c.table_name
 AND s.table_schema = ?
 AND s.table_name = ?
@@ -142,29 +142,28 @@ SELECT
   kcu.referenced_table_name,
   GROUP_CONCAT(kcu.referenced_column_name ORDER BY kcu.ordinal_position, position_in_unique_constraint SEPARATOR ', ') AS referenced_column_name
 FROM information_schema.key_column_usage AS kcu
-LEFT JOIN information_schema.columns AS c ON kcu.column_name = c.column_name
+LEFT JOIN information_schema.columns AS c ON kcu.table_schema = c.table_schema AND kcu.table_name = c.table_name AND kcu.column_name = c.column_name
 LEFT JOIN
   (
    SELECT
+   kcu.table_schema,
+   kcu.table_name,
    kcu.constraint_name,
    kcu.column_name,
-    (CASE WHEN c.column_key='PRI' THEN 'PRIMARY KEY'
+   (CASE WHEN c.column_key='PRI' THEN 'PRIMARY KEY'
         WHEN c.column_key='UNI' THEN 'UNIQUE'
         WHEN c.column_key='MUL' AND kcu.referenced_table_name IS NULL THEN 'UNIQUE'
         WHEN c.column_key='MUL' AND kcu.referenced_table_name IS NOT NULL THEN 'FOREIGN KEY'
         ELSE 'UNKNOWN'
    END) AS costraint_type
    FROM information_schema.key_column_usage AS kcu
-   LEFT JOIN information_schema.columns AS c ON kcu.column_name = c.column_name
-   WHERE
-   kcu.table_name = c.table_name
-   AND kcu.table_name = ?
+   LEFT JOIN information_schema.columns AS c ON kcu.table_schema = c.table_schema AND kcu.table_name = c.table_name AND kcu.column_name = c.column_name
+   WHERE kcu.table_name = ?
    AND kcu.ordinal_position = 1
   ) AS sub
-ON kcu.constraint_name = sub.constraint_name
-WHERE kcu.table_name = c.table_name
-AND kcu.table_schema= ?
-AND kcu.table_name = ?
+ON kcu.constraint_name = sub.constraint_name AND kcu.table_schema = sub.table_schema AND kcu.table_name = sub.table_name
+WHERE kcu.table_schema= ?
+   AND kcu.table_name = ?
 GROUP BY kcu.constraint_name, sub.costraint_type, kcu.referenced_table_name`, tableName, s.Name, tableName)
 		defer constraintRows.Close()
 		if err != nil {
@@ -183,6 +182,7 @@ GROUP BY kcu.constraint_name, sub.costraint_type, kcu.referenced_table_name`, ta
 			)
 			err = constraintRows.Scan(&constraintName, &constraintType, &constraintColumnName, &constraintRefTableName, &constraintRefColumnName)
 			if err != nil {
+				fmt.Printf("%s\n", tableName)
 				return errors.WithStack(err)
 			}
 			switch constraintType {
