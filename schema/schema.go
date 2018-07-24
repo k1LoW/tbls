@@ -102,7 +102,7 @@ func (t *Table) FindColumnByName(name string) (*Column, error) {
 			return c, nil
 		}
 	}
-	return nil, errors.WithStack(fmt.Errorf("Error: not found column '%s'", name))
+	return nil, errors.WithStack(fmt.Errorf("Error: not found column '%s.%s'", t.Name, name))
 }
 
 // Sort schema tables, columns, relations, and constrains
