@@ -25,6 +25,9 @@ func Analyze(urlstr string) (*schema.Schema, error) {
 		return s, errors.WithStack(err)
 	}
 	splitted := strings.Split(u.Short(), "/")
+	if len(splitted) != 2 {
+		return s, errors.WithStack(fmt.Errorf("Error: %s %s", "invalid DSN", urlstr))
+	}
 	s.Name = splitted[1]
 
 	db, err := dburl.Open(urlstr)
