@@ -44,6 +44,8 @@ If you can use Graphviz `dot` command, `tbls doc` generate ER diagram images at 
 
 Sample [document](sample/postgres/) and [schema](test/pg.sql).
 
+> NOTICE: If you are using a symbol such as `#` `<` in database password, URL-encode the password
+
 ### Diff database schema and document
 
 `tbls diff` shows the difference between database schema and generated document.
