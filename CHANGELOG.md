@@ -1,5 +1,11 @@
 # Changelog
 
+## [v0.10.2](https://github.com/k1LoW/tbls/compare/v0.10.1...v0.10.2) (2018-07-26)
+
+* Fix MySQL constraints / indexes query [#42](https://github.com/k1LoW/tbls/pull/42) ([k1LoW](https://github.com/k1LoW))
+* Add exec `dot` STDOUT to error message [#41](https://github.com/k1LoW/tbls/pull/41) ([k1LoW](https://github.com/k1LoW))
+*  Add `UNKNOWN CONSTRAINT` ( This is constraint information that "tbls" still can not support ) [#40](https://github.com/k1LoW/tbls/pull/40) ([k1LoW](https://github.com/k1LoW))
+
 ## [v0.10.1](https://github.com/k1LoW/tbls/compare/v0.10.0...v0.10.1) (2018-07-22)
 
 * Fix error handling [#39](https://github.com/k1LoW/tbls/pull/39) ([k1LoW](https://github.com/k1LoW))
