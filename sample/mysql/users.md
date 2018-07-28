@@ -50,6 +50,11 @@ CREATE TABLE `users` (
 | email | UNIQUE KEY email (email) USING BTREE |
 | username | UNIQUE KEY username (username) USING BTREE |
 
+## Triggers
+
+| Name | Definition |
+| ---- | ---------- |
+
 ## Relations
 
 ![er](users.png)

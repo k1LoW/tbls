@@ -32,6 +32,12 @@ Users table
 | users_username_key | CREATE UNIQUE INDEX users_username_key ON public.users USING btree (username) |
 | users_email_key | CREATE UNIQUE INDEX users_email_key ON public.users USING btree (email) |
 
+## Triggers
+
+| Name | Definition |
+| ---- | ---------- |
+| update_users_updated | CREATE TRIGGER update_users_updated AFTER INSERT OR UPDATE ON public.users FOR EACH ROW EXECUTE PROCEDURE update_updated() |
+
 ## Relations
 
 ![er](users.png)

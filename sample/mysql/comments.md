@@ -58,6 +58,11 @@ CREATE TABLE `comments` (
 | PRIMARY | PRIMARY KEY (id) USING BTREE |
 | post_id | UNIQUE KEY post_id (post_id, user_id) USING BTREE |
 
+## Triggers
+
+| Name | Definition |
+| ---- | ---------- |
+
 ## Relations
 
 ![er](comments.png)

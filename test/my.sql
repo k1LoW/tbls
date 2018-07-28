@@ -82,4 +82,4 @@ CREATE TABLE CamelizeTable (
 
 CREATE TRIGGER update_posts_updated BEFORE UPDATE ON posts
   FOR EACH ROW
-  SET NEW.updated = CURRENT_TIMESTAMP()
+  SET NEW.updated = CURRENT_TIMESTAMP();
