@@ -16,20 +16,11 @@ audit log table
 | payload | text |  | true |  |  |  |
 | created | timestamp without time zone |  | false |  |  |  |
 
-## Constraints
 
-| Name | Type | Definition |
-| ---- | ---- | ---------- |
 
-## Indexes
 
-| Name | Definition |
-| ---- | ---------- |
 
-## Triggers
 
-| Name | Definition |
-| ---- | ---------- |
 
 ## Relations
 
