@@ -55,10 +55,7 @@ CREATE TABLE `comment_stars` (
 | PRIMARY | PRIMARY KEY (id) USING BTREE |
 | user_id | UNIQUE KEY user_id (user_id, comment_post_id, comment_user_id) USING BTREE |
 
-## Triggers
 
-| Name | Definition |
-| ---- | ---------- |
 
 ## Relations
 
