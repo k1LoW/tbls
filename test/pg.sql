@@ -112,14 +112,14 @@ CREATE TABLE administrator.blogs (
   CONSTRAINT blogs_user_id_fk FOREIGN KEY(user_id) REFERENCES public.users(id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE
 );
 
-CREATE OR REPLACE FUNCTION update_updated () RETURNS trigger AS $eoq$
+CREATE OR REPLACE FUNCTION update_updated () RETURNS trigger AS '
   BEGIN
-    IF TG_OP = 'UPDATE' THEN
+    IF TG_OP = "UPDATE" THEN
       NEW.updated := current_timestamp;
     END IF;
     RETURN NEW;
   END;
-$eoq$ LANGUAGE plpgsql;
+' LANGUAGE plpgsql;
 
 CREATE CONSTRAINT TRIGGER update_posts_updated
   AFTER INSERT OR UPDATE ON posts FOR EACH ROW
