@@ -1,3 +1,4 @@
+DROP TRIGGER IF EXISTS update_posts_updated ON posts;
 DROP TABLE IF EXISTS administrator.blogs;
 DROP VIEW IF EXISTS post_comments;
 DROP TABLE IF EXISTS "CamelizeTable";
@@ -7,6 +8,7 @@ DROP TABLE IF EXISTS comments;
 DROP TABLE IF EXISTS posts;
 DROP TYPE IF EXISTS post_types;
 DROP TABLE IF EXISTS users;
+DROP FUNCTION IF EXISTS update_updated;
 DROP SCHEMA IF EXISTS administrator;
 
 DROP EXTENSION IF EXISTS "uuid-ossp";
@@ -108,3 +110,16 @@ CREATE TABLE administrator.blogs (
   updated timestamp,
   CONSTRAINT blogs_user_id_fk FOREIGN KEY(user_id) REFERENCES public.users(id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE
 );
+
+CREATE OR REPLACE FUNCTION update_updated () RETURNS trigger AS $eoq$
+  BEGIN
+    IF TG_OP = 'UPDATE' THEN
+      NEW.update_date := current_timestamp;
+    END IF;
+    RETURN NEW;
+  END;
+$eoq$ LANGUAGE plpgsql;
+
+CREATE CONSTRAINT TRIGGER update_posts_updated
+  AFTER INSERT OR UPDATE ON posts FOR EACH ROW
+  EXECUTE PROCEDURE update_updated();
