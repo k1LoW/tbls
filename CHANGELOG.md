@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.0.1](https://github.com/k1LoW/tbls/compare/v1.0.0...v1.0.1) (2018-07-28)
+
+* Add Triggers to Schema.Sort() [#47](https://github.com/k1LoW/tbls/pull/47) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.0.0](https://github.com/k1LoW/tbls/compare/v0.10.2...v1.0.0) (2018-07-28)
 
 * Don't show item when length 0 [#46](https://github.com/k1LoW/tbls/pull/46) ([k1LoW](https://github.com/k1LoW))
