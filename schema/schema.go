@@ -24,6 +24,12 @@ type Constraint struct {
 	Def  string
 }
 
+// Trigger is the struct for database trigger
+type Trigger struct {
+	Name string
+	Def  string
+}
+
 // Column is the struct for table column
 type Column struct {
 	Name            string
