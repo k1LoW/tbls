@@ -26,6 +26,11 @@ audit log table
 | Name | Definition |
 | ---- | ---------- |
 
+## Triggers
+
+| Name | Definition |
+| ---- | ---------- |
+
 ## Relations
 
 ![er](logs.png)

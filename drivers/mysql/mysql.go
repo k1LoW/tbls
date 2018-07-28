@@ -211,6 +211,47 @@ GROUP BY kcu.constraint_name, sub.costraint_type, kcu.referenced_table_name`, ta
 		}
 		table.Constraints = constraints
 
+		// triggers
+		triggerRows, err := db.Query(`
+SELECT
+trigger_name,
+action_timing,
+event_manipulation,
+event_object_table,
+action_orientation,
+action_statement
+FROM information_schema.triggers
+WHERE event_object_schema = ?
+AND event_object_table = ?
+`, s.Name, tableName)
+		defer triggerRows.Close()
+		if err != nil {
+			return errors.WithStack(err)
+		}
+		triggers := []*schema.Trigger{}
+		for triggerRows.Next() {
+			var (
+				triggerName              string
+				triggerActionTiming      string
+				triggerEventManipulation string
+				triggerEventObjectTable  string
+				triggerActionOrientation string
+				triggerActionStatement   string
+				triggerDef               string
+			)
+			err = triggerRows.Scan(&triggerName, &triggerActionTiming, &triggerEventManipulation, &triggerEventObjectTable, &triggerActionOrientation, &triggerActionStatement)
+			if err != nil {
+				return errors.WithStack(err)
+			}
+			triggerDef = fmt.Sprintf("CREATE TRIGGER %s %s %s ON %s\nFOR EACH %s\n%s", triggerName, triggerActionTiming, triggerEventManipulation, triggerEventObjectTable, triggerActionOrientation, triggerActionStatement)
+			trigger := &schema.Trigger{
+				Name: triggerName,
+				Def:  triggerDef,
+			}
+			triggers = append(triggers, trigger)
+		}
+		table.Triggers = triggers
+
 		// columns and comments
 		columnRows, err := db.Query(`
 SELECT column_name, column_default, is_nullable, column_type, column_comment
