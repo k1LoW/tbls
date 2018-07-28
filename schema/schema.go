@@ -132,6 +132,9 @@ func (s *Schema) Sort() error {
 		sort.SliceStable(t.Constraints, func(i, j int) bool {
 			return t.Constraints[i].Name < t.Constraints[j].Name
 		})
+		sort.SliceStable(t.Triggers, func(i, j int) bool {
+			return t.Triggers[i].Name < t.Triggers[j].Name
+		})
 	}
 	sort.SliceStable(s.Tables, func(i, j int) bool {
 		return s.Tables[i].Name < s.Tables[j].Name
