@@ -19,19 +19,25 @@
 |{{ range $d := $l }} {{ $d | nl2br }} |{{ end }}
 {{- end }}
 
+{{ $len := len .Constraints }}{{ if ne $len 2 -}}
 ## Constraints
 {{ range $l := .Constraints }}
 |{{ range $d := $l }} {{ $d | nl2br }} |{{ end }}
 {{- end }}
+{{- end }}
 
+{{ $len := len .Indexes -}}{{ if ne $len 2 -}}
 ## Indexes
 {{ range $l := .Indexes }}
 |{{ range $d := $l }} {{ $d | nl2br }} |{{ end }}
 {{- end }}
+{{- end }}
 
+{{ $len := len .Triggers -}}{{ if ne $len 2 -}}
 ## Triggers
 {{ range $l := .Triggers }}
 |{{ range $d := $l }} {{ $d | nl2br }} |{{ end }}
+{{- end }}
 {{- end }}
 
 {{ if .er -}}
