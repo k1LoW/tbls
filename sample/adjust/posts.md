@@ -19,11 +19,12 @@ Posts table
 
 ## Constraints
 
-| Name                    | Type        | Definition                                                   |
-| ----------------------- | ----------- | ------------------------------------------------------------ |
-| posts_id_pk             | PRIMARY KEY | PRIMARY KEY (id)                                             |
-| posts_user_id_title_key | UNIQUE      | UNIQUE (user_id, title)                                      |
-| posts_user_id_fk        | FOREIGN KEY | FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE |
+| Name                    | Type        | Definition                                                                                                                                                        |
+| ----------------------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| posts_id_pk             | PRIMARY KEY | PRIMARY KEY (id)                                                                                                                                                  |
+| posts_user_id_title_key | UNIQUE      | UNIQUE (user_id, title)                                                                                                                                           |
+| posts_user_id_fk        | FOREIGN KEY | FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE                                                                                                      |
+| update_posts_updated    | TRIGGER     | CREATE CONSTRAINT TRIGGER update_posts_updated AFTER INSERT OR UPDATE ON posts NOT DEFERRABLE INITIALLY IMMEDIATE FOR EACH ROW EXECUTE PROCEDURE update_updated() |
 
 ## Indexes
 
