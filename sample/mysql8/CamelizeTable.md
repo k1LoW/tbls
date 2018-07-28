@@ -36,6 +36,11 @@ CREATE TABLE `CamelizeTable` (
 | ---- | ---------- |
 | PRIMARY | PRIMARY KEY (id) USING BTREE |
 
+## Triggers
+
+| Name | Definition |
+| ---- | ---------- |
+
 ## Relations
 
 ![er](CamelizeTable.png)
