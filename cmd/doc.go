@@ -36,8 +36,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// noViz
-var noViz bool
+// withoutER
+var withoutER bool
 
 // docCmd represents the doc command
 var docCmd = &cobra.Command{
@@ -75,7 +75,7 @@ var docCmd = &cobra.Command{
 			}
 		}
 
-		if !noViz {
+		if !withoutER {
 			_, err = exec.Command("which", "dot").Output()
 			if err == nil {
 				err := withDot(s, outputPath, force)
@@ -177,7 +177,7 @@ func init() {
 	rootCmd.AddCommand(docCmd)
 	docCmd.Flags().BoolVarP(&force, "force", "f", false, "force")
 	docCmd.Flags().BoolVarP(&sort, "sort", "", false, "sort")
-	docCmd.Flags().BoolVarP(&noViz, "no-viz", "", false, "don't use Graphviz 'dot' command")
+	docCmd.Flags().BoolVarP(&withoutER, "without-er", "", false, "no generate ER diagrams")
 	docCmd.Flags().BoolVarP(&adjust, "adjust-table", "j", false, "adjust column width of table")
 	docCmd.Flags().StringVarP(&additionalDataPath, "add", "a", "", "additional schema data path")
 }
