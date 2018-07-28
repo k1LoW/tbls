@@ -142,7 +142,12 @@ ORDER BY x.indexrelid
 
 		// constraints
 		constraintRows, err := db.Query(`
-SELECT pc.conname AS name, pg_get_constraintdef(pc.oid) AS def, contype AS type
+SELECT
+  pc.conname AS name,
+  (CASE WHEN contype='t' THEN pg_get_triggerdef((SELECT oid FROM pg_trigger WHERE tgconstraint = pc.oid LIMIT 1))
+        ELSE pg_get_constraintdef(pc.oid)
+   END) AS def,
+  contype AS type
 FROM pg_constraint AS pc
 LEFT JOIN pg_stat_user_tables AS ps ON ps.relid = pc.conrelid
 WHERE ps.relname = $1
@@ -310,6 +315,8 @@ func convertConstraintType(t string) string {
 		return "FOREIGN KEY"
 	case "c":
 		return "CHECK"
+	case "t":
+		return "TRIGGER"
 	default:
 		return t
 	}
