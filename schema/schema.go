@@ -49,6 +49,7 @@ type Table struct {
 	Columns     []*Column
 	Indexes     []*Index
 	Constraints []*Constraint
+	Triggers    []*Trigger
 	Def         string
 }
 
