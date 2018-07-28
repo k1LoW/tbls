@@ -1,3 +1,4 @@
+DROP TRIGGER IF EXISTS update_users_updated ON users;
 DROP TRIGGER IF EXISTS update_posts_updated ON posts;
 DROP TABLE IF EXISTS administrator.blogs;
 DROP VIEW IF EXISTS post_comments;
@@ -114,7 +115,7 @@ CREATE TABLE administrator.blogs (
 CREATE OR REPLACE FUNCTION update_updated () RETURNS trigger AS $eoq$
   BEGIN
     IF TG_OP = 'UPDATE' THEN
-      NEW.update_date := current_timestamp;
+      NEW.updated := current_timestamp;
     END IF;
     RETURN NEW;
   END;
@@ -122,4 +123,8 @@ $eoq$ LANGUAGE plpgsql;
 
 CREATE CONSTRAINT TRIGGER update_posts_updated
   AFTER INSERT OR UPDATE ON posts FOR EACH ROW
+  EXECUTE PROCEDURE update_updated();
+
+CREATE TRIGGER update_users_updated
+  AFTER INSERT OR UPDATE ON users FOR EACH ROW
   EXECUTE PROCEDURE update_updated();
