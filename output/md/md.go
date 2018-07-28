@@ -268,12 +268,26 @@ func makeTableTemplateData(t *schema.Table, adjust bool) map[string]interface{} 
 		indexesData = append(indexesData, data)
 	}
 
+	// Triggers
+	triggersData := [][]string{
+		[]string{"Name", "Definition"},
+		[]string{"----", "----------"},
+	}
+	for _, i := range t.Triggers {
+		data := []string{
+			i.Name,
+			i.Def,
+		}
+		triggersData = append(triggersData, data)
+	}
+
 	if adjust {
 		return map[string]interface{}{
 			"Table":       t,
 			"Columns":     adjustTable(columnsData),
 			"Constraints": adjustTable(constraintsData),
 			"Indexes":     adjustTable(indexesData),
+			"Triggers":    adjustTable(triggersData),
 		}
 	}
 
@@ -282,6 +296,7 @@ func makeTableTemplateData(t *schema.Table, adjust bool) map[string]interface{} 
 		"Columns":     columnsData,
 		"Constraints": constraintsData,
 		"Indexes":     indexesData,
+		"Triggers":    triggersData,
 	}
 }
 
