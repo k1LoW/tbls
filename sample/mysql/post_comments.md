@@ -25,20 +25,11 @@ CREATE VIEW post_comments AS ((select `c`.`id` AS `id`,`p`.`title` AS `title`,`u
 | created | datetime |  | true |  |  | comments.created |
 | updated | datetime |  | true |  |  | comments.updated |
 
-## Constraints
 
-| Name | Type | Definition |
-| ---- | ---- | ---------- |
 
-## Indexes
 
-| Name | Definition |
-| ---- | ---------- |
 
-## Triggers
 
-| Name | Definition |
-| ---- | ---------- |
 
 ## Relations
 
