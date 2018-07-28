@@ -142,7 +142,12 @@ ORDER BY x.indexrelid
 
 		// constraints
 		constraintRows, err := db.Query(`
-SELECT pc.conname AS name, pg_get_constraintdef(pc.oid) AS def, contype AS type
+SELECT
+  pc.conname AS name,
+  (CASE WHEN contype='t' THEN pg_get_triggerdef((SELECT oid FROM pg_trigger WHERE tgconstraint = pc.oid LIMIT 1))
+        ELSE pg_get_constraintdef(pc.oid)
+   END) AS def,
+  contype AS type
 FROM pg_constraint AS pc
 LEFT JOIN pg_stat_user_tables AS ps ON ps.relid = pc.conrelid
 WHERE ps.relname = $1
@@ -179,6 +184,39 @@ ORDER BY pc.conrelid`, tableName, tableSchema)
 			constraints = append(constraints, constraint)
 		}
 		table.Constraints = constraints
+
+		// triggers
+		triggerRows, err := db.Query(`
+SELECT tgname, pg_get_triggerdef(pt.oid)
+FROM pg_trigger AS pt
+LEFT JOIN pg_stat_user_tables AS ps ON ps.relid = pt.tgrelid
+WHERE pt.tgisinternal = false
+AND ps.relname = $1
+AND ps.schemaname = $2
+ORDER BY pt.tgrelid
+`, tableName, tableSchema)
+		defer triggerRows.Close()
+		if err != nil {
+			return errors.WithStack(err)
+		}
+
+		triggers := []*schema.Trigger{}
+		for triggerRows.Next() {
+			var (
+				triggerName string
+				triggerDef  string
+			)
+			err = triggerRows.Scan(&triggerName, &triggerDef)
+			if err != nil {
+				return errors.WithStack(err)
+			}
+			trigger := &schema.Trigger{
+				Name: triggerName,
+				Def:  triggerDef,
+			}
+			triggers = append(triggers, trigger)
+		}
+		table.Triggers = triggers
 
 		// columns comments
 		columnCommentRows, err := db.Query(`
@@ -310,6 +348,8 @@ func convertConstraintType(t string) string {
 		return "FOREIGN KEY"
 	case "c":
 		return "CHECK"
+	case "t":
+		return "TRIGGER"
 	default:
 		return t
 	}

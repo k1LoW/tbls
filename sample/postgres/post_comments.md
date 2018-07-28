@@ -47,6 +47,11 @@ CREATE VIEW post_comments AS (
 | Name | Definition |
 | ---- | ---------- |
 
+## Triggers
+
+| Name | Definition |
+| ---- | ---------- |
+
 ## Relations
 
 ![er](post_comments.png)
