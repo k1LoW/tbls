@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.0.0](https://github.com/k1LoW/tbls/compare/v0.10.2...v1.0.0) (2018-07-28)
+
+* Don't show item when length 0 [#46](https://github.com/k1LoW/tbls/pull/46) ([k1LoW](https://github.com/k1LoW))
+* Support analyze TRIGGER [#45](https://github.com/k1LoW/tbls/pull/45) ([k1LoW](https://github.com/k1LoW))
+* Change option `--no-viz` to `--without-er` [#44](https://github.com/k1LoW/tbls/pull/44) ([k1LoW](https://github.com/k1LoW))
+
 ## [v0.10.2](https://github.com/k1LoW/tbls/compare/v0.10.1...v0.10.2) (2018-07-26)
 
 * Fix MySQL constraints / indexes query [#42](https://github.com/k1LoW/tbls/pull/42) ([k1LoW](https://github.com/k1LoW))
