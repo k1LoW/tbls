@@ -37,20 +37,11 @@ CREATE VIEW post_comments AS (
 | created      | timestamp without time zone |         | true     |          |         | comments.created        |
 | updated      | timestamp without time zone |         | true     |          |         | comments.updated        |
 
-## Constraints
 
-| Name | Type | Definition |
-| ---- | ---- | ---------- |
 
-## Indexes
 
-| Name | Definition |
-| ---- | ---------- |
 
-## Triggers
 
-| Name | Definition |
-| ---- | ---------- |
 
 ## Relations
 

@@ -28,10 +28,7 @@
 | ---- | ---------- |
 | blogs_pkey | CREATE UNIQUE INDEX blogs_pkey ON administrator.blogs USING btree (id) |
 
-## Triggers
 
-| Name | Definition |
-| ---- | ---------- |
 
 ## Relations
 
