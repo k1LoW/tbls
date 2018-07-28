@@ -29,6 +29,11 @@
 |{{ range $d := $l }} {{ $d | nl2br }} |{{ end }}
 {{- end }}
 
+## Triggers
+{{ range $l := .Triggers }}
+|{{ range $d := $l }} {{ $d | nl2br }} |{{ end }}
+{{- end }}
+
 {{ if .er -}}
 ## Relations
 

@@ -35,6 +35,11 @@ CREATE VIEW post_comments AS (select `c`.`id` AS `id`,`p`.`title` AS `title`,`u2
 | Name | Definition |
 | ---- | ---------- |
 
+## Triggers
+
+| Name | Definition |
+| ---- | ---------- |
+
 ## Relations
 
 ![er](post_comments.png)

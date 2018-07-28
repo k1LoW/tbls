@@ -46,6 +46,11 @@ CREATE TABLE `logs` (
 | ---- | ---------- |
 | PRIMARY | PRIMARY KEY (id) USING BTREE |
 
+## Triggers
+
+| Name | Definition |
+| ---- | ---------- |
+
 ## Relations
 
 ![er](logs.png)

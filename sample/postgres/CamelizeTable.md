@@ -21,6 +21,11 @@
 | Name | Definition |
 | ---- | ---------- |
 
+## Triggers
+
+| Name | Definition |
+| ---- | ---------- |
+
 ## Relations
 
 ![er](CamelizeTable.png)

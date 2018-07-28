@@ -53,6 +53,12 @@ CREATE TABLE `posts` (
 | PRIMARY | PRIMARY KEY (id) USING BTREE |
 | user_id | UNIQUE KEY user_id (user_id, title) USING BTREE |
 
+## Triggers
+
+| Name | Definition |
+| ---- | ---------- |
+| update_posts_updated | CREATE TRIGGER update_posts_updated BEFORE UPDATE ON posts<br>FOR EACH ROW<br>SET NEW.updated = CURRENT_TIMESTAMP() |
+
 ## Relations
 
 ![er](posts.png)
