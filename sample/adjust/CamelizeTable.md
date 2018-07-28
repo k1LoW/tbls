@@ -11,20 +11,11 @@
 | id      | uuid                        | uuid_generate_v4() | false    |          |         |         |
 | created | timestamp without time zone |                    | false    |          |         |         |
 
-## Constraints
 
-| Name | Type | Definition |
-| ---- | ---- | ---------- |
 
-## Indexes
 
-| Name | Definition |
-| ---- | ---------- |
 
-## Triggers
 
-| Name | Definition |
-| ---- | ---------- |
 
 ## Relations
 
