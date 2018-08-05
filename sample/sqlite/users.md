@@ -39,6 +39,7 @@ CREATE TABLE users (
 | ---- | ---------- |
 | sqlite_autoindex_users_1 |  |
 | sqlite_autoindex_users_2 |  |
+| users_username_key | CREATE UNIQUE INDEX users_username_key ON users(username) |
 
 
 
