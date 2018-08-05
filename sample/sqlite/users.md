@@ -35,6 +35,7 @@ CREATE TABLE users (
 
 | Name | Type | Definition |
 | ---- | ---- | ---------- |
+| id | PRIMARY KEY | PRIMARY KEY (id) |
 | sqlite_autoindex_users_2 | UNIQUE | UNIQUE (email) |
 | sqlite_autoindex_users_1 | UNIQUE | UNIQUE (username) |
 
