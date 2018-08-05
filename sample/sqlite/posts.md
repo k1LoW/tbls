@@ -14,7 +14,7 @@ CREATE TABLE posts (
   body TEXT NOT NULL,
   created NUMERIC NOT NULL,
   updated NUMERIC,
-  FOREIGN KEY(user_id) REFERENCES users(id)
+  CONSTRAINT posts_user_id_fk FOREIGN KEY(user_id) REFERENCES users(id) MATCH NONE ON UPDATE NO ACTION ON DELETE CASCADE
 )
 ```
 
@@ -32,7 +32,11 @@ CREATE TABLE posts (
 | created | NUMERIC |  | false |  |  |  |
 | updated | NUMERIC |  | true |  |  |  |
 
+## Constraints
 
+| Name | Type | Definition |
+| ---- | ---- | ---------- |
+| 0 | FOREIGN KEY | FOREIGN KEY (user_id) REFERENCES users (id) ON UPDATE NO ACTION ON DELETE CASCADE MATCH NONE |
 
 ## Indexes
 

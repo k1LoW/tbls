@@ -14,8 +14,8 @@ CREATE TABLE comments (
   comment TEXT NOT NULL,
   created NUMERIC NOT NULL,
   updated NUMERIC,
-  FOREIGN KEY(post_id) REFERENCES posts(id),
-  FOREIGN KEY(user_id) REFERENCES users(id),
+  CONSTRAINT comments_post_id_fk FOREIGN KEY(post_id) REFERENCES posts(id),
+  CONSTRAINT comments_user_id_fk FOREIGN KEY(user_id) REFERENCES users(id),
   UNIQUE(post_id, user_id)
 )
 ```
@@ -34,7 +34,12 @@ CREATE TABLE comments (
 | created | NUMERIC |  | false |  |  |  |
 | updated | NUMERIC |  | true |  |  |  |
 
+## Constraints
 
+| Name | Type | Definition |
+| ---- | ---- | ---------- |
+| 0 | FOREIGN KEY | FOREIGN KEY (user_id) REFERENCES users (id) ON UPDATE NO ACTION ON DELETE NO ACTION MATCH NONE |
+| 1 | FOREIGN KEY | FOREIGN KEY (post_id) REFERENCES posts (id) ON UPDATE NO ACTION ON DELETE NO ACTION MATCH NONE |
 
 ## Indexes
 
