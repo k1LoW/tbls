@@ -55,35 +55,6 @@ WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
 			Def:  tableDef,
 		}
 
-		// indexes
-		indexRows, err := db.Query(`
-SELECT name, sql FROM sqlite_master WHERE type = 'index' AND tbl_name = ?;
-`, tableName)
-		defer indexRows.Close()
-		if err != nil {
-			return errors.WithStack(err)
-		}
-
-		indexes := []*schema.Index{}
-		for indexRows.Next() {
-			var (
-				indexName string
-				indexDef  sql.NullString
-			)
-			err = indexRows.Scan(&indexName, &indexDef)
-			if err != nil {
-				fmt.Printf("%s\n", tableName)
-
-				return errors.WithStack(err)
-			}
-			index := &schema.Index{
-				Name: indexName,
-				Def:  indexDef.String,
-			}
-			indexes = append(indexes, index)
-		}
-		table.Indexes = indexes
-
 		// constraints
 		constraints := []*schema.Constraint{}
 
@@ -160,6 +131,92 @@ SELECT name, sql FROM sqlite_master WHERE type = 'index' AND tbl_name = ?;
 
 			constraints = append(constraints, constraint)
 		}
+
+		// indexes and constraints(UNIQUE, PRIMARY KEY)
+		indexRows, err := db.Query(fmt.Sprintf("PRAGMA index_list(%s)", tableName))
+		defer indexRows.Close()
+		if err != nil {
+			return errors.WithStack(err)
+		}
+
+		indexes := []*schema.Index{}
+		for indexRows.Next() {
+			var (
+				indexID        string
+				indexName      string
+				indexIsUnique  string
+				indexCreatedBy string
+				indexPartial   string
+				indexDef       string
+			)
+			err = indexRows.Scan(
+				&indexID,
+				&indexName,
+				&indexIsUnique,
+				&indexCreatedBy,
+				&indexPartial,
+			)
+			if err != nil {
+				return errors.WithStack(err)
+			}
+
+			if indexCreatedBy == "c" {
+				row, err := db.Query(`SELECT sql FROM sqlite_master WHERE type = 'index' AND tbl_name = ? AND name = ?;
+`, tableName, indexName)
+				for row.Next() {
+					err = row.Scan(
+						&indexDef,
+					)
+					if err != nil {
+						return errors.WithStack(err)
+					}
+				}
+			} else {
+				var (
+					colRank            string
+					colRankWithinTable string
+					col                string
+					cols               []string
+				)
+				row, err := db.Query(fmt.Sprintf("PRAGMA index_info(%s)", indexName))
+				for row.Next() {
+					err = row.Scan(
+						&colRank,
+						&colRankWithinTable,
+						&col,
+					)
+					if err != nil {
+						return errors.WithStack(err)
+					}
+					cols = append(cols, col)
+				}
+				switch indexCreatedBy {
+				case "u":
+					indexDef = fmt.Sprintf("UNIQUE (%s)", strings.Join(cols, ", "))
+					constraint := &schema.Constraint{
+						Name: indexName,
+						Type: "UNIQUE",
+						Def:  indexDef,
+					}
+					constraints = append(constraints, constraint)
+				case "pk":
+					indexDef = fmt.Sprintf("PRIMARY KEY (%s)", strings.Join(cols, ", "))
+					constraint := &schema.Constraint{
+						Name: indexName,
+						Type: "PRIMARY KEY",
+						Def:  indexDef,
+					}
+					constraints = append(constraints, constraint)
+				}
+			}
+
+			index := &schema.Index{
+				Name: indexName,
+				Def:  indexDef,
+			}
+			indexes = append(indexes, index)
+		}
+		table.Indexes = indexes
 
 		table.Constraints = constraints
 

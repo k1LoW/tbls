@@ -31,15 +31,20 @@ CREATE TABLE users (
 | created | NUMERIC |  | false |  |  |  |
 | updated | NUMERIC |  | true |  |  |  |
 
+## Constraints
 
+| Name | Type | Definition |
+| ---- | ---- | ---------- |
+| sqlite_autoindex_users_2 | UNIQUE | UNIQUE (email) |
+| sqlite_autoindex_users_1 | UNIQUE | UNIQUE (username) |
 
 ## Indexes
 
 | Name | Definition |
 | ---- | ---------- |
-| sqlite_autoindex_users_1 |  |
-| sqlite_autoindex_users_2 |  |
 | users_username_key | CREATE UNIQUE INDEX users_username_key ON users(username) |
+| sqlite_autoindex_users_2 | UNIQUE (email) |
+| sqlite_autoindex_users_1 | UNIQUE (username) |
 
 
 
