@@ -14,8 +14,8 @@ CREATE TABLE comment_stars (
   comment_user_id INTEGER NOT NULL,
   created NUMERIC NOT NULL,
   updated NUMERIC,
-  FOREIGN KEY(comment_post_id, comment_user_id) REFERENCES comments(post_id, user_id),
-  FOREIGN KEY(comment_user_id) REFERENCES users(id),
+  CONSTRAINT comment_stars_user_id_post_id_fk FOREIGN KEY(comment_post_id, comment_user_id) REFERENCES comments(post_id, user_id),
+  CONSTRAINT comment_stars_user_id_fk FOREIGN KEY(comment_user_id) REFERENCES users(id),
   UNIQUE(user_id, comment_post_id, comment_user_id)
 )
 ```
@@ -34,7 +34,12 @@ CREATE TABLE comment_stars (
 | created | NUMERIC |  | false |  |  |  |
 | updated | NUMERIC |  | true |  |  |  |
 
+## Constraints
 
+| Name | Type | Definition |
+| ---- | ---- | ---------- |
+| 0 | FOREIGN KEY | FOREIGN KEY (comment_user_id) REFERENCES users (id) ON UPDATE NO ACTION ON DELETE NO ACTION MATCH NONE |
+| 1 | FOREIGN KEY | FOREIGN KEY (comment_post_id, comment_user_id) REFERENCES comments (post_id, user_id) ON UPDATE NO ACTION ON DELETE NO ACTION MATCH NONE |
 
 ## Indexes
 

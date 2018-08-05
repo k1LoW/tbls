@@ -23,7 +23,7 @@ CREATE TABLE posts (
   body TEXT NOT NULL,
   created NUMERIC NOT NULL,
   updated NUMERIC,
-  FOREIGN KEY(user_id) REFERENCES users(id)
+  CONSTRAINT posts_user_id_fk FOREIGN KEY(user_id) REFERENCES users(id) MATCH NONE ON UPDATE NO ACTION ON DELETE CASCADE
 );
 CREATE INDEX posts_user_id_idx ON posts(user_id);
 
@@ -34,8 +34,8 @@ CREATE TABLE comments (
   comment TEXT NOT NULL,
   created NUMERIC NOT NULL,
   updated NUMERIC,
-  FOREIGN KEY(post_id) REFERENCES posts(id),
-  FOREIGN KEY(user_id) REFERENCES users(id),
+  CONSTRAINT comments_post_id_fk FOREIGN KEY(post_id) REFERENCES posts(id),
+  CONSTRAINT comments_user_id_fk FOREIGN KEY(user_id) REFERENCES users(id),
   UNIQUE(post_id, user_id)
 );
 CREATE INDEX comments_post_id_user_id_idx ON comments(post_id, user_id);
@@ -47,8 +47,8 @@ CREATE TABLE comment_stars (
   comment_user_id INTEGER NOT NULL,
   created NUMERIC NOT NULL,
   updated NUMERIC,
-  FOREIGN KEY(comment_post_id, comment_user_id) REFERENCES comments(post_id, user_id),
-  FOREIGN KEY(comment_user_id) REFERENCES users(id),
+  CONSTRAINT comment_stars_user_id_post_id_fk FOREIGN KEY(comment_post_id, comment_user_id) REFERENCES comments(post_id, user_id),
+  CONSTRAINT comment_stars_user_id_fk FOREIGN KEY(comment_user_id) REFERENCES users(id),
   UNIQUE(user_id, comment_post_id, comment_user_id)
 );
 
