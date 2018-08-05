@@ -23,7 +23,11 @@ CREATE TABLE CamelizeTable (
 | id | INTEGER |  | true |  |  |  |
 | created | NUMERIC |  | false |  |  |  |
 
+## Constraints
 
+| Name | Type | Definition |
+| ---- | ---- | ---------- |
+| id | PRIMARY KEY | PRIMARY KEY (id) |
 
 
 

@@ -38,6 +38,7 @@ CREATE TABLE comments (
 
 | Name | Type | Definition |
 | ---- | ---- | ---------- |
+| id | PRIMARY KEY | PRIMARY KEY (id) |
 | - (Foreign key ID: 0) | FOREIGN KEY | FOREIGN KEY (user_id) REFERENCES users (id) ON UPDATE NO ACTION ON DELETE NO ACTION MATCH NONE |
 | - (Foreign key ID: 1) | FOREIGN KEY | FOREIGN KEY (post_id) REFERENCES posts (id) ON UPDATE NO ACTION ON DELETE NO ACTION MATCH NONE |
 | sqlite_autoindex_comments_1 | UNIQUE | UNIQUE (post_id, user_id) |
