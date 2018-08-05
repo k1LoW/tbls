@@ -16,6 +16,7 @@ test:
 	usql pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -f test/pg.sql
 	usql my://root:mypass@localhost:33306/testdb -f test/my.sql
 	usql my://root:mypass@localhost:33308/testdb -f test/my.sql
+	sqlite3 $(CURDIR)/test/testdb.sqlite3 < test/sqlite.sql
 	go test -cover -v $(shell go list ./... | grep -v vendor)
 	make testdoc
 
@@ -29,6 +30,7 @@ doc: build
 	./tbls doc pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -a test/additional_data.yml -f sample/postgres
 	./tbls doc my://root:mypass@localhost:33306/testdb -a test/additional_data.yml -f sample/mysql
 	./tbls doc my://root:mypass@localhost:33308/testdb -a test/additional_data.yml -f sample/mysql8
+	./tbls doc sq://$(CURDIR)/test/testdb.sqlite3 -a test/additional_data.yml -f sample/sqlite
 	./tbls doc pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -a test/additional_data.yml -j -f sample/adjust
 
 testdoc: build
@@ -38,6 +40,8 @@ testdoc: build
 	@test -z "$(DIFF)" || (echo "document does not match database." && ./tbls diff my://root:mypass@localhost:33306/testdb -a test/additional_data.yml sample/mysql && exit 1)
 	$(eval DIFF := $(shell ./tbls diff my://root:mypass@localhost:33308/testdb -a test/additional_data.yml sample/mysql8))
 	@test -z "$(DIFF)" || (echo "document does not match database." && ./tbls diff my://root:mypass@localhost:33308/testdb -a test/additional_data.yml sample/mysql8 && exit 1)
+	$(eval DIFF := $(shell ./tbls diff sq://$(CURDIR)/test/testdb.sqlite3 -a test/additional_data.yml sample/sqlite))
+	@test -z "$(DIFF)" || (echo "document does not match database." && ./tbls diff sq://$(CURDIR)/test/testdb.sqlite3 -a test/additional_data.yml sample/sqlite && exit 1)
 	$(eval DIFF := $(shell ./tbls diff pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -a test/additional_data.yml -j sample/adjust))
 	@test -z "$(DIFF)" || (echo "document does not match database." && ./tbls diff pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -a test/additional_data.yml -j sample/adjust && exit 1)
 
