@@ -104,3 +104,4 @@ $ brew install k1LoW/tbls/tbls
 
 - PostgreSQL
 - MySQL
+- SQLite
