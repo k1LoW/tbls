@@ -58,6 +58,46 @@ WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
 		// constraints
 		constraints := []*schema.Constraint{}
 
+		// columns
+		columnRows, err := db.Query(fmt.Sprintf("PRAGMA table_info(%s)", tableName))
+		defer columnRows.Close()
+		if err != nil {
+			return errors.WithStack(err)
+		}
+
+		columns := []*schema.Column{}
+		for columnRows.Next() {
+			var (
+				columnID      string
+				columnName    string
+				dataType      string
+				columnNotNull string
+				columnDefault sql.NullString
+				columnPk      string
+			)
+			err = columnRows.Scan(&columnID, &columnName, &dataType, &columnNotNull, &columnDefault, &columnPk)
+			if err != nil {
+				return errors.WithStack(err)
+			}
+			column := &schema.Column{
+				Name:     columnName,
+				Type:     dataType,
+				Nullable: convertColumnNullable(columnNotNull),
+				Default:  columnDefault,
+			}
+			columns = append(columns, column)
+
+			if columnPk != "0" {
+				constraintDef := fmt.Sprintf("PRIMARY KEY (%s)", columnName)
+				constraint := &schema.Constraint{
+					Name: columnName,
+					Type: "PRIMARY KEY",
+					Def:  constraintDef,
+				}
+				constraints = append(constraints, constraint)
+			}
+		}
+
 		/// foreign keys
 		fkMap := map[string]*fk{}
 		fkSlice := []*fk{}
@@ -200,6 +240,7 @@ WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
 					}
 					constraints = append(constraints, constraint)
 				case "pk":
+					// MEMO: Does not work ?
 					indexDef = fmt.Sprintf("PRIMARY KEY (%s)", strings.Join(cols, ", "))
 					constraint := &schema.Constraint{
 						Name: indexName,
@@ -216,9 +257,6 @@ WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
 			}
 			indexes = append(indexes, index)
 		}
-		table.Indexes = indexes
-
-		table.Constraints = constraints
 
 		// triggers
 		triggerRows, err := db.Query(`
@@ -245,39 +283,11 @@ SELECT name, sql FROM sqlite_master WHERE type = 'trigger' AND tbl_name = ?;
 			}
 			triggers = append(triggers, trigger)
 		}
-		table.Triggers = triggers
-
-		// columns
-		columnRows, err := db.Query(fmt.Sprintf("PRAGMA table_info(%s)", tableName))
-		defer columnRows.Close()
-		if err != nil {
-			return errors.WithStack(err)
-		}
-
-		columns := []*schema.Column{}
-		for columnRows.Next() {
-			var (
-				columnID      string
-				columnName    string
-				dataType      string
-				columnNotNull string
-				columnDefault sql.NullString
-				columnPk      string
-			)
-			err = columnRows.Scan(&columnID, &columnName, &dataType, &columnNotNull, &columnDefault, &columnPk)
-			if err != nil {
-				return errors.WithStack(err)
-			}
-			column := &schema.Column{
-				Name:     columnName,
-				Type:     dataType,
-				Nullable: convertColumnNullable(columnNotNull),
-				Default:  columnDefault,
-			}
-			columns = append(columns, column)
-		}
 
 		table.Columns = columns
+		table.Indexes = indexes
+		table.Constraints = constraints
+		table.Triggers = triggers
 
 		tables = append(tables, table)
 	}

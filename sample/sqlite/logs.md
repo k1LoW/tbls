@@ -33,7 +33,11 @@ CREATE TABLE logs (
 | payload | TEXT |  | true |  |  |  |
 | created | NUMERIC |  | false |  |  |  |
 
+## Constraints
 
+| Name | Type | Definition |
+| ---- | ---- | ---------- |
+| id | PRIMARY KEY | PRIMARY KEY (id) |
 
 
 

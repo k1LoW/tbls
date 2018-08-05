@@ -38,6 +38,7 @@ CREATE TABLE comment_stars (
 
 | Name | Type | Definition |
 | ---- | ---- | ---------- |
+| id | PRIMARY KEY | PRIMARY KEY (id) |
 | - (Foreign key ID: 0) | FOREIGN KEY | FOREIGN KEY (comment_user_id) REFERENCES users (id) ON UPDATE NO ACTION ON DELETE NO ACTION MATCH NONE |
 | - (Foreign key ID: 1) | FOREIGN KEY | FOREIGN KEY (comment_post_id, comment_user_id) REFERENCES comments (post_id, user_id) ON UPDATE NO ACTION ON DELETE NO ACTION MATCH NONE |
 | sqlite_autoindex_comment_stars_1 | UNIQUE | UNIQUE (user_id, comment_post_id, comment_user_id) |
