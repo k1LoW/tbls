@@ -36,7 +36,7 @@ CREATE TABLE posts (
 
 | Name | Type | Definition |
 | ---- | ---- | ---------- |
-| 0 | FOREIGN KEY | FOREIGN KEY (user_id) REFERENCES users (id) ON UPDATE NO ACTION ON DELETE CASCADE MATCH NONE |
+| - (Foreign key ID: 0) | FOREIGN KEY | FOREIGN KEY (user_id) REFERENCES users (id) ON UPDATE NO ACTION ON DELETE CASCADE MATCH NONE |
 
 ## Indexes
 

@@ -148,7 +148,7 @@ SELECT name, sql FROM sqlite_master WHERE type = 'index' AND tbl_name = ?;
 			foreignKeyDef := fmt.Sprintf("FOREIGN KEY (%s) REFERENCES %s (%s) ON UPDATE %s ON DELETE %s MATCH %s",
 				strings.Join(f.ColumnNames, ", "), f.ForeignTableName, strings.Join(f.ForeignColumnNames, ", "), f.OnUpdate, f.OnDelete, f.Match)
 			constraint := &schema.Constraint{
-				Name: f.ID,
+				Name: fmt.Sprintf("- (Foreign key ID: %s)", f.ID),
 				Type: "FOREIGN KEY",
 				Def:  foreignKeyDef,
 			}

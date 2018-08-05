@@ -16,6 +16,7 @@ CREATE TABLE users (
   created NUMERIC NOT NULL,
   updated NUMERIC
 );
+CREATE UNIQUE INDEX users_username_key ON users(username);
 
 CREATE TABLE posts (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
