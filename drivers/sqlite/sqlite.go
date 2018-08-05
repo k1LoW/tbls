@@ -258,6 +258,8 @@ WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
 			indexes = append(indexes, index)
 		}
 
+		// constraints(CHECK)
+
 		// triggers
 		triggerRows, err := db.Query(`
 SELECT name, sql FROM sqlite_master WHERE type = 'trigger' AND tbl_name = ?;

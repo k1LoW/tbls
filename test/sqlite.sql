@@ -1,6 +1,7 @@
 PRAGMA foreign_keys = ON;
 DROP TRIGGER IF EXISTS update_posts_updated;
 DROP VIEW IF EXISTS post_comments;
+DROP TABLE IF EXISTS check_constraints;
 DROP TABLE IF EXISTS CamelizeTable;
 DROP TABLE IF EXISTS logs;
 DROP TABLE IF EXISTS comment_stars;
@@ -81,3 +82,14 @@ CREATE TRIGGER update_posts_updated AFTER UPDATE ON posts FOR EACH ROW
 BEGIN
   UPDATE posts SET updated = current_timestamp WHERE id = OLD.id;
 END;
+
+CREATE TABLE check_constraints (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  col TEXT CHECK(length(col) > 4),
+  brackets TEXT UNIQUE NOT NULL CHECK(((length(brackets) > 4))),
+  checkcheck TEXT UNIQUE NOT NULL CHECK(length(checkcheck) > 4),
+  downcase TEXT UNIQUE NOT NULL check(length(downcase) > 4),
+  nl TEXT UNIQUE NOT
+    NULL check(length(nl) > 4 OR
+      nl != 'ln')
+);
