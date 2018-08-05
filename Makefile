@@ -16,7 +16,7 @@ test:
 	usql pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -f test/pg.sql
 	usql my://root:mypass@localhost:33306/testdb -f test/my.sql
 	usql my://root:mypass@localhost:33308/testdb -f test/my.sql
-	usql sq://$(CURDIR)/test/testdb.sqlite3 -f test/sqlite.sql
+	sqlite3 $(CURDIR)/test/testdb.sqlite3 < test/sqlite.sql
 	go test -cover -v $(shell go list ./... | grep -v vendor)
 	make testdoc
 
