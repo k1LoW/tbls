@@ -7,6 +7,7 @@ import (
 
 	"github.com/k1LoW/tbls/drivers/mysql"
 	"github.com/k1LoW/tbls/drivers/postgres"
+	"github.com/k1LoW/tbls/drivers/sqlite"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/pkg/errors"
 	"github.com/xo/dburl"
@@ -25,10 +26,9 @@ func Analyze(urlstr string) (*schema.Schema, error) {
 		return s, errors.WithStack(err)
 	}
 	splitted := strings.Split(u.Short(), "/")
-	if len(splitted) != 2 {
+	if len(splitted) < 2 {
 		return s, errors.WithStack(fmt.Errorf("Error: %s. parse %s -> %#v", "invalid DSN", urlstr, u))
 	}
-	s.Name = splitted[1]
 
 	db, err := dburl.Open(urlstr)
 	defer db.Close()
@@ -43,9 +43,14 @@ func Analyze(urlstr string) (*schema.Schema, error) {
 
 	switch u.Driver {
 	case "postgres":
+		s.Name = splitted[1]
 		driver = new(postgres.Postgres)
 	case "mysql":
+		s.Name = splitted[1]
 		driver = new(mysql.Mysql)
+	case "sqlite3":
+		s.Name = splitted[len(splitted)-1]
+		driver = new(sqlite.Sqlite)
 	default:
 		return s, errors.WithStack(fmt.Errorf("Error: %s", "unsupported driver"))
 	}
