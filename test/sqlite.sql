@@ -1,4 +1,5 @@
 PRAGMA foreign_keys = ON;
+DROP TRIGGER IF EXISTS update_posts_updated;
 DROP VIEW IF EXISTS post_comments;
 DROP TABLE IF EXISTS CamelizeTable;
 DROP TABLE IF EXISTS logs;
@@ -74,3 +75,8 @@ CREATE TABLE CamelizeTable (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   created NUMERIC NOT NULL
 );
+
+CREATE TRIGGER update_posts_updated AFTER UPDATE ON posts FOR EACH ROW
+BEGIN
+  UPDATE posts SET updated = current_timestamp WHERE id = OLD.id;
+END;

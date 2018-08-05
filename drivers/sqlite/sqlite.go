@@ -137,7 +137,6 @@ SELECT name, sql FROM sqlite_master WHERE type = 'index' AND tbl_name = ?;
 				fkMap[foreignKeyID] = f
 			}
 		}
-		/// Sort foreign keys by ID
 		for _, f := range fkMap {
 			fkSlice = append(fkSlice, f)
 		}
@@ -165,6 +164,31 @@ SELECT name, sql FROM sqlite_master WHERE type = 'index' AND tbl_name = ?;
 		table.Constraints = constraints
 
 		// triggers
+		triggerRows, err := db.Query(`
+SELECT name, sql FROM sqlite_master WHERE type = 'trigger' AND tbl_name = ?;
+`, tableName)
+		defer triggerRows.Close()
+		if err != nil {
+			return errors.WithStack(err)
+		}
+
+		triggers := []*schema.Trigger{}
+		for triggerRows.Next() {
+			var (
+				triggerName string
+				triggerDef  string
+			)
+			err = triggerRows.Scan(&triggerName, &triggerDef)
+			if err != nil {
+				return errors.WithStack(err)
+			}
+			trigger := &schema.Trigger{
+				Name: triggerName,
+				Def:  triggerDef,
+			}
+			triggers = append(triggers, trigger)
+		}
+		table.Triggers = triggers
 
 		// columns
 		columnRows, err := db.Query(fmt.Sprintf("PRAGMA table_info(%s)", tableName))
