@@ -259,6 +259,10 @@ WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
 		}
 
 		// constraints(CHECK)
+		checkConstraints := parseCheckConstraints(tableDef)
+		for _, c := range checkConstraints {
+			constraints = append(constraints, c)
+		}
 
 		// triggers
 		triggerRows, err := db.Query(`
@@ -304,4 +308,10 @@ func convertColumnNullable(str string) bool {
 		return false
 	}
 	return true
+}
+
+func parseCheckConstraints(sql string) []*schema.Constraint {
+	// TODO
+	constraints := []*schema.Constraint{}
+	return constraints
 }
