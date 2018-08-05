@@ -29,7 +29,6 @@ func Analyze(urlstr string) (*schema.Schema, error) {
 	if len(splitted) < 2 {
 		return s, errors.WithStack(fmt.Errorf("Error: %s. parse %s -> %#v", "invalid DSN", urlstr, u))
 	}
-	s.Name = splitted[1]
 
 	db, err := dburl.Open(urlstr)
 	defer db.Close()
@@ -44,10 +43,13 @@ func Analyze(urlstr string) (*schema.Schema, error) {
 
 	switch u.Driver {
 	case "postgres":
+		s.Name = splitted[1]
 		driver = new(postgres.Postgres)
 	case "mysql":
+		s.Name = splitted[1]
 		driver = new(mysql.Mysql)
 	case "sqlite3":
+		s.Name = splitted[len(splitted)-1]
 		driver = new(sqlite.Sqlite)
 	default:
 		return s, errors.WithStack(fmt.Errorf("Error: %s", "unsupported driver"))
