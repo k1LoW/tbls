@@ -8,6 +8,7 @@ import (
 
 	"github.com/k1LoW/tbls/schema"
 	"github.com/pkg/errors"
+	"regexp"
 )
 
 // Sqlite struct
@@ -311,7 +312,50 @@ func convertColumnNullable(str string) bool {
 }
 
 func parseCheckConstraints(sql string) []*schema.Constraint {
-	// TODO
+	// tokenize
+	re := regexp.MustCompile(`\s+`)
+	separator := "__SEP__"
+	space := "__SP__"
+	r1 := strings.NewReplacer("(", fmt.Sprintf("%s(%s", separator, separator), ")", fmt.Sprintf("%s)%s", separator, separator), ",", fmt.Sprintf("%s,%s", separator, separator))
+	r2 := strings.NewReplacer(" ", fmt.Sprintf("%s%s%s", separator, space, separator))
+	tokens := strings.Split(r1.Replace(r2.Replace(re.ReplaceAllString(sql, " "))), separator)
+
+	r3 := strings.NewReplacer(space, " ")
 	constraints := []*schema.Constraint{}
+	def := ""
+	counter := 0
+	for _, v := range tokens {
+		if counter == 0 && (v == "CHECK" || v == "check") {
+			def = v
+			continue
+		}
+		if def != "" && v == space {
+			def = def + v
+			continue
+		}
+		if def != "" && v == "(" {
+			def = def + v
+			counter = counter + 1
+			continue
+		}
+		if def != "" && v == ")" {
+			def = def + v
+			counter = counter - 1
+			if counter == 0 {
+				constraint := &schema.Constraint{
+					Name: "-",
+					Type: "CHECK",
+					Def:  r3.Replace(def),
+				}
+				constraints = append(constraints, constraint)
+				def = ""
+			}
+			continue
+		}
+		if def != "" && counter > 0 {
+			def = def + v
+		}
+	}
+
 	return constraints
 }
