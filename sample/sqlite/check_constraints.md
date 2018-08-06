@@ -42,6 +42,11 @@ CREATE TABLE check_constraints (
 | sqlite_autoindex_check_constraints_3 | UNIQUE | UNIQUE (downcase) |
 | sqlite_autoindex_check_constraints_2 | UNIQUE | UNIQUE (checkcheck) |
 | sqlite_autoindex_check_constraints_1 | UNIQUE | UNIQUE (brackets) |
+| - | CHECK | CHECK(length(col) > 4) |
+| - | CHECK | CHECK(((length(brackets) > 4))) |
+| - | CHECK | CHECK(length(checkcheck) > 4) |
+| - | CHECK | check(length(downcase) > 4) |
+| - | CHECK | check(length(nl) > 4 OR nl != 'ln') |
 
 ## Indexes
 
