@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.1.1](https://github.com/k1LoW/tbls/compare/v1.1.0...v1.1.1) (2018-08-06)
+
+* Support SQLite CHECK constraints [#50](https://github.com/k1LoW/tbls/pull/50) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.1.0](https://github.com/k1LoW/tbls/compare/v1.0.1...v1.1.0) (2018-08-05)
 
 * Support SQLite [#49](https://github.com/k1LoW/tbls/pull/49) ([k1LoW](https://github.com/k1LoW))
