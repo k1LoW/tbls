@@ -38,6 +38,7 @@ CREATE TABLE users (
 | id | PRIMARY KEY | PRIMARY KEY (id) |
 | sqlite_autoindex_users_2 | UNIQUE | UNIQUE (email) |
 | sqlite_autoindex_users_1 | UNIQUE | UNIQUE (username) |
+| - | CHECK | CHECK(length(username) > 4) |
 
 ## Indexes
 
