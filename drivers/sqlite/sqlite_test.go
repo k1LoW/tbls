@@ -10,6 +10,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/xo/dburl"
 	"path/filepath"
+	"reflect"
 )
 
 var s *schema.Schema
@@ -40,5 +41,49 @@ func TestAnalyzeView(t *testing.T) {
 	expected := view.Def
 	if expected == "" {
 		t.Errorf("actual not empty string.")
+	}
+}
+
+func TestParseCheckConstraints(t *testing.T) {
+	sql := `CREATE TABLE check_constraints (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  col TEXT CHECK(length(col) > 4),
+  brackets TEXT UNIQUE NOT NULL CHECK(((length(brackets) > 4))),
+  checkcheck TEXT UNIQUE NOT NULL CHECK(length(checkcheck) > 4),
+  downcase TEXT UNIQUE NOT NULL check(length(downcase) > 4),
+  nl TEXT UNIQUE NOT
+    NULL check(length(nl) > 4 OR
+      nl != 'ln')
+);`
+	expected := []*schema.Constraint{
+		&schema.Constraint{
+			Name: "-",
+			Type: "CHECK",
+			Def:  "CHECK(length(col) > 4)",
+		},
+		&schema.Constraint{
+			Name: "-",
+			Type: "CHECK",
+			Def:  "CHECK(((length(brackets) > 4)))",
+		},
+		&schema.Constraint{
+			Name: "-",
+			Type: "CHECK",
+			Def:  "CHECK(length(checkcheck) > 4)",
+		},
+		&schema.Constraint{
+			Name: "-",
+			Type: "CHECK",
+			Def:  "check(length(downcase) > 4)",
+		},
+		&schema.Constraint{
+			Name: "-",
+			Type: "CHECK",
+			Def:  "check(length(nl) > 4 OR nl != 'ln')",
+		},
+	}
+	actual := parseCheckConstraints(sql)
+	if !reflect.DeepEqual(actual, expected) {
+		t.Errorf("got: %#v\nwant: %#v", actual, expected)
 	}
 }

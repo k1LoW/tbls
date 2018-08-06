@@ -11,6 +11,7 @@
 | [logs](logs.md) | 7 | audit log table | table |
 | [post_comments](post_comments.md) | 7 | post and comments View table | view |
 | [CamelizeTable](CamelizeTable.md) | 2 |  | table |
+| [check_constraints](check_constraints.md) | 6 |  | table |
 
 ## Relations
 
