@@ -84,6 +84,6 @@ func TestParseCheckConstraints(t *testing.T) {
 	}
 	actual := parseCheckConstraints(sql)
 	if !reflect.DeepEqual(actual, expected) {
-		t.Errorf("got: %v\nwant: %v", actual, expected)
+		t.Errorf("got: %#v\nwant: %#v", actual, expected)
 	}
 }
