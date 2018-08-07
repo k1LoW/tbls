@@ -1,5 +1,10 @@
 # Changelog
 
+## [v1.2.0](https://github.com/k1LoW/tbls/compare/v1.1.1...v1.2.0) (2018-08-08)
+
+* Support SQLite FTS3/FTS4 Virtual Table [#52](https://github.com/k1LoW/tbls/pull/52) ([k1LoW](https://github.com/k1LoW))
+* Fix SQLite relation support [#51](https://github.com/k1LoW/tbls/pull/51) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.1.1](https://github.com/k1LoW/tbls/compare/v1.1.0...v1.1.1) (2018-08-06)
 
 * Support SQLite CHECK constraints [#50](https://github.com/k1LoW/tbls/pull/50) ([k1LoW](https://github.com/k1LoW))
