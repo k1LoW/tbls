@@ -1,6 +1,8 @@
 PRAGMA foreign_keys = ON;
 DROP TRIGGER IF EXISTS update_posts_updated;
 DROP VIEW IF EXISTS post_comments;
+DROP TABLE IF EXISTS access_log;
+DROP TABLE IF EXISTS syslog;
 DROP TABLE IF EXISTS check_constraints;
 DROP TABLE IF EXISTS CamelizeTable;
 DROP TABLE IF EXISTS logs;
@@ -93,3 +95,6 @@ CREATE TABLE check_constraints (
     NULL check(length(nl) > 4 OR
       nl != 'ln')
 );
+
+CREATE VIRTUAL TABLE syslog USING fts3(logs);
+CREATE VIRTUAL TABLE access_log USING fts4(logs);
