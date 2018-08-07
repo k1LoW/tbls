@@ -11,6 +11,8 @@ import (
 	"regexp"
 )
 
+var reFK = regexp.MustCompile(`FOREIGN KEY \((.+)\) REFERENCES ([^\s]+)\s?\((.+)\)`)
+
 // Sqlite struct
 type Sqlite struct{}
 
@@ -300,6 +302,37 @@ SELECT name, sql FROM sqlite_master WHERE type = 'trigger' AND tbl_name = ?;
 	}
 
 	s.Tables = tables
+
+	// Relations
+	for _, r := range relations {
+		result := reFK.FindAllStringSubmatch(r.Def, -1)
+		strColumns := strings.Split(result[0][1], ", ")
+		strParentTable := result[0][2]
+		strParentColumns := strings.Split(result[0][3], ", ")
+		for _, c := range strColumns {
+			column, err := r.Table.FindColumnByName(c)
+			if err != nil {
+				return err
+			}
+			r.Columns = append(r.Columns, column)
+			column.ParentRelations = append(column.ParentRelations, r)
+		}
+		parentTable, err := s.FindTableByName(strParentTable)
+		if err != nil {
+			return err
+		}
+		r.ParentTable = parentTable
+		for _, c := range strParentColumns {
+			column, err := parentTable.FindColumnByName(c)
+			if err != nil {
+				return err
+			}
+			r.ParentColumns = append(r.ParentColumns, column)
+			column.ChildRelations = append(column.ChildRelations, r)
+		}
+	}
+
+	s.Relations = relations
 
 	return nil
 }
