@@ -29,8 +29,8 @@ CREATE TABLE comment_stars (
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
 | id | INTEGER |  | true | [logs](logs.md) |  |  |
 | user_id | INTEGER |  | false |  |  |  |
-| comment_post_id | INTEGER |  | false |  |  |  |
-| comment_user_id | INTEGER |  | false |  |  |  |
+| comment_post_id | INTEGER |  | false |  | [comments](comments.md) |  |
+| comment_user_id | INTEGER |  | false |  | [users](users.md) [comments](comments.md) |  |
 | created | NUMERIC |  | false |  |  |  |
 | updated | NUMERIC |  | true |  |  |  |
 
