@@ -28,8 +28,8 @@ CREATE TABLE comments (
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
 | id | INTEGER |  | true | [logs](logs.md) |  |  |
-| post_id | INTEGER |  | false |  |  |  |
-| user_id | INTEGER |  | false |  |  |  |
+| post_id | INTEGER |  | false | [comment_stars](comment_stars.md) | [posts](posts.md) |  |
+| user_id | INTEGER |  | false | [comment_stars](comment_stars.md) | [users](users.md) |  |
 | comment | TEXT |  | false |  |  |  |
 | created | NUMERIC |  | false |  |  |  |
 | updated | NUMERIC |  | true |  |  |  |
