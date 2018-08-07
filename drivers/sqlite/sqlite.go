@@ -12,6 +12,9 @@ import (
 )
 
 var reFK = regexp.MustCompile(`FOREIGN KEY \((.+)\) REFERENCES ([^\s]+)\s?\((.+)\)`)
+var reFTS = regexp.MustCompile(`(?i)USING\s+fts([34])`)
+
+var shadowTables []string
 
 // Sqlite struct
 type Sqlite struct{}
@@ -50,6 +53,18 @@ WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
 		err := tableRows.Scan(&tableName, &tableType, &tableDef)
 		if err != nil {
 			return errors.WithStack(err)
+		}
+
+		if reFTS.MatchString(tableDef) {
+			tableType = "virtual table"
+			matches := reFTS.FindStringSubmatch(tableDef)
+			shadowTables = append(shadowTables, fmt.Sprintf("%s_content", tableName))
+			shadowTables = append(shadowTables, fmt.Sprintf("%s_segdir", tableName))
+			shadowTables = append(shadowTables, fmt.Sprintf("%s_segments", tableName))
+			if matches[1] == "4" {
+				shadowTables = append(shadowTables, fmt.Sprintf("%s_stat", tableName))
+				shadowTables = append(shadowTables, fmt.Sprintf("%s_docsize", tableName))
+			}
 		}
 
 		table := &schema.Table{
@@ -301,7 +316,14 @@ SELECT name, sql FROM sqlite_master WHERE type = 'trigger' AND tbl_name = ?;
 		tables = append(tables, table)
 	}
 
-	s.Tables = tables
+	filtered := []*schema.Table{}
+	for _, t := range tables {
+		if !contains(shadowTables, t.Name) {
+			filtered = append(filtered, t)
+		}
+	}
+
+	s.Tables = filtered
 
 	// Relations
 	for _, r := range relations {
@@ -391,4 +413,13 @@ func parseCheckConstraints(sql string) []*schema.Constraint {
 	}
 
 	return constraints
+}
+
+func contains(s []string, e string) bool {
+	for _, v := range s {
+		if e == v {
+			return true
+		}
+	}
+	return false
 }
