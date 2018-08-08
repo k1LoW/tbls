@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.2.1](https://github.com/k1LoW/tbls/compare/v1.2.0...v1.2.1) (2018-08-09)
+
+* Fix relation rendering of multi-columns foreign key [#53](https://github.com/k1LoW/tbls/pull/53) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.2.0](https://github.com/k1LoW/tbls/compare/v1.1.1...v1.2.0) (2018-08-08)
 
 * Support SQLite FTS3/FTS4 Virtual Table [#52](https://github.com/k1LoW/tbls/pull/52) ([k1LoW](https://github.com/k1LoW))
