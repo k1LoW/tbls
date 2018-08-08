@@ -36,14 +36,18 @@ func OutputTable(wr io.Writer, t *schema.Table) error {
 				encountered[r.ParentTable.Name] = true
 				tables = append(tables, r.ParentTable)
 			}
-			relations = append(relations, r)
+			if !contains(relations, r) {
+				relations = append(relations, r)
+			}
 		}
 		for _, r := range c.ChildRelations {
 			if !encountered[r.Table.Name] {
 				encountered[r.Table.Name] = true
 				tables = append(tables, r.Table)
 			}
-			relations = append(relations, r)
+			if !contains(relations, r) {
+				relations = append(relations, r)
+			}
 		}
 	}
 
@@ -60,4 +64,13 @@ func OutputTable(wr io.Writer, t *schema.Table) error {
 	}
 
 	return nil
+}
+
+func contains(rs []*schema.Relation, e *schema.Relation) bool {
+	for _, r := range rs {
+		if e == r {
+			return true
+		}
+	}
+	return false
 }
