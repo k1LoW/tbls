@@ -37,10 +37,7 @@ import (
 )
 
 // withoutER
-var (
-	withoutER bool
-	erFormat  string
-)
+var withoutER bool
 
 // docCmd represents the doc command
 var docCmd = &cobra.Command{
