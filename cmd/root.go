@@ -40,6 +40,9 @@ var sort bool
 // additionalDataPath is a additional data path
 var additionalDataPath string
 
+// erFormat is a option that ER diagram file format
+var erFormat string
+
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "tbls",
