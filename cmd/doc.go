@@ -37,7 +37,10 @@ import (
 )
 
 // withoutER
-var withoutER bool
+var (
+	withoutER bool
+	erFormat  string
+)
 
 // docCmd represents the doc command
 var docCmd = &cobra.Command{
@@ -86,7 +89,7 @@ var docCmd = &cobra.Command{
 			}
 		}
 
-		err = md.Output(s, outputPath, force, adjust)
+		err = md.Output(s, outputPath, force, adjust, erFormat)
 
 		if err != nil {
 			printError(err)
@@ -101,13 +104,16 @@ func withDot(s *schema.Schema, outputPath string, force bool) error {
 		return errors.WithStack(err)
 	}
 
-	if !force && outputPngExists(s, fullPath) {
-		return fmt.Errorf("Error: %s", "output png files already exists.")
+	if !force && outputErExists(s, fullPath) {
+		return fmt.Errorf("Error: %s", "output ER diagram files already exists.")
 	}
 
-	fmt.Printf("%s\n", filepath.Join(outputPath, "schema.png"))
+	dotFormatOption := fmt.Sprintf("-T%s", erFormat)
+	erFileName := fmt.Sprintf("schema.%s", erFormat)
+
+	fmt.Printf("%s\n", filepath.Join(outputPath, erFileName))
 	tmpfile, _ := ioutil.TempFile("", "tblstmp")
-	c := exec.Command("dot", "-Tpng", "-o", filepath.Join(fullPath, "schema.png"), tmpfile.Name())
+	c := exec.Command("dot", dotFormatOption, "-o", filepath.Join(fullPath, erFileName), tmpfile.Name())
 	var stderr bytes.Buffer
 	c.Stderr = &stderr
 
@@ -131,9 +137,11 @@ func withDot(s *schema.Schema, outputPath string, force bool) error {
 
 	// tables
 	for _, t := range s.Tables {
-		fmt.Printf("%s\n", filepath.Join(outputPath, fmt.Sprintf("%s.png", t.Name)))
+		erFileName := fmt.Sprintf("%s.%s", t.Name, erFormat)
+
+		fmt.Printf("%s\n", filepath.Join(outputPath, erFileName))
 		tmpfile, _ := ioutil.TempFile("", "tblstmp")
-		c := exec.Command("dot", "-Tpng", "-o", filepath.Join(fullPath, fmt.Sprintf("%s.png", t.Name)), tmpfile.Name())
+		c := exec.Command("dot", dotFormatOption, "-o", filepath.Join(fullPath, erFileName), tmpfile.Name())
 		var stderr bytes.Buffer
 		c.Stderr = &stderr
 
@@ -159,14 +167,16 @@ func withDot(s *schema.Schema, outputPath string, force bool) error {
 	return nil
 }
 
-func outputPngExists(s *schema.Schema, path string) bool {
+func outputErExists(s *schema.Schema, path string) bool {
 	// schema.png
-	if _, err := os.Lstat(filepath.Join(path, "schema.png")); err == nil {
+	erFileName := fmt.Sprintf("schema.%s", erFormat)
+	if _, err := os.Lstat(filepath.Join(path, erFileName)); err == nil {
 		return true
 	}
 	// tables
 	for _, t := range s.Tables {
-		if _, err := os.Lstat(filepath.Join(path, fmt.Sprintf("%s.png", t.Name))); err == nil {
+		erFileName := fmt.Sprintf("%s.%s", t.Name, erFormat)
+		if _, err := os.Lstat(filepath.Join(path, erFileName)); err == nil {
 			return true
 		}
 	}
@@ -177,6 +187,7 @@ func init() {
 	rootCmd.AddCommand(docCmd)
 	docCmd.Flags().BoolVarP(&force, "force", "f", false, "force")
 	docCmd.Flags().BoolVarP(&sort, "sort", "", false, "sort")
+	docCmd.Flags().StringVarP(&erFormat, "er-format", "T", "png", "ER diagrams output format")
 	docCmd.Flags().BoolVarP(&withoutER, "without-er", "", false, "no generate ER diagrams")
 	docCmd.Flags().BoolVarP(&adjust, "adjust-table", "j", false, "adjust column width of table")
 	docCmd.Flags().StringVarP(&additionalDataPath, "add", "a", "", "additional schema data path")
