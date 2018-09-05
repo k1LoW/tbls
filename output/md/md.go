@@ -42,6 +42,7 @@ func Output(s *schema.Schema, path string, force bool, adjust bool, erFormat str
 
 	templateData := makeSchemaTemplateData(s, adjust)
 	templateData["er"] = er
+	templateData["erFormat"] = erFormat
 
 	err = tmpl.Execute(file, templateData)
 	if err != nil {
@@ -66,6 +67,7 @@ func Output(s *schema.Schema, path string, force bool, adjust bool, erFormat str
 
 		templateData := makeTableTemplateData(t, adjust)
 		templateData["er"] = er
+		templateData["erFormat"] = erFormat
 
 		err = tmpl.Execute(file, templateData)
 		if err != nil {
@@ -79,7 +81,7 @@ func Output(s *schema.Schema, path string, force bool, adjust bool, erFormat str
 }
 
 // Diff database and markdown files.
-func Diff(s *schema.Schema, path string, adjust bool) error {
+func Diff(s *schema.Schema, path string, adjust bool, erFormat string) error {
 	fullPath, err := filepath.Abs(path)
 	if err != nil {
 		return errors.WithStack(err)
@@ -103,6 +105,7 @@ func Diff(s *schema.Schema, path string, adjust bool) error {
 
 	templateData := makeSchemaTemplateData(s, adjust)
 	templateData["er"] = er
+	templateData["erFormat"] = erFormat
 
 	err = tmpl.Execute(a, templateData)
 	if err != nil {
@@ -136,6 +139,7 @@ func Diff(s *schema.Schema, path string, adjust bool) error {
 
 		templateData := makeTableTemplateData(t, adjust)
 		templateData["er"] = er
+		templateData["erFormat"] = erFormat
 
 		err = tmpl.Execute(a, templateData)
 
