@@ -99,7 +99,7 @@ func Diff(s *schema.Schema, path string, adjust bool, erFormat string) error {
 	bs, _ := ioutil.ReadAll(f)
 	tmpl := template.Must(template.New("index").Funcs(funcMap()).Parse(string(bs)))
 	er := false
-	if _, err := os.Lstat(filepath.Join(fullPath, "schema.png")); err == nil {
+	if _, err := os.Lstat(filepath.Join(fullPath, fmt.Sprintf("schema.%s", erFormat))); err == nil {
 		er = true
 	}
 
@@ -133,7 +133,7 @@ func Diff(s *schema.Schema, path string, adjust bool, erFormat string) error {
 		bs, _ := ioutil.ReadAll(f)
 		tmpl := template.Must(template.New(t.Name).Funcs(funcMap()).Parse(string(bs)))
 		er := false
-		if _, err := os.Lstat(filepath.Join(fullPath, fmt.Sprintf("%s.png", t.Name))); err == nil {
+		if _, err := os.Lstat(filepath.Join(fullPath, fmt.Sprintf("%s.%s", t.Name, erFormat))); err == nil {
 			er = true
 		}
 
