@@ -32,7 +32,7 @@ doc: build
 	./tbls doc my://root:mypass@localhost:33308/testdb -a test/additional_data.yml -f sample/mysql8
 	./tbls doc sq://$(CURDIR)/test/testdb.sqlite3 -a test/additional_data.yml -f sample/sqlite
 	./tbls doc pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -a test/additional_data.yml -j -f sample/adjust
-	./tbls doc my://root:mypass@localhost:33306/testdb -a test/additional_data.yml -f sample/svg -T svg
+	./tbls doc my://root:mypass@localhost:33306/testdb -a test/additional_data.yml -t svg -f sample/svg
 
 testdoc: build
 	$(eval DIFF := $(shell ./tbls diff pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -a test/additional_data.yml sample/postgres))
@@ -45,6 +45,8 @@ testdoc: build
 	@test -z "$(DIFF)" || (echo "document does not match database." && ./tbls diff sq://$(CURDIR)/test/testdb.sqlite3 -a test/additional_data.yml sample/sqlite && exit 1)
 	$(eval DIFF := $(shell ./tbls diff pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -a test/additional_data.yml -j sample/adjust))
 	@test -z "$(DIFF)" || (echo "document does not match database." && ./tbls diff pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -a test/additional_data.yml -j sample/adjust && exit 1)
+	$(eval DIFF := $(shell ./tbls diff my://root:mypass@localhost:33306/testdb -a test/additional_data.yml -t svg sample/svg))
+	@test -z "$(DIFF)" || (echo "document does not match database." && ./tbls diff my://root:mypass@localhost:33306/testdb -a test/additional_data.yml -t svg sample/svg && exit 1)
 
 test_too_many_tables: build
 	usql pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -f test/createdb_too_many.sql
