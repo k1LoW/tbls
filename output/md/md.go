@@ -16,7 +16,7 @@ import (
 )
 
 // Output generate markdown files.
-func Output(s *schema.Schema, path string, force bool, adjust bool) error {
+func Output(s *schema.Schema, path string, force bool, adjust bool, erFormat string) error {
 	fullPath, err := filepath.Abs(path)
 	if err != nil {
 		return errors.WithStack(err)
@@ -36,12 +36,13 @@ func Output(s *schema.Schema, path string, force bool, adjust bool) error {
 	bs, _ := ioutil.ReadAll(f)
 	tmpl := template.Must(template.New("index").Funcs(funcMap()).Parse(string(bs)))
 	er := false
-	if _, err := os.Lstat(filepath.Join(fullPath, "schema.png")); err == nil {
+	if _, err := os.Lstat(filepath.Join(fullPath, fmt.Sprintf("schema.%s", erFormat))); err == nil {
 		er = true
 	}
 
 	templateData := makeSchemaTemplateData(s, adjust)
 	templateData["er"] = er
+	templateData["erFormat"] = erFormat
 
 	err = tmpl.Execute(file, templateData)
 	if err != nil {
@@ -60,12 +61,13 @@ func Output(s *schema.Schema, path string, force bool, adjust bool) error {
 		bs, _ := ioutil.ReadAll(f)
 		tmpl := template.Must(template.New(t.Name).Funcs(funcMap()).Parse(string(bs)))
 		er := false
-		if _, err := os.Lstat(filepath.Join(fullPath, fmt.Sprintf("%s.png", t.Name))); err == nil {
+		if _, err := os.Lstat(filepath.Join(fullPath, fmt.Sprintf("%s.%s", t.Name, erFormat))); err == nil {
 			er = true
 		}
 
 		templateData := makeTableTemplateData(t, adjust)
 		templateData["er"] = er
+		templateData["erFormat"] = erFormat
 
 		err = tmpl.Execute(file, templateData)
 		if err != nil {
@@ -79,7 +81,7 @@ func Output(s *schema.Schema, path string, force bool, adjust bool) error {
 }
 
 // Diff database and markdown files.
-func Diff(s *schema.Schema, path string, adjust bool) error {
+func Diff(s *schema.Schema, path string, adjust bool, erFormat string) error {
 	fullPath, err := filepath.Abs(path)
 	if err != nil {
 		return errors.WithStack(err)
@@ -103,6 +105,7 @@ func Diff(s *schema.Schema, path string, adjust bool) error {
 
 	templateData := makeSchemaTemplateData(s, adjust)
 	templateData["er"] = er
+	templateData["erFormat"] = erFormat
 
 	err = tmpl.Execute(a, templateData)
 	if err != nil {
@@ -136,6 +139,7 @@ func Diff(s *schema.Schema, path string, adjust bool) error {
 
 		templateData := makeTableTemplateData(t, adjust)
 		templateData["er"] = er
+		templateData["erFormat"] = erFormat
 
 		err = tmpl.Execute(a, templateData)
 

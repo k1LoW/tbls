@@ -32,6 +32,7 @@ doc: build
 	./tbls doc my://root:mypass@localhost:33308/testdb -a test/additional_data.yml -f sample/mysql8
 	./tbls doc sq://$(CURDIR)/test/testdb.sqlite3 -a test/additional_data.yml -f sample/sqlite
 	./tbls doc pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -a test/additional_data.yml -j -f sample/adjust
+	./tbls doc my://root:mypass@localhost:33306/testdb -a test/additional_data.yml -f sample/svg -T svg
 
 testdoc: build
 	$(eval DIFF := $(shell ./tbls diff pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -a test/additional_data.yml sample/postgres))
