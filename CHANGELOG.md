@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.3.0](https://github.com/k1LoW/tbls/compare/v1.2.1...v1.3.0) (2018-09-06)
+
+* Add `--er-format` option [#54](https://github.com/k1LoW/tbls/pull/54) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.2.1](https://github.com/k1LoW/tbls/compare/v1.2.0...v1.2.1) (2018-08-09)
 
 * Fix relation rendering of multi-columns foreign key [#53](https://github.com/k1LoW/tbls/pull/53) ([k1LoW](https://github.com/k1LoW))
