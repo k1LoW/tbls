@@ -184,7 +184,7 @@ func init() {
 	rootCmd.AddCommand(docCmd)
 	docCmd.Flags().BoolVarP(&force, "force", "f", false, "force")
 	docCmd.Flags().BoolVarP(&sort, "sort", "", false, "sort")
-	docCmd.Flags().StringVarP(&erFormat, "er-format", "T", "png", "ER diagrams output format")
+	docCmd.Flags().StringVarP(&erFormat, "er-format", "t", "png", "ER diagrams output format [png, svg, jpg, ...]")
 	docCmd.Flags().BoolVarP(&withoutER, "without-er", "", false, "no generate ER diagrams")
 	docCmd.Flags().BoolVarP(&adjust, "adjust-table", "j", false, "adjust column width of table")
 	docCmd.Flags().StringVarP(&additionalDataPath, "add", "a", "", "additional schema data path")
