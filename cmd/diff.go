@@ -77,7 +77,7 @@ var diffCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(diffCmd)
 	diffCmd.Flags().BoolVarP(&sort, "sort", "", false, "sort")
-	diffCmd.Flags().StringVarP(&erFormat, "er-format", "T", "png", "ER diagrams output format")
+	diffCmd.Flags().StringVarP(&erFormat, "er-format", "t", "png", "ER diagrams output format [png, svg, jpg, ...]")
 	diffCmd.Flags().BoolVarP(&adjust, "adjust-table", "j", false, "adjust column width of table")
 	diffCmd.Flags().StringVarP(&additionalDataPath, "add", "a", "", "additional schema data path")
 }
