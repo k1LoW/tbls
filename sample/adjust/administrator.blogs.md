@@ -19,8 +19,8 @@
 
 | Name             | Type        | Definition                                                   |
 | ---------------- | ----------- | ------------------------------------------------------------ |
-| blogs_pkey       | PRIMARY KEY | PRIMARY KEY (id)                                             |
 | blogs_user_id_fk | FOREIGN KEY | FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE |
+| blogs_pkey       | PRIMARY KEY | PRIMARY KEY (id)                                             |
 
 ## Indexes
 
