@@ -22,10 +22,10 @@ comment
 
 | Name | Type | Definition |
 | ---- | ---- | ---------- |
+| comments_user_id_fk | FOREIGN KEY | FOREIGN KEY (user_id) REFERENCES users(id) |
+| comments_post_id_fk | FOREIGN KEY | FOREIGN KEY (post_id) REFERENCES posts(id) |
 | comments_id_pk | PRIMARY KEY | PRIMARY KEY (id) |
 | comments_post_id_user_id_key | UNIQUE | UNIQUE (post_id, user_id) |
-| comments_post_id_fk | FOREIGN KEY | FOREIGN KEY (post_id) REFERENCES posts(id) |
-| comments_user_id_fk | FOREIGN KEY | FOREIGN KEY (user_id) REFERENCES users(id) |
 
 ## Indexes
 
