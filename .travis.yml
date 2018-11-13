@@ -1,6 +1,6 @@
 language: go
 go:
-  - 1.10.x
+  - 1.11.x
   - master
 services:
   - docker
@@ -8,8 +8,6 @@ addons:
   apt:
     update: true
 before_install:
-  - go get github.com/xo/usql
-  - go get github.com/jessevdk/go-assets-builder
   - make depsdev
   - docker-compose up -d
   - sleep 20s
