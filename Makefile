@@ -63,8 +63,8 @@ deps:
 
 depsdev: deps
 	go get golang.org/x/tools/cmd/cover
+	go get golang.org/x/lint/golint
 	go get github.com/mattn/goveralls
-	go get github.com/golang/lint/golint
 	go get github.com/motemen/gobump/cmd/gobump
 	go get github.com/Songmu/goxz/cmd/goxz
 	go get github.com/tcnksm/ghr
