@@ -9,6 +9,7 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/gobuffalo/packr"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/mattn/go-runewidth"
 	"github.com/pkg/errors"
@@ -26,15 +27,16 @@ func Output(s *schema.Schema, path string, force bool, adjust bool, erFormat str
 		return fmt.Errorf("Error: %s", "output files already exists.")
 	}
 
+	box := packr.NewBox("./templates")
+
 	// README.md
 	file, err := os.Create(filepath.Join(fullPath, "README.md"))
 	defer file.Close()
 	if err != nil {
 		return errors.WithStack(err)
 	}
-	f, _ := Assets.Open(filepath.Join("/", "index.md.tmpl"))
-	bs, _ := ioutil.ReadAll(f)
-	tmpl := template.Must(template.New("index").Funcs(funcMap()).Parse(string(bs)))
+	ts, _ := box.FindString("index.md.tmpl")
+	tmpl := template.Must(template.New("index").Funcs(funcMap()).Parse(ts))
 	er := false
 	if _, err := os.Lstat(filepath.Join(fullPath, fmt.Sprintf("schema.%s", erFormat))); err == nil {
 		er = true
@@ -57,9 +59,8 @@ func Output(s *schema.Schema, path string, force bool, adjust bool, erFormat str
 			file.Close()
 			return errors.WithStack(err)
 		}
-		f, _ := Assets.Open(filepath.Join("/", "table.md.tmpl"))
-		bs, _ := ioutil.ReadAll(f)
-		tmpl := template.Must(template.New(t.Name).Funcs(funcMap()).Parse(string(bs)))
+		ts, _ := box.FindString("table.md.tmpl")
+		tmpl := template.Must(template.New(t.Name).Funcs(funcMap()).Parse(ts))
 		er := false
 		if _, err := os.Lstat(filepath.Join(fullPath, fmt.Sprintf("%s.%s", t.Name, erFormat))); err == nil {
 			er = true
@@ -91,13 +92,13 @@ func Diff(s *schema.Schema, path string, adjust bool, erFormat string) error {
 		return fmt.Errorf("Error: %s", "target files does not exists.")
 	}
 
+	box := packr.NewBox("./templates")
 	dmp := diffmatchpatch.New()
 
 	// README.md
 	a := new(bytes.Buffer)
-	f, _ := Assets.Open(filepath.Join("/", "index.md.tmpl"))
-	bs, _ := ioutil.ReadAll(f)
-	tmpl := template.Must(template.New("index").Funcs(funcMap()).Parse(string(bs)))
+	ts, _ := box.FindString("index.md.tmpl")
+	tmpl := template.Must(template.New("index").Funcs(funcMap()).Parse(ts))
 	er := false
 	if _, err := os.Lstat(filepath.Join(fullPath, fmt.Sprintf("schema.%s", erFormat))); err == nil {
 		er = true
@@ -129,9 +130,8 @@ func Diff(s *schema.Schema, path string, adjust bool, erFormat string) error {
 	// tables
 	for _, t := range s.Tables {
 		a := new(bytes.Buffer)
-		f, _ := Assets.Open(filepath.Join("/", "table.md.tmpl"))
-		bs, _ := ioutil.ReadAll(f)
-		tmpl := template.Must(template.New(t.Name).Funcs(funcMap()).Parse(string(bs)))
+		ts, _ := box.FindString("table.md.tmpl")
+		tmpl := template.Must(template.New(t.Name).Funcs(funcMap()).Parse(ts))
 		er := false
 		if _, err := os.Lstat(filepath.Join(fullPath, fmt.Sprintf("%s.%s", t.Name, erFormat))); err == nil {
 			er = true
