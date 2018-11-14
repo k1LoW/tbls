@@ -60,15 +60,15 @@ build: template
 	$(GO) build -ldflags="$(BUILD_LDFLAGS)"
 
 depsdev:
-	go get golang.org/x/tools/cmd/cover
-	go get github.com/mattn/goveralls
-	go get github.com/golang/lint/golint
-	go get github.com/motemen/gobump/cmd/gobump
-	go get github.com/Songmu/goxz/cmd/goxz
-	go get github.com/tcnksm/ghr
-	go get github.com/Songmu/ghch/cmd/ghch
-	go get github.com/xo/usql
-	go get github.com/jessevdk/go-assets-builder
+	GO111MODULE=off go get golang.org/x/tools/cmd/cover
+	GO111MODULE=off go get github.com/mattn/goveralls
+	GO111MODULE=off go get github.com/golang/lint/golint
+	GO111MODULE=off go get github.com/motemen/gobump/cmd/gobump
+	GO111MODULE=off go get github.com/Songmu/goxz/cmd/goxz
+	GO111MODULE=off go get github.com/tcnksm/ghr
+	GO111MODULE=off go get github.com/Songmu/ghch/cmd/ghch
+	GO111MODULE=off go get github.com/xo/usql
+	GO111MODULE=off go get github.com/jessevdk/go-assets-builder
 
 crossbuild: depsdev
 	$(eval ver = v$(shell gobump show -r version/))
