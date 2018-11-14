@@ -1,5 +1,10 @@
 # Changelog
 
+## [v1.4.1](https://github.com/k1LoW/tbls/compare/v1.4.0...v1.4.1) (2018-11-14)
+
+* Use gobuffalo/packr [#58](https://github.com/k1LoW/tbls/pull/58) ([k1LoW](https://github.com/k1LoW))
+* Remove unused modules in go.mod [#57](https://github.com/k1LoW/tbls/pull/57) ([linyows](https://github.com/linyows))
+
 ## [v1.4.0](https://github.com/k1LoW/tbls/compare/v1.3.0...v1.4.0) (2018-11-13)
 
 * Support Go 1.11.x [#56](https://github.com/k1LoW/tbls/pull/56) ([k1LoW](https://github.com/k1LoW))
