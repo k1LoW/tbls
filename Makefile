@@ -26,7 +26,7 @@ cover: depsdev
 	GO111MODULE=on goveralls -service=travis-ci
 
 template:
-	$(GO) generate
+	packr
 
 doc: build
 	./tbls doc pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -a test/additional_data.yml -f sample/postgres
@@ -68,7 +68,7 @@ depsdev:
 	GO111MODULE=off go get github.com/tcnksm/ghr
 	GO111MODULE=off go get github.com/Songmu/ghch/cmd/ghch
 	GO111MODULE=off go get github.com/xo/usql
-	GO111MODULE=off go get github.com/jessevdk/go-assets-builder
+	GO111MODULE=off go get github.com/gobuffalo/packr/packr
 
 crossbuild: depsdev
 	$(eval ver = v$(shell gobump show -r version/))
