@@ -25,9 +25,6 @@ test:
 cover: depsdev
 	GO111MODULE=on goveralls -service=travis-ci
 
-template:
-	$(GO) generate
-
 doc: build
 	./tbls doc pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -a test/additional_data.yml -f sample/postgres
 	./tbls doc my://root:mypass@localhost:33306/testdb -a test/additional_data.yml -f sample/mysql
@@ -56,8 +53,10 @@ test_too_many_tables: build
 	ulimit -n 256 && ./tbls doc pg://postgres:pgpass@localhost:55432/too_many?sslmode=disable -f /tmp
 	ulimit -n 256 && ./tbls diff pg://postgres:pgpass@localhost:55432/too_many?sslmode=disable /tmp
 
-build: template
+build:
+	packr
 	$(GO) build -ldflags="$(BUILD_LDFLAGS)"
+	packr clean
 
 depsdev:
 	GO111MODULE=off go get golang.org/x/tools/cmd/cover
@@ -68,12 +67,14 @@ depsdev:
 	GO111MODULE=off go get github.com/tcnksm/ghr
 	GO111MODULE=off go get github.com/Songmu/ghch/cmd/ghch
 	GO111MODULE=off go get github.com/xo/usql
-	GO111MODULE=off go get github.com/jessevdk/go-assets-builder
+	GO111MODULE=off go get github.com/gobuffalo/packr/packr
 
 crossbuild: depsdev
 	$(eval ver = v$(shell gobump show -r version/))
+	packr
 	GO111MODULE=on goxz -pv=$(ver) -arch=386,amd64 -build-ldflags="$(RELEASE_BUILD_LDFLAGS)" \
 	  -d=./dist/$(ver)
+	packr clean
 
 prerelease:
 	$(eval ver = v$(shell gobump show -r version/))
