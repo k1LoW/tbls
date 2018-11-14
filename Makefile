@@ -19,7 +19,7 @@ test:
 	usql my://root:mypass@localhost:33306/testdb -f test/my.sql
 	usql my://root:mypass@localhost:33308/testdb -f test/my.sql
 	sqlite3 $(CURDIR)/test/testdb.sqlite3 < test/sqlite.sql
-	$(GO) test -cover -v $(shell $(GO) list ./... | grep -v vendor)
+	$(GO) test -cover -v $(shell $(GO) list ./...)
 	make testdoc
 
 cover: depsdev
