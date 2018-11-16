@@ -2,19 +2,18 @@ package dot
 
 import (
 	"io"
-	"io/ioutil"
-	"path/filepath"
 	"text/template"
 
+	"github.com/gobuffalo/packr"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/pkg/errors"
 )
 
 // OutputSchema generate dot format for full relation.
 func OutputSchema(wr io.Writer, s *schema.Schema) error {
-	f, _ := Assets.Open(filepath.Join("/", "schema.dot.tmpl"))
-	bs, _ := ioutil.ReadAll(f)
-	tmpl := template.Must(template.New(s.Name).Parse(string(bs)))
+	box := packr.NewBox("./templates")
+	ts, _ := box.FindString("schema.dot.tmpl")
+	tmpl := template.Must(template.New(s.Name).Parse(ts))
 	err := tmpl.Execute(wr, map[string]interface{}{
 		"Schema": s,
 	})
@@ -51,9 +50,10 @@ func OutputTable(wr io.Writer, t *schema.Table) error {
 		}
 	}
 
-	f, _ := Assets.Open(filepath.Join("/", "table.dot.tmpl"))
-	bs, _ := ioutil.ReadAll(f)
-	tmpl := template.Must(template.New(t.Name).Parse(string(bs)))
+	box := packr.NewBox("./templates")
+
+	ts, _ := box.FindString("table.dot.tmpl")
+	tmpl := template.Must(template.New(t.Name).Parse(ts))
 	err := tmpl.Execute(wr, map[string]interface{}{
 		"Table":     t,
 		"Tables":    tables,
