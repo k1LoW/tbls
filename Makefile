@@ -19,11 +19,8 @@ test:
 	usql my://root:mypass@localhost:33306/testdb -f test/my.sql
 	usql my://root:mypass@localhost:33308/testdb -f test/my.sql
 	sqlite3 $(CURDIR)/test/testdb.sqlite3 < test/sqlite.sql
-	$(GO) test -cover -v $(shell $(GO) list ./...)
+	$(GO) test ./... -coverprofile=coverage.txt -covermode=count
 	make testdoc
-
-cover: depsdev
-	GO111MODULE=on goveralls -service=travis-ci
 
 doc: build
 	./tbls doc pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -a test/additional_data.yml -f sample/postgres
@@ -84,4 +81,4 @@ release: crossbuild
 	$(eval ver = v$(shell gobump show -r version/))
 	GO111MODULE=on ghr -username k1LoW -replace ${ver} dist/${ver}
 
-.PHONY: default test cover
+.PHONY: default test

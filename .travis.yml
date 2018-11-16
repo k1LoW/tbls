@@ -8,6 +8,7 @@ addons:
   apt:
     update: true
 before_install:
+  - sudo pip install codecov
   - make depsdev
   - docker-compose up -d
   - sleep 20s
@@ -15,4 +16,4 @@ script:
   - make test
   - make test_too_many_tables
 after_script:
-  - make cover
+  - codecov
