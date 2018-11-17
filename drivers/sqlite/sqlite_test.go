@@ -4,10 +4,9 @@ import (
 	"database/sql"
 	"fmt"
 	"os"
-	"testing"
-
 	"path/filepath"
 	"reflect"
+	"testing"
 
 	"github.com/k1LoW/tbls/schema"
 	_ "github.com/mattn/go-sqlite3"
@@ -21,8 +20,7 @@ func TestMain(m *testing.M) {
 	s = &schema.Schema{
 		Name: "testdb.sqlite3",
 	}
-	dir, _ := os.Getwd()
-	sqliteFilepath, _ := filepath.Abs(filepath.Join(filepath.Dir(filepath.Dir(dir)), "testdata", "testdb.sqlite3"))
+	sqliteFilepath := filepath.Join(testdataDir(), "testdb.sqlite3")
 
 	db, _ = dburl.Open(fmt.Sprintf("sq://%s", sqliteFilepath))
 	defer db.Close()
@@ -87,4 +85,10 @@ func TestParseCheckConstraints(t *testing.T) {
 	if !reflect.DeepEqual(actual, expected) {
 		t.Errorf("got: %#v\nwant: %#v", actual, expected)
 	}
+}
+
+func testdataDir() string {
+	wd, _ := os.Getwd()
+	dir, _ := filepath.Abs(filepath.Join(filepath.Dir(filepath.Dir(wd)), "testdata"))
+	return dir
 }
