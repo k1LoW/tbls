@@ -47,6 +47,25 @@ func TestOutput(t *testing.T) {
 	}
 }
 
+func TestDiff(t *testing.T) {
+	for _, tt := range tests {
+		s := newTestSchema()
+		tempDir, _ := ioutil.TempDir("", "tbls")
+		force := true
+		adjust := tt.adjust
+		erFormat := "png"
+		defer os.RemoveAll(tempDir)
+		err := Output(s, tempDir, force, adjust, erFormat)
+		if err != nil {
+			t.Error(err)
+		}
+		err = Diff(s, tempDir, adjust, erFormat)
+		if err != nil {
+			t.Error(err)
+		}
+	}
+}
+
 func testdataDir() string {
 	wd, _ := os.Getwd()
 	dir, _ := filepath.Abs(filepath.Join(filepath.Dir(filepath.Dir(wd)), "testdata"))
