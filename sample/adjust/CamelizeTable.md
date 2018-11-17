@@ -2,20 +2,12 @@
 
 ## Description
 
-
-
 ## Columns
 
 | Name    | Type                        | Default            | Nullable | Children | Parents | Comment |
 | ------- | --------------------------- | ------------------ | -------- | -------- | ------- | ------- |
 | id      | uuid                        | uuid_generate_v4() | false    |          |         |         |
 | created | timestamp without time zone |                    | false    |          |         |         |
-
-
-
-
-
-
 
 ## Relations
 
