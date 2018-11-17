@@ -66,9 +66,13 @@ var diffCmd = &cobra.Command{
 			}
 		}
 
-		err = md.Diff(s, targetPath, adjust, erFormat)
+		diff, err := md.Diff(s, targetPath, adjust, erFormat)
 		if err != nil {
 			printError(err)
+			os.Exit(2)
+		}
+		fmt.Print(diff)
+		if diff != "" {
 			os.Exit(1)
 		}
 	},

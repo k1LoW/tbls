@@ -82,14 +82,15 @@ func Output(s *schema.Schema, path string, force bool, adjust bool, erFormat str
 }
 
 // Diff database and markdown files.
-func Diff(s *schema.Schema, path string, adjust bool, erFormat string) error {
+func Diff(s *schema.Schema, path string, adjust bool, erFormat string) (string, error) {
+	var diff string
 	fullPath, err := filepath.Abs(path)
 	if err != nil {
-		return errors.WithStack(err)
+		return "", errors.WithStack(err)
 	}
 
 	if !outputExists(s, fullPath) {
-		return fmt.Errorf("Error: %s", "target files does not exists.")
+		return "", fmt.Errorf("Error: %s", "target files does not exists.")
 	}
 
 	box := packr.NewBox("./templates")
@@ -110,7 +111,7 @@ func Diff(s *schema.Schema, path string, adjust bool, erFormat string) error {
 
 	err = tmpl.Execute(a, templateData)
 	if err != nil {
-		return errors.WithStack(err)
+		return "", errors.WithStack(err)
 	}
 
 	targetPath := filepath.Join(fullPath, "README.md")
@@ -122,9 +123,10 @@ func Diff(s *schema.Schema, path string, adjust bool, erFormat string) error {
 	da, db, dc := dmp.DiffLinesToChars(a.String(), string(b))
 	diffs := dmp.DiffMain(da, db, false)
 	result := dmp.DiffCharsToLines(diffs, dc)
+
 	if len(result) != 1 || result[0].Type != diffmatchpatch.DiffEqual {
-		fmt.Printf("diff [database] %s\n", filepath.Join(path, "README.md"))
-		fmt.Println(dmp.DiffPrettyText(result))
+		diff += fmt.Sprintf("diff [database] %s\n", filepath.Join(path, "README.md"))
+		diff += fmt.Sprintln(dmp.DiffPrettyText(result))
 	}
 
 	// tables
@@ -144,7 +146,7 @@ func Diff(s *schema.Schema, path string, adjust bool, erFormat string) error {
 		err = tmpl.Execute(a, templateData)
 
 		if err != nil {
-			return errors.WithStack(err)
+			return "", errors.WithStack(err)
 		}
 		targetPath := filepath.Join(fullPath, fmt.Sprintf("%s.md", t.Name))
 		b, err := ioutil.ReadFile(targetPath)
@@ -156,11 +158,11 @@ func Diff(s *schema.Schema, path string, adjust bool, erFormat string) error {
 		diffs := dmp.DiffMain(da, db, false)
 		result := dmp.DiffCharsToLines(diffs, dc)
 		if len(result) != 1 || result[0].Type != diffmatchpatch.DiffEqual {
-			fmt.Printf("diff %s %s\n", t.Name, filepath.Join(path, fmt.Sprintf("%s.md", t.Name)))
-			fmt.Println(dmp.DiffPrettyText(result))
+			diff += fmt.Sprintf("diff %s %s\n", t.Name, filepath.Join(path, fmt.Sprintf("%s.md", t.Name)))
+			diff += fmt.Sprintln(dmp.DiffPrettyText(result))
 		}
 	}
-	return nil
+	return diff, nil
 }
 
 func outputExists(s *schema.Schema, path string) bool {

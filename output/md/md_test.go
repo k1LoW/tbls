@@ -59,9 +59,13 @@ func TestDiff(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-		err = Diff(s, tempDir, adjust, erFormat)
+		expected := ""
+		actual, err := Diff(s, tempDir, adjust, erFormat)
 		if err != nil {
 			t.Error(err)
+		}
+		if actual != expected {
+			t.Errorf("actual %v\nwant %v", actual, expected)
 		}
 	}
 }
