@@ -31,18 +31,12 @@ doc: build
 	./tbls doc my://root:mypass@localhost:33306/testdb -a testdata/additional_data.yml -t svg -f sample/svg
 
 testdoc: build
-	$(eval DIFF := $(shell ./tbls diff pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -a testdata/additional_data.yml sample/postgres))
-	@test -z "$(DIFF)" || (echo "document does not match database." && ./tbls diff pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -a testdata/additional_data.yml sample/postgres && exit 1)
-	$(eval DIFF := $(shell ./tbls diff my://root:mypass@localhost:33306/testdb -a testdata/additional_data.yml sample/mysql))
-	@test -z "$(DIFF)" || (echo "document does not match database." && ./tbls diff my://root:mypass@localhost:33306/testdb -a testdata/additional_data.yml sample/mysql && exit 1)
-	$(eval DIFF := $(shell ./tbls diff my://root:mypass@localhost:33308/testdb -a testdata/additional_data.yml sample/mysql8))
-	@test -z "$(DIFF)" || (echo "document does not match database." && ./tbls diff my://root:mypass@localhost:33308/testdb -a testdata/additional_data.yml sample/mysql8 && exit 1)
-	$(eval DIFF := $(shell ./tbls diff sq://$(CURDIR)/testdata/testdb.sqlite3 -a testdata/additional_data.yml sample/sqlite))
-	@test -z "$(DIFF)" || (echo "document does not match database." && ./tbls diff sq://$(CURDIR)/testdata/testdb.sqlite3 -a testdata/additional_data.yml sample/sqlite && exit 1)
-	$(eval DIFF := $(shell ./tbls diff pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -a testdata/additional_data.yml -j sample/adjust))
-	@test -z "$(DIFF)" || (echo "document does not match database." && ./tbls diff pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -a testdata/additional_data.yml -j sample/adjust && exit 1)
-	$(eval DIFF := $(shell ./tbls diff my://root:mypass@localhost:33306/testdb -a testdata/additional_data.yml -t svg sample/svg))
-	@test -z "$(DIFF)" || (echo "document does not match database." && ./tbls diff my://root:mypass@localhost:33306/testdb -a testdata/additional_data.yml -t svg sample/svg && exit 1)
+	./tbls diff pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -a testdata/additional_data.yml sample/postgres
+	./tbls diff my://root:mypass@localhost:33306/testdb -a testdata/additional_data.yml sample/mysql
+	./tbls diff my://root:mypass@localhost:33308/testdb -a testdata/additional_data.yml sample/mysql8
+	./tbls diff sq://$(CURDIR)/testdata/testdb.sqlite3 -a testdata/additional_data.yml sample/sqlite
+	./tbls diff pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -a testdata/additional_data.yml -j sample/adjust
+	./tbls diff my://root:mypass@localhost:33306/testdb -a testdata/additional_data.yml -t svg sample/svg
 
 test_too_many_tables: build
 	usql pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -f testdata/createdb_too_many.sql
