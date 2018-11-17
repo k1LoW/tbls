@@ -3,6 +3,7 @@
 ## Description
 
 audit log table
+
 <details>
 <summary><strong>Table Definition</strong></summary>
 
@@ -19,7 +20,6 @@ CREATE TABLE logs (
 ```
 
 </details>
-
 
 ## Columns
 
@@ -38,10 +38,6 @@ CREATE TABLE logs (
 | Name | Type | Definition |
 | ---- | ---- | ---------- |
 | id | PRIMARY KEY | PRIMARY KEY (id) |
-
-
-
-
 
 ## Relations
 

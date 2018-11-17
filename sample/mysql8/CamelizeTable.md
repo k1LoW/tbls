@@ -2,7 +2,6 @@
 
 ## Description
 
-
 <details>
 <summary><strong>Table Definition</strong></summary>
 
@@ -15,7 +14,6 @@ CREATE TABLE `CamelizeTable` (
 ```
 
 </details>
-
 
 ## Columns
 
@@ -35,8 +33,6 @@ CREATE TABLE `CamelizeTable` (
 | Name | Definition |
 | ---- | ---------- |
 | PRIMARY | PRIMARY KEY (id) USING BTREE |
-
-
 
 ## Relations
 

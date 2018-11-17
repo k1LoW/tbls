@@ -16,12 +16,6 @@ audit log table
 | payload         | text                        |                    | true     |          |                                   |         |
 | created         | timestamp without time zone |                    | false    |          |                                   |         |
 
-
-
-
-
-
-
 ## Relations
 
 ![er](logs.png)

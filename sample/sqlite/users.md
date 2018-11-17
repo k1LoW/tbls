@@ -2,7 +2,6 @@
 
 ## Description
 
-
 <details>
 <summary><strong>Table Definition</strong></summary>
 
@@ -18,7 +17,6 @@ CREATE TABLE users (
 ```
 
 </details>
-
 
 ## Columns
 
@@ -47,8 +45,6 @@ CREATE TABLE users (
 | users_username_key | CREATE UNIQUE INDEX users_username_key ON users(username) |
 | sqlite_autoindex_users_2 | UNIQUE (email) |
 | sqlite_autoindex_users_1 | UNIQUE (username) |
-
-
 
 ## Relations
 
