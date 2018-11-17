@@ -1,10 +1,10 @@
 package db
 
 import (
+	"testing"
+
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/lib/pq"
-
-	"testing"
 )
 
 var tests = []struct {
