@@ -3,6 +3,7 @@
 ## Description
 
 Users table
+
 <details>
 <summary><strong>Table Definition</strong></summary>
 
@@ -21,7 +22,6 @@ CREATE TABLE `users` (
 ```
 
 </details>
-
 
 ## Columns
 
@@ -49,8 +49,6 @@ CREATE TABLE `users` (
 | PRIMARY | PRIMARY KEY (id) USING BTREE |
 | email | UNIQUE KEY email (email) USING BTREE |
 | username | UNIQUE KEY username (username) USING BTREE |
-
-
 
 ## Relations
 

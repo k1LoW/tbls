@@ -3,6 +3,7 @@
 ## Description
 
 audit log table
+
 <details>
 <summary><strong>Table Definition</strong></summary>
 
@@ -20,7 +21,6 @@ CREATE TABLE `logs` (
 ```
 
 </details>
-
 
 ## Columns
 
@@ -45,8 +45,6 @@ CREATE TABLE `logs` (
 | Name | Definition |
 | ---- | ---------- |
 | PRIMARY | PRIMARY KEY (id) USING BTREE |
-
-
 
 ## Relations
 

@@ -2,8 +2,6 @@
 
 ## Description
 
-
-
 ## Columns
 
 | Name        | Type                        | Default                                         | Nullable | Children | Parents           | Comment |
@@ -27,8 +25,6 @@
 | Name       | Definition                                                             |
 | ---------- | ---------------------------------------------------------------------- |
 | blogs_pkey | CREATE UNIQUE INDEX blogs_pkey ON administrator.blogs USING btree (id) |
-
-
 
 ## Relations
 

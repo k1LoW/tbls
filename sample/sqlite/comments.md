@@ -2,7 +2,6 @@
 
 ## Description
 
-
 <details>
 <summary><strong>Table Definition</strong></summary>
 
@@ -21,7 +20,6 @@ CREATE TABLE comments (
 ```
 
 </details>
-
 
 ## Columns
 
@@ -49,8 +47,6 @@ CREATE TABLE comments (
 | ---- | ---------- |
 | comments_post_id_user_id_idx | CREATE INDEX comments_post_id_user_id_idx ON comments(post_id, user_id) |
 | sqlite_autoindex_comments_1 | UNIQUE (post_id, user_id) |
-
-
 
 ## Relations
 

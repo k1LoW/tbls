@@ -3,6 +3,7 @@
 ## Description
 
 post and comments View table
+
 <details>
 <summary><strong>Table Definition</strong></summary>
 
@@ -11,7 +12,6 @@ CREATE VIEW post_comments AS (select `c`.`id` AS `id`,`p`.`title` AS `title`,`u2
 ```
 
 </details>
-
 
 ## Columns
 
@@ -24,12 +24,6 @@ CREATE VIEW post_comments AS (select `c`.`id` AS `id`,`p`.`title` AS `title`,`u2
 | comment_user | varchar(50) |  | true |  |  | comments.users.username |
 | created | datetime |  | true |  |  | comments.created |
 | updated | datetime |  | true |  |  | comments.updated |
-
-
-
-
-
-
 
 ## Relations
 

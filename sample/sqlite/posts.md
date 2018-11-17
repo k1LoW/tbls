@@ -2,7 +2,6 @@
 
 ## Description
 
-
 <details>
 <summary><strong>Table Definition</strong></summary>
 
@@ -19,7 +18,6 @@ CREATE TABLE posts (
 ```
 
 </details>
-
 
 ## Columns
 
