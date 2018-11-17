@@ -6,6 +6,7 @@ Comments
 Multi-line  
 table  
 comment
+
 <details>
 <summary><strong>Table Definition</strong></summary>
 
@@ -27,7 +28,6 @@ CREATE TABLE `comments` (
 ```
 
 </details>
-
 
 ## Columns
 
@@ -57,8 +57,6 @@ CREATE TABLE `comments` (
 | comments_user_id_fk | KEY comments_user_id_fk (user_id) USING BTREE |
 | PRIMARY | PRIMARY KEY (id) USING BTREE |
 | post_id | UNIQUE KEY post_id (post_id, user_id) USING BTREE |
-
-
 
 ## Relations
 

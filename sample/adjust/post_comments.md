@@ -3,6 +3,7 @@
 ## Description
 
 post and comments View table
+
 <details>
 <summary><strong>Table Definition</strong></summary>
 
@@ -24,7 +25,6 @@ CREATE VIEW post_comments AS (
 
 </details>
 
-
 ## Columns
 
 | Name         | Type                        | Default | Nullable | Children | Parents | Comment                 |
@@ -36,12 +36,6 @@ CREATE VIEW post_comments AS (
 | comment_user | varchar(50)                 |         | true     |          |         | comments.users.username |
 | created      | timestamp without time zone |         | true     |          |         | comments.created        |
 | updated      | timestamp without time zone |         | true     |          |         | comments.updated        |
-
-
-
-
-
-
 
 ## Relations
 

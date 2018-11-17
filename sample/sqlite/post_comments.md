@@ -3,6 +3,7 @@
 ## Description
 
 post and comments View table
+
 <details>
 <summary><strong>Table Definition</strong></summary>
 
@@ -17,7 +18,6 @@ CREATE VIEW post_comments AS
 
 </details>
 
-
 ## Columns
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
@@ -29,12 +29,6 @@ CREATE VIEW post_comments AS
 | comment_user | TEXT |  | true |  |  | comments.users.username |
 | created | NUMERIC |  | true |  |  | comments.created |
 | updated | NUMERIC |  | true |  |  | comments.updated |
-
-
-
-
-
-
 
 ## Relations
 

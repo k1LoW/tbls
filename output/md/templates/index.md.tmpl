@@ -3,9 +3,9 @@
 ## Tables
 {{ range $t := .Tables }}
 |{{ range $d := $t }} {{ $d | nl2br }} |{{ end }}
-{{- end }}
+{{- end -}}
+{{- if .er }}
 
-{{ if .er -}}
 ## Relations
 
 ![er](schema.{{ .erFormat }})
