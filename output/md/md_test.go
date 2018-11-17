@@ -14,24 +14,29 @@ var tests = []struct {
 	name         string
 	actualFile   string
 	expectedFile string
+	adjust       bool
 }{
-	{"README.md", "README.md", "md_test_README.md.golden"},
-	{"a.md", "a.md", "md_test_a.md.golden"},
+	{"README.md", "README.md", "md_test_README.md.golden", false},
+	{"a.md", "a.md", "md_test_a.md.golden", false},
+	{"--adjust option", "README.md", "md_test_README.md.adjust.golden", true},
 }
 
 func TestOutput(t *testing.T) {
-	s := newTestSchema()
-	tempDir, _ := ioutil.TempDir("", "tbls")
-	force := true
-	adjust := false
-	erFormat := "png"
-	defer os.RemoveAll(tempDir)
-	err := Output(s, tempDir, force, adjust, erFormat)
-	if err != nil {
-		t.Error(err)
-	}
 	for _, tt := range tests {
-		expected, _ := ioutil.ReadFile(filepath.Join(testdataDir(), tt.expectedFile))
+		s := newTestSchema()
+		tempDir, _ := ioutil.TempDir("", "tbls")
+		force := true
+		adjust := tt.adjust
+		erFormat := "png"
+		defer os.RemoveAll(tempDir)
+		err := Output(s, tempDir, force, adjust, erFormat)
+		if err != nil {
+			t.Error(err)
+		}
+		expected, err := ioutil.ReadFile(filepath.Join(testdataDir(), tt.expectedFile))
+		if err != nil {
+			t.Error(err)
+		}
 		actual, err := ioutil.ReadFile(filepath.Join(tempDir, tt.actualFile))
 		if err != nil {
 			log.Fatal(err)
