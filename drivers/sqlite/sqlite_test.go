@@ -6,11 +6,12 @@ import (
 	"os"
 	"testing"
 
+	"path/filepath"
+	"reflect"
+
 	"github.com/k1LoW/tbls/schema"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/xo/dburl"
-	"path/filepath"
-	"reflect"
 )
 
 var s *schema.Schema
@@ -21,7 +22,7 @@ func TestMain(m *testing.M) {
 		Name: "testdb.sqlite3",
 	}
 	dir, _ := os.Getwd()
-	sqliteFilepath, _ := filepath.Abs(filepath.Join(filepath.Dir(filepath.Dir(dir)), "test", "testdb.sqlite3"))
+	sqliteFilepath, _ := filepath.Abs(filepath.Join(filepath.Dir(filepath.Dir(dir)), "testdata", "testdb.sqlite3"))
 
 	db, _ = dburl.Open(fmt.Sprintf("sq://%s", sqliteFilepath))
 	defer db.Close()
