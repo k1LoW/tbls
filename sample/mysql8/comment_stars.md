@@ -2,7 +2,6 @@
 
 ## Description
 
-
 <details>
 <summary><strong>Table Definition</strong></summary>
 
@@ -24,7 +23,6 @@ CREATE TABLE `comment_stars` (
 ```
 
 </details>
-
 
 ## Columns
 
@@ -54,8 +52,6 @@ CREATE TABLE `comment_stars` (
 | comment_stars_user_id_post_id_fk | KEY comment_stars_user_id_post_id_fk (comment_post_id, comment_user_id) USING BTREE |
 | PRIMARY | PRIMARY KEY (id) USING BTREE |
 | user_id | UNIQUE KEY user_id (user_id, comment_post_id, comment_user_id) USING BTREE |
-
-
 
 ## Relations
 

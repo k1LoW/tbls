@@ -2,7 +2,6 @@
 
 ## Description
 
-
 <details>
 <summary><strong>Table Definition</strong></summary>
 
@@ -21,7 +20,6 @@ CREATE TABLE comment_stars (
 ```
 
 </details>
-
 
 ## Columns
 
@@ -48,8 +46,6 @@ CREATE TABLE comment_stars (
 | Name | Definition |
 | ---- | ---------- |
 | sqlite_autoindex_comment_stars_1 | UNIQUE (user_id, comment_post_id, comment_user_id) |
-
-
 
 ## Relations
 

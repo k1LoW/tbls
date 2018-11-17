@@ -2,7 +2,6 @@
 
 ## Description
 
-
 <details>
 <summary><strong>Table Definition</strong></summary>
 
@@ -14,7 +13,6 @@ CREATE TABLE CamelizeTable (
 ```
 
 </details>
-
 
 ## Columns
 
@@ -28,10 +26,6 @@ CREATE TABLE CamelizeTable (
 | Name | Type | Definition |
 | ---- | ---- | ---------- |
 | id | PRIMARY KEY | PRIMARY KEY (id) |
-
-
-
-
 
 ## Relations
 
