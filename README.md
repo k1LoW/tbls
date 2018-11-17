@@ -42,7 +42,7 @@ $ tbls doc postgres://user:pass@hostname:5432/dbname ./dbdoc
 
 If you can use Graphviz `dot` command, `tbls doc` generate ER diagram images at the same time.
 
-Sample [document](sample/postgres/) and [schema](test/pg.sql).
+Sample [document](sample/postgres/) and [schema](testdata/pg.sql).
 
 > NOTICE: If you are using a symbol such as `#` `<` in database password, URL-encode the password
 
@@ -82,7 +82,7 @@ testdoc: ## Test database schema document
 
 ## Add additional data (relations, comments) to schema
 
-To add additional data to the schema, specify [the yaml file](test/additional_data.yml) with the `--add` option as follows
+To add additional data to the schema, specify [the yaml file](testdata/additional_data.yml) with the `--add` option as follows
 
 ``` console
 $ tbls diff mysql://user:pass@hostname:3306/dbname --add path/to/additional_data.yml ./dbdoc
