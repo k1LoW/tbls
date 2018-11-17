@@ -2,7 +2,6 @@
 
 ## Description
 
-
 <details>
 <summary><strong>Table Definition</strong></summary>
 
@@ -20,7 +19,6 @@ CREATE TABLE check_constraints (
 ```
 
 </details>
-
 
 ## Columns
 
@@ -56,8 +54,6 @@ CREATE TABLE check_constraints (
 | sqlite_autoindex_check_constraints_3 | UNIQUE (downcase) |
 | sqlite_autoindex_check_constraints_2 | UNIQUE (checkcheck) |
 | sqlite_autoindex_check_constraints_1 | UNIQUE (brackets) |
-
-
 
 ## Relations
 

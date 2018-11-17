@@ -35,8 +35,6 @@ comment
 | comments_post_id_user_id_key | CREATE UNIQUE INDEX comments_post_id_user_id_key ON public.comments USING btree (post_id, user_id) |
 | comments_post_id_user_id_idx | CREATE INDEX comments_post_id_user_id_idx ON public.comments USING btree (post_id, user_id)        |
 
-
-
 ## Relations
 
 ![er](comments.png)
