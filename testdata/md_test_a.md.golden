@@ -2,13 +2,13 @@
 
 ## Description
 
-table a
+TABLE A
 
 ## Columns
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| a |  |  | false |  | [b](b.md) | column a |
+| a |  |  | false |  | [b](b.md) | COLUMN A |
 | a2 |  |  | false |  |  | column a2 |
 
 ---

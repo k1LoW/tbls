@@ -1,0 +1,7 @@
+---
+comments:
+  -
+    table: a
+    tableComment: TABLE A
+    columnComments:
+      a: COLUMN A

@@ -12,8 +12,12 @@ import (
 
 func TestOutputSchema(t *testing.T) {
 	s := newTestSchema()
+	err := s.LoadAdditionalData(filepath.Join(testdataDir(), "md_test_additional_data.yml"))
+	if err != nil {
+		t.Error(err)
+	}
 	buf := &bytes.Buffer{}
-	err := OutputSchema(buf, s)
+	err = OutputSchema(buf, s)
 	if err != nil {
 		t.Error(err)
 	}
@@ -26,6 +30,10 @@ func TestOutputSchema(t *testing.T) {
 
 func TestOutputTable(t *testing.T) {
 	s := newTestSchema()
+	err := s.LoadAdditionalData(filepath.Join(testdataDir(), "md_test_additional_data.yml"))
+	if err != nil {
+		t.Error(err)
+	}
 	ta := s.Tables[0]
 
 	buf := &bytes.Buffer{}
