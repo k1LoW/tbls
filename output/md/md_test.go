@@ -24,12 +24,16 @@ var tests = []struct {
 func TestOutput(t *testing.T) {
 	for _, tt := range tests {
 		s := newTestSchema()
+		err := s.LoadAdditionalData(filepath.Join(testdataDir(), "md_test_additional_data.yml"))
+		if err != nil {
+			t.Error(err)
+		}
 		tempDir, _ := ioutil.TempDir("", "tbls")
 		force := true
 		adjust := tt.adjust
 		erFormat := "png"
 		defer os.RemoveAll(tempDir)
-		err := Output(s, tempDir, force, adjust, erFormat)
+		err = Output(s, tempDir, force, adjust, erFormat)
 		if err != nil {
 			t.Error(err)
 		}
@@ -50,12 +54,16 @@ func TestOutput(t *testing.T) {
 func TestDiff(t *testing.T) {
 	for _, tt := range tests {
 		s := newTestSchema()
+		err := s.LoadAdditionalData(filepath.Join(testdataDir(), "md_test_additional_data.yml"))
+		if err != nil {
+			t.Error(err)
+		}
 		tempDir, _ := ioutil.TempDir("", "tbls")
 		force := true
 		adjust := tt.adjust
 		erFormat := "png"
 		defer os.RemoveAll(tempDir)
-		err := Output(s, tempDir, force, adjust, erFormat)
+		err = Output(s, tempDir, force, adjust, erFormat)
 		if err != nil {
 			t.Error(err)
 		}
