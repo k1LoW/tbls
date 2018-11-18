@@ -1,0 +1,15 @@
+---
+relations:
+  -
+    table: posts
+    columns:
+      - user_id
+    parentTable: users
+    parentColumns:
+      - id
+    def: posts->users
+comments:
+  -
+    table: posts
+    columnComments:
+      title: post title
