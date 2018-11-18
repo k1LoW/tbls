@@ -1,6 +1,8 @@
 package schema
 
 import (
+	"os"
+	"path/filepath"
 	"testing"
 )
 
@@ -123,24 +125,10 @@ func TestAddAditionalData(t *testing.T) {
 			},
 		},
 	}
-	additionalBytes := []byte(`
----
-relations:
-  -
-    table: posts
-    columns:
-      - user_id
-    parentTable: users
-    parentColumns:
-      - id
-    def: posts->users
-comments:
-  -
-    table: posts
-    columnComments:
-      title: post title
-`)
-	_ = schema.AddAdditionalData(additionalBytes)
+	err := schema.LoadAdditionalData(filepath.Join(testdataDir(), "schema_test_additional_data.yml"))
+	if err != nil {
+		t.Error(err)
+	}
 	expected := 1
 	actual := len(schema.Relations)
 	if actual != expected {
@@ -153,4 +141,10 @@ comments:
 	if actual2 != expected2 {
 		t.Errorf("actual %v\nwant %v", actual2, expected2)
 	}
+}
+
+func testdataDir() string {
+	wd, _ := os.Getwd()
+	dir, _ := filepath.Abs(filepath.Join(filepath.Dir(wd), "testdata"))
+	return dir
 }
