@@ -1,5 +1,14 @@
 # Changelog
 
+## [v1.5.0](https://github.com/k1LoW/tbls/compare/v1.4.1...v1.5.0) (2018-11-18)
+
+* [BREAKING] Fix md output ( fix newline ) [#64](https://github.com/k1LoW/tbls/pull/64) ([k1LoW](https://github.com/k1LoW))
+* [BREAKING] Add newline at end of file [#63](https://github.com/k1LoW/tbls/pull/63) ([k1LoW](https://github.com/k1LoW))
+* [BREAKING] Change `tbls diff` exit code [#62](https://github.com/k1LoW/tbls/pull/62) ([k1LoW](https://github.com/k1LoW))
+* mv test/ to testdata/ [#61](https://github.com/k1LoW/tbls/pull/61) ([k1LoW](https://github.com/k1LoW))
+* Fix `tbls dot` ( use packr ) [#60](https://github.com/k1LoW/tbls/pull/60) ([k1LoW](https://github.com/k1LoW))
+* Use Codecov [#59](https://github.com/k1LoW/tbls/pull/59) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.4.1](https://github.com/k1LoW/tbls/compare/v1.4.0...v1.4.1) (2018-11-14)
 
 * Use gobuffalo/packr [#58](https://github.com/k1LoW/tbls/pull/58) ([k1LoW](https://github.com/k1LoW))
