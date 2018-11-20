@@ -12,7 +12,7 @@ import (
 // Dot struct
 type Dot struct{}
 
-// OutputSchema generate dot format for full relation.
+// OutputSchema output dot format for full relation.
 func (d *Dot) OutputSchema(wr io.Writer, s *schema.Schema) error {
 	box := packr.NewBox("./templates")
 	ts, _ := box.FindString("schema.dot.tmpl")
@@ -27,7 +27,7 @@ func (d *Dot) OutputSchema(wr io.Writer, s *schema.Schema) error {
 	return nil
 }
 
-// OutputTable generate dot format for table.
+// OutputTable output dot format for table.
 func (d *Dot) OutputTable(wr io.Writer, t *schema.Table) error {
 	encountered := make(map[string]bool)
 	tables := []*schema.Table{}

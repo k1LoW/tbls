@@ -16,8 +16,9 @@ func TestOutputSchema(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
+	o := new(Dot)
 	buf := &bytes.Buffer{}
-	err = OutputSchema(buf, s)
+	err = o.OutputSchema(buf, s)
 	if err != nil {
 		t.Error(err)
 	}
@@ -36,8 +37,9 @@ func TestOutputTable(t *testing.T) {
 	}
 	ta := s.Tables[0]
 
+	o := new(Dot)
 	buf := &bytes.Buffer{}
-	_ = OutputTable(buf, ta)
+	_ = o.OutputTable(buf, ta)
 	expected, _ := ioutil.ReadFile(filepath.Join(testdataDir(), "dot_test_a.dot.golden"))
 	actual := buf.String()
 	if actual != string(expected) {
