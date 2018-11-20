@@ -46,7 +46,7 @@ var docCmd = &cobra.Command{
 	Long:  `'tbls doc' analyzes a database and generate document in GitHub Friendly Markdown format.`,
 	Args: func(cmd *cobra.Command, args []string) error {
 		if len(args) != 2 {
-			return errors.WithStack(fmt.Errorf("Error: %s", "requires two args"))
+			return errors.WithStack(errors.New("requires two args"))
 		}
 		return nil
 	},
@@ -102,7 +102,7 @@ func withDot(s *schema.Schema, outputPath string, force bool) error {
 	}
 
 	if !force && outputErExists(s, fullPath) {
-		return fmt.Errorf("Error: %s", "output ER diagram files already exists.")
+		return errors.New("output ER diagram files already exists")
 	}
 
 	dotFormatOption := fmt.Sprintf("-T%s", erFormat)

@@ -24,7 +24,7 @@ func Output(s *schema.Schema, path string, force bool, adjust bool, erFormat str
 	}
 
 	if !force && outputExists(s, fullPath) {
-		return fmt.Errorf("Error: %s", "output files already exists.")
+		return errors.New("output files already exists")
 	}
 
 	box := packr.NewBox("./templates")
@@ -90,7 +90,7 @@ func Diff(s *schema.Schema, path string, adjust bool, erFormat string) (string, 
 	}
 
 	if !outputExists(s, fullPath) {
-		return "", fmt.Errorf("Error: %s", "target files does not exists.")
+		return "", errors.New("target files does not exists")
 	}
 
 	box := packr.NewBox("./templates")
