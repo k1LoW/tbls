@@ -21,22 +21,27 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/k1LoW/tbls/db"
+	"github.com/k1LoW/tbls/output"
 	"github.com/k1LoW/tbls/output/dot"
+	"github.com/k1LoW/tbls/output/json"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
-// tableName
-var tableName string
+var (
+	format    string
+	tableName string
+)
 
-// dotCmd represents the doc command
-var dotCmd = &cobra.Command{
-	Use:   "dot [DSN]",
-	Short: "generate dot file",
-	Long:  `'tbls dot' analyzes a database and generate dot file.`,
+// outCmd represents the doc command
+var outCmd = &cobra.Command{
+	Use:   "out [DSN]",
+	Short: "analyzes a database and output",
+	Long:  `'tbls out' analyzes a database and output.`,
 	Args: func(cmd *cobra.Command, args []string) error {
 		if len(args) != 1 {
 			return errors.WithStack(errors.New("requires two args"))
@@ -67,15 +72,27 @@ var dotCmd = &cobra.Command{
 			}
 		}
 
+		var output output.Output
+
+		switch format {
+		case "json":
+			output = new(json.JSON)
+		case "dot":
+			output = new(dot.Dot)
+		default:
+			printError(fmt.Errorf("unsupported format '%s'", format))
+			os.Exit(1)
+		}
+
 		if tableName == "" {
-			err = dot.OutputSchema(os.Stdout, s)
+			err = output.OutputSchema(os.Stdout, s)
 		} else {
 			t, err := s.FindTableByName(tableName)
 			if err != nil {
 				printError(err)
 				os.Exit(1)
 			}
-			err = dot.OutputTable(os.Stdout, t)
+			err = output.OutputTable(os.Stdout, t)
 		}
 
 		if err != nil {
@@ -86,7 +103,8 @@ var dotCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(dotCmd)
-	dotCmd.Flags().StringVarP(&additionalDataPath, "add", "a", "", "additional schema data path")
-	dotCmd.Flags().StringVarP(&tableName, "table", "t", "", "table name")
+	rootCmd.AddCommand(outCmd)
+	outCmd.Flags().StringVarP(&additionalDataPath, "add", "a", "", "additional schema data path")
+	outCmd.Flags().StringVarP(&format, "format", "t", "json", "output format")
+	outCmd.Flags().StringVar(&tableName, "table", "", "table name")
 }
