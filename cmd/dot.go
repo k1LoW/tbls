@@ -21,7 +21,6 @@
 package cmd
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/k1LoW/tbls/db"
@@ -40,7 +39,7 @@ var dotCmd = &cobra.Command{
 	Long:  `'tbls dot' analyzes a database and generate dot file.`,
 	Args: func(cmd *cobra.Command, args []string) error {
 		if len(args) != 1 {
-			return errors.WithStack(fmt.Errorf("Error: %s", "requires two args"))
+			return errors.WithStack(errors.New("requires two args"))
 		}
 		return nil
 	},
