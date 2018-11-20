@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.5.1](https://github.com/k1LoW/tbls/compare/v1.5.0...v1.5.1) (2018-11-20)
+
+* Fix error messages [#65](https://github.com/k1LoW/tbls/pull/65) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.5.0](https://github.com/k1LoW/tbls/compare/v1.4.1...v1.5.0) (2018-11-18)
 
 * [BREAKING] Fix md output ( fix newline ) [#64](https://github.com/k1LoW/tbls/pull/64) ([k1LoW](https://github.com/k1LoW))
