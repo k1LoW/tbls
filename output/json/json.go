@@ -10,7 +10,7 @@ import (
 // JSON struct
 type JSON struct{}
 
-// OutputSchema ...
+// OutputSchema output JSON format for full relation.
 func (j *JSON) OutputSchema(wr io.Writer, s *schema.Schema) error {
 	encoder := json.NewEncoder(wr)
 	encoder.SetIndent("", "  ")
@@ -18,7 +18,7 @@ func (j *JSON) OutputSchema(wr io.Writer, s *schema.Schema) error {
 	return nil
 }
 
-// OutputTable ...
+// OutputTable output dot format for table.
 func (j *JSON) OutputTable(wr io.Writer, t *schema.Table) error {
 	encoder := json.NewEncoder(wr)
 	encoder.SetIndent("", "  ")

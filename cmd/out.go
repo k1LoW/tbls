@@ -72,27 +72,27 @@ var outCmd = &cobra.Command{
 			}
 		}
 
-		var output output.Output
+		var o output.Output
 
 		switch format {
 		case "json":
-			output = new(json.JSON)
+			o = new(json.JSON)
 		case "dot":
-			output = new(dot.Dot)
+			o = new(dot.Dot)
 		default:
 			printError(fmt.Errorf("unsupported format '%s'", format))
 			os.Exit(1)
 		}
 
 		if tableName == "" {
-			err = output.OutputSchema(os.Stdout, s)
+			err = o.OutputSchema(os.Stdout, s)
 		} else {
 			t, err := s.FindTableByName(tableName)
 			if err != nil {
 				printError(err)
 				os.Exit(1)
 			}
-			err = output.OutputTable(os.Stdout, t)
+			err = o.OutputTable(os.Stdout, t)
 		}
 
 		if err != nil {
