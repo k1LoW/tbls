@@ -99,7 +99,7 @@ func (s *Schema) FindTableByName(name string) (*Table, error) {
 			return t, nil
 		}
 	}
-	return nil, errors.WithStack(fmt.Errorf("Error: not found table '%s'", name))
+	return nil, errors.WithStack(fmt.Errorf("not found table '%s'", name))
 }
 
 // FindColumnByName find column by column name
@@ -109,7 +109,7 @@ func (t *Table) FindColumnByName(name string) (*Column, error) {
 			return c, nil
 		}
 	}
-	return nil, errors.WithStack(fmt.Errorf("Error: not found column '%s.%s'", t.Name, name))
+	return nil, errors.WithStack(fmt.Errorf("not found column '%s.%s'", t.Name, name))
 }
 
 // Sort schema tables, columns, relations, and constrains
@@ -149,17 +149,17 @@ func (s *Schema) Sort() error {
 func (s *Schema) LoadAdditionalData(path string) error {
 	fullPath, err := filepath.Abs(path)
 	if err != nil {
-		return errors.WithStack(err)
+		return errors.Wrap(errors.WithStack(err), "failed to load additional data")
 	}
 
 	buf, err := ioutil.ReadFile(fullPath)
 	if err != nil {
-		return errors.WithStack(err)
+		return errors.Wrap(errors.WithStack(err), "failed to load additional data")
 	}
 
 	err = s.AddAdditionalData(buf)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "failed to load additional data")
 	}
 
 	return nil
@@ -198,24 +198,24 @@ func addAdditionalRelations(s *Schema, relations []AdditionalRelation) error {
 		var err error
 		relation.Table, err = s.FindTableByName(r.Table)
 		if err != nil {
-			return err
+			return errors.Wrap(err, "failed to add relation")
 		}
 		for _, c := range r.Columns {
 			column, err := relation.Table.FindColumnByName(c)
 			if err != nil {
-				return err
+				return errors.Wrap(err, "failed to add relation")
 			}
 			relation.Columns = append(relation.Columns, column)
 			column.ParentRelations = append(column.ParentRelations, relation)
 		}
 		relation.ParentTable, err = s.FindTableByName(r.ParentTable)
 		if err != nil {
-			return err
+			return errors.Wrap(err, "failed to add relation")
 		}
 		for _, c := range r.ParentColumns {
 			column, err := relation.ParentTable.FindColumnByName(c)
 			if err != nil {
-				return err
+				return errors.Wrap(err, "failed to add relation")
 			}
 			relation.ParentColumns = append(relation.ParentColumns, column)
 			column.ChildRelations = append(column.ChildRelations, relation)
@@ -230,7 +230,7 @@ func addAdditionalComments(s *Schema, comments []AdditionalComment) error {
 	for _, c := range comments {
 		table, err := s.FindTableByName(c.Table)
 		if err != nil {
-			return err
+			return errors.Wrap(err, "failed to add table comment")
 		}
 		if c.TableComment != "" {
 			table.Comment = c.TableComment
@@ -238,7 +238,7 @@ func addAdditionalComments(s *Schema, comments []AdditionalComment) error {
 		for c, comment := range c.ColumnComments {
 			column, err := table.FindColumnByName(c)
 			if err != nil {
-				return err
+				return errors.Wrap(err, "failed to add column comment")
 			}
 			column.Comment = comment
 		}
