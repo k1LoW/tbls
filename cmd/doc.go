@@ -114,6 +114,8 @@ func withDot(s *schema.Schema, outputPath string, force bool) error {
 	var stderr bytes.Buffer
 	c.Stderr = &stderr
 
+	dot := new(dot.Dot)
+
 	err = dot.OutputSchema(tmpfile, s)
 	if err != nil {
 		tmpfile.Close()
