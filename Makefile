@@ -18,7 +18,7 @@ test:
 	usql pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -f testdata/pg.sql
 	usql my://root:mypass@localhost:33306/testdb -f testdata/my.sql
 	usql my://root:mypass@localhost:33308/testdb -f testdata/my.sql
-	sqlite3 $(CURDIR)/testdata/testdb.sqlite3 < testdata/sqlite.sql
+	sqlite3 $(PWD)/testdata/testdb.sqlite3 < testdata/sqlite.sql
 	$(GO) test ./... -coverprofile=coverage.txt -covermode=count
 	make testdoc
 
@@ -26,7 +26,7 @@ doc: build
 	./tbls doc pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -a testdata/additional_data.yml -f sample/postgres
 	./tbls doc my://root:mypass@localhost:33306/testdb -a testdata/additional_data.yml -f sample/mysql
 	./tbls doc my://root:mypass@localhost:33308/testdb -a testdata/additional_data.yml -f sample/mysql8
-	./tbls doc sq://$(CURDIR)/testdata/testdb.sqlite3 -a testdata/additional_data.yml -f sample/sqlite
+	./tbls doc sq://$(PWD)/testdata/testdb.sqlite3 -a testdata/additional_data.yml -f sample/sqlite
 	./tbls doc pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -a testdata/additional_data.yml -j -f sample/adjust
 	./tbls doc my://root:mypass@localhost:33306/testdb -a testdata/additional_data.yml -t svg -f sample/svg
 
@@ -34,7 +34,7 @@ testdoc: build
 	./tbls diff pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -a testdata/additional_data.yml sample/postgres
 	./tbls diff my://root:mypass@localhost:33306/testdb -a testdata/additional_data.yml sample/mysql
 	./tbls diff my://root:mypass@localhost:33308/testdb -a testdata/additional_data.yml sample/mysql8
-	./tbls diff sq://$(CURDIR)/testdata/testdb.sqlite3 -a testdata/additional_data.yml sample/sqlite
+	./tbls diff sq://$(PWD)/testdata/testdb.sqlite3 -a testdata/additional_data.yml sample/sqlite
 	./tbls diff pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -a testdata/additional_data.yml -j sample/adjust
 	./tbls diff my://root:mypass@localhost:33306/testdb -a testdata/additional_data.yml -t svg sample/svg
 
@@ -68,10 +68,10 @@ crossbuild: depsdev
 
 prerelease:
 	$(eval ver = v$(shell gobump show -r version/))
-	GO111MODULE=on ghch -w -N ${ver}
+	GO111MODULE=on ghch -w -N $(ver)
 
 release: crossbuild
 	$(eval ver = v$(shell gobump show -r version/))
-	GO111MODULE=on ghr -username k1LoW -replace ${ver} dist/${ver}
+	GO111MODULE=on ghr -username k1LoW -replace $(ver) dist/$(ver)
 
 .PHONY: default test
