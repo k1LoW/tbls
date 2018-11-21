@@ -1,0 +1,129 @@
+{
+  "name": "testschema",
+  "tables": [
+    {
+      "name": "a",
+      "type": "BASE TABLE",
+      "comment": "table a",
+      "columns": [
+        {
+          "name": "a",
+          "type": "bigint(20)",
+          "nullable": false,
+          "default": null,
+          "comment": "column a"
+        },
+        {
+          "name": "a2",
+          "type": "datetime",
+          "nullable": false,
+          "default": "CURRENT_TIMESTAMP",
+          "comment": "column a2"
+        }
+      ],
+      "indexes": null,
+      "constraints": null,
+      "triggers": null,
+      "def": ""
+    },
+    {
+      "name": "b",
+      "type": "BASE TABLE",
+      "comment": "table b",
+      "columns": [
+        {
+          "name": "b",
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "comment": "column b"
+        },
+        {
+          "name": "b2",
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "comment": "column b2"
+        }
+      ],
+      "indexes": null,
+      "constraints": null,
+      "triggers": null,
+      "def": ""
+    }
+  ],
+  "relations": [
+    {
+      "table": {
+        "name": "a",
+        "type": "BASE TABLE",
+        "comment": "table a",
+        "columns": [
+          {
+            "name": "a",
+            "type": "bigint(20)",
+            "nullable": false,
+            "default": null,
+            "comment": "column a"
+          },
+          {
+            "name": "a2",
+            "type": "datetime",
+            "nullable": false,
+            "default": "CURRENT_TIMESTAMP",
+            "comment": "column a2"
+          }
+        ],
+        "indexes": null,
+        "constraints": null,
+        "triggers": null,
+        "def": ""
+      },
+      "columns": [
+        {
+          "name": "a",
+          "type": "bigint(20)",
+          "nullable": false,
+          "default": null,
+          "comment": "column a"
+        }
+      ],
+      "parent_table": {
+        "name": "b",
+        "type": "BASE TABLE",
+        "comment": "table b",
+        "columns": [
+          {
+            "name": "b",
+            "type": "text",
+            "nullable": true,
+            "default": null,
+            "comment": "column b"
+          },
+          {
+            "name": "b2",
+            "type": "text",
+            "nullable": true,
+            "default": null,
+            "comment": "column b2"
+          }
+        ],
+        "indexes": null,
+        "constraints": null,
+        "triggers": null,
+        "def": ""
+      },
+      "parent_columns": [
+        {
+          "name": "b",
+          "type": "text",
+          "nullable": true,
+          "default": null,
+          "comment": "column b"
+        }
+      ],
+      "def": "",
+      "is_additional": false
+    }
+  ]
+}
