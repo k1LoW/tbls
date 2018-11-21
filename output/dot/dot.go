@@ -9,8 +9,11 @@ import (
 	"github.com/pkg/errors"
 )
 
-// OutputSchema generate dot format for full relation.
-func OutputSchema(wr io.Writer, s *schema.Schema) error {
+// Dot struct
+type Dot struct{}
+
+// OutputSchema output dot format for full relation.
+func (d *Dot) OutputSchema(wr io.Writer, s *schema.Schema) error {
 	box := packr.NewBox("./templates")
 	ts, _ := box.FindString("schema.dot.tmpl")
 	tmpl := template.Must(template.New(s.Name).Parse(ts))
@@ -24,8 +27,8 @@ func OutputSchema(wr io.Writer, s *schema.Schema) error {
 	return nil
 }
 
-// OutputTable generate dot format for table.
-func OutputTable(wr io.Writer, t *schema.Table) error {
+// OutputTable output dot format for table.
+func (d *Dot) OutputTable(wr io.Writer, t *schema.Table) error {
 	encountered := make(map[string]bool)
 	tables := []*schema.Table{}
 	relations := []*schema.Relation{}
