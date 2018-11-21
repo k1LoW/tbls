@@ -2,6 +2,7 @@ package schema
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"path/filepath"
@@ -35,7 +36,7 @@ type Column struct {
 	Name            string         `json:"name"`
 	Type            string         `json:"type"`
 	Nullable        bool           `json:"nullable"`
-	Default         sql.NullString `json:"default"`
+	Default         sql.NullString `json:"default,omitempty"`
 	Comment         string         `json:"comment"`
 	ParentRelations []*Relation    `json:"-"`
 	ChildRelations  []*Relation    `json:"-"`
@@ -90,6 +91,27 @@ type AdditionalComment struct {
 	Table          string            `yaml:"table"`
 	TableComment   string            `yaml:"tableComment"`
 	ColumnComments map[string]string `yaml:"columnComments"`
+}
+
+// MarshalJSON return custom JSON byte
+func (c Column) MarshalJSON() ([]byte, error) {
+	return json.Marshal(&struct {
+		Name            string      `json:"name"`
+		Type            string      `json:"type"`
+		Nullable        bool        `json:"nullable"`
+		Default         string      `json:"default,omitempty"`
+		Comment         string      `json:"comment"`
+		ParentRelations []*Relation `json:"-"`
+		ChildRelations  []*Relation `json:"-"`
+	}{
+		Name:            c.Name,
+		Type:            c.Type,
+		Nullable:        c.Nullable,
+		Default:         c.Default.String,
+		Comment:         c.Comment,
+		ParentRelations: c.ParentRelations,
+		ChildRelations:  c.ChildRelations,
+	})
 }
 
 // FindTableByName find table by table name
