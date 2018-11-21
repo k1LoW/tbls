@@ -2,6 +2,7 @@ package schema
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"path/filepath"
@@ -13,61 +14,61 @@ import (
 
 // Index is the struct for database index
 type Index struct {
-	Name string
-	Def  string
+	Name string `json:"name"`
+	Def  string `json:"def"`
 }
 
 // Constraint is the struct for database constraint
 type Constraint struct {
-	Name string
-	Type string
-	Def  string
+	Name string `json:"name"`
+	Type string `json:"type"`
+	Def  string `json:"def"`
 }
 
 // Trigger is the struct for database trigger
 type Trigger struct {
-	Name string
-	Def  string
+	Name string `json:"name"`
+	Def  string `json:"def"`
 }
 
 // Column is the struct for table column
 type Column struct {
-	Name            string
-	Type            string
-	Nullable        bool
-	Default         sql.NullString
-	Comment         string
-	ParentRelations []*Relation
-	ChildRelations  []*Relation
+	Name            string         `json:"name"`
+	Type            string         `json:"type"`
+	Nullable        bool           `json:"nullable"`
+	Default         sql.NullString `json:"default"`
+	Comment         string         `json:"comment"`
+	ParentRelations []*Relation    `json:"-"`
+	ChildRelations  []*Relation    `json:"-"`
 }
 
 // Table is the struct for database table
 type Table struct {
-	Name        string
-	Type        string
-	Comment     string
-	Columns     []*Column
-	Indexes     []*Index
-	Constraints []*Constraint
-	Triggers    []*Trigger
-	Def         string
+	Name        string        `json:"name"`
+	Type        string        `json:"type"`
+	Comment     string        `json:"comment"`
+	Columns     []*Column     `json:"columns"`
+	Indexes     []*Index      `json:"indexes"`
+	Constraints []*Constraint `json:"constraints"`
+	Triggers    []*Trigger    `json:"triggers"`
+	Def         string        `json:"def"`
 }
 
 // Relation is the struct for table relation
 type Relation struct {
-	Table         *Table
-	Columns       []*Column
-	ParentTable   *Table
-	ParentColumns []*Column
-	Def           string
-	IsAdditional  bool
+	Table         *Table    `json:"table"`
+	Columns       []*Column `json:"columns"`
+	ParentTable   *Table    `json:"parent_table"`
+	ParentColumns []*Column `json:"parent_columns"`
+	Def           string    `json:"def"`
+	IsAdditional  bool      `json:"is_additional"`
 }
 
 // Schema is the struct for database schema
 type Schema struct {
-	Name      string
-	Tables    []*Table
-	Relations []*Relation
+	Name      string      `json:"name"`
+	Tables    []*Table    `json:"tables"`
+	Relations []*Relation `json:"relations"`
 }
 
 // AdditionalData is the struct for table relations from yaml
@@ -90,6 +91,46 @@ type AdditionalComment struct {
 	Table          string            `yaml:"table"`
 	TableComment   string            `yaml:"tableComment"`
 	ColumnComments map[string]string `yaml:"columnComments"`
+}
+
+// MarshalJSON return custom JSON byte
+func (c Column) MarshalJSON() ([]byte, error) {
+	if c.Default.Valid {
+		return json.Marshal(&struct {
+			Name            string      `json:"name"`
+			Type            string      `json:"type"`
+			Nullable        bool        `json:"nullable"`
+			Default         string      `json:"default"`
+			Comment         string      `json:"comment"`
+			ParentRelations []*Relation `json:"-"`
+			ChildRelations  []*Relation `json:"-"`
+		}{
+			Name:            c.Name,
+			Type:            c.Type,
+			Nullable:        c.Nullable,
+			Default:         c.Default.String,
+			Comment:         c.Comment,
+			ParentRelations: c.ParentRelations,
+			ChildRelations:  c.ChildRelations,
+		})
+	}
+	return json.Marshal(&struct {
+		Name            string      `json:"name"`
+		Type            string      `json:"type"`
+		Nullable        bool        `json:"nullable"`
+		Default         *string     `json:"default"`
+		Comment         string      `json:"comment"`
+		ParentRelations []*Relation `json:"-"`
+		ChildRelations  []*Relation `json:"-"`
+	}{
+		Name:            c.Name,
+		Type:            c.Type,
+		Nullable:        c.Nullable,
+		Default:         nil,
+		Comment:         c.Comment,
+		ParentRelations: c.ParentRelations,
+		ChildRelations:  c.ChildRelations,
+	})
 }
 
 // FindTableByName find table by table name

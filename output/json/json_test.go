@@ -1,7 +1,8 @@
-package dot
+package json
 
 import (
 	"bytes"
+	"database/sql"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -12,35 +13,13 @@ import (
 
 func TestOutputSchema(t *testing.T) {
 	s := newTestSchema()
-	err := s.LoadAdditionalData(filepath.Join(testdataDir(), "md_test_additional_data.yml"))
-	if err != nil {
-		t.Error(err)
-	}
-	o := new(Dot)
+	o := new(JSON)
 	buf := &bytes.Buffer{}
-	err = o.OutputSchema(buf, s)
+	err := o.OutputSchema(buf, s)
 	if err != nil {
 		t.Error(err)
 	}
-	expected, _ := ioutil.ReadFile(filepath.Join(testdataDir(), "dot_test_schema.dot.golden"))
-	actual := buf.String()
-	if actual != string(expected) {
-		t.Errorf("actual %v\nwant %v", actual, string(expected))
-	}
-}
-
-func TestOutputTable(t *testing.T) {
-	s := newTestSchema()
-	err := s.LoadAdditionalData(filepath.Join(testdataDir(), "md_test_additional_data.yml"))
-	if err != nil {
-		t.Error(err)
-	}
-	ta := s.Tables[0]
-
-	o := new(Dot)
-	buf := &bytes.Buffer{}
-	_ = o.OutputTable(buf, ta)
-	expected, _ := ioutil.ReadFile(filepath.Join(testdataDir(), "dot_test_a.dot.golden"))
+	expected, _ := ioutil.ReadFile(filepath.Join(testdataDir(), "json_test_schema.json.golden"))
 	actual := buf.String()
 	if actual != string(expected) {
 		t.Errorf("actual %v\nwant %v", actual, string(expected))
@@ -55,33 +34,47 @@ func testdataDir() string {
 
 func newTestSchema() *schema.Schema {
 	ca := &schema.Column{
-		Name:    "a",
-		Comment: "column a",
+		Name:     "a",
+		Type:     "bigint(20)",
+		Comment:  "column a",
+		Nullable: false,
 	}
 	cb := &schema.Column{
-		Name:    "b",
-		Comment: "column b",
+		Name:     "b",
+		Type:     "text",
+		Comment:  "column b",
+		Nullable: true,
 	}
 
 	ta := &schema.Table{
 		Name:    "a",
+		Type:    "BASE TABLE",
 		Comment: "table a",
 		Columns: []*schema.Column{
 			ca,
 			&schema.Column{
-				Name:    "a2",
-				Comment: "column a2",
+				Name:     "a2",
+				Type:     "datetime",
+				Comment:  "column a2",
+				Nullable: false,
+				Default: sql.NullString{
+					String: "CURRENT_TIMESTAMP",
+					Valid:  true,
+				},
 			},
 		},
 	}
 	tb := &schema.Table{
 		Name:    "b",
+		Type:    "BASE TABLE",
 		Comment: "table b",
 		Columns: []*schema.Column{
 			cb,
 			&schema.Column{
-				Name:    "b2",
-				Comment: "column b2",
+				Name:     "b2",
+				Comment:  "column b2",
+				Type:     "text",
+				Nullable: true,
 			},
 		},
 	}
