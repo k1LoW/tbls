@@ -10,6 +10,7 @@
           "name": "a",
           "type": "bigint(20)",
           "nullable": false,
+          "default": null,
           "comment": "column a"
         },
         {
@@ -34,12 +35,14 @@
           "name": "b",
           "type": "text",
           "nullable": true,
+          "default": null,
           "comment": "column b"
         },
         {
           "name": "b2",
           "type": "text",
           "nullable": true,
+          "default": null,
           "comment": "column b2"
         }
       ],
@@ -60,6 +63,7 @@
             "name": "a",
             "type": "bigint(20)",
             "nullable": false,
+            "default": null,
             "comment": "column a"
           },
           {
@@ -80,6 +84,7 @@
           "name": "a",
           "type": "bigint(20)",
           "nullable": false,
+          "default": null,
           "comment": "column a"
         }
       ],
@@ -92,12 +97,14 @@
             "name": "b",
             "type": "text",
             "nullable": true,
+            "default": null,
             "comment": "column b"
           },
           {
             "name": "b2",
             "type": "text",
             "nullable": true,
+            "default": null,
             "comment": "column b2"
           }
         ],
@@ -111,6 +118,7 @@
           "name": "b",
           "type": "text",
           "nullable": true,
+          "default": null,
           "comment": "column b"
         }
       ],
