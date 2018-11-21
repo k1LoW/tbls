@@ -36,7 +36,7 @@ type Column struct {
 	Name            string         `json:"name"`
 	Type            string         `json:"type"`
 	Nullable        bool           `json:"nullable"`
-	Default         sql.NullString `json:"default,omitempty"`
+	Default         sql.NullString `json:"default"`
 	Comment         string         `json:"comment"`
 	ParentRelations []*Relation    `json:"-"`
 	ChildRelations  []*Relation    `json:"-"`
@@ -95,11 +95,30 @@ type AdditionalComment struct {
 
 // MarshalJSON return custom JSON byte
 func (c Column) MarshalJSON() ([]byte, error) {
+	if c.Default.Valid {
+		return json.Marshal(&struct {
+			Name            string      `json:"name"`
+			Type            string      `json:"type"`
+			Nullable        bool        `json:"nullable"`
+			Default         string      `json:"default"`
+			Comment         string      `json:"comment"`
+			ParentRelations []*Relation `json:"-"`
+			ChildRelations  []*Relation `json:"-"`
+		}{
+			Name:            c.Name,
+			Type:            c.Type,
+			Nullable:        c.Nullable,
+			Default:         c.Default.String,
+			Comment:         c.Comment,
+			ParentRelations: c.ParentRelations,
+			ChildRelations:  c.ChildRelations,
+		})
+	}
 	return json.Marshal(&struct {
 		Name            string      `json:"name"`
 		Type            string      `json:"type"`
 		Nullable        bool        `json:"nullable"`
-		Default         string      `json:"default,omitempty"`
+		Default         *string     `json:"default"`
 		Comment         string      `json:"comment"`
 		ParentRelations []*Relation `json:"-"`
 		ChildRelations  []*Relation `json:"-"`
@@ -107,7 +126,7 @@ func (c Column) MarshalJSON() ([]byte, error) {
 		Name:            c.Name,
 		Type:            c.Type,
 		Nullable:        c.Nullable,
-		Default:         c.Default.String,
+		Default:         nil,
 		Comment:         c.Comment,
 		ParentRelations: c.ParentRelations,
 		ChildRelations:  c.ChildRelations,
