@@ -133,6 +133,32 @@ func (c Column) MarshalJSON() ([]byte, error) {
 	})
 }
 
+// UnmarshalJSON ...
+func (c *Column) UnmarshalJSON(data []byte) error {
+	s := struct {
+		Name            string      `json:"name"`
+		Type            string      `json:"type"`
+		Nullable        bool        `json:"nullable"`
+		Default         *string     `json:"default"`
+		Comment         string      `json:"comment"`
+		ParentRelations []*Relation `json:"-"`
+		ChildRelations  []*Relation `json:"-"`
+	}{}
+	json.Unmarshal(data, &s)
+	c.Name = s.Name
+	c.Type = s.Type
+	c.Nullable = s.Nullable
+	if s.Default != nil {
+		c.Default.Valid = true
+		c.Default.String = *s.Default
+	} else {
+		c.Default.Valid = false
+		c.Default.String = ""
+	}
+	c.Comment = s.Comment
+	return nil
+}
+
 // FindTableByName find table by table name
 func (s *Schema) FindTableByName(name string) (*Table, error) {
 	for _, t := range s.Tables {
@@ -223,6 +249,35 @@ func (s *Schema) AddAdditionalData(buf []byte) error {
 		return err
 	}
 
+	return nil
+}
+
+// Repair column relations
+func (s *Schema) Repair() error {
+	for _, r := range s.Relations {
+		t, err := s.FindTableByName(r.Table.Name)
+		if err != nil {
+			return errors.Wrap(err, "failed to repair relation")
+		}
+		for _, rc := range r.Columns {
+			c, err := t.FindColumnByName(rc.Name)
+			if err != nil {
+				return errors.Wrap(err, "failed to repair relation")
+			}
+			c.ParentRelations = append(c.ParentRelations, r)
+		}
+		pt, err := s.FindTableByName(r.ParentTable.Name)
+		if err != nil {
+			return errors.Wrap(err, "failed to repair relation")
+		}
+		for _, rc := range r.ParentColumns {
+			pc, err := pt.FindColumnByName(rc.Name)
+			if err != nil {
+				return errors.Wrap(err, "failed to repair relation")
+			}
+			pc.ChildRelations = append(pc.ChildRelations, r)
+		}
+	}
 	return nil
 }
 

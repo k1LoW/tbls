@@ -2,7 +2,9 @@ package db
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/k1LoW/tbls/drivers/mysql"
@@ -20,6 +22,9 @@ type Driver interface {
 
 // Analyze database
 func Analyze(urlstr string) (*schema.Schema, error) {
+	if strings.Index(urlstr, "json://") == 0 {
+		return AnalizeJSON(urlstr)
+	}
 	s := &schema.Schema{}
 	u, err := dburl.Parse(urlstr)
 	if err != nil {
@@ -58,5 +63,18 @@ func Analyze(urlstr string) (*schema.Schema, error) {
 	if err != nil {
 		return s, err
 	}
+	return s, nil
+}
+
+// AnalizeJSON analize `json://`
+func AnalizeJSON(urlstr string) (*schema.Schema, error) {
+	s := &schema.Schema{}
+	splitted := strings.Split(urlstr, "json://")
+	file, err := os.Open(splitted[1])
+	if err != nil {
+		return s, errors.WithStack(err)
+	}
+	dec := json.NewDecoder(file)
+	dec.Decode(s)
 	return s, nil
 }
