@@ -43,6 +43,20 @@ func TestAnalyzeView(t *testing.T) {
 	}
 }
 
+func TestInfo(t *testing.T) {
+	driver := new(Sqlite)
+	d, err := driver.Info(db)
+	if err != nil {
+		t.Errorf("%v", err)
+	}
+	if d.Name != "sqlite" {
+		t.Errorf("actual %v\nwant %v", d.Name, "sqlite")
+	}
+	if d.DatabaseVersion == "" {
+		t.Errorf("actual not empty string.")
+	}
+}
+
 func TestParseCheckConstraints(t *testing.T) {
 	sql := `CREATE TABLE check_constraints (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
