@@ -14,6 +14,7 @@ var tests = []struct {
 }{
 	{"my://root:mypass@localhost:33306/testdb", 7, 5},
 	{"pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable", 8, 6},
+	{"json://../testdata/testdb.json", 7, 9},
 }
 
 func TestAnalyzeSchema(t *testing.T) {
