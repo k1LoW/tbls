@@ -325,6 +325,14 @@ WHERE table_schema = ? AND table_name = ? ORDER BY ordinal_position`, s.Name, ta
 	return nil
 }
 
+// Info return schema.Driver
+func (m *Mysql) Info() (schema.Driver, error) {
+	d := schema.Driver{
+		Name: "mysql",
+	}
+	return d, nil
+}
+
 func convertColumnNullable(str string) bool {
 	if str == "NO" {
 		return false
