@@ -15,5 +15,6 @@ before_install:
 script:
   - make test
   - make test_too_many_tables
+  - make test_json
 after_script:
   - codecov

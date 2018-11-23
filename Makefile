@@ -44,6 +44,10 @@ test_too_many_tables: build
 	ulimit -n 256 && ./tbls doc pg://postgres:pgpass@localhost:55432/too_many?sslmode=disable -f /tmp
 	ulimit -n 256 && ./tbls diff pg://postgres:pgpass@localhost:55432/too_many?sslmode=disable /tmp
 
+test_json: build
+	./tbls out my://root:mypass@localhost:33306/testdb -a testdata/additional_data.yml -t json > /tmp/tbls.json
+	./tbls diff json:///tmp/tbls.json sample/mysql
+
 build:
 	packr
 	$(GO) build -ldflags="$(BUILD_LDFLAGS)"
