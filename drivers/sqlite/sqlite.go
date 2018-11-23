@@ -6,9 +6,10 @@ import (
 	"sort"
 	"strings"
 
+	"regexp"
+
 	"github.com/k1LoW/tbls/schema"
 	"github.com/pkg/errors"
-	"regexp"
 )
 
 var reFK = regexp.MustCompile(`FOREIGN KEY \((.+)\) REFERENCES ([^\s]+)\s?\((.+)\)`)
@@ -413,6 +414,14 @@ func parseCheckConstraints(sql string) []*schema.Constraint {
 	}
 
 	return constraints
+}
+
+// Info return schema.Driver
+func (l *Sqlite) Info() (schema.Driver, error) {
+	d := schema.Driver{
+		Name: "sqlite",
+	}
+	return d, nil
 }
 
 func contains(s []string, e string) bool {
