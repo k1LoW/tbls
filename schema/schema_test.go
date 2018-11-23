@@ -256,8 +256,9 @@ func newTestSchema() *Schema {
 		Relations: []*Relation{
 			r,
 		},
-		Driver: Driver{
-			Name: "testdriver",
+		Driver: &Driver{
+			Name:            "testdriver",
+			DatabaseVersion: "1.0.0",
 		},
 	}
 	return s
