@@ -360,6 +360,19 @@ SELECT name, sql FROM sqlite_master WHERE type = 'trigger' AND tbl_name = ?;
 	return nil
 }
 
+// Info return schema.Driver
+func (l *Sqlite) Info(db *sql.DB) (*schema.Driver, error) {
+	var v string
+	row := db.QueryRow(`SELECT sqlite_version();`)
+	row.Scan(&v)
+
+	d := &schema.Driver{
+		Name:            "sqlite",
+		DatabaseVersion: v,
+	}
+	return d, nil
+}
+
 func convertColumnNullable(str string) bool {
 	if str == "1" {
 		return false
@@ -414,14 +427,6 @@ func parseCheckConstraints(sql string) []*schema.Constraint {
 	}
 
 	return constraints
-}
-
-// Info return schema.Driver
-func (l *Sqlite) Info() (schema.Driver, error) {
-	d := schema.Driver{
-		Name: "sqlite",
-	}
-	return d, nil
 }
 
 func contains(s []string, e string) bool {
