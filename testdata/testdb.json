@@ -2271,5 +2271,9 @@
       "def": "Additional Relation",
       "is_additional": true
     }
-  ]
+  ],
+  "driver": {
+    "name": "mysql",
+    "database_version": "5.7.23"
+  }
 }

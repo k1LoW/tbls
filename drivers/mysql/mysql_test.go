@@ -37,3 +37,17 @@ func TestAnalyzeView(t *testing.T) {
 		t.Errorf("actual not empty string.")
 	}
 }
+
+func TestInfo(t *testing.T) {
+	driver := new(Mysql)
+	d, err := driver.Info(db)
+	if err != nil {
+		t.Errorf("%v", err)
+	}
+	if d.Name != "mysql" {
+		t.Errorf("actual %v\nwant %v", d.Name, "mysql")
+	}
+	if d.DatabaseVersion == "" {
+		t.Errorf("actual not empty string.")
+	}
+}
