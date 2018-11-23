@@ -18,6 +18,7 @@ import (
 // Driver is the common interface for database driver
 type Driver interface {
 	Analyze(*sql.DB, *schema.Schema) error
+	Info(*sql.DB) (*schema.Driver, error)
 }
 
 // Analyze database
@@ -59,6 +60,11 @@ func Analyze(urlstr string) (*schema.Schema, error) {
 	default:
 		return s, errors.WithStack(fmt.Errorf("unsupported driver '%s'", u.Driver))
 	}
+	d, err := driver.Info(db)
+	if err != nil {
+		return s, err
+	}
+	s.Driver = d
 	err = driver.Analyze(db, s)
 	if err != nil {
 		return s, err

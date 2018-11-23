@@ -325,6 +325,19 @@ ORDER BY ordinal_position
 	return nil
 }
 
+// Info return schema.Driver
+func (p *Postgres) Info(db *sql.DB) (*schema.Driver, error) {
+	var v string
+	row := db.QueryRow(`SELECT version();`)
+	row.Scan(&v)
+
+	d := &schema.Driver{
+		Name:            "postgres",
+		DatabaseVersion: v,
+	}
+	return d, nil
+}
+
 func convertColmunType(t string, udtName string, characterMaximumLength sql.NullInt64) string {
 	switch t {
 	case "USER-DEFINED":

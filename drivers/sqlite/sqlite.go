@@ -6,9 +6,10 @@ import (
 	"sort"
 	"strings"
 
+	"regexp"
+
 	"github.com/k1LoW/tbls/schema"
 	"github.com/pkg/errors"
-	"regexp"
 )
 
 var reFK = regexp.MustCompile(`FOREIGN KEY \((.+)\) REFERENCES ([^\s]+)\s?\((.+)\)`)
@@ -357,6 +358,19 @@ SELECT name, sql FROM sqlite_master WHERE type = 'trigger' AND tbl_name = ?;
 	s.Relations = relations
 
 	return nil
+}
+
+// Info return schema.Driver
+func (l *Sqlite) Info(db *sql.DB) (*schema.Driver, error) {
+	var v string
+	row := db.QueryRow(`SELECT sqlite_version();`)
+	row.Scan(&v)
+
+	d := &schema.Driver{
+		Name:            "sqlite",
+		DatabaseVersion: v,
+	}
+	return d, nil
 }
 
 func convertColumnNullable(str string) bool {
