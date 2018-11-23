@@ -66,7 +66,8 @@ type Relation struct {
 
 // Driver is the struct for tbls driver information
 type Driver struct {
-	Name string `json:"name"`
+	Name            string `json:"name"`
+	DatabaseVersion string `json:"database_version"`
 }
 
 // Schema is the struct for database schema
@@ -74,7 +75,7 @@ type Schema struct {
 	Name      string      `json:"name"`
 	Tables    []*Table    `json:"tables"`
 	Relations []*Relation `json:"relations"`
-	Driver    Driver      `json:"driver"`
+	Driver    *Driver     `json:"driver"`
 }
 
 // AdditionalData is the struct for table relations from yaml

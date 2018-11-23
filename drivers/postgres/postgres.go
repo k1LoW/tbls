@@ -326,9 +326,14 @@ ORDER BY ordinal_position
 }
 
 // Info return schema.Driver
-func (p *Postgres) Info() (schema.Driver, error) {
-	d := schema.Driver{
-		Name: "postgres",
+func (p *Postgres) Info(db *sql.DB) (*schema.Driver, error) {
+	var v string
+	row := db.QueryRow(`SELECT version();`)
+	row.Scan(&v)
+
+	d := &schema.Driver{
+		Name:            "postgres",
+		DatabaseVersion: v,
 	}
 	return d, nil
 }

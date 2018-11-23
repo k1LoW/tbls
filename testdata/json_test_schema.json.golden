@@ -127,6 +127,7 @@
     }
   ],
   "driver": {
-    "name": "testdriver"
+    "name": "testdriver",
+    "database_version": "1.0.0"
   }
 }

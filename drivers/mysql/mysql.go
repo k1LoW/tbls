@@ -326,9 +326,14 @@ WHERE table_schema = ? AND table_name = ? ORDER BY ordinal_position`, s.Name, ta
 }
 
 // Info return schema.Driver
-func (m *Mysql) Info() (schema.Driver, error) {
-	d := schema.Driver{
-		Name: "mysql",
+func (m *Mysql) Info(db *sql.DB) (*schema.Driver, error) {
+	var v string
+	row := db.QueryRow(`SELECT version();`)
+	row.Scan(&v)
+
+	d := &schema.Driver{
+		Name:            "mysql",
+		DatabaseVersion: v,
 	}
 	return d, nil
 }
