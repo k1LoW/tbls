@@ -125,5 +125,8 @@
       "def": "",
       "is_additional": false
     }
-  ]
+  ],
+  "driver": {
+    "name": "testdriver"
+  }
 }

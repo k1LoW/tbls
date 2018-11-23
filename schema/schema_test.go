@@ -256,6 +256,9 @@ func newTestSchema() *Schema {
 		Relations: []*Relation{
 			r,
 		},
+		Driver: Driver{
+			Name: "testdriver",
+		},
 	}
 	return s
 }
