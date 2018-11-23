@@ -160,17 +160,25 @@ func TestRepair(t *testing.T) {
 	}
 
 	for i, tt := range actual.Tables {
-		for j, c := range tt.Columns {
-			for _, pr := range actual.Tables[i].Columns[j].ParentRelations {
-				if pr.Columns[0] != c {
-					t.Errorf("actual %#v\nwant %#v", pr.Columns[0], c)
-				}
+		compareStrings(t, actual.Tables[i].Name, expected.Tables[i].Name)
+		for j := range tt.Columns {
+			compareStrings(t, actual.Tables[i].Columns[j].Name, expected.Tables[i].Columns[j].Name)
+			for k := range actual.Tables[i].Columns[j].ParentRelations {
+				compareStrings(t, actual.Tables[i].Columns[j].ParentRelations[k].Table.Name, expected.Tables[i].Columns[j].ParentRelations[k].Table.Name)
+				compareStrings(t, actual.Tables[i].Columns[j].ParentRelations[k].ParentTable.Name, expected.Tables[i].Columns[j].ParentRelations[k].ParentTable.Name)
+			}
+			for k := range actual.Tables[i].Columns[j].ChildRelations {
+				compareStrings(t, actual.Tables[i].Columns[j].ChildRelations[k].Table.Name, expected.Tables[i].Columns[j].ChildRelations[k].Table.Name)
+				compareStrings(t, actual.Tables[i].Columns[j].ChildRelations[k].ParentTable.Name, expected.Tables[i].Columns[j].ChildRelations[k].ParentTable.Name)
 			}
 		}
 	}
+}
 
+func compareStrings(tb testing.TB, actual, expected string) {
+	tb.Helper()
 	if actual != expected {
-		t.Errorf("actual %v\nwant %v", actual, expected)
+		tb.Errorf("actual %#v\nwant %#v", actual, expected)
 	}
 }
 

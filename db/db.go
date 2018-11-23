@@ -76,5 +76,9 @@ func AnalizeJSON(urlstr string) (*schema.Schema, error) {
 	}
 	dec := json.NewDecoder(file)
 	dec.Decode(s)
+	err = s.Repair()
+	if err != nil {
+		return s, errors.WithStack(err)
+	}
 	return s, nil
 }

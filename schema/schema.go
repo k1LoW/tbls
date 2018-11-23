@@ -265,7 +265,9 @@ func (s *Schema) Repair() error {
 				return errors.Wrap(err, "failed to repair relation")
 			}
 			c.ParentRelations = append(c.ParentRelations, r)
+			rc = c
 		}
+		r.Table = t
 		pt, err := s.FindTableByName(r.ParentTable.Name)
 		if err != nil {
 			return errors.Wrap(err, "failed to repair relation")
@@ -276,7 +278,9 @@ func (s *Schema) Repair() error {
 				return errors.Wrap(err, "failed to repair relation")
 			}
 			pc.ChildRelations = append(pc.ChildRelations, r)
+			rc = pc
 		}
+		r.ParentTable = pt
 	}
 	return nil
 }
