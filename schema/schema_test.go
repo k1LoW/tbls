@@ -173,6 +173,10 @@ func TestRepair(t *testing.T) {
 			}
 		}
 	}
+
+	if len(actual.Relations) != len(expected.Relations) {
+		t.Errorf("actual %#v\nwant %#v", actual.Relations, expected.Relations)
+	}
 }
 
 func compareStrings(tb testing.TB, actual, expected string) {
