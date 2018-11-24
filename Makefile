@@ -14,6 +14,8 @@ RELEASE_BUILD_LDFLAGS = -s -w $(BUILD_LDFLAGS)
 
 default: test
 
+ci: build test testdoc test_too_many_tables test_json
+
 test:
 	usql pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -f testdata/pg.sql
 	usql my://root:mypass@localhost:33306/testdb -f testdata/my.sql
@@ -30,7 +32,7 @@ doc: build
 	./tbls doc pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -a testdata/additional_data.yml -j -f sample/adjust
 	./tbls doc my://root:mypass@localhost:33306/testdb -a testdata/additional_data.yml -t svg -f sample/svg
 
-testdoc: build
+testdoc:
 	./tbls diff pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -a testdata/additional_data.yml sample/postgres
 	./tbls diff my://root:mypass@localhost:33306/testdb -a testdata/additional_data.yml sample/mysql
 	./tbls diff my://root:mypass@localhost:33308/testdb -a testdata/additional_data.yml sample/mysql8
@@ -38,13 +40,13 @@ testdoc: build
 	./tbls diff pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -a testdata/additional_data.yml -j sample/adjust
 	./tbls diff my://root:mypass@localhost:33306/testdb -a testdata/additional_data.yml -t svg sample/svg
 
-test_too_many_tables: build
+test_too_many_tables:
 	usql pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -f testdata/createdb_too_many.sql
 	usql pg://postgres:pgpass@localhost:55432/too_many?sslmode=disable -f testdata/createtable_too_many.sql
 	ulimit -n 256 && ./tbls doc pg://postgres:pgpass@localhost:55432/too_many?sslmode=disable -f /tmp
 	ulimit -n 256 && ./tbls diff pg://postgres:pgpass@localhost:55432/too_many?sslmode=disable /tmp
 
-test_json: build
+test_json:
 	./tbls out my://root:mypass@localhost:33306/testdb -a testdata/additional_data.yml -t json > /tmp/tbls.json
 	./tbls diff json:///tmp/tbls.json sample/mysql
 
