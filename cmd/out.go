@@ -55,6 +55,21 @@ var outCmd = &cobra.Command{
 			printError(err)
 			os.Exit(1)
 		}
+
+		if configPath != "" {
+			err = c.LoadConfigFile(configPath)
+			if err != nil {
+				printError(err)
+				os.Exit(1)
+			}
+		} else if additionalDataPath != "" {
+			err = c.LoadConfigFile(additionalDataPath)
+			if err != nil {
+				printError(err)
+				os.Exit(1)
+			}
+		}
+
 		c.LoadArgs(args)
 		if err != nil {
 			printError(err)
@@ -67,12 +82,10 @@ var outCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		if additionalDataPath != "" {
-			err = s.LoadAdditionalData(additionalDataPath)
-			if err != nil {
-				printError(err)
-				os.Exit(1)
-			}
+		err = s.LoadAdditionalData(c)
+		if err != nil {
+			printError(err)
+			os.Exit(1)
 		}
 
 		if sort {
@@ -115,6 +128,7 @@ var outCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(outCmd)
+	outCmd.Flags().StringVarP(&configPath, "config", "c", "", "config file path")
 	outCmd.Flags().StringVarP(&additionalDataPath, "add", "a", "", "additional schema data path")
 	outCmd.Flags().StringVarP(&format, "format", "t", "json", "output format")
 	outCmd.Flags().StringVar(&tableName, "table", "", "table name")

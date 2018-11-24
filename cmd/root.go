@@ -37,6 +37,9 @@ var force bool
 // sort is a flag on whether to sort tables, columns, and more
 var sort bool
 
+// configPath is a config file path
+var configPath string
+
 // additionalDataPath is a additional data path
 var additionalDataPath string
 

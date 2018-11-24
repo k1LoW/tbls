@@ -6,6 +6,8 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+
+	"github.com/k1LoW/tbls/config"
 )
 
 func TestSchema_FindTableByName(t *testing.T) {
@@ -127,7 +129,15 @@ func TestAddAditionalData(t *testing.T) {
 			},
 		},
 	}
-	err := schema.LoadAdditionalData(filepath.Join(testdataDir(), "schema_test_additional_data.yml"))
+	c, err := config.NewConfig()
+	if err != nil {
+		t.Error(err)
+	}
+	err = c.LoadConfigFile(filepath.Join(testdataDir(), "schema_test_additional_data.yml"))
+	if err != nil {
+		t.Error(err)
+	}
+	err = schema.LoadAdditionalData(c)
 	if err != nil {
 		t.Error(err)
 	}
