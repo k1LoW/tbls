@@ -13,8 +13,6 @@ before_install:
   - docker-compose up -d
   - sleep 20s
 script:
-  - make test
-  - make test_too_many_tables
-  - make test_json
+  - make ci
 after_script:
   - codecov
