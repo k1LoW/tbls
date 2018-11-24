@@ -24,27 +24,24 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/datasource"
 	"github.com/k1LoW/tbls/output/md"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
 // diffCmd represents the diff command
 var diffCmd = &cobra.Command{
-	Use:   "diff [DSN] [DOCUMENT_PATH]",
+	Use:   "diff [DSN] [DOC_PATH]",
 	Short: "diff database and document",
 	Long:  `'tbls diff' shows the difference between database schema and generated document.`,
-	Args: func(cmd *cobra.Command, args []string) error {
-		if len(args) != 2 {
-			return errors.WithStack(errors.New("requires two args"))
-		}
-		return nil
-	},
 	Run: func(cmd *cobra.Command, args []string) {
-		dsn := args[0]
-		targetPath := args[1]
-		s, err := datasource.Analyze(dsn)
+		c, err := config.NewConfig()
+		if err != nil {
+			printError(err)
+			os.Exit(1)
+		}
+		s, err := datasource.Analyze(c.DSN)
 		if err != nil {
 			printError(err)
 			os.Exit(1)
@@ -66,7 +63,7 @@ var diffCmd = &cobra.Command{
 			}
 		}
 
-		diff, err := md.Diff(s, targetPath, adjust, erFormat)
+		diff, err := md.Diff(s, c.DocPath, adjust, erFormat)
 		if err != nil {
 			printError(err)
 			os.Exit(2)
