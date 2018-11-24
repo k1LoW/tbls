@@ -22,8 +22,8 @@ Usage:
 Available Commands:
   diff        diff database and document
   doc         document a database
-  dot         generate dot file
   help        Help about any command
+  out         analyzes a database and output
   version     print tbls version
 
 Flags:
