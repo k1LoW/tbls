@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/schema"
 )
 
@@ -24,7 +25,15 @@ var tests = []struct {
 func TestOutput(t *testing.T) {
 	for _, tt := range tests {
 		s := newTestSchema()
-		err := s.LoadAdditionalData(filepath.Join(testdataDir(), "md_test_additional_data.yml"))
+		c, err := config.NewConfig()
+		if err != nil {
+			t.Error(err)
+		}
+		err = c.LoadConfigFile(filepath.Join(testdataDir(), "md_test_additional_data.yml"))
+		if err != nil {
+			t.Error(err)
+		}
+		err = s.LoadAdditionalData(c)
 		if err != nil {
 			t.Error(err)
 		}
@@ -54,7 +63,15 @@ func TestOutput(t *testing.T) {
 func TestDiff(t *testing.T) {
 	for _, tt := range tests {
 		s := newTestSchema()
-		err := s.LoadAdditionalData(filepath.Join(testdataDir(), "md_test_additional_data.yml"))
+		c, err := config.NewConfig()
+		if err != nil {
+			t.Error(err)
+		}
+		err = c.LoadConfigFile(filepath.Join(testdataDir(), "md_test_additional_data.yml"))
+		if err != nil {
+			t.Error(err)
+		}
+		err = s.LoadAdditionalData(c)
 		if err != nil {
 			t.Error(err)
 		}

@@ -4,12 +4,10 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
-	"path/filepath"
 	"sort"
 
+	"github.com/k1LoW/tbls/config"
 	"github.com/pkg/errors"
-	yaml "gopkg.in/yaml.v2"
 )
 
 // Index is the struct for database index
@@ -76,28 +74,6 @@ type Schema struct {
 	Tables    []*Table    `json:"tables"`
 	Relations []*Relation `json:"relations"`
 	Driver    *Driver     `json:"driver"`
-}
-
-// AdditionalData is the struct for table relations from yaml
-type AdditionalData struct {
-	Relations []AdditionalRelation `yaml:"relations"`
-	Comments  []AdditionalComment  `yaml:"comments"`
-}
-
-// AdditionalRelation is the struct for table relation from yaml
-type AdditionalRelation struct {
-	Table         string   `yaml:"table"`
-	Columns       []string `yaml:"columns"`
-	ParentTable   string   `yaml:"parentTable"`
-	ParentColumns []string `yaml:"parentColumns"`
-	Def           string   `yaml:"def"`
-}
-
-// AdditionalComment is the struct for table relation from yaml
-type AdditionalComment struct {
-	Table          string            `yaml:"table"`
-	TableComment   string            `yaml:"tableComment"`
-	ColumnComments map[string]string `yaml:"columnComments"`
 }
 
 // MarshalJSON return custom JSON byte
@@ -220,38 +196,12 @@ func (s *Schema) Sort() error {
 }
 
 // LoadAdditionalData load additional data (relations, comments) from yaml file
-func (s *Schema) LoadAdditionalData(path string) error {
-	fullPath, err := filepath.Abs(path)
-	if err != nil {
-		return errors.Wrap(errors.WithStack(err), "failed to load additional data")
-	}
-
-	buf, err := ioutil.ReadFile(fullPath)
-	if err != nil {
-		return errors.Wrap(errors.WithStack(err), "failed to load additional data")
-	}
-
-	err = s.AddAdditionalData(buf)
-	if err != nil {
-		return errors.Wrap(err, "failed to load additional data")
-	}
-
-	return nil
-}
-
-// AddAdditionalData add additional data (relations, comments) from yaml buffer
-func (s *Schema) AddAdditionalData(buf []byte) error {
-	var data AdditionalData
-	err := yaml.Unmarshal(buf, &data)
-	if err != nil {
-		return errors.WithStack(err)
-	}
-
-	err = addAdditionalRelations(s, data.Relations)
+func (s *Schema) LoadAdditionalData(c *config.Config) error {
+	err := addAdditionalRelations(s, c.Relations)
 	if err != nil {
 		return err
 	}
-	err = addAdditionalComments(s, data.Comments)
+	err = addAdditionalComments(s, c.Comments)
 	if err != nil {
 		return err
 	}
@@ -292,7 +242,7 @@ func (s *Schema) Repair() error {
 	return nil
 }
 
-func addAdditionalRelations(s *Schema, relations []AdditionalRelation) error {
+func addAdditionalRelations(s *Schema, relations []config.AdditionalRelation) error {
 	for _, r := range relations {
 		relation := &Relation{
 			IsAdditional: true,
@@ -333,7 +283,7 @@ func addAdditionalRelations(s *Schema, relations []AdditionalRelation) error {
 	return nil
 }
 
-func addAdditionalComments(s *Schema, comments []AdditionalComment) error {
+func addAdditionalComments(s *Schema, comments []config.AdditionalComment) error {
 	for _, c := range comments {
 		table, err := s.FindTableByName(c.Table)
 		if err != nil {
