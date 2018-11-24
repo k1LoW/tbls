@@ -55,6 +55,12 @@ var outCmd = &cobra.Command{
 			printError(err)
 			os.Exit(1)
 		}
+		c.LoadArgs(args)
+		if err != nil {
+			printError(err)
+			os.Exit(1)
+		}
+
 		s, err := datasource.Analyze(c.DSN)
 		if err != nil {
 			printError(err)
