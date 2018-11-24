@@ -24,7 +24,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/k1LoW/tbls/db"
+	"github.com/k1LoW/tbls/datasource"
 	"github.com/k1LoW/tbls/output/md"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
@@ -44,7 +44,7 @@ var diffCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		dsn := args[0]
 		targetPath := args[1]
-		s, err := db.Analyze(dsn)
+		s, err := datasource.Analyze(dsn)
 		if err != nil {
 			printError(err)
 			os.Exit(1)

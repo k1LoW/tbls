@@ -1,12 +1,12 @@
-package db
+package datasource
 
 import (
-	"database/sql"
 	"encoding/json"
 	"fmt"
 	"os"
 	"strings"
 
+	"github.com/k1LoW/tbls/drivers"
 	"github.com/k1LoW/tbls/drivers/mysql"
 	"github.com/k1LoW/tbls/drivers/postgres"
 	"github.com/k1LoW/tbls/drivers/sqlite"
@@ -14,12 +14,6 @@ import (
 	"github.com/pkg/errors"
 	"github.com/xo/dburl"
 )
-
-// Driver is the common interface for database driver
-type Driver interface {
-	Analyze(*sql.DB, *schema.Schema) error
-	Info(*sql.DB) (*schema.Driver, error)
-}
 
 // Analyze database
 func Analyze(urlstr string) (*schema.Schema, error) {
@@ -45,7 +39,7 @@ func Analyze(urlstr string) (*schema.Schema, error) {
 		return s, errors.WithStack(err)
 	}
 
-	var driver Driver
+	var driver drivers.Driver
 
 	switch u.Driver {
 	case "postgres":
