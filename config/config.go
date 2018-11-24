@@ -1,15 +1,36 @@
 package config
 
 import (
+	"io/ioutil"
 	"os"
+	"path/filepath"
 
 	"github.com/pkg/errors"
+	"gopkg.in/yaml.v2"
 )
 
-// Config ...
+// Config is tbls config
 type Config struct {
-	DSN     string
-	DocPath string
+	DSN       string               `yaml:"dsn"`
+	DocPath   string               `yaml:"dataPath"`
+	Relations []AdditionalRelation `yaml:"relations"`
+	Comments  []AdditionalComment  `yaml:"comments"`
+}
+
+// AdditionalRelation is the struct for table relation from yaml
+type AdditionalRelation struct {
+	Table         string   `yaml:"table"`
+	Columns       []string `yaml:"columns"`
+	ParentTable   string   `yaml:"parentTable"`
+	ParentColumns []string `yaml:"parentColumns"`
+	Def           string   `yaml:"def"`
+}
+
+// AdditionalComment is the struct for table relation from yaml
+type AdditionalComment struct {
+	Table          string            `yaml:"table"`
+	TableComment   string            `yaml:"tableComment"`
+	ColumnComments map[string]string `yaml:"columnComments"`
 }
 
 // NewConfig return Config
@@ -41,6 +62,25 @@ func (c *Config) LoadArgs(args []string) error {
 		} else {
 			c.DocPath = args[0]
 		}
+	}
+	return nil
+}
+
+// LoadConfigFile load config file
+func (c *Config) LoadConfigFile(path string) error {
+	fullPath, err := filepath.Abs(path)
+	if err != nil {
+		return errors.Wrap(errors.WithStack(err), "failed to load config file")
+	}
+
+	buf, err := ioutil.ReadFile(fullPath)
+	if err != nil {
+		return errors.Wrap(errors.WithStack(err), "failed to load config file")
+	}
+
+	err = yaml.Unmarshal(buf, c)
+	if err != nil {
+		return errors.WithStack(err)
 	}
 	return nil
 }

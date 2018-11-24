@@ -54,6 +54,10 @@ test_env:
 	env TBLS_DSN=my://root:mypass@localhost:33306/testdb TBLS_DOC_PATH=sample/mysql ./tbls doc -a testdata/additional_data.yml -f
 	env TBLS_DSN=my://root:mypass@localhost:33306/testdb TBLS_DOC_PATH=sample/mysql ./tbls diff -a testdata/additional_data.yml
 
+test_config:
+	./tbls doc -c testdata/mysql_testdb_config.yml -f
+	./tbls diff -c testdata/mysql_testdb_config.yml
+
 build:
 	packr
 	$(GO) build -ldflags="$(BUILD_LDFLAGS)"

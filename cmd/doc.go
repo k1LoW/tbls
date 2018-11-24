@@ -51,6 +51,21 @@ var docCmd = &cobra.Command{
 			printError(err)
 			os.Exit(1)
 		}
+
+		if configPath != "" {
+			err = c.LoadConfigFile(configPath)
+			if err != nil {
+				printError(err)
+				os.Exit(1)
+			}
+		} else if additionalDataPath != "" {
+			err = c.LoadConfigFile(additionalDataPath)
+			if err != nil {
+				printError(err)
+				os.Exit(1)
+			}
+		}
+
 		c.LoadArgs(args)
 		if err != nil {
 			printError(err)
@@ -63,12 +78,10 @@ var docCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		if additionalDataPath != "" {
-			err = s.LoadAdditionalData(additionalDataPath)
-			if err != nil {
-				printError(err)
-				os.Exit(1)
-			}
+		err = s.LoadAdditionalData(c)
+		if err != nil {
+			printError(err)
+			os.Exit(1)
 		}
 
 		if sort {
@@ -190,6 +203,7 @@ func init() {
 	rootCmd.AddCommand(docCmd)
 	docCmd.Flags().BoolVarP(&force, "force", "f", false, "force")
 	docCmd.Flags().BoolVarP(&sort, "sort", "", false, "sort")
+	docCmd.Flags().StringVarP(&configPath, "config", "c", "", "config file path")
 	docCmd.Flags().StringVarP(&erFormat, "er-format", "t", "png", "ER diagrams output format [png, svg, jpg, ...]")
 	docCmd.Flags().BoolVarP(&withoutER, "without-er", "", false, "no generate ER diagrams")
 	docCmd.Flags().BoolVarP(&adjust, "adjust-table", "j", false, "adjust column width of table")
