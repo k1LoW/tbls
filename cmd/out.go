@@ -63,6 +63,7 @@ var outCmd = &cobra.Command{
 				os.Exit(1)
 			}
 		} else if additionalDataPath != "" {
+			fmt.Println("Warning: `--add` option is deprecated. Use `--config`")
 			err = c.LoadConfigFile(additionalDataPath)
 			if err != nil {
 				printError(err)
@@ -129,7 +130,7 @@ var outCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(outCmd)
 	outCmd.Flags().StringVarP(&configPath, "config", "c", "", "config file path")
-	outCmd.Flags().StringVarP(&additionalDataPath, "add", "a", "", "additional schema data path")
 	outCmd.Flags().StringVarP(&format, "format", "t", "json", "output format")
 	outCmd.Flags().StringVar(&tableName, "table", "", "table name")
+	outCmd.Flags().StringVarP(&additionalDataPath, "add", "a", "", "additional schema data path (deprecated, use `config`)")
 }

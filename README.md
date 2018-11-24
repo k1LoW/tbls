@@ -79,12 +79,36 @@ testdoc: ## Test database schema document
 
 **Tips:** If the order of the columns does not match, you can use the `--sort` option.
 
-## Add additional data (relations, comments) to schema
+## How to specify DSN and Document path
 
-To add additional data to the schema, specify [the yaml file](testdata/additional_data.yml) with the `--add` option as follows
+### 1. Command arguments
 
 ``` console
-$ tbls doc mysql://user:pass@hostname:3306/dbname --add path/to/additional_data.yml ./dbdoc
+$ tbls doc my://root:mypass@localhost:33306/testdb sample/mysql
+```
+
+### 2. `--config` option
+
+Specify the YAML file with the `--config` option as follows
+
+``` yaml
+---
+dsn: my://root:mypass@localhost:33306/testdb
+dataPath: sample/mysql
+```
+
+### 3. Envirionment
+
+``` console
+$ env TBLS_DSN=my://root:mypass@localhost:33306/testdb TBLS_DOC_PATH=sample/mysql tbls doc
+```
+
+## Add additional data (relations, comments) to schema
+
+To add additional data to the schema, specify [the YAML file](testdata/additional_data.yml) with the `--config` option as follows
+
+``` console
+$ tbls doc mysql://user:pass@hostname:3306/dbname --config path/to/additional_data.yml ./dbdoc
 ```
 
 ## Installation
