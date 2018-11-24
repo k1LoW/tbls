@@ -28,6 +28,7 @@ import (
 	"os/exec"
 	"path/filepath"
 
+	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/datasource"
 	"github.com/k1LoW/tbls/output/dot"
 	"github.com/k1LoW/tbls/output/md"
@@ -41,19 +42,18 @@ var withoutER bool
 
 // docCmd represents the doc command
 var docCmd = &cobra.Command{
-	Use:   "doc [DSN] [DOCUMENT_PATH]",
+	Use:   "doc [DSN] [DOC_PATH]",
 	Short: "document a database",
 	Long:  `'tbls doc' analyzes a database and generate document in GitHub Friendly Markdown format.`,
-	Args: func(cmd *cobra.Command, args []string) error {
-		if len(args) != 2 {
-			return errors.WithStack(errors.New("requires two args"))
-		}
-		return nil
-	},
 	Run: func(cmd *cobra.Command, args []string) {
-		dsn := args[0]
-		outputPath := args[1]
-		s, err := datasource.Analyze(dsn)
+		c, err := config.NewConfig()
+		if err != nil {
+			printError(err)
+			os.Exit(1)
+		}
+		c.LoadArgs(args)
+
+		s, err := datasource.Analyze(c.DSN)
 		if err != nil {
 			printError(err)
 			os.Exit(1)
@@ -78,7 +78,7 @@ var docCmd = &cobra.Command{
 		if !withoutER {
 			_, err = exec.Command("which", "dot").Output()
 			if err == nil {
-				err := withDot(s, outputPath, force)
+				err := withDot(s, c.DocPath, force)
 				if err != nil {
 					printError(err)
 					os.Exit(1)
@@ -86,7 +86,7 @@ var docCmd = &cobra.Command{
 			}
 		}
 
-		err = md.Output(s, outputPath, force, adjust, erFormat)
+		err = md.Output(s, c.DocPath, force, adjust, erFormat)
 
 		if err != nil {
 			printError(err)
