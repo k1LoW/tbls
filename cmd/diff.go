@@ -41,6 +41,21 @@ var diffCmd = &cobra.Command{
 			printError(err)
 			os.Exit(1)
 		}
+
+		if configPath != "" {
+			err = c.LoadConfigFile(configPath)
+			if err != nil {
+				printError(err)
+				os.Exit(1)
+			}
+		} else if additionalDataPath != "" {
+			err = c.LoadConfigFile(additionalDataPath)
+			if err != nil {
+				printError(err)
+				os.Exit(1)
+			}
+		}
+
 		c.LoadArgs(args)
 		if err != nil {
 			printError(err)
@@ -53,12 +68,10 @@ var diffCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		if additionalDataPath != "" {
-			err = s.LoadAdditionalData(additionalDataPath)
-			if err != nil {
-				printError(err)
-				os.Exit(1)
-			}
+		err = s.LoadAdditionalData(c)
+		if err != nil {
+			printError(err)
+			os.Exit(1)
 		}
 
 		if sort {
@@ -84,6 +97,7 @@ var diffCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(diffCmd)
 	diffCmd.Flags().BoolVarP(&sort, "sort", "", false, "sort")
+	diffCmd.Flags().StringVarP(&configPath, "config", "c", "", "config file path")
 	diffCmd.Flags().StringVarP(&erFormat, "er-format", "t", "png", "ER diagrams output format [png, svg, jpg, ...]")
 	diffCmd.Flags().BoolVarP(&adjust, "adjust-table", "j", false, "adjust column width of table")
 	diffCmd.Flags().StringVarP(&additionalDataPath, "add", "a", "", "additional schema data path")
