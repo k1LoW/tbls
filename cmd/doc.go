@@ -59,6 +59,7 @@ var docCmd = &cobra.Command{
 				os.Exit(1)
 			}
 		} else if additionalDataPath != "" {
+			fmt.Println("Warning: `--add` option is deprecated. Use `--config`")
 			err = c.LoadConfigFile(additionalDataPath)
 			if err != nil {
 				printError(err)
@@ -207,5 +208,5 @@ func init() {
 	docCmd.Flags().StringVarP(&erFormat, "er-format", "t", "png", "ER diagrams output format [png, svg, jpg, ...]")
 	docCmd.Flags().BoolVarP(&withoutER, "without-er", "", false, "no generate ER diagrams")
 	docCmd.Flags().BoolVarP(&adjust, "adjust-table", "j", false, "adjust column width of table")
-	docCmd.Flags().StringVarP(&additionalDataPath, "add", "a", "", "additional schema data path")
+	docCmd.Flags().StringVarP(&additionalDataPath, "add", "a", "", "additional schema data path (deprecated, use `config`)")
 }

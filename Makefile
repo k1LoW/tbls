@@ -25,20 +25,20 @@ test:
 	make testdoc
 
 doc: build
-	./tbls doc pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -a testdata/additional_data.yml -f sample/postgres
-	./tbls doc my://root:mypass@localhost:33306/testdb -a testdata/additional_data.yml -f sample/mysql
-	./tbls doc my://root:mypass@localhost:33308/testdb -a testdata/additional_data.yml -f sample/mysql8
-	./tbls doc sq://$(PWD)/testdata/testdb.sqlite3 -a testdata/additional_data.yml -f sample/sqlite
-	./tbls doc pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -a testdata/additional_data.yml -j -f sample/adjust
-	./tbls doc my://root:mypass@localhost:33306/testdb -a testdata/additional_data.yml -t svg -f sample/svg
+	./tbls doc pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -c testdata/additional_data.yml -f sample/postgres
+	./tbls doc my://root:mypass@localhost:33306/testdb -c testdata/additional_data.yml -f sample/mysql
+	./tbls doc my://root:mypass@localhost:33308/testdb -c testdata/additional_data.yml -f sample/mysql8
+	./tbls doc sq://$(PWD)/testdata/testdb.sqlite3 -c testdata/additional_data.yml -f sample/sqlite
+	./tbls doc pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -c testdata/additional_data.yml -j -f sample/adjust
+	./tbls doc my://root:mypass@localhost:33306/testdb -c testdata/additional_data.yml -t svg -f sample/svg
 
 testdoc:
-	./tbls diff pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -a testdata/additional_data.yml sample/postgres
-	./tbls diff my://root:mypass@localhost:33306/testdb -a testdata/additional_data.yml sample/mysql
-	./tbls diff my://root:mypass@localhost:33308/testdb -a testdata/additional_data.yml sample/mysql8
-	./tbls diff sq://$(PWD)/testdata/testdb.sqlite3 -a testdata/additional_data.yml sample/sqlite
-	./tbls diff pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -a testdata/additional_data.yml -j sample/adjust
-	./tbls diff my://root:mypass@localhost:33306/testdb -a testdata/additional_data.yml -t svg sample/svg
+	./tbls diff pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -c testdata/additional_data.yml sample/postgres
+	./tbls diff my://root:mypass@localhost:33306/testdb -c testdata/additional_data.yml sample/mysql
+	./tbls diff my://root:mypass@localhost:33308/testdb -c testdata/additional_data.yml sample/mysql8
+	./tbls diff sq://$(PWD)/testdata/testdb.sqlite3 -c testdata/additional_data.yml sample/sqlite
+	./tbls diff pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -c testdata/additional_data.yml -j sample/adjust
+	./tbls diff my://root:mypass@localhost:33306/testdb -c testdata/additional_data.yml -t svg sample/svg
 
 test_too_many_tables:
 	usql pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -f testdata/createdb_too_many.sql
@@ -47,12 +47,12 @@ test_too_many_tables:
 	ulimit -n 256 && ./tbls diff pg://postgres:pgpass@localhost:55432/too_many?sslmode=disable /tmp
 
 test_json:
-	./tbls out my://root:mypass@localhost:33306/testdb -a testdata/additional_data.yml -t json > /tmp/tbls.json
+	./tbls out my://root:mypass@localhost:33306/testdb -c testdata/additional_data.yml -t json > /tmp/tbls.json
 	./tbls diff json:///tmp/tbls.json sample/mysql
 
 test_env:
-	env TBLS_DSN=my://root:mypass@localhost:33306/testdb TBLS_DOC_PATH=sample/mysql ./tbls doc -a testdata/additional_data.yml -f
-	env TBLS_DSN=my://root:mypass@localhost:33306/testdb TBLS_DOC_PATH=sample/mysql ./tbls diff -a testdata/additional_data.yml
+	env TBLS_DSN=my://root:mypass@localhost:33306/testdb TBLS_DOC_PATH=sample/mysql ./tbls doc -c testdata/additional_data.yml -f
+	env TBLS_DSN=my://root:mypass@localhost:33306/testdb TBLS_DOC_PATH=sample/mysql ./tbls diff -c testdata/additional_data.yml
 
 test_config:
 	./tbls doc -c testdata/mysql_testdb_config.yml -f
