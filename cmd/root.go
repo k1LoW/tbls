@@ -59,8 +59,7 @@ func Execute() {
 	}
 }
 
-func init() {
-}
+func init() {}
 
 func printError(err error) {
 	env := os.Getenv("DEBUG")
