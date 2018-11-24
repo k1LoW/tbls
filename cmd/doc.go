@@ -28,7 +28,7 @@ import (
 	"os/exec"
 	"path/filepath"
 
-	"github.com/k1LoW/tbls/db"
+	"github.com/k1LoW/tbls/datasource"
 	"github.com/k1LoW/tbls/output/dot"
 	"github.com/k1LoW/tbls/output/md"
 	"github.com/k1LoW/tbls/schema"
@@ -53,7 +53,7 @@ var docCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		dsn := args[0]
 		outputPath := args[1]
-		s, err := db.Analyze(dsn)
+		s, err := datasource.Analyze(dsn)
 		if err != nil {
 			printError(err)
 			os.Exit(1)
