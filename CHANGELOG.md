@@ -1,5 +1,15 @@
 # Changelog
 
+## [v1.6.0](https://github.com/k1LoW/tbls/compare/v1.5.1...v1.6.0) (2018-11-24)
+
+* [DEPRACATED] `--add` option is deprecated. Use `--config` [#72](https://github.com/k1LoW/tbls/pull/72) ([k1LoW](https://github.com/k1LoW))
+* Add `--config` option [#71](https://github.com/k1LoW/tbls/pull/71) ([k1LoW](https://github.com/k1LoW))
+* Load Environment Values [#70](https://github.com/k1LoW/tbls/pull/70) ([k1LoW](https://github.com/k1LoW))
+* Rename some code [#69](https://github.com/k1LoW/tbls/pull/69) ([k1LoW](https://github.com/k1LoW))
+* Add tbls driver information to JSON [#68](https://github.com/k1LoW/tbls/pull/68) ([k1LoW](https://github.com/k1LoW))
+* Support `json://`  [#67](https://github.com/k1LoW/tbls/pull/67) ([k1LoW](https://github.com/k1LoW))
+* [BREAKING] Change `tbls dot` to `tbls out` / Support JSON format [#66](https://github.com/k1LoW/tbls/pull/66) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.5.1](https://github.com/k1LoW/tbls/compare/v1.5.0...v1.5.1) (2018-11-20)
 
 * Fix error messages [#65](https://github.com/k1LoW/tbls/pull/65) ([k1LoW](https://github.com/k1LoW))
