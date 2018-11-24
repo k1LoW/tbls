@@ -50,6 +50,10 @@ test_json:
 	./tbls out my://root:mypass@localhost:33306/testdb -a testdata/additional_data.yml -t json > /tmp/tbls.json
 	./tbls diff json:///tmp/tbls.json sample/mysql
 
+test_env:
+	env TBLS_DSN=my://root:mypass@localhost:33306/testdb TBLS_DOC_PATH=sample/mysql ./tbls doc -a testdata/additional_data.yml -f
+	env TBLS_DSN=my://root:mypass@localhost:33306/testdb TBLS_DOC_PATH=sample/mysql ./tbls diff -a testdata/additional_data.yml
+
 build:
 	packr
 	$(GO) build -ldflags="$(BUILD_LDFLAGS)"
