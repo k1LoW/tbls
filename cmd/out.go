@@ -24,6 +24,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/datasource"
 	"github.com/k1LoW/tbls/output"
 	"github.com/k1LoW/tbls/output/dot"
@@ -43,14 +44,24 @@ var outCmd = &cobra.Command{
 	Short: "analyzes a database and output",
 	Long:  `'tbls out' analyzes a database and output.`,
 	Args: func(cmd *cobra.Command, args []string) error {
-		if len(args) != 1 {
-			return errors.WithStack(errors.New("requires two args"))
+		if len(args) > 1 {
+			return errors.WithStack(errors.New("requires one arg"))
 		}
 		return nil
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		dsn := args[0]
-		s, err := datasource.Analyze(dsn)
+		c, err := config.NewConfig()
+		if err != nil {
+			printError(err)
+			os.Exit(1)
+		}
+		c.LoadArgs(args)
+		if err != nil {
+			printError(err)
+			os.Exit(1)
+		}
+
+		s, err := datasource.Analyze(c.DSN)
 		if err != nil {
 			printError(err)
 			os.Exit(1)
