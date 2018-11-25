@@ -56,7 +56,7 @@ func (c *Config) LoadArgs(args []string) error {
 		c.DocPath = args[1]
 	}
 	if len(args) > 2 {
-		return errors.WithStack(errors.New("requires two args"))
+		return errors.WithStack(errors.New("too many arguments"))
 	}
 	if len(args) == 1 {
 		if c.DSN == "" {
