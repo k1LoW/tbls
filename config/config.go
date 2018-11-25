@@ -9,6 +9,8 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+var configDefaultPath = ".tbls.yml"
+
 // Config is tbls config
 type Config struct {
 	DSN       string               `yaml:"dsn"`
@@ -68,6 +70,13 @@ func (c *Config) LoadArgs(args []string) error {
 
 // LoadConfigFile load config file
 func (c *Config) LoadConfigFile(path string) error {
+	if path == "" {
+		path = configDefaultPath
+		if _, err := os.Lstat(path); err != nil {
+			return nil
+		}
+	}
+
 	fullPath, err := filepath.Abs(path)
 	if err != nil {
 		return errors.Wrap(errors.WithStack(err), "failed to load config file")
@@ -80,7 +89,7 @@ func (c *Config) LoadConfigFile(path string) error {
 
 	err = yaml.Unmarshal(buf, c)
 	if err != nil {
-		return errors.WithStack(err)
+		return errors.Wrap(errors.WithStack(err), "failed to load config file")
 	}
 	return nil
 }
