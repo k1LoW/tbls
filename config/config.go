@@ -1,9 +1,13 @@
 package config
 
 import (
+	"bytes"
+	"html/template"
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"regexp"
+	"strings"
 
 	"github.com/pkg/errors"
 	"gopkg.in/yaml.v2"
@@ -92,4 +96,35 @@ func (c *Config) LoadConfigFile(path string) error {
 		return errors.Wrap(errors.WithStack(err), "failed to load config file")
 	}
 	return nil
+}
+
+func parseWithEnviron(v string) (string, error) {
+	r := regexp.MustCompile(`\${\s*([^{}]+)\s*}`)
+	tmpl, err := template.New("config").Parse(r.ReplaceAllString(v, "{{.$1}}"))
+	if err != nil {
+		return "", err
+	}
+	buf := &bytes.Buffer{}
+	err = tmpl.Execute(buf, envMap())
+	if err != nil {
+		return "", err
+	}
+	return buf.String(), nil
+}
+
+func envMap() map[string]string {
+	m := map[string]string{}
+	for _, kv := range os.Environ() {
+		if strings.Index(kv, "=") == -1 {
+			continue
+		}
+		parts := strings.SplitN(kv, "=", 2)
+		k := parts[0]
+		if len(parts) < 2 {
+			m[k] = ""
+			continue
+		}
+		m[k] = parts[1]
+	}
+	return m
 }
