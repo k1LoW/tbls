@@ -1,13 +1,19 @@
 package config
 
 import (
+	"bytes"
+	"html/template"
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"regexp"
+	"strings"
 
 	"github.com/pkg/errors"
 	"gopkg.in/yaml.v2"
 )
+
+var configDefaultPath = ".tbls.yml"
 
 // Config is tbls config
 type Config struct {
@@ -54,7 +60,7 @@ func (c *Config) LoadArgs(args []string) error {
 		c.DocPath = args[1]
 	}
 	if len(args) > 2 {
-		return errors.WithStack(errors.New("requires two args"))
+		return errors.WithStack(errors.New("too many arguments"))
 	}
 	if len(args) == 1 {
 		if c.DSN == "" {
@@ -68,6 +74,13 @@ func (c *Config) LoadArgs(args []string) error {
 
 // LoadConfigFile load config file
 func (c *Config) LoadConfigFile(path string) error {
+	if path == "" {
+		path = configDefaultPath
+		if _, err := os.Lstat(path); err != nil {
+			return nil
+		}
+	}
+
 	fullPath, err := filepath.Abs(path)
 	if err != nil {
 		return errors.Wrap(errors.WithStack(err), "failed to load config file")
@@ -80,7 +93,51 @@ func (c *Config) LoadConfigFile(path string) error {
 
 	err = yaml.Unmarshal(buf, c)
 	if err != nil {
-		return errors.WithStack(err)
+		return errors.Wrap(errors.WithStack(err), "failed to load config file")
+	}
+
+	c.DSN, err = parseWithEnviron(c.DSN)
+	if err != nil {
+		return errors.Wrap(errors.WithStack(err), "failed to load config file")
+	}
+	c.DocPath, err = parseWithEnviron(c.DocPath)
+	if err != nil {
+		return errors.Wrap(errors.WithStack(err), "failed to load config file")
 	}
 	return nil
+}
+
+func parseWithEnviron(v string) (string, error) {
+	r := regexp.MustCompile(`\${\s*([^{}]+)\s*}`)
+	r2 := regexp.MustCompile(`{{([^\.])`)
+	r3 := regexp.MustCompile(`__TBLS__(.)`)
+	replaced := r.ReplaceAllString(v, "{{.$1}}")
+	replaced2 := r2.ReplaceAllString(replaced, "__TBLS__$1")
+	tmpl, err := template.New("config").Parse(replaced2)
+	if err != nil {
+		return "", err
+	}
+	buf := &bytes.Buffer{}
+	err = tmpl.Execute(buf, envMap())
+	if err != nil {
+		return "", err
+	}
+	return r3.ReplaceAllString(buf.String(), "{{$1"), nil
+}
+
+func envMap() map[string]string {
+	m := map[string]string{}
+	for _, kv := range os.Environ() {
+		if strings.Index(kv, "=") == -1 {
+			continue
+		}
+		parts := strings.SplitN(kv, "=", 2)
+		k := parts[0]
+		if len(parts) < 2 {
+			m[k] = ""
+			continue
+		}
+		m[k] = parts[1]
+	}
+	return m
 }
