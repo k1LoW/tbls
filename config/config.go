@@ -95,6 +95,15 @@ func (c *Config) LoadConfigFile(path string) error {
 	if err != nil {
 		return errors.Wrap(errors.WithStack(err), "failed to load config file")
 	}
+
+	c.DSN, err = parseWithEnviron(c.DSN)
+	if err != nil {
+		return errors.Wrap(errors.WithStack(err), "failed to load config file")
+	}
+	c.DocPath, err = parseWithEnviron(c.DocPath)
+	if err != nil {
+		return errors.Wrap(errors.WithStack(err), "failed to load config file")
+	}
 	return nil
 }
 
