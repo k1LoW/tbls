@@ -87,9 +87,11 @@ testdoc: ## Test database schema document
 $ tbls doc my://root:mypass@localhost:33306/testdb sample/mysql
 ```
 
-### 2. `--config` option
+### 2. Use `.tbls.yml` or set `--config` option
 
-Specify the YAML file with the `--config` option as follows
+Put `.tbls.yml` on execute directory or specify with the `--config` option.
+
+YAML format is follows
 
 ``` yaml
 ---

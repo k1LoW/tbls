@@ -57,6 +57,9 @@ test_env:
 test_config:
 	./tbls doc -c testdata/mysql_testdb_config.yml -f
 	./tbls diff -c testdata/mysql_testdb_config.yml
+	cp testdata/mysql_testdb_config.yml .tbls.yml
+	./tbls diff
+	rm .tbls.yml
 
 build:
 	packr
