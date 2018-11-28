@@ -12,6 +12,7 @@ var tests = []struct {
 	{"${TBLS_ONE}/${TBLS_TWO}", "one/two"},
 	{"${TBLS_ONE}/${TBLS_TWO}/${TBLS_NONE}", "one/two/"},
 	{"${{TBLS_ONE}}", "${{TBLS_ONE}}"},
+	{"{{.TBLS_ONE}}/{{.TBLS_TWO}}", "one/two"},
 }
 
 func TestParseWithEnvirion(t *testing.T) {
