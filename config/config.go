@@ -100,7 +100,11 @@ func (c *Config) LoadConfigFile(path string) error {
 
 func parseWithEnviron(v string) (string, error) {
 	r := regexp.MustCompile(`\${\s*([^{}]+)\s*}`)
-	tmpl, err := template.New("config").Parse(r.ReplaceAllString(v, "{{.$1}}"))
+	r2 := regexp.MustCompile(`{{([^\.])`)
+	r3 := regexp.MustCompile(`__TBLS__(.)`)
+	replaced := r.ReplaceAllString(v, "{{.$1}}")
+	replaced2 := r2.ReplaceAllString(replaced, "__TBLS__$1")
+	tmpl, err := template.New("config").Parse(replaced2)
 	if err != nil {
 		return "", err
 	}
@@ -109,7 +113,7 @@ func parseWithEnviron(v string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return buf.String(), nil
+	return r3.ReplaceAllString(buf.String(), "{{$1"), nil
 }
 
 func envMap() map[string]string {
