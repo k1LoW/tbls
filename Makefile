@@ -69,7 +69,7 @@ build:
 depsdev:
 	GO111MODULE=off go get golang.org/x/tools/cmd/cover
 	GO111MODULE=off go get golang.org/x/lint/golint
-	GO111MODULE=off go get github.com/motemen/gobump/cmd/gobump
+	GO111MODULE=off go get github.com/linyows/git-semv/cmd/git-semv
 	GO111MODULE=off go get github.com/Songmu/goxz/cmd/goxz
 	GO111MODULE=off go get github.com/tcnksm/ghr
 	GO111MODULE=off go get github.com/Songmu/ghch/cmd/ghch
@@ -77,18 +77,18 @@ depsdev:
 	GO111MODULE=off go get github.com/gobuffalo/packr/packr
 
 crossbuild: depsdev
-	$(eval ver = v$(shell gobump show -r version/))
+	$(eval ver = $(shell git semv now))
 	packr
 	GO111MODULE=on goxz -pv=$(ver) -arch=386,amd64 -build-ldflags="$(RELEASE_BUILD_LDFLAGS)" \
 	  -d=./dist/$(ver)
 	packr clean
 
 prerelease:
-	$(eval ver = v$(shell gobump show -r version/))
-	GO111MODULE=on ghch -w -N $(ver)
+	GO111MODULE=on ghch -w -N ${VER}
+	git tag ${VER}
 
 release: crossbuild
-	$(eval ver = v$(shell gobump show -r version/))
+	$(eval ver = $(shell git semv now))
 	GO111MODULE=on ghr -username k1LoW -replace $(ver) dist/$(ver)
 
 .PHONY: default test
