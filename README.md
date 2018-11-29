@@ -99,6 +99,12 @@ dsn: my://root:mypass@localhost:33306/testdb
 dataPath: sample/mysql
 ```
 
+``` yaml
+---
+dsn: my://${MYSQL_USER}:${MYSQL_PASSWORD}@localhost:33306/${MYSQL_DATABASE}
+dataPath: sample/mysql
+```
+
 ### 3. Envirionment
 
 ``` console
