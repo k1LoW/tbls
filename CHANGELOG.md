@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.7.0](https://github.com/k1LoW/tbls/compare/v1.6.0...v1.7.0) (2018-11-29)
+
+* Support default config file `.tbls.yml` [#73](https://github.com/k1LoW/tbls/pull/73) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.6.0](https://github.com/k1LoW/tbls/compare/v1.5.1...v1.6.0) (2018-11-24)
 
 * [DEPRACATED] `--add` option is deprecated. Use `--config` [#72](https://github.com/k1LoW/tbls/pull/72) ([k1LoW](https://github.com/k1LoW))
