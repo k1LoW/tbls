@@ -24,7 +24,7 @@ CREATE TABLE `user_options` (
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| user_id | int(11) |  | false |  |  |  |
+| user_id | int(11) |  | false |  | [users](users.md) |  |
 | show_email | tinyint(1) | 0 | false |  |  |  |
 | created | timestamp |  | false |  |  |  |
 | updated | timestamp |  | true |  |  |  |
@@ -34,7 +34,7 @@ CREATE TABLE `user_options` (
 | Name | Type | Definition |
 | ---- | ---- | ---------- |
 | PRIMARY | PRIMARY KEY | PRIMARY KEY (user_id) |
-| user_options_user_id_fk | PRIMARY KEY | PRIMARY KEY (user_id) |
+| user_options_user_id_fk | FOREIGN KEY | FOREIGN KEY (user_id) REFERENCES users (id) |
 
 ## Indexes
 
