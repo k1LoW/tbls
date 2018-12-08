@@ -81,7 +81,7 @@ depsdev:
 crossbuild: depsdev
 	$(eval ver = $(shell git semv now))
 	packr
-	GO111MODULE=off goxz -pv=$(ver) -arch=386,amd64 -build-ldflags="$(RELEASE_BUILD_LDFLAGS)" \
+	GO111MODULE=on goxz -pv=$(ver) -arch=386,amd64 -build-ldflags="$(RELEASE_BUILD_LDFLAGS)" \
 	  -d=./dist/$(ver)
 	packr clean
 
