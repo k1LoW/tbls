@@ -10,6 +10,7 @@
 | [logs](logs.md) | 7 | audit log table | BASE TABLE |
 | [post_comments](post_comments.md) | 7 | post and comments View table | VIEW |
 | [posts](posts.md) | 7 | Posts table | BASE TABLE |
+| [user_options](user_options.md) | 4 | User options table | BASE TABLE |
 | [users](users.md) | 6 | Users table | BASE TABLE |
 
 ## Relations
