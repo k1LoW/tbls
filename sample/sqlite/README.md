@@ -5,6 +5,7 @@
 | Name | Columns | Comment | Type |
 | ---- | ------- | ------- | ---- |
 | [users](users.md) | 6 |  | table |
+| [user_options](user_options.md) | 4 |  | table |
 | [posts](posts.md) | 6 |  | table |
 | [comments](comments.md) | 6 |  | table |
 | [comment_stars](comment_stars.md) | 6 |  | table |
