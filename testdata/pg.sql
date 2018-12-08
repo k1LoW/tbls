@@ -8,6 +8,7 @@ DROP TABLE IF EXISTS comment_stars;
 DROP TABLE IF EXISTS comments;
 DROP TABLE IF EXISTS posts;
 DROP TYPE IF EXISTS post_types;
+DROP TABLE IF EXISTS user_options;
 DROP TABLE IF EXISTS users;
 DROP FUNCTION IF EXISTS update_updated;
 DROP SCHEMA IF EXISTS administrator;
@@ -29,6 +30,15 @@ CREATE TABLE users (
 );
 COMMENT ON TABLE users IS 'Users table';
 COMMENT ON COLUMN users.email IS 'ex. user@example.com';
+
+CREATE TABLE user_options (
+  user_id int PRIMARY KEY,
+  show_email boolean NOT NULL DEFAULT false,
+  created timestamp NOT NULL,
+  updated timestamp,
+  CONSTRAINT user_options_user_id_fk FOREIGN KEY(user_id) REFERENCES users(id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE
+);
+COMMENT ON TABLE user_options IS 'User options table';
 
 CREATE TABLE posts (
   id bigserial NOT NULL,

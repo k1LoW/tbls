@@ -5,6 +5,7 @@ DROP TABLE IF EXISTS logs;
 DROP TABLE IF EXISTS comment_stars;
 DROP TABLE IF EXISTS comments;
 DROP TABLE IF EXISTS posts;
+DROP TABLE IF EXISTS user_options;
 DROP TABLE IF EXISTS users;
 
 CREATE TABLE users (
@@ -15,6 +16,14 @@ CREATE TABLE users (
   created timestamp NOT NULL,
   updated timestamp
 ) COMMENT = 'Users table';
+
+CREATE TABLE user_options (
+  user_id int PRIMARY KEY,
+  show_email boolean NOT NULL DEFAULT false,
+  created timestamp NOT NULL,
+  updated timestamp,
+  CONSTRAINT user_options_user_id_fk FOREIGN KEY(user_id) REFERENCES users(id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE
+) COMMENT = 'User options table';
 
 CREATE TABLE posts (
   id bigint AUTO_INCREMENT,
