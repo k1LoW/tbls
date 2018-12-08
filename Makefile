@@ -2,8 +2,10 @@ PKG = github.com/k1LoW/tbls
 COMMIT = $$(git describe --tags --always)
 OSNAME=${shell uname -s}
 ifeq ($(OSNAME),Darwin)
+	SED = gsed
 	DATE = $$(gdate --utc '+%Y-%m-%d_%H:%M:%S')
 else
+	SED = sed
 	DATE = $$(date --utc '+%Y-%m-%d_%H:%M:%S')
 endif
 
@@ -79,16 +81,20 @@ depsdev:
 crossbuild: depsdev
 	$(eval ver = $(shell git semv now))
 	packr
-	GO111MODULE=on goxz -pv=$(ver) -arch=386,amd64 -build-ldflags="$(RELEASE_BUILD_LDFLAGS)" \
+	GO111MODULE=off goxz -pv=$(ver) -arch=386,amd64 -build-ldflags="$(RELEASE_BUILD_LDFLAGS)" \
 	  -d=./dist/$(ver)
 	packr clean
 
 prerelease:
-	GO111MODULE=on ghch -w -N ${VER}
+	$(SED) -i 's/[0-9]\+.[0-9]\+.[0-9]\+/${VER}/g' version/version.go
+	$(SED) -i 's/v\([0-9]\+.[0-9]\+.[0-9]\+\)/\1/g' version/version.go
+	GO111MODULE=off ghch -w -N ${VER}
+	git add CHANGELOG.md version/version.go
+	git commit -m'Bump up version number'
 	git tag ${VER}
 
 release: crossbuild
 	$(eval ver = $(shell git semv now))
-	GO111MODULE=on ghr -username k1LoW -replace $(ver) dist/$(ver)
+	GO111MODULE=off ghr -username k1LoW -replace $(ver) dist/$(ver)
 
 .PHONY: default test

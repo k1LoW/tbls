@@ -3,7 +3,6 @@ module github.com/k1LoW/tbls
 require (
 	github.com/go-sql-driver/mysql v1.4.0
 	github.com/gobuffalo/packr v1.20.0
-	github.com/jessevdk/go-assets v0.0.0-20160921144138-4f4301a06e15
 	github.com/lib/pq v0.0.0-20180523175426-90697d60dd84
 	github.com/mattn/go-runewidth v0.0.2
 	github.com/mattn/go-sqlite3 v1.9.0
