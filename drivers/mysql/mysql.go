@@ -150,10 +150,11 @@ LEFT JOIN
    kcu.table_name,
    kcu.constraint_name,
    kcu.column_name,
-   (CASE WHEN c.column_key='PRI' THEN 'PRIMARY KEY'
+   (CASE WHEN c.column_key='PRI' AND kcu.referenced_table_name IS NULL THEN 'PRIMARY KEY'
         WHEN c.column_key='UNI' THEN 'UNIQUE'
         WHEN c.column_key='MUL' AND kcu.referenced_table_name IS NULL THEN 'UNIQUE'
         WHEN c.column_key='MUL' AND kcu.referenced_table_name IS NOT NULL THEN 'FOREIGN KEY'
+        WHEN c.column_key='PRI' AND kcu.referenced_table_name IS NOT NULL THEN 'FOREIGN KEY'
         ELSE 'UNKNOWN'
    END) AS costraint_type
    FROM information_schema.key_column_usage AS kcu

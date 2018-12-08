@@ -22,7 +22,7 @@ CREATE TABLE users (
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | INTEGER |  | true | [posts](posts.md) [comments](comments.md) [comment_stars](comment_stars.md) [logs](logs.md) |  |  |
+| id | INTEGER |  | true | [user_options](user_options.md) [posts](posts.md) [comments](comments.md) [comment_stars](comment_stars.md) [logs](logs.md) |  |  |
 | username | TEXT |  | false |  |  |  |
 | password | TEXT |  | false |  |  |  |
 | email | TEXT |  | false |  |  |  |

@@ -12,8 +12,8 @@ var tests = []struct {
 	tableCount    int
 	relationCount int
 }{
-	{"my://root:mypass@localhost:33306/testdb", 7, 5},
-	{"pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable", 8, 6},
+	{"my://root:mypass@localhost:33306/testdb", 8, 6},
+	{"pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable", 9, 7},
 	{"json://../testdata/testdb.json", 7, 9},
 }
 

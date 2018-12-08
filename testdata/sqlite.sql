@@ -9,6 +9,7 @@ DROP TABLE IF EXISTS logs;
 DROP TABLE IF EXISTS comment_stars;
 DROP TABLE IF EXISTS comments;
 DROP TABLE IF EXISTS posts;
+DROP TABLE IF EXISTS user_options;
 DROP TABLE IF EXISTS users;
 
 CREATE TABLE users (
@@ -20,6 +21,14 @@ CREATE TABLE users (
   updated NUMERIC
 );
 CREATE UNIQUE INDEX users_username_key ON users(username);
+
+CREATE TABLE user_options (
+  user_id INTEGER PRIMARY KEY,
+  show_email INTEGER NOT NULL DEFAULT 0,
+  created NUMERIC NOT NULL,
+  updated NUMERIC,
+  CONSTRAINT user_options_user_id_fk FOREIGN KEY(user_id) REFERENCES users(id) MATCH NONE ON UPDATE NO ACTION ON DELETE CASCADE
+);
 
 CREATE TABLE posts (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
