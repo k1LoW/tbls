@@ -128,7 +128,7 @@ $ go get github.com/k1LoW/tbls
 or
 
 ```console
-$ brew install k1LoW/tbls/tbls
+$ brew install k1LoW/tap/tbls
 ```
 
 ## Database Support
