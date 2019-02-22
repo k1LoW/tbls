@@ -31,12 +31,12 @@ type RequireTableComment struct {
 }
 
 // IsEnabled return Rule is enabled or not
-func (l RequireTableComment) IsEnabled() bool {
-	return l.Enabled
+func (r RequireTableComment) IsEnabled() bool {
+	return r.Enabled
 }
 
 // Check table comment
-func (l RequireTableComment) Check(s *schema.Schema) []RuleWarn {
+func (r RequireTableComment) Check(s *schema.Schema) []RuleWarn {
 	msgFmt := "%s: table comment required."
 	warns := []RuleWarn{}
 	for _, t := range s.Tables {
@@ -55,12 +55,12 @@ type RequireColumnComment struct {
 }
 
 // IsEnabled return Rule is enabled or not
-func (l RequireColumnComment) IsEnabled() bool {
-	return l.Enabled
+func (r RequireColumnComment) IsEnabled() bool {
+	return r.Enabled
 }
 
 // Check column comment
-func (l RequireColumnComment) Check(s *schema.Schema) []RuleWarn {
+func (r RequireColumnComment) Check(s *schema.Schema) []RuleWarn {
 	msgFmt := "%s.%s: column comment required."
 	warns := []RuleWarn{}
 	for _, t := range s.Tables {
@@ -82,25 +82,25 @@ type NoRelationTables struct {
 }
 
 // IsEnabled return Rule is enabled or not
-func (l NoRelationTables) IsEnabled() bool {
-	return l.Enabled
+func (r NoRelationTables) IsEnabled() bool {
+	return r.Enabled
 }
 
 // Check table relation
-func (l NoRelationTables) Check(s *schema.Schema) []RuleWarn {
+func (r NoRelationTables) Check(s *schema.Schema) []RuleWarn {
 	msgFmt := "schema has too many no relation tables. [%d/%d]"
 	warns := []RuleWarn{}
 	tableMap := map[string]*schema.Table{}
 	for _, t := range s.Tables {
 		tableMap[t.Name] = t
 	}
-	for _, r := range s.Relations {
-		delete(tableMap, r.Table.Name)
-		delete(tableMap, r.ParentTable.Name)
+	for _, rl := range s.Relations {
+		delete(tableMap, rl.Table.Name)
+		delete(tableMap, rl.ParentTable.Name)
 	}
-	if len(tableMap) > l.Max {
+	if len(tableMap) > r.Max {
 		warns = append(warns, RuleWarn{
-			Message: fmt.Sprintf(msgFmt, len(tableMap), l.Max),
+			Message: fmt.Sprintf(msgFmt, len(tableMap), r.Max),
 		})
 	}
 	return warns
@@ -113,18 +113,18 @@ type ColumnCount struct {
 }
 
 // IsEnabled return Rule is enabled or not
-func (l ColumnCount) IsEnabled() bool {
-	return l.Enabled
+func (r ColumnCount) IsEnabled() bool {
+	return r.Enabled
 }
 
 // Check table column count
-func (l ColumnCount) Check(s *schema.Schema) []RuleWarn {
+func (r ColumnCount) Check(s *schema.Schema) []RuleWarn {
 	msgFmt := "%s has too many columns. [%d/%d]"
 	warns := []RuleWarn{}
 	for _, t := range s.Tables {
-		if len(t.Columns) > l.Max {
+		if len(t.Columns) > r.Max {
 			warns = append(warns, RuleWarn{
-				Message: fmt.Sprintf(msgFmt, t.Name, len(t.Columns), l.Max),
+				Message: fmt.Sprintf(msgFmt, t.Name, len(t.Columns), r.Max),
 			})
 		}
 	}
