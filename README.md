@@ -23,6 +23,7 @@ Available Commands:
   diff        diff database and document
   doc         document a database
   help        Help about any command
+  lint        check database document
   out         analyzes a database and output
   version     print tbls version
 
@@ -113,11 +114,11 @@ $ env TBLS_DSN=my://root:mypass@localhost:33306/testdb TBLS_DOC_PATH=sample/mysq
 
 ## Add additional data (relations, comments) to schema
 
-To add additional data to the schema, specify [the YAML file](testdata/additional_data.yml) with the `--config` option as follows
+To add additional data to the schema, add settings to `.tbls.yml` or `--config` like [YAML file](testdata/additional_data.yml) (`relations`, `comments`)
 
-``` console
-$ tbls doc mysql://user:pass@hostname:3306/dbname --config path/to/additional_data.yml ./dbdoc
-```
+## Lint
+
+To check database document, add settings to `.tbls.yml` or `--config` like [YAML file](testdata/additional_data.yml) (`lint`)
 
 ## Installation
 
