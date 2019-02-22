@@ -79,7 +79,7 @@ var docCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		err = s.LoadAdditionalData(c)
+		err = c.MergeAdditionalData(s)
 		if err != nil {
 			printError(err)
 			os.Exit(1)

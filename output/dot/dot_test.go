@@ -21,7 +21,7 @@ func TestOutputSchema(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	err = s.LoadAdditionalData(c)
+	err = c.MergeAdditionalData(s)
 	if err != nil {
 		t.Error(err)
 	}
@@ -48,7 +48,7 @@ func TestOutputTable(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	err = s.LoadAdditionalData(c)
+	err = c.MergeAdditionalData(s)
 	if err != nil {
 		t.Error(err)
 	}

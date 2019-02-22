@@ -6,8 +6,6 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
-
-	"github.com/k1LoW/tbls/config"
 )
 
 func TestSchema_FindTableByName(t *testing.T) {
@@ -86,70 +84,6 @@ func TestSchema_Sort(t *testing.T) {
 	}
 	expected2 := "a"
 	actual2 := schema.Tables[0].Columns[0].Name
-	if actual2 != expected2 {
-		t.Errorf("actual %v\nwant %v", actual2, expected2)
-	}
-}
-
-func TestAddAditionalData(t *testing.T) {
-	schema := Schema{
-		Name: "testschema",
-		Tables: []*Table{
-			&Table{
-				Name:    "users",
-				Comment: "users comment",
-				Columns: []*Column{
-					&Column{
-						Name: "id",
-						Type: "serial",
-					},
-					&Column{
-						Name: "username",
-						Type: "text",
-					},
-				},
-			},
-			&Table{
-				Name:    "posts",
-				Comment: "posts comment",
-				Columns: []*Column{
-					&Column{
-						Name: "id",
-						Type: "serial",
-					},
-					&Column{
-						Name: "user_id",
-						Type: "int",
-					},
-					&Column{
-						Name: "title",
-						Type: "text",
-					},
-				},
-			},
-		},
-	}
-	c, err := config.NewConfig()
-	if err != nil {
-		t.Error(err)
-	}
-	err = c.LoadConfigFile(filepath.Join(testdataDir(), "schema_test_additional_data.yml"))
-	if err != nil {
-		t.Error(err)
-	}
-	err = schema.LoadAdditionalData(c)
-	if err != nil {
-		t.Error(err)
-	}
-	expected := 1
-	actual := len(schema.Relations)
-	if actual != expected {
-		t.Errorf("actual %v\nwant %v", actual, expected)
-	}
-	posts, _ := schema.FindTableByName("posts")
-	title, _ := posts.FindColumnByName("title")
-	expected2 := "post title"
-	actual2 := title.Comment
 	if actual2 != expected2 {
 		t.Errorf("actual %v\nwant %v", actual2, expected2)
 	}

@@ -4,6 +4,8 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+
+	"github.com/k1LoW/tbls/schema"
 )
 
 func TestLoadConfigFile(t *testing.T) {
@@ -56,4 +58,68 @@ func testdataDir() string {
 	wd, _ := os.Getwd()
 	dir, _ := filepath.Abs(filepath.Join(filepath.Dir(wd), "testdata"))
 	return dir
+}
+
+func TestMergeAditionalData(t *testing.T) {
+	s := schema.Schema{
+		Name: "testschema",
+		Tables: []*schema.Table{
+			&schema.Table{
+				Name:    "users",
+				Comment: "users comment",
+				Columns: []*schema.Column{
+					&schema.Column{
+						Name: "id",
+						Type: "serial",
+					},
+					&schema.Column{
+						Name: "username",
+						Type: "text",
+					},
+				},
+			},
+			&schema.Table{
+				Name:    "posts",
+				Comment: "posts comment",
+				Columns: []*schema.Column{
+					&schema.Column{
+						Name: "id",
+						Type: "serial",
+					},
+					&schema.Column{
+						Name: "user_id",
+						Type: "int",
+					},
+					&schema.Column{
+						Name: "title",
+						Type: "text",
+					},
+				},
+			},
+		},
+	}
+	c, err := NewConfig()
+	if err != nil {
+		t.Error(err)
+	}
+	err = c.LoadConfigFile(filepath.Join(testdataDir(), "schema_test_additional_data.yml"))
+	if err != nil {
+		t.Error(err)
+	}
+	err = c.MergeAdditionalData(&s)
+	if err != nil {
+		t.Error(err)
+	}
+	expected := 1
+	actual := len(s.Relations)
+	if actual != expected {
+		t.Errorf("actual %v\nwant %v", actual, expected)
+	}
+	posts, _ := s.FindTableByName("posts")
+	title, _ := posts.FindColumnByName("title")
+	expected2 := "post title"
+	actual2 := title.Comment
+	if actual2 != expected2 {
+		t.Errorf("actual %v\nwant %v", actual2, expected2)
+	}
 }
