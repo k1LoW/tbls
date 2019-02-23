@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/k1LoW/tbls/config"
 	"github.com/pkg/errors"
 )
 
@@ -195,20 +194,6 @@ func (s *Schema) Sort() error {
 	return nil
 }
 
-// LoadAdditionalData load additional data (relations, comments) from yaml file
-func (s *Schema) LoadAdditionalData(c *config.Config) error {
-	err := addAdditionalRelations(s, c.Relations)
-	if err != nil {
-		return err
-	}
-	err = addAdditionalComments(s, c.Comments)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 // Repair column relations
 func (s *Schema) Repair() error {
 	for _, r := range s.Relations {
@@ -238,67 +223,6 @@ func (s *Schema) Repair() error {
 			rc = pc
 		}
 		r.ParentTable = pt
-	}
-	return nil
-}
-
-func addAdditionalRelations(s *Schema, relations []config.AdditionalRelation) error {
-	for _, r := range relations {
-		relation := &Relation{
-			IsAdditional: true,
-		}
-		if r.Def != "" {
-			relation.Def = r.Def
-		} else {
-			relation.Def = "Additional Relation"
-		}
-		var err error
-		relation.Table, err = s.FindTableByName(r.Table)
-		if err != nil {
-			return errors.Wrap(err, "failed to add relation")
-		}
-		for _, c := range r.Columns {
-			column, err := relation.Table.FindColumnByName(c)
-			if err != nil {
-				return errors.Wrap(err, "failed to add relation")
-			}
-			relation.Columns = append(relation.Columns, column)
-			column.ParentRelations = append(column.ParentRelations, relation)
-		}
-		relation.ParentTable, err = s.FindTableByName(r.ParentTable)
-		if err != nil {
-			return errors.Wrap(err, "failed to add relation")
-		}
-		for _, c := range r.ParentColumns {
-			column, err := relation.ParentTable.FindColumnByName(c)
-			if err != nil {
-				return errors.Wrap(err, "failed to add relation")
-			}
-			relation.ParentColumns = append(relation.ParentColumns, column)
-			column.ChildRelations = append(column.ChildRelations, relation)
-		}
-
-		s.Relations = append(s.Relations, relation)
-	}
-	return nil
-}
-
-func addAdditionalComments(s *Schema, comments []config.AdditionalComment) error {
-	for _, c := range comments {
-		table, err := s.FindTableByName(c.Table)
-		if err != nil {
-			return errors.Wrap(err, "failed to add table comment")
-		}
-		if c.TableComment != "" {
-			table.Comment = c.TableComment
-		}
-		for c, comment := range c.ColumnComments {
-			column, err := table.FindColumnByName(c)
-			if err != nil {
-				return errors.Wrap(err, "failed to add column comment")
-			}
-			column.Comment = comment
-		}
 	}
 	return nil
 }
