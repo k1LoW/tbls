@@ -1,4 +1,15 @@
 ---
+lint:
+  requireTableComment:
+    enabled: true
+  requireColumnComment:
+    enabled: true
+  noRelationTables:
+    enabled: true
+    max: 2
+  columnCount:
+    enabled: true
+    max: 10
 relations:
   -
     table: logs

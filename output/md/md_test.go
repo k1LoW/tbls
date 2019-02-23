@@ -33,7 +33,7 @@ func TestOutput(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-		err = s.LoadAdditionalData(c)
+		err = c.MergeAdditionalData(s)
 		if err != nil {
 			t.Error(err)
 		}
@@ -71,7 +71,7 @@ func TestDiff(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-		err = s.LoadAdditionalData(c)
+		err = c.MergeAdditionalData(s)
 		if err != nil {
 			t.Error(err)
 		}

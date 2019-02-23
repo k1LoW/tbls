@@ -1,4 +1,4 @@
-// Copyright © 2018 Ken'ichiro Oyama <k1lowxb@gmail.com>
+// Copyright © 2019 Ken'ichiro Oyama <k1lowxb@gmail.com>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,18 +23,19 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"reflect"
 
 	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/datasource"
-	"github.com/k1LoW/tbls/output/md"
+	"github.com/labstack/gommon/color"
 	"github.com/spf13/cobra"
 )
 
-// diffCmd represents the diff command
-var diffCmd = &cobra.Command{
-	Use:   "diff [DSN] [DOC_PATH]",
-	Short: "diff database and document",
-	Long:  `'tbls diff' shows the difference between database schema and generated document.`,
+// lintCmd represents the lint command
+var lintCmd = &cobra.Command{
+	Use:   "lint [DSN] [DOC_PATH]",
+	Short: "check database document",
+	Long:  `'tbls lint' check database document.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		c, err := config.NewConfig()
 		if err != nil {
@@ -42,19 +43,10 @@ var diffCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		if configPath == "" && additionalDataPath != "" {
-			fmt.Println("Warning: `--add` option is deprecated. Use `--config`")
-			err = c.LoadConfigFile(additionalDataPath)
-			if err != nil {
-				printError(err)
-				os.Exit(1)
-			}
-		} else {
-			err = c.LoadConfigFile(configPath)
-			if err != nil {
-				printError(err)
-				os.Exit(1)
-			}
+		err = c.LoadConfigFile(configPath)
+		if err != nil {
+			printError(err)
+			os.Exit(1)
 		}
 
 		c.LoadArgs(args)
@@ -75,31 +67,29 @@ var diffCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		if sort {
-			err = s.Sort()
-			if err != nil {
-				printError(err)
-				os.Exit(1)
-			}
-		}
+		l := reflect.Indirect(reflect.ValueOf(c.Lint))
+		t := l.Type()
 
-		diff, err := md.Diff(s, c.DocPath, adjust, erFormat)
-		if err != nil {
-			printError(err)
-			os.Exit(2)
+		ruleWarns := []config.RuleWarn{}
+		for i := 0; i < t.NumField(); i++ {
+			var v config.Rule
+			r := l.Field(i)
+			v = r.Interface().(config.Rule)
+			if !v.IsEnabled() {
+				continue
+			}
+			ruleWarns = append(ruleWarns, v.Check(s)...)
 		}
-		fmt.Print(diff)
-		if diff != "" {
+		if len(ruleWarns) > 0 {
+			for _, warn := range ruleWarns {
+				fmt.Println(color.Red(fmt.Sprintf("%s", warn.Message)))
+			}
 			os.Exit(1)
 		}
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(diffCmd)
-	diffCmd.Flags().BoolVarP(&sort, "sort", "", false, "sort")
-	diffCmd.Flags().StringVarP(&configPath, "config", "c", "", "config file path")
-	diffCmd.Flags().StringVarP(&erFormat, "er-format", "t", "png", "ER diagrams output format [png, svg, jpg, ...]")
-	diffCmd.Flags().BoolVarP(&adjust, "adjust-table", "j", false, "adjust column width of table")
-	diffCmd.Flags().StringVarP(&additionalDataPath, "add", "a", "", "additional schema data path (deprecated, use `config`)")
+	rootCmd.AddCommand(lintCmd)
+	lintCmd.Flags().StringVarP(&configPath, "config", "c", "", "config file path")
 }
