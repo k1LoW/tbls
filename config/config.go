@@ -9,16 +9,18 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/k1LoW/tbls/schema"
 	"github.com/pkg/errors"
 	"gopkg.in/yaml.v2"
 )
 
-var configDefaultPath = ".tbls.yml"
+const configDefaultPath = ".tbls.yml"
 
 // Config is tbls config
 type Config struct {
 	DSN       string               `yaml:"dsn"`
 	DocPath   string               `yaml:"dataPath"`
+	Lint      Lint                 `yaml:"lint"`
 	Relations []AdditionalRelation `yaml:"relations"`
 	Comments  []AdditionalComment  `yaml:"comments"`
 }
@@ -103,6 +105,80 @@ func (c *Config) LoadConfigFile(path string) error {
 	c.DocPath, err = parseWithEnviron(c.DocPath)
 	if err != nil {
 		return errors.Wrap(errors.WithStack(err), "failed to load config file")
+	}
+	return nil
+}
+
+// MergeAdditionalData merge additional* to schema.Schema
+func (c *Config) MergeAdditionalData(s *schema.Schema) error {
+	err := mergeAdditionalRelations(s, c.Relations)
+	if err != nil {
+		return err
+	}
+	err = mergeAdditionalComments(s, c.Comments)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func mergeAdditionalRelations(s *schema.Schema, relations []AdditionalRelation) error {
+	for _, r := range relations {
+		relation := &schema.Relation{
+			IsAdditional: true,
+		}
+		if r.Def != "" {
+			relation.Def = r.Def
+		} else {
+			relation.Def = "Additional Relation"
+		}
+		var err error
+		relation.Table, err = s.FindTableByName(r.Table)
+		if err != nil {
+			return errors.Wrap(err, "failed to add relation")
+		}
+		for _, c := range r.Columns {
+			column, err := relation.Table.FindColumnByName(c)
+			if err != nil {
+				return errors.Wrap(err, "failed to add relation")
+			}
+			relation.Columns = append(relation.Columns, column)
+			column.ParentRelations = append(column.ParentRelations, relation)
+		}
+		relation.ParentTable, err = s.FindTableByName(r.ParentTable)
+		if err != nil {
+			return errors.Wrap(err, "failed to add relation")
+		}
+		for _, c := range r.ParentColumns {
+			column, err := relation.ParentTable.FindColumnByName(c)
+			if err != nil {
+				return errors.Wrap(err, "failed to add relation")
+			}
+			relation.ParentColumns = append(relation.ParentColumns, column)
+			column.ChildRelations = append(column.ChildRelations, relation)
+		}
+
+		s.Relations = append(s.Relations, relation)
+	}
+	return nil
+}
+
+func mergeAdditionalComments(s *schema.Schema, comments []AdditionalComment) error {
+	for _, c := range comments {
+		table, err := s.FindTableByName(c.Table)
+		if err != nil {
+			return errors.Wrap(err, "failed to add table comment")
+		}
+		if c.TableComment != "" {
+			table.Comment = c.TableComment
+		}
+		for c, comment := range c.ColumnComments {
+			column, err := table.FindColumnByName(c)
+			if err != nil {
+				return errors.Wrap(err, "failed to add column comment")
+			}
+			column.Comment = comment
+		}
 	}
 	return nil
 }
