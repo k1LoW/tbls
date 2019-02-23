@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.8.0](https://github.com/k1LoW/tbls/compare/v1.7.1...v1.8.0) (2019-02-23)
+
+* Add `tbls lint` [#75](https://github.com/k1LoW/tbls/pull/75) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.7.1](https://github.com/k1LoW/tbls/compare/v1.7.0...v1.7.1) (2018-12-08)
 
 * Fix the bug that foreign key constraints are not listed in the document and ER diagram in the case of primary key and foreign key [#74](https://github.com/k1LoW/tbls/pull/74) ([k1LoW](https://github.com/k1LoW))
