@@ -97,13 +97,13 @@ YAML format is follows
 ``` yaml
 ---
 dsn: my://root:mypass@localhost:33306/testdb
-dataPath: sample/mysql
+docPath: sample/mysql
 ```
 
 ``` yaml
 ---
 dsn: my://${MYSQL_USER}:${MYSQL_PASSWORD}@localhost:33306/${MYSQL_DATABASE}
-dataPath: sample/mysql
+docPath: sample/mysql
 ```
 
 ### 3. Envirionment
