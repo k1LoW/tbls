@@ -29,10 +29,9 @@ func TestRequireColumnComment(t *testing.T) {
 	}
 }
 
-func TestNoRelationTables(t *testing.T) {
-	r := NoRelationTables{
+func TestUnrelatedTable(t *testing.T) {
+	r := UnrelatedTable{
 		Enabled: true,
-		Max:     0,
 	}
 	s := newTestSchema()
 	warns := r.Check(s)
