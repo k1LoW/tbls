@@ -4,9 +4,8 @@ lint:
     enabled: true
   requireColumnComment:
     enabled: true
-  noRelationTables:
+  unrelatedTable:
     enabled: true
-    max: 2
   columnCount:
     enabled: true
     max: 10
