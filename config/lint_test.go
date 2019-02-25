@@ -53,6 +53,18 @@ func TestRequireColumnCommentWithExclude(t *testing.T) {
 	}
 }
 
+func TestRequireColumnCommentWithExcludedTables(t *testing.T) {
+	r := RequireColumnComment{
+		Enabled:        true,
+		ExcludedTables: []string{"b"},
+	}
+	s := newTestSchema()
+	warns := r.Check(s)
+	if len(warns) != 0 {
+		t.Errorf("actual %v\nwant %v", len(warns), 1)
+	}
+}
+
 func TestUnrelatedTable(t *testing.T) {
 	r := UnrelatedTable{
 		Enabled: true,
