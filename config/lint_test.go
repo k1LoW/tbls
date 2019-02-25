@@ -18,6 +18,18 @@ func TestRequireTableComment(t *testing.T) {
 	}
 }
 
+func TestRequireTableCommentWithExclude(t *testing.T) {
+	r := RequireTableComment{
+		Enabled: true,
+		Exclude: []string{"a"},
+	}
+	s := newTestSchema()
+	warns := r.Check(s)
+	if len(warns) != 0 {
+		t.Errorf("actual %v\nwant %v", len(warns), 1)
+	}
+}
+
 func TestRequireColumnComment(t *testing.T) {
 	r := RequireColumnComment{
 		Enabled: true,
@@ -25,6 +37,18 @@ func TestRequireColumnComment(t *testing.T) {
 	s := newTestSchema()
 	warns := r.Check(s)
 	if len(warns) != 1 {
+		t.Errorf("actual %v\nwant %v", len(warns), 1)
+	}
+}
+
+func TestRequireColumnCommentWithExclude(t *testing.T) {
+	r := RequireColumnComment{
+		Enabled: true,
+		Exclude: []string{"b"},
+	}
+	s := newTestSchema()
+	warns := r.Check(s)
+	if len(warns) != 0 {
 		t.Errorf("actual %v\nwant %v", len(warns), 1)
 	}
 }
@@ -40,6 +64,18 @@ func TestUnrelatedTable(t *testing.T) {
 	}
 }
 
+func TestUnrelatedTableWithExclude(t *testing.T) {
+	r := UnrelatedTable{
+		Enabled: true,
+		Exclude: []string{"c"},
+	}
+	s := newTestSchema()
+	warns := r.Check(s)
+	if len(warns) != 0 {
+		t.Errorf("actual %v\nwant %v", len(warns), 1)
+	}
+}
+
 func TestColumnCount(t *testing.T) {
 	r := ColumnCount{
 		Enabled: true,
@@ -48,6 +84,19 @@ func TestColumnCount(t *testing.T) {
 	s := newTestSchema()
 	warns := r.Check(s)
 	if len(warns) != 1 {
+		t.Errorf("actual %v\nwant %v", len(warns), 1)
+	}
+}
+
+func TestColumnCountWithExclude(t *testing.T) {
+	r := ColumnCount{
+		Enabled: true,
+		Max:     3,
+		Exclude: []string{"c"},
+	}
+	s := newTestSchema()
+	warns := r.Check(s)
+	if len(warns) != 0 {
 		t.Errorf("actual %v\nwant %v", len(warns), 1)
 	}
 }
