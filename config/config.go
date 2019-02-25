@@ -19,7 +19,7 @@ const configDefaultPath = ".tbls.yml"
 // Config is tbls config
 type Config struct {
 	DSN       string               `yaml:"dsn"`
-	DocPath   string               `yaml:"dataPath"`
+	DocPath   string               `yaml:"docPath"`
 	Lint      Lint                 `yaml:"lint"`
 	Relations []AdditionalRelation `yaml:"relations"`
 	Comments  []AdditionalComment  `yaml:"comments"`
