@@ -3,7 +3,9 @@ module github.com/k1LoW/tbls
 require (
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/gobuffalo/envy v1.6.15 // indirect
+	github.com/gobuffalo/packd v0.0.0-20190224160250-d04dd98aca5b // indirect
 	github.com/gobuffalo/packr v1.22.0
+	github.com/gobuffalo/syncx v0.0.0-20190224160051-33c29581e754 // indirect
 	github.com/labstack/gommon v0.2.8
 	github.com/lib/pq v1.0.0
 	github.com/mattn/go-colorable v0.1.1 // indirect

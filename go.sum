@@ -140,6 +140,8 @@ github.com/gobuffalo/packd v0.0.0-20181124090624-311c6248e5fb/go.mod h1:Foenia9Z
 github.com/gobuffalo/packd v0.0.0-20181207120301-c49825f8f6f4/go.mod h1:LYc0TGKFBBFTRC9dg2pcRcMqGCTMD7T2BIMP7OBuQAA=
 github.com/gobuffalo/packd v0.0.0-20181212173646-eca3b8fd6687 h1:uZ+G4JprR0UEq0aHZs+6eP7TEZuFfrIkmQWejIBV/QQ=
 github.com/gobuffalo/packd v0.0.0-20181212173646-eca3b8fd6687/go.mod h1:LYc0TGKFBBFTRC9dg2pcRcMqGCTMD7T2BIMP7OBuQAA=
+github.com/gobuffalo/packd v0.0.0-20190224160250-d04dd98aca5b h1:QlU2UkP7c/XJ994sM1Z8YN9tHsKeIOp7dyMqiLvyNt0=
+github.com/gobuffalo/packd v0.0.0-20190224160250-d04dd98aca5b/go.mod h1:LYc0TGKFBBFTRC9dg2pcRcMqGCTMD7T2BIMP7OBuQAA=
 github.com/gobuffalo/packr v1.13.7/go.mod h1:KkinLIn/n6+3tVXMwg6KkNvWwVsrRAz4ph+jgpk3Z24=
 github.com/gobuffalo/packr v1.15.0/go.mod h1:t5gXzEhIviQwVlNx/+3SfS07GS+cZ2hn76WLzPp6MGI=
 github.com/gobuffalo/packr v1.15.1/go.mod h1:IeqicJ7jm8182yrVmNbM6PR4g79SjN9tZLH8KduZZwE=
@@ -187,6 +189,8 @@ github.com/gobuffalo/shoulders v1.0.1/go.mod h1:V33CcVmaQ4gRUmHKwq1fiTXuf8Gp/qjQ
 github.com/gobuffalo/syncx v0.0.0-20181120191700-98333ab04150/go.mod h1:HhnNqWY95UYwwW3uSASeV7vtgYkT2t16hJgV3AEPUpw=
 github.com/gobuffalo/syncx v0.0.0-20181120194010-558ac7de985f h1:S5EeH1reN93KR0L6TQvkRpu9YggCYXrUqFh1iEgvdC0=
 github.com/gobuffalo/syncx v0.0.0-20181120194010-558ac7de985f/go.mod h1:HhnNqWY95UYwwW3uSASeV7vtgYkT2t16hJgV3AEPUpw=
+github.com/gobuffalo/syncx v0.0.0-20190224160051-33c29581e754 h1:tpom+2CJmpzAWj5/VEHync2rJGi+epHNIeRSWjzGA+4=
+github.com/gobuffalo/syncx v0.0.0-20190224160051-33c29581e754/go.mod h1:HhnNqWY95UYwwW3uSASeV7vtgYkT2t16hJgV3AEPUpw=
 github.com/gobuffalo/tags v2.0.11+incompatible/go.mod h1:9XmhOkyaB7UzvuY4UoZO4s67q8/xRMVJEaakauVQYeY=
 github.com/gobuffalo/tags v2.0.14+incompatible/go.mod h1:9XmhOkyaB7UzvuY4UoZO4s67q8/xRMVJEaakauVQYeY=
 github.com/gobuffalo/tags v2.0.15+incompatible/go.mod h1:9XmhOkyaB7UzvuY4UoZO4s67q8/xRMVJEaakauVQYeY=
