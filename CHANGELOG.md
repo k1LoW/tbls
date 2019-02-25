@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.8.1](https://github.com/k1LoW/tbls/compare/v1.8.0...v1.8.1) (2019-02-25)
+
+* Fix `dataPath` to `docPath` [#76](https://github.com/k1LoW/tbls/pull/76) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.8.0](https://github.com/k1LoW/tbls/compare/v1.7.1...v1.8.0) (2019-02-23)
 
 * Add `tbls lint` [#75](https://github.com/k1LoW/tbls/pull/75) ([k1LoW](https://github.com/k1LoW))
