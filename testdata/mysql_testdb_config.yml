@@ -1,6 +1,6 @@
 ---
 dsn: my://root:mypass@localhost:33306/testdb
-dataPath: sample/mysql
+docPath: sample/mysql
 relations:
   -
     table: logs
