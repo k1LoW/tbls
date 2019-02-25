@@ -52,8 +52,9 @@ func (r RequireTableComment) Check(s *schema.Schema) []RuleWarn {
 
 // RequireColumnComment check column comment
 type RequireColumnComment struct {
-	Enabled bool     `yaml:"enabled"`
-	Exclude []string `yaml:"exclude"`
+	Enabled        bool     `yaml:"enabled"`
+	Exclude        []string `yaml:"exclude"`
+	ExcludedTables []string `yaml:"excludedTables"`
 }
 
 // IsEnabled return Rule is enabled or not
@@ -66,6 +67,9 @@ func (r RequireColumnComment) Check(s *schema.Schema) []RuleWarn {
 	msgFmt := "%s.%s: column comment required."
 	warns := []RuleWarn{}
 	for _, t := range s.Tables {
+		if contains(r.ExcludedTables, t.Name) {
+			continue
+		}
 		for _, c := range t.Columns {
 			if !contains(r.Exclude, c.Name) && c.Comment == "" {
 				warns = append(warns, RuleWarn{
