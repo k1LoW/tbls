@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.8.3](https://github.com/k1LoW/tbls/compare/v1.8.2...v1.8.3) (2019-02-25)
+
+* Add requireColumnComment.excludedTables [#78](https://github.com/k1LoW/tbls/pull/78) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.8.2](https://github.com/k1LoW/tbls/compare/v1.8.1...v1.8.2) (2019-02-25)
 
 * Fix lint rules [#77](https://github.com/k1LoW/tbls/pull/77) ([k1LoW](https://github.com/k1LoW))
