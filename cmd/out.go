@@ -29,6 +29,7 @@ import (
 	"github.com/k1LoW/tbls/output"
 	"github.com/k1LoW/tbls/output/dot"
 	"github.com/k1LoW/tbls/output/json"
+	"github.com/k1LoW/tbls/output/md"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
@@ -104,6 +105,8 @@ var outCmd = &cobra.Command{
 			o = new(json.JSON)
 		case "dot":
 			o = new(dot.Dot)
+		case "md":
+			o = md.NewMd(false, false, "")
 		default:
 			printError(fmt.Errorf("unsupported format '%s'", format))
 			os.Exit(1)
