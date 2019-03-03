@@ -3,6 +3,7 @@ package md
 import (
 	"bytes"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -16,6 +17,54 @@ import (
 	"github.com/sergi/go-diff/diffmatchpatch"
 )
 
+// Md struct
+type Md struct {
+	adjust   bool
+	er       bool
+	erFormat string
+	box      packr.Box
+}
+
+// NewMd return Md
+func NewMd(adjust bool, er bool, erFormat string) *Md {
+	return &Md{
+		adjust:   adjust,
+		er:       er,
+		erFormat: erFormat,
+		box:      packr.NewBox("./templates"),
+	}
+}
+
+// OutputSchema output .md format for all tables.
+func (m *Md) OutputSchema(wr io.Writer, s *schema.Schema) error {
+	ts, _ := m.box.FindString("index.md.tmpl")
+	tmpl := template.Must(template.New("index").Funcs(funcMap()).Parse(ts))
+	templateData := makeSchemaTemplateData(s, m.adjust)
+	templateData["er"] = m.er
+	templateData["erFormat"] = m.erFormat
+	err := tmpl.Execute(wr, templateData)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+	return nil
+}
+
+// OutputTable output md format for table.
+func (m *Md) OutputTable(wr io.Writer, t *schema.Table) error {
+	ts, _ := m.box.FindString("table.md.tmpl")
+	tmpl := template.Must(template.New(t.Name).Funcs(funcMap()).Parse(ts))
+	templateData := makeTableTemplateData(t, m.adjust)
+	templateData["er"] = m.er
+	templateData["erFormat"] = m.erFormat
+
+	err := tmpl.Execute(wr, templateData)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
+	return nil
+}
+
 // Output generate markdown files.
 func Output(s *schema.Schema, path string, force bool, adjust bool, erFormat string) error {
 	fullPath, err := filepath.Abs(path)
@@ -27,26 +76,20 @@ func Output(s *schema.Schema, path string, force bool, adjust bool, erFormat str
 		return errors.New("output files already exists")
 	}
 
-	box := packr.NewBox("./templates")
-
 	// README.md
 	file, err := os.Create(filepath.Join(fullPath, "README.md"))
 	defer file.Close()
 	if err != nil {
 		return errors.WithStack(err)
 	}
-	ts, _ := box.FindString("index.md.tmpl")
-	tmpl := template.Must(template.New("index").Funcs(funcMap()).Parse(ts))
 	er := false
 	if _, err := os.Lstat(filepath.Join(fullPath, fmt.Sprintf("schema.%s", erFormat))); err == nil {
 		er = true
 	}
 
-	templateData := makeSchemaTemplateData(s, adjust)
-	templateData["er"] = er
-	templateData["erFormat"] = erFormat
+	md := NewMd(adjust, er, erFormat)
 
-	err = tmpl.Execute(file, templateData)
+	err = md.OutputSchema(file, s)
 	if err != nil {
 		return errors.WithStack(err)
 	}
@@ -59,18 +102,15 @@ func Output(s *schema.Schema, path string, force bool, adjust bool, erFormat str
 			file.Close()
 			return errors.WithStack(err)
 		}
-		ts, _ := box.FindString("table.md.tmpl")
-		tmpl := template.Must(template.New(t.Name).Funcs(funcMap()).Parse(ts))
+
 		er := false
 		if _, err := os.Lstat(filepath.Join(fullPath, fmt.Sprintf("%s.%s", t.Name, erFormat))); err == nil {
 			er = true
 		}
 
-		templateData := makeTableTemplateData(t, adjust)
-		templateData["er"] = er
-		templateData["erFormat"] = erFormat
+		md := NewMd(adjust, er, erFormat)
 
-		err = tmpl.Execute(file, templateData)
+		err = md.OutputTable(file, t)
 		if err != nil {
 			file.Close()
 			return errors.WithStack(err)
@@ -93,23 +133,18 @@ func Diff(s *schema.Schema, path string, adjust bool, erFormat string) (string, 
 		return "", errors.New("target files does not exists")
 	}
 
-	box := packr.NewBox("./templates")
 	dmp := diffmatchpatch.New()
 
 	// README.md
 	a := new(bytes.Buffer)
-	ts, _ := box.FindString("index.md.tmpl")
-	tmpl := template.Must(template.New("index").Funcs(funcMap()).Parse(ts))
 	er := false
 	if _, err := os.Lstat(filepath.Join(fullPath, fmt.Sprintf("schema.%s", erFormat))); err == nil {
 		er = true
 	}
 
-	templateData := makeSchemaTemplateData(s, adjust)
-	templateData["er"] = er
-	templateData["erFormat"] = erFormat
+	md := NewMd(adjust, er, erFormat)
 
-	err = tmpl.Execute(a, templateData)
+	err = md.OutputSchema(a, s)
 	if err != nil {
 		return "", errors.WithStack(err)
 	}
@@ -132,19 +167,14 @@ func Diff(s *schema.Schema, path string, adjust bool, erFormat string) (string, 
 	// tables
 	for _, t := range s.Tables {
 		a := new(bytes.Buffer)
-		ts, _ := box.FindString("table.md.tmpl")
-		tmpl := template.Must(template.New(t.Name).Funcs(funcMap()).Parse(ts))
 		er := false
 		if _, err := os.Lstat(filepath.Join(fullPath, fmt.Sprintf("%s.%s", t.Name, erFormat))); err == nil {
 			er = true
 		}
 
-		templateData := makeTableTemplateData(t, adjust)
-		templateData["er"] = er
-		templateData["erFormat"] = erFormat
+		md := NewMd(adjust, er, erFormat)
 
-		err = tmpl.Execute(a, templateData)
-
+		err := md.OutputTable(a, t)
 		if err != nil {
 			return "", errors.WithStack(err)
 		}
