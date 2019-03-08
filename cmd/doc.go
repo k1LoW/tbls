@@ -113,6 +113,8 @@ func withDot(s *schema.Schema, outputPath string, force bool) error {
 		return errors.New("output ER diagram files already exists")
 	}
 
+	_ = os.MkdirAll(fullPath, 0755)
+
 	dotFormatOption := fmt.Sprintf("-T%s", erFormat)
 	erFileName := fmt.Sprintf("schema.%s", erFormat)
 
