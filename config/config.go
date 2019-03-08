@@ -15,7 +15,7 @@ import (
 )
 
 const defaultConfigFilePath = ".tbls.yml"
-const defaultDocPath = "schema"
+const defaultDocPath = "dbdoc"
 
 // Config is tbls config
 type Config struct {
