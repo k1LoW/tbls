@@ -76,6 +76,8 @@ func Output(s *schema.Schema, path string, force bool, adjust bool, erFormat str
 		return errors.New("output files already exists")
 	}
 
+	_ = os.MkdirAll(fullPath, 0755)
+
 	// README.md
 	file, err := os.Create(filepath.Join(fullPath, "README.md"))
 	defer file.Close()
