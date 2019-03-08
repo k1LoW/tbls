@@ -14,7 +14,8 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-const configDefaultPath = ".tbls.yml"
+const defaultConfigFilePath = ".tbls.yml"
+const defaultDocPath = "schema"
 
 // Config is tbls config
 type Config struct {
@@ -43,33 +44,61 @@ type AdditionalComment struct {
 
 // NewConfig return Config
 func NewConfig() (*Config, error) {
-	docPath := os.Getenv("TBLS_DOC_PATH")
-	if docPath == "" {
-		docPath = "."
-	}
-
 	c := Config{
-		DSN:     os.Getenv("TBLS_DSN"),
-		DocPath: docPath,
+		DSN:     "",
+		DocPath: "",
 	}
 	return &c, nil
 }
 
+// Load load config with all method
+func (c *Config) Load(configPath string, args []string) error {
+	err := c.LoadConfigFile(configPath)
+	if err != nil {
+		return err
+	}
+
+	err = c.LoadEnviron()
+	if err != nil {
+		return err
+	}
+
+	err = c.LoadArgs(args)
+	if err != nil {
+		return err
+	}
+
+	if c.DocPath == "" {
+		c.DocPath = defaultDocPath
+	}
+
+	return nil
+}
+
+// LoadEnviron load environment variables
+func (c *Config) LoadEnviron() error {
+	dsn := os.Getenv("TBLS_DSN")
+	if dsn != "" {
+		c.DSN = dsn
+	}
+	docPath := os.Getenv("TBLS_DOC_PATH")
+	if docPath != "" {
+		c.DocPath = docPath
+	}
+	return nil
+}
+
 // LoadArgs load args slice
 func (c *Config) LoadArgs(args []string) error {
+	if len(args) > 2 {
+		return errors.WithStack(errors.New("too many arguments"))
+	}
 	if len(args) == 2 {
 		c.DSN = args[0]
 		c.DocPath = args[1]
 	}
-	if len(args) > 2 {
-		return errors.WithStack(errors.New("too many arguments"))
-	}
 	if len(args) == 1 {
-		if c.DSN == "" {
-			c.DSN = args[0]
-		} else {
-			c.DocPath = args[0]
-		}
+		c.DSN = args[0]
 	}
 	return nil
 }
@@ -77,7 +106,7 @@ func (c *Config) LoadArgs(args []string) error {
 // LoadConfigFile load config file
 func (c *Config) LoadConfigFile(path string) error {
 	if path == "" {
-		path = configDefaultPath
+		path = defaultConfigFilePath
 		if _, err := os.Lstat(path); err != nil {
 			return nil
 		}
