@@ -8,6 +8,26 @@ import (
 	"github.com/k1LoW/tbls/schema"
 )
 
+func TestLoadDefault(t *testing.T) {
+	configFilepath := filepath.Join(testdataDir(), "empty.yml")
+	config, err := NewConfig()
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = config.Load(configFilepath, []string{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	expected := ""
+	if config.DSN != expected {
+		t.Errorf("actual %v\nwant %v", config.DSN, expected)
+	}
+	expected2 := "schema"
+	if config.DocPath != expected2 {
+		t.Errorf("actual %v\nwant %v", config.DocPath, expected2)
+	}
+}
+
 func TestLoadConfigFile(t *testing.T) {
 	_ = os.Setenv("TBLS_TEST_PG_PASS", "pgpass")
 	_ = os.Setenv("TBLS_TEST_PG_DOC_PATH", "sample/pg")
@@ -52,12 +72,6 @@ func TestParseWithEnvirion(t *testing.T) {
 			t.Errorf("actual %v\nwant %v", actual, tt.expected)
 		}
 	}
-}
-
-func testdataDir() string {
-	wd, _ := os.Getwd()
-	dir, _ := filepath.Abs(filepath.Join(filepath.Dir(wd), "testdata"))
-	return dir
 }
 
 func TestMergeAditionalData(t *testing.T) {
@@ -122,4 +136,10 @@ func TestMergeAditionalData(t *testing.T) {
 	if actual2 != expected2 {
 		t.Errorf("actual %v\nwant %v", actual2, expected2)
 	}
+}
+
+func testdataDir() string {
+	wd, _ := os.Getwd()
+	dir, _ := filepath.Abs(filepath.Join(filepath.Dir(wd), "testdata"))
+	return dir
 }

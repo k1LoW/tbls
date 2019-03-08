@@ -59,20 +59,10 @@ var outCmd = &cobra.Command{
 
 		if configPath == "" && additionalDataPath != "" {
 			fmt.Println("Warning: `--add` option is deprecated. Use `--config`")
-			err = c.LoadConfigFile(additionalDataPath)
-			if err != nil {
-				printError(err)
-				os.Exit(1)
-			}
-		} else {
-			err = c.LoadConfigFile(configPath)
-			if err != nil {
-				printError(err)
-				os.Exit(1)
-			}
+			configPath = additionalDataPath
 		}
 
-		c.LoadArgs(args)
+		err = c.Load(configPath, args)
 		if err != nil {
 			printError(err)
 			os.Exit(1)
