@@ -1,0 +1,25 @@
+before:
+  hooks:
+    - go mod download
+builds:
+- env:
+    - CGO_ENABLED=0
+  hooks:
+    pre: packr
+    post: packr clean
+archive:
+  format_overrides:
+    - goos: windows
+      format: zip
+    - goos: darwin
+      format: zip
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  name_template: "{{ .Tag }}-next"
+changelog:
+  sort: asc
+  filters:
+    exclude:
+    - '^docs:'
+    - '^test:'
