@@ -4,6 +4,8 @@ go:
   - master
 services:
   - docker
+env:
+  - GO111MODULE=on
 addons:
   apt:
     update: true
@@ -16,3 +18,10 @@ script:
   - make ci
 after_script:
   - codecov
+deploy:
+- provider: script
+  skip_cleanup: true
+  script: curl -sL https://git.io/goreleaser | bash
+  on:
+    tags: true
+    condition: $TRAVIS_OS_NAME = linux
