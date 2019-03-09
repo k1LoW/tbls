@@ -1,14 +1,17 @@
 language: go
-go:
-  - 1.11.x
-  - master
+matrix:
+  include:
+  - go: 1.11.x
+    env: GO111MODULE=on RELEASE_BUILD=true
+  - go: 1.12.x
+    env: GO111MODULE=on
+  - go: master
+    env: GO111MODULE=on
 services:
   - docker
 addons:
   apt:
     update: true
-env:
-  - GO111MODULE=on
 install:
   - echo $TRAVIS_GO_VERSION
   - sudo pip install codecov
@@ -25,4 +28,4 @@ deploy:
   script: curl -sL https://git.io/goreleaser | bash
   on:
     tags: true
-    condition: $TRAVIS_OS_NAME = linux
+    condition: $TRAVIS_OS_NAME = linux && $RELEASE_BUILD = true
