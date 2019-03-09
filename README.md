@@ -4,34 +4,62 @@
 
 Key features of `tbls` are:
 
-- Single binary
-- Document in GitHub Friendly Markdown format
-- CI-Friendly
+- **Document your database schema automatically in GitHub Friendly Markdown format**
+- **Work as linter for database schema document**
+- **Single binary**
+- **CI-Friendly**
 
-[Usage](#usage) | [Sample](sample/postgres/) | [Integration with CI tools](#integration-with-ci-tools) | [Installation](#installation) | [Database Support](#database-support)
+[Quick Start](#quick-start) | [Sample document](sample/postgres/README.md) | [Installation](#installation) | [Integration with CI tools](#integration-with-ci-tools) |  [Support Database](#support-database)
 
-## Usage
+## Quick Start
+
+Document your database schema.
+
+``` console
+$ tbls doc postgres://dbuser:dbpass@hostname:5432/dbname
+```
+
+## Installation
+
+**homebrew tap:**
 
 ```console
-$ tbls
-tbls is a tool for document a database, written in Go.
-
-Usage:
-  tbls [command]
-
-Available Commands:
-  diff        diff database and document
-  doc         document a database
-  help        Help about any command
-  lint        check database document
-  out         analyzes a database and output
-  version     print tbls version
-
-Flags:
-  -h, --help   help for tbls
-
-Use "tbls [command] --help" for more information about a command.
+$ brew install k1LoW/tap/tbls
 ```
+
+**manually:**
+
+Download binany from [releases page](https://github.com/k1LoW/tbls/releases)
+
+**go get:**
+
+```console
+$ go get github.com/k1LoW/tbls
+```
+
+## Getting Started
+
+Add `.tbls.yml` file to your repogitory.
+
+``` yaml
+# .tbls.yml
+
+# DSN (Databaase Source Name) to connect database
+dsn: postgres://dbuser:dbpass@localhost:5432/dbname
+
+# path to generate document
+# Default is `dbdoc`
+docPath: doc/schema
+```
+
+Run `tbls doc` to generate document.
+
+``` console
+$ tbls doc
+```
+
+
+
 
 ### Document a database schema
 
@@ -120,19 +148,7 @@ To add additional data to the schema, add settings to `.tbls.yml` or `--config` 
 
 To check database document, add settings to `.tbls.yml` or `--config` like [YAML file](testdata/additional_data.yml) (`lint`)
 
-## Installation
-
-```console
-$ go get github.com/k1LoW/tbls
-```
-
-or
-
-```console
-$ brew install k1LoW/tap/tbls
-```
-
-## Database Support
+## Support Database
 
 - PostgreSQL
 - MySQL
