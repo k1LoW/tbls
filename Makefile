@@ -68,15 +68,15 @@ build:
 	packr clean
 
 depsdev:
-	GO111MODULE=off go get golang.org/x/tools/cmd/cover
-	GO111MODULE=off go get golang.org/x/lint/golint
-	GO111MODULE=off go get github.com/linyows/git-semv/cmd/git-semv
-	GO111MODULE=off go get github.com/Songmu/ghch/cmd/ghch
-	GO111MODULE=off go get github.com/xo/usql
-	GO111MODULE=off go get github.com/gobuffalo/packr/packr
+	go get golang.org/x/tools/cmd/cover
+	go get golang.org/x/lint/golint
+	go get github.com/linyows/git-semv/cmd/git-semv
+	go get github.com/Songmu/ghch/cmd/ghch
+	go get github.com/xo/usql
+	go get github.com/gobuffalo/packr/packr
 
 prerelease:
-	GO111MODULE=off ghch -w -N ${VER}
+	ghch -w -N ${VER}
 	git add CHANGELOG.md
 	git commit -m'Bump up version number'
 	git tag ${VER}
