@@ -58,8 +58,17 @@ Run `tbls doc` to generate document.
 $ tbls doc
 ```
 
+Commit document.
 
+``` console
+$ git add doc/schema
+$ git commit -m'Add database schema document'
+$ git push origin master
+```
 
+View document on GitHub.
+
+![sample](sample/doc.png)
 
 ### Document a database schema
 
