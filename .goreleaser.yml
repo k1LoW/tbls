@@ -8,7 +8,12 @@ builds:
   hooks:
     pre: packr
     post: packr clean
+  goos:
+    - linux
+    - darwin
+    - windows
 archive:
+  name_template: '{{ .ProjectName }}_v{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
   format_overrides:
     - goos: windows
       format: zip
@@ -19,6 +24,7 @@ checksum:
 snapshot:
   name_template: "{{ .Tag }}-next"
 changelog:
+  skip: true
   sort: asc
   filters:
     exclude:
