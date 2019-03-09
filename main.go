@@ -21,16 +21,23 @@
 package main
 
 import (
+	"strings"
+
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/lib/pq"
 	_ "github.com/mattn/go-sqlite3"
 
 	"github.com/k1LoW/tbls/cmd"
+	v "github.com/k1LoW/tbls/version"
 )
 
-//go:generate go-assets-builder -p md -s="/output/md/templates" output/md/templates -o output/md/templates.go
-//go:generate go-assets-builder -p dot -s="/output/dot/templates" output/dot/templates -o output/dot/templates.go
+var (
+	version = "dev"
+	commit  = "none"
+	date    = "unknown"
+)
 
 func main() {
+	v.Version = strings.TrimLeft(version, "v")
 	cmd.Execute()
 }
