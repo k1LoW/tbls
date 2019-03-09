@@ -9,10 +9,9 @@ else
 	DATE = $$(date --utc '+%Y-%m-%d_%H:%M:%S')
 endif
 
-GO ?= GO111MODULE=on go
+export GO111MODULE=on
 
 BUILD_LDFLAGS = -X $(PKG).commit=$(COMMIT) -X $(PKG).date=$(DATE)
-RELEASE_BUILD_LDFLAGS = -s -w $(BUILD_LDFLAGS)
 
 default: test
 
@@ -23,7 +22,7 @@ test:
 	usql my://root:mypass@localhost:33306/testdb -f testdata/my.sql
 	usql my://root:mypass@localhost:33308/testdb -f testdata/my.sql
 	sqlite3 $(PWD)/testdata/testdb.sqlite3 < testdata/sqlite.sql
-	$(GO) test ./... -coverprofile=coverage.txt -covermode=count
+	go test ./... -coverprofile=coverage.txt -covermode=count
 	make testdoc
 
 doc: build
@@ -65,36 +64,24 @@ test_config:
 
 build:
 	packr
-	$(GO) build -ldflags="$(BUILD_LDFLAGS)"
+	go build -ldflags="$(BUILD_LDFLAGS)"
 	packr clean
 
 depsdev:
 	GO111MODULE=off go get golang.org/x/tools/cmd/cover
 	GO111MODULE=off go get golang.org/x/lint/golint
 	GO111MODULE=off go get github.com/linyows/git-semv/cmd/git-semv
-	GO111MODULE=off go get github.com/Songmu/goxz/cmd/goxz
-	GO111MODULE=off go get github.com/tcnksm/ghr
 	GO111MODULE=off go get github.com/Songmu/ghch/cmd/ghch
 	GO111MODULE=off go get github.com/xo/usql
 	GO111MODULE=off go get github.com/gobuffalo/packr/packr
 
-crossbuild: depsdev
-	$(eval ver = $(shell git semv now))
-	packr
-	GO111MODULE=on goxz -pv=$(ver) -arch=386,amd64 -build-ldflags="$(RELEASE_BUILD_LDFLAGS)" \
-	  -d=./dist/$(ver)
-	packr clean
-
 prerelease:
-	$(SED) -i 's/[0-9]\+.[0-9]\+.[0-9]\+/${VER}/g' version/version.go
-	$(SED) -i 's/v\([0-9]\+.[0-9]\+.[0-9]\+\)/\1/g' version/version.go
 	GO111MODULE=off ghch -w -N ${VER}
-	git add CHANGELOG.md version/version.go
+	git add CHANGELOG.md
 	git commit -m'Bump up version number'
 	git tag ${VER}
 
-release: crossbuild
-	$(eval ver = $(shell git semv now))
-	GO111MODULE=off ghr -username k1LoW -replace $(ver) dist/$(ver)
+release:
+	goreleaser
 
 .PHONY: default test
