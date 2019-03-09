@@ -1,5 +1,12 @@
 # Changelog
 
+## [v1.9.0](https://github.com/k1LoW/tbls/compare/v1.8.3...v1.9.0) (2019-03-09)
+
+* Use goreleaser [#82](https://github.com/k1LoW/tbls/pull/82) ([k1LoW](https://github.com/k1LoW))
+* mkdir when document directory does not exists [#81](https://github.com/k1LoW/tbls/pull/81) ([k1LoW](https://github.com/k1LoW))
+* Set default doc path `schema` [#80](https://github.com/k1LoW/tbls/pull/80) ([k1LoW](https://github.com/k1LoW))
+* Add `md` to `tbls out` format [#79](https://github.com/k1LoW/tbls/pull/79) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.8.3](https://github.com/k1LoW/tbls/compare/v1.8.2...v1.8.3) (2019-02-25)
 
 * Add requireColumnComment.excludedTables [#78](https://github.com/k1LoW/tbls/pull/78) ([k1LoW](https://github.com/k1LoW))
