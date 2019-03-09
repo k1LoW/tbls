@@ -4,22 +4,22 @@
 
 Key features of `tbls` are:
 
-- **Document your database schema automatically in GitHub Friendly Markdown format**
-- **Work as linter for database schema document**
+- **Document a database automatically in GitHub Friendly Markdown format**
 - **Single binary**
 - **CI-Friendly**
+- **Work as linter for database document**
 
-[Quick Start](#quick-start) | [Sample document](sample/postgres/README.md) | [Installation](#installation) | [Integration with CI tools](#integration-with-ci-tools) |  [Support Database](#support-database)
+[Quick Start](#quick-start) | [Sample](sample/postgres/README.md) | [Install](#install) | [Integration with CI tools](#integration-with-ci-tools) |  [Support Database](#support-database)
 
 ## Quick Start
 
-Document your database schema.
+Document a database with one command.
 
 ``` console
 $ tbls doc postgres://dbuser:dbpass@hostname:5432/dbname
 ```
 
-## Installation
+## Install
 
 **homebrew tap:**
 
@@ -47,12 +47,12 @@ Add `.tbls.yml` file to your repogitory.
 # DSN (Databaase Source Name) to connect database
 dsn: postgres://dbuser:dbpass@localhost:5432/dbname
 
-# path to generate document
+# Path to generate document
 # Default is `dbdoc`
 docPath: doc/schema
 ```
 
-Run `tbls doc` to generate document.
+Run `tbls doc` to generate database document.
 
 ``` console
 $ tbls doc
@@ -62,15 +62,17 @@ Commit document.
 
 ``` console
 $ git add doc/schema
-$ git commit -m'Add database schema document'
+$ git commit -m'Add database document'
 $ git push origin master
 ```
 
 View document on GitHub.
 
+[Sample document](sample/postgres/README.md)
+
 ![sample](sample/doc.png)
 
-### Document a database schema
+## Document a database
 
 `tbls doc` analyzes a database and generate document in GitHub Friendly Markdown format.
 
@@ -84,7 +86,7 @@ Sample [document](sample/postgres/) and [schema](testdata/pg.sql).
 
 > NOTICE: If you are using a symbol such as `#` `<` in database password, URL-encode the password
 
-### Diff database schema and document
+## Diff database and document
 
 `tbls diff` shows the difference between database schema and generated document.
 
@@ -94,7 +96,7 @@ $ tbls diff postgres://user:pass@hostname:5432/dbname ./dbdoc
 
 **Notice:** `tbls diff` shows the difference Markdown documents only.
 
-## Integration with CI tools
+## Continuous Integration
 
 1. Commit document using `tbls doc`.
 2. Check document updates using `tbls diff`
