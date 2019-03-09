@@ -30,3 +30,14 @@ changelog:
     exclude:
     - '^docs:'
     - '^test:'
+brew:
+  name: tbls
+  github:
+    owner: k1LoW
+    name: homebrew-tap
+  commit_author:
+    name: k1LoW
+    email: k1lowxb@gmail.com
+  homepage: https://github.com/k1LoW/tbls
+  description: 'tbls is a CI-Friendly tool for document a database, written in Go.'
+  install: bin.install 'tbls'
