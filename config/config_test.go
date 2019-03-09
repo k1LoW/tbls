@@ -22,7 +22,7 @@ func TestLoadDefault(t *testing.T) {
 	if config.DSN != expected {
 		t.Errorf("actual %v\nwant %v", config.DSN, expected)
 	}
-	expected2 := "schema"
+	expected2 := "dbdoc"
 	if config.DocPath != expected2 {
 		t.Errorf("actual %v\nwant %v", config.DocPath, expected2)
 	}
