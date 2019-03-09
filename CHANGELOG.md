@@ -4,7 +4,7 @@
 
 * Use goreleaser [#82](https://github.com/k1LoW/tbls/pull/82) ([k1LoW](https://github.com/k1LoW))
 * mkdir when document directory does not exists [#81](https://github.com/k1LoW/tbls/pull/81) ([k1LoW](https://github.com/k1LoW))
-* Set default doc path `schema` [#80](https://github.com/k1LoW/tbls/pull/80) ([k1LoW](https://github.com/k1LoW))
+* Set default doc path `dbdoc` [#80](https://github.com/k1LoW/tbls/pull/80) [e2ec6ed](https://github.com/k1LoW/tbls/commit/e2ec6ed39016fb80a80f7caeeaefb1821fd100a4) ([k1LoW](https://github.com/k1LoW))
 * Add `md` to `tbls out` format [#79](https://github.com/k1LoW/tbls/pull/79) ([k1LoW](https://github.com/k1LoW))
 
 ## [v1.8.3](https://github.com/k1LoW/tbls/compare/v1.8.2...v1.8.3) (2019-02-25)
