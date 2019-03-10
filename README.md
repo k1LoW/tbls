@@ -88,22 +88,31 @@ ALTER TABLE
 
 `tbls diff` shows the difference between database schema and generated document.
 
-```console
+``` diff
 $ tbls diff
-[...]
-diff [database] sample/postgres/README.md
-# testdb
+diff postgres://dbuser:*****@hostname:5432/dbname doc/schema/README.md
+--- postgres://dbuser:*****@hostname:5432/dbname
++++ doc/schema/README.md
+@@ -4,7 +4,7 @@
 
-## Tables
+ | Name | Columns | Comment | Type |
+ | ---- | ------- | ------- | ---- |
+-| [users](users.md) | 7 | Users table | BASE TABLE |
++| [users](users.md) | 6 | Users table | BASE TABLE |
+ | [user_options](user_options.md) | 4 | User options table | BASE TABLE |
+ | [posts](posts.md) | 8 | Posts table | BASE TABLE |
+ | [comments](comments.md) | 6 | Comments<br>Multi-line<br>table<br>comment | BASE TABLE |
+diff postgres://dbuser:*****@hostname:5432/dbname doc/schema/users.md
+--- postgres://dbuser:*****@hostname:5432/dbname
++++ doc/schema/users.md
+@@ -14,7 +14,6 @@
+ | email | varchar(355) |  | false |  |  | ex. user@example.com |
+ | created | timestamp without time zone |  | false |  |  |  |
+ | updated | timestamp without time zone |  | true |  |  |  |
+-| phone_number | varchar(15) |  | true |  |  |  |
 
-| Name | Columns | Comment | Type |
-| ---- | ------- | ------- | ---- |
-| [users](users.md) | 7 | Users table | BASE TABLE |
-| [users](users.md) | 6 | Users table | BASE TABLE |
-[...]
-| updated | timestamp without time zone |  | true |  |  |  |
-| phone_number | varchar(15) |  | true |  |  |  |
-[...]
+ ## Constraints
+
 ```
 
 > **Notice:** `tbls diff` shows the difference Markdown documents only.

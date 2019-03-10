@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"html/template"
 	"io/ioutil"
+	"net/url"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -212,6 +213,17 @@ func (c *Config) MergeAdditionalData(s *schema.Schema) error {
 		return err
 	}
 	return nil
+}
+
+// MaskedDSN return DSN mask password
+func (c *Config) MaskedDSN() (string, error) {
+	u, err := url.Parse(c.DSN)
+	if err != nil {
+		return c.DSN, errors.WithStack(err)
+	}
+	tmp := "-----tbls-----"
+	u.User = url.UserPassword(u.User.Username(), tmp)
+	return strings.Replace(u.String(), tmp, "*****", 1), nil
 }
 
 func mergeAdditionalRelations(s *schema.Schema, relations []AdditionalRelation) error {
