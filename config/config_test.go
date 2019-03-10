@@ -14,7 +14,7 @@ func TestLoadDefault(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	err = config.Load(configFilepath, []string{})
+	err = config.Load(configFilepath)
 	if err != nil {
 		t.Fatal(err)
 	}
