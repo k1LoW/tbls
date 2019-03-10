@@ -29,7 +29,12 @@ func TestOutput(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-		err = c.LoadConfigFile(filepath.Join(testdataDir(), "md_test_additional_data.yml"))
+		tempDir, _ := ioutil.TempDir("", "tbls")
+		force := true
+		adjust := tt.adjust
+		erFormat := "png"
+		defer os.RemoveAll(tempDir)
+		err = c.Load(filepath.Join(testdataDir(), "md_test_additional_data.yml"), config.DocPath(tempDir), config.Adjust(adjust), config.ERFormat(erFormat))
 		if err != nil {
 			t.Error(err)
 		}
@@ -37,12 +42,7 @@ func TestOutput(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-		tempDir, _ := ioutil.TempDir("", "tbls")
-		force := true
-		adjust := tt.adjust
-		erFormat := "png"
-		defer os.RemoveAll(tempDir)
-		err = Output(s, tempDir, force, adjust, erFormat)
+		err = Output(s, c, force)
 		if err != nil {
 			t.Error(err)
 		}
@@ -67,7 +67,12 @@ func TestDiff(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-		err = c.LoadConfigFile(filepath.Join(testdataDir(), "md_test_additional_data.yml"))
+		tempDir, _ := ioutil.TempDir("", "tbls")
+		force := true
+		adjust := tt.adjust
+		erFormat := "png"
+		defer os.RemoveAll(tempDir)
+		err = c.Load(filepath.Join(testdataDir(), "md_test_additional_data.yml"), config.DocPath(tempDir), config.Adjust(adjust), config.ERFormat(erFormat))
 		if err != nil {
 			t.Error(err)
 		}
@@ -75,17 +80,12 @@ func TestDiff(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-		tempDir, _ := ioutil.TempDir("", "tbls")
-		force := true
-		adjust := tt.adjust
-		erFormat := "png"
-		defer os.RemoveAll(tempDir)
-		err = Output(s, tempDir, force, adjust, erFormat)
+		err = Output(s, c, force)
 		if err != nil {
 			t.Error(err)
 		}
 		expected := ""
-		actual, err := Diff(s, tempDir, adjust, erFormat)
+		actual, err := Diff(s, c)
 		if err != nil {
 			t.Error(err)
 		}

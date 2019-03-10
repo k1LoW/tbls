@@ -57,7 +57,13 @@ var docCmd = &cobra.Command{
 			configPath = additionalDataPath
 		}
 
-		err = c.Load(configPath, args)
+		options, err := loadDocArgs(args)
+		if err != nil {
+			printError(err)
+			os.Exit(1)
+		}
+
+		err = c.Load(configPath, options...)
 		if err != nil {
 			printError(err)
 			os.Exit(1)
@@ -75,7 +81,7 @@ var docCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		if sort {
+		if c.Format.Sort {
 			err = s.Sort()
 			if err != nil {
 				printError(err)
@@ -83,10 +89,10 @@ var docCmd = &cobra.Command{
 			}
 		}
 
-		if !withoutER {
+		if !c.ER.Skip {
 			_, err = exec.Command("which", "dot").Output()
 			if err == nil {
-				err := withDot(s, c.DocPath, force)
+				err := withDot(s, c, force)
 				if err != nil {
 					printError(err)
 					os.Exit(1)
@@ -94,7 +100,7 @@ var docCmd = &cobra.Command{
 			}
 		}
 
-		err = md.Output(s, c.DocPath, force, adjust, erFormat)
+		err = md.Output(s, c, force)
 
 		if err != nil {
 			printError(err)
@@ -103,7 +109,9 @@ var docCmd = &cobra.Command{
 	},
 }
 
-func withDot(s *schema.Schema, outputPath string, force bool) error {
+func withDot(s *schema.Schema, c *config.Config, force bool) error {
+	erFormat := c.ER.Format
+	outputPath := c.DocPath
 	fullPath, err := filepath.Abs(outputPath)
 	if err != nil {
 		return errors.WithStack(err)
@@ -120,9 +128,9 @@ func withDot(s *schema.Schema, outputPath string, force bool) error {
 
 	fmt.Printf("%s\n", filepath.Join(outputPath, erFileName))
 	tmpfile, _ := ioutil.TempFile("", "tblstmp")
-	c := exec.Command("dot", dotFormatOption, "-o", filepath.Join(fullPath, erFileName), tmpfile.Name())
+	cmd := exec.Command("dot", dotFormatOption, "-o", filepath.Join(fullPath, erFileName), tmpfile.Name())
 	var stderr bytes.Buffer
-	c.Stderr = &stderr
+	cmd.Stderr = &stderr
 
 	dot := new(dot.Dot)
 
@@ -137,7 +145,7 @@ func withDot(s *schema.Schema, outputPath string, force bool) error {
 		os.Remove(tmpfile.Name())
 		return errors.WithStack(err)
 	}
-	err = c.Run()
+	err = cmd.Run()
 	if err != nil {
 		os.Remove(tmpfile.Name())
 		return errors.WithStack(errors.Wrap(err, stderr.String()))
@@ -176,6 +184,25 @@ func withDot(s *schema.Schema, outputPath string, force bool) error {
 	return nil
 }
 
+func loadDocArgs(args []string) ([]config.Option, error) {
+	options := []config.Option{}
+	if len(args) > 2 {
+		return options, errors.WithStack(errors.New("too many arguments"))
+	}
+	options = append(options, config.Adjust(adjust))
+	options = append(options, config.Sort(sort))
+	options = append(options, config.ERFormat(erFormat))
+	options = append(options, config.ERSkip(withoutER))
+	if len(args) == 2 {
+		options = append(options, config.DSN(args[0]))
+		options = append(options, config.DocPath(args[1]))
+	}
+	if len(args) == 1 {
+		options = append(options, config.DSN(args[0]))
+	}
+	return options, nil
+}
+
 func outputErExists(s *schema.Schema, path string) bool {
 	// schema.png
 	erFileName := fmt.Sprintf("schema.%s", erFormat)
@@ -197,7 +224,7 @@ func init() {
 	docCmd.Flags().BoolVarP(&force, "force", "f", false, "force")
 	docCmd.Flags().BoolVarP(&sort, "sort", "", false, "sort")
 	docCmd.Flags().StringVarP(&configPath, "config", "c", "", "config file path")
-	docCmd.Flags().StringVarP(&erFormat, "er-format", "t", "png", "ER diagrams output format [png, svg, jpg, ...]")
+	docCmd.Flags().StringVarP(&erFormat, "er-format", "t", "", fmt.Sprintf("ER diagrams output format [png, svg, jpg, ...]. default: %s", config.DefaultERFormat))
 	docCmd.Flags().BoolVarP(&withoutER, "without-er", "", false, "no generate ER diagrams")
 	docCmd.Flags().BoolVarP(&adjust, "adjust-table", "j", false, "adjust column width of table")
 	docCmd.Flags().StringVarP(&additionalDataPath, "add", "a", "", "additional schema data path (deprecated, use `config`)")
