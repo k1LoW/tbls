@@ -43,7 +43,7 @@ var lintCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		err = c.Load(configPath, args)
+		err = c.Load(configPath)
 		if err != nil {
 			printError(err)
 			os.Exit(1)
