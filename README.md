@@ -9,7 +9,7 @@ Key features of `tbls` are:
 - **CI-Friendly**
 - **Work as linter for database document**
 
-[Quick Start](#quick-start) | [Sample](sample/postgres/README.md) | [Install](#install) | [Integration with CI tools](#integration-with-ci-tools) |  [Support Database](#support-database)
+[Quick Start](#quick-start) | [Sample Document](sample/postgres/README.md) | [Install](#install) | [Getting Started](#getting-started) | [Support Database](#support-database)
 
 ## Quick Start
 
@@ -56,7 +56,7 @@ docPath: doc/schema
 
 > **Notice:** If you are using a symbol such as `#` `<` in database password, URL-encode the password
 
-Run `tbls doc` to analyzes a database and generate document in GitHub Friendly Markdown format.
+Run `tbls doc` to analyzes the database and generate document in GitHub Friendly Markdown format.
 
 ``` console
 $ tbls doc
@@ -64,7 +64,7 @@ $ tbls doc
 
 > **Tips:** If you can use Graphviz `dot` command, `tbls doc` generate ER diagram images at the same time.
 
-Commit document.
+Commit the document.
 
 ``` console
 $ git add doc/schema
@@ -72,7 +72,7 @@ $ git commit -m'Add database document'
 $ git push origin master
 ```
 
-View document on GitHub.
+View the document on GitHub.
 
 [Sample document](sample/postgres/README.md)
 
@@ -117,34 +117,23 @@ diff postgres://dbuser:*****@hostname:5432/dbname doc/schema/users.md
 
 > **Notice:** `tbls diff` shows the difference Markdown documents only.
 
-## Continuous Integration
+### Continuous Integration using tbls
 
-1. Commit document using `tbls doc`.
-2. Check document updates using `tbls diff`
+1. Commit the document using `tbls doc`.
+2. Update the database schema in the development cycle.
+3. Check for document updates by running `tbls diff` in CI.
 
-Set following code to [`your-ci-config.yml`](https://github.com/k1LoW/tbls/blob/ffad9d7463bb22baa236c7b673fd679f1850f37d/.travis.yml#L19).
+**Example: Travis CI**
 
-```sh
-$ tbls diff postgres://user:pass@localhost:5432/testdb?sslmode=disable ./dbdoc
-```
-
-Makefile sample is following
-
-``` makefile
-doc: ## Document database schema
-	tbls doc postgres://user:pass@localhost:5432/testdb?sslmode=disable ./dbdoc
-
-testdoc: ## Test database schema document
-	tbls diff postgres://user:pass@localhost:5432/testdb?sslmode=disable ./dbdoc
+``` yaml
+# .travis.yml
+script:
+  - tbls diff
 ```
 
 > **Tips:** If the order of the columns does not match, you can use the `--sort` option.
 
-
-
-
-
-
+## Configration
 
 ## How to specify DSN and Document path
 
