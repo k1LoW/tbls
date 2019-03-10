@@ -39,6 +39,8 @@ $ go get github.com/k1LoW/tbls
 
 ## Getting Started
 
+### Document a database
+
 Add `.tbls.yml` file to your repogitory.
 
 ``` yaml
@@ -52,11 +54,15 @@ dsn: postgres://dbuser:dbpass@localhost:5432/dbname
 docPath: doc/schema
 ```
 
-Run `tbls doc` to generate database document.
+> **Notice:** If you are using a symbol such as `#` `<` in database password, URL-encode the password
+
+Run `tbls doc` to analyzes a database and generate document in GitHub Friendly Markdown format.
 
 ``` console
 $ tbls doc
 ```
+
+> **Tips:** If you can use Graphviz `dot` command, `tbls doc` generate ER diagram images at the same time.
 
 Commit document.
 
@@ -72,29 +78,35 @@ View document on GitHub.
 
 ![sample](sample/doc.png)
 
-## Document a database
+### Diff database and document
 
-`tbls doc` analyzes a database and generate document in GitHub Friendly Markdown format.
-
-```console
-$ tbls doc postgres://user:pass@hostname:5432/dbname ./dbdoc
+``` console
+$ psql -U dbuser -d dbname -h hostname -p 5432 -c 'ALTER TABLE users ADD COLUMN phone_number varchar(15);'
+Password for user dbuser:
+ALTER TABLE
 ```
-
-If you can use Graphviz `dot` command, `tbls doc` generate ER diagram images at the same time.
-
-Sample [document](sample/postgres/) and [schema](testdata/pg.sql).
-
-> NOTICE: If you are using a symbol such as `#` `<` in database password, URL-encode the password
-
-## Diff database and document
 
 `tbls diff` shows the difference between database schema and generated document.
 
 ```console
-$ tbls diff postgres://user:pass@hostname:5432/dbname ./dbdoc
+$ tbls diff
+[...]
+diff [database] sample/postgres/README.md
+# testdb
+
+## Tables
+
+| Name | Columns | Comment | Type |
+| ---- | ------- | ------- | ---- |
+| [users](users.md) | 7 | Users table | BASE TABLE |
+| [users](users.md) | 6 | Users table | BASE TABLE |
+[...]
+| updated | timestamp without time zone |  | true |  |  |  |
+| phone_number | varchar(15) |  | true |  |  |  |
+[...]
 ```
 
-**Notice:** `tbls diff` shows the difference Markdown documents only.
+> **Notice:** `tbls diff` shows the difference Markdown documents only.
 
 ## Continuous Integration
 
@@ -117,7 +129,13 @@ testdoc: ## Test database schema document
 	tbls diff postgres://user:pass@localhost:5432/testdb?sslmode=disable ./dbdoc
 ```
 
-**Tips:** If the order of the columns does not match, you can use the `--sort` option.
+> **Tips:** If the order of the columns does not match, you can use the `--sort` option.
+
+
+
+
+
+
 
 ## How to specify DSN and Document path
 
