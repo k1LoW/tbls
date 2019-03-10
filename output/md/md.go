@@ -15,7 +15,7 @@ import (
 	"github.com/k1LoW/tbls/schema"
 	"github.com/mattn/go-runewidth"
 	"github.com/pkg/errors"
-	"github.com/sergi/go-diff/diffmatchpatch"
+	"github.com/pmezard/go-difflib/difflib"
 )
 
 // Md struct
@@ -144,8 +144,6 @@ func Diff(s *schema.Schema, c *config.Config) (string, error) {
 		return "", errors.New("target files does not exists")
 	}
 
-	dmp := diffmatchpatch.New()
-
 	// README.md
 	a := new(bytes.Buffer)
 	er := false
@@ -166,13 +164,24 @@ func Diff(s *schema.Schema, c *config.Config) (string, error) {
 		b = []byte{}
 	}
 
-	da, db, dc := dmp.DiffLinesToChars(a.String(), string(b))
-	diffs := dmp.DiffMain(da, db, false)
-	result := dmp.DiffCharsToLines(diffs, dc)
+	from, err := c.MaskedDSN()
+	if err != nil {
+		return "", errors.WithStack(err)
+	}
+	to := filepath.Join(docPath, "README.md")
 
-	if len(result) != 1 || result[0].Type != diffmatchpatch.DiffEqual {
-		diff += fmt.Sprintf("diff [database] %s\n", filepath.Join(docPath, "README.md"))
-		diff += fmt.Sprintln(dmp.DiffPrettyText(result))
+	d := difflib.UnifiedDiff{
+		A:        difflib.SplitLines(a.String()),
+		B:        difflib.SplitLines(string(b)),
+		FromFile: from,
+		ToFile:   to,
+		Context:  3,
+	}
+
+	text, _ := difflib.GetUnifiedDiffString(d)
+	if text != "" {
+		diff += fmt.Sprintf("diff %s %s\n", from, to)
+		diff += text
 	}
 
 	// tables
@@ -195,12 +204,20 @@ func Diff(s *schema.Schema, c *config.Config) (string, error) {
 			b = []byte{}
 		}
 
-		da, db, dc := dmp.DiffLinesToChars(a.String(), string(b))
-		diffs := dmp.DiffMain(da, db, false)
-		result := dmp.DiffCharsToLines(diffs, dc)
-		if len(result) != 1 || result[0].Type != diffmatchpatch.DiffEqual {
-			diff += fmt.Sprintf("diff %s %s\n", t.Name, filepath.Join(docPath, fmt.Sprintf("%s.md", t.Name)))
-			diff += fmt.Sprintln(dmp.DiffPrettyText(result))
+		to := filepath.Join(docPath, fmt.Sprintf("%s.md", t.Name))
+
+		d := difflib.UnifiedDiff{
+			A:        difflib.SplitLines(a.String()),
+			B:        difflib.SplitLines(string(b)),
+			FromFile: from,
+			ToFile:   to,
+			Context:  3,
+		}
+
+		text, _ := difflib.GetUnifiedDiffString(d)
+		if text != "" {
+			diff += fmt.Sprintf("diff %s %s\n", from, to)
+			diff += text
 		}
 	}
 	return diff, nil
