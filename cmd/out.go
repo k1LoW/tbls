@@ -62,7 +62,7 @@ var outCmd = &cobra.Command{
 			configPath = additionalDataPath
 		}
 
-		err = c.Load(configPath)
+		err = c.Load(configPath, config.DSN(args[0]), config.Sort(sort))
 		if err != nil {
 			printError(err)
 			os.Exit(1)
