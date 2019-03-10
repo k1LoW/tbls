@@ -27,6 +27,7 @@ import (
 	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/datasource"
 	"github.com/k1LoW/tbls/output/md"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -47,7 +48,13 @@ var diffCmd = &cobra.Command{
 			configPath = additionalDataPath
 		}
 
-		err = c.Load(configPath, args)
+		options, err := loadDiffArgs(args)
+		if err != nil {
+			printError(err)
+			os.Exit(1)
+		}
+
+		err = c.Load(configPath, options...)
 		if err != nil {
 			printError(err)
 			os.Exit(1)
@@ -65,7 +72,7 @@ var diffCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		if sort {
+		if c.Format.Sort {
 			err = s.Sort()
 			if err != nil {
 				printError(err)
@@ -73,7 +80,7 @@ var diffCmd = &cobra.Command{
 			}
 		}
 
-		diff, err := md.Diff(s, c.DocPath, adjust, erFormat)
+		diff, err := md.Diff(s, c)
 		if err != nil {
 			printError(err)
 			os.Exit(2)
@@ -83,6 +90,24 @@ var diffCmd = &cobra.Command{
 			os.Exit(1)
 		}
 	},
+}
+
+func loadDiffArgs(args []string) ([]config.Option, error) {
+	options := []config.Option{}
+	if len(args) > 2 {
+		return options, errors.WithStack(errors.New("too many arguments"))
+	}
+	options = append(options, config.Adjust(adjust))
+	options = append(options, config.Sort(sort))
+	options = append(options, config.ERFormat(erFormat))
+	if len(args) == 2 {
+		options = append(options, config.DSN(args[0]))
+		options = append(options, config.DocPath(args[1]))
+	}
+	if len(args) == 1 {
+		options = append(options, config.DSN(args[0]))
+	}
+	return options, nil
 }
 
 func init() {

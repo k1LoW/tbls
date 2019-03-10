@@ -62,7 +62,7 @@ var outCmd = &cobra.Command{
 			configPath = additionalDataPath
 		}
 
-		err = c.Load(configPath, args)
+		err = c.Load(configPath, config.DSN(args[0]), config.Sort(sort))
 		if err != nil {
 			printError(err)
 			os.Exit(1)
@@ -80,7 +80,7 @@ var outCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		if sort {
+		if c.Format.Sort {
 			err = s.Sort()
 			if err != nil {
 				printError(err)
@@ -122,6 +122,7 @@ var outCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(outCmd)
+	outCmd.Flags().BoolVarP(&sort, "sort", "", false, "sort")
 	outCmd.Flags().StringVarP(&configPath, "config", "c", "", "config file path")
 	outCmd.Flags().StringVarP(&format, "format", "t", "json", "output format")
 	outCmd.Flags().StringVar(&tableName, "table", "", "table name")
