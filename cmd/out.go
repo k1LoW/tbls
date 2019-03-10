@@ -122,6 +122,7 @@ var outCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(outCmd)
+	outCmd.Flags().BoolVarP(&sort, "sort", "", false, "sort")
 	outCmd.Flags().StringVarP(&configPath, "config", "c", "", "config file path")
 	outCmd.Flags().StringVarP(&format, "format", "t", "json", "output format")
 	outCmd.Flags().StringVar(&tableName, "table", "", "table name")
