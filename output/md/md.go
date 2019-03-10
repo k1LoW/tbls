@@ -11,6 +11,7 @@ import (
 	"text/template"
 
 	"github.com/gobuffalo/packr"
+	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/mattn/go-runewidth"
 	"github.com/pkg/errors"
@@ -66,8 +67,12 @@ func (m *Md) OutputTable(wr io.Writer, t *schema.Table) error {
 }
 
 // Output generate markdown files.
-func Output(s *schema.Schema, path string, force bool, adjust bool, erFormat string) error {
-	fullPath, err := filepath.Abs(path)
+func Output(s *schema.Schema, c *config.Config, force bool) error {
+	docPath := c.DocPath
+	adjust := c.Format.Adjust
+	erFormat := c.ER.Format
+
+	fullPath, err := filepath.Abs(docPath)
 	if err != nil {
 		return errors.WithStack(err)
 	}
@@ -95,7 +100,7 @@ func Output(s *schema.Schema, path string, force bool, adjust bool, erFormat str
 	if err != nil {
 		return errors.WithStack(err)
 	}
-	fmt.Printf("%s\n", filepath.Join(path, "README.md"))
+	fmt.Printf("%s\n", filepath.Join(docPath, "README.md"))
 
 	// tables
 	for _, t := range s.Tables {
@@ -117,16 +122,20 @@ func Output(s *schema.Schema, path string, force bool, adjust bool, erFormat str
 			file.Close()
 			return errors.WithStack(err)
 		}
-		fmt.Printf("%s\n", filepath.Join(path, fmt.Sprintf("%s.md", t.Name)))
+		fmt.Printf("%s\n", filepath.Join(docPath, fmt.Sprintf("%s.md", t.Name)))
 		file.Close()
 	}
 	return nil
 }
 
 // Diff database and markdown files.
-func Diff(s *schema.Schema, path string, adjust bool, erFormat string) (string, error) {
+func Diff(s *schema.Schema, c *config.Config) (string, error) {
+	docPath := c.DocPath
+	adjust := c.Format.Adjust
+	erFormat := c.ER.Format
+
 	var diff string
-	fullPath, err := filepath.Abs(path)
+	fullPath, err := filepath.Abs(docPath)
 	if err != nil {
 		return "", errors.WithStack(err)
 	}
@@ -162,7 +171,7 @@ func Diff(s *schema.Schema, path string, adjust bool, erFormat string) (string, 
 	result := dmp.DiffCharsToLines(diffs, dc)
 
 	if len(result) != 1 || result[0].Type != diffmatchpatch.DiffEqual {
-		diff += fmt.Sprintf("diff [database] %s\n", filepath.Join(path, "README.md"))
+		diff += fmt.Sprintf("diff [database] %s\n", filepath.Join(docPath, "README.md"))
 		diff += fmt.Sprintln(dmp.DiffPrettyText(result))
 	}
 
@@ -190,7 +199,7 @@ func Diff(s *schema.Schema, path string, adjust bool, erFormat string) (string, 
 		diffs := dmp.DiffMain(da, db, false)
 		result := dmp.DiffCharsToLines(diffs, dc)
 		if len(result) != 1 || result[0].Type != diffmatchpatch.DiffEqual {
-			diff += fmt.Sprintf("diff %s %s\n", t.Name, filepath.Join(path, fmt.Sprintf("%s.md", t.Name)))
+			diff += fmt.Sprintf("diff %s %s\n", t.Name, filepath.Join(docPath, fmt.Sprintf("%s.md", t.Name)))
 			diff += fmt.Sprintln(dmp.DiffPrettyText(result))
 		}
 	}

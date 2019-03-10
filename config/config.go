@@ -17,13 +17,30 @@ import (
 const defaultConfigFilePath = ".tbls.yml"
 const defaultDocPath = "dbdoc"
 
+// DefaultERFormat is default ER diagram format
+const DefaultERFormat = "png"
+
 // Config is tbls config
 type Config struct {
 	DSN       string               `yaml:"dsn"`
 	DocPath   string               `yaml:"docPath"`
+	Format    Format               `yaml:"format"`
+	ER        ER                   `yaml:"er"`
 	Lint      Lint                 `yaml:"lint"`
 	Relations []AdditionalRelation `yaml:"relations"`
 	Comments  []AdditionalComment  `yaml:"comments"`
+}
+
+// Format is document format setting
+type Format struct {
+	Adjust bool `yaml:"adjust"`
+	Sort   bool `yaml:"sort"`
+}
+
+// ER is er diagram setting
+type ER struct {
+	Skip   bool   `yaml:"skip"`
+	Format string `yaml:"format"`
 }
 
 // AdditionalRelation is the struct for table relation from yaml
@@ -42,6 +59,61 @@ type AdditionalComment struct {
 	ColumnComments map[string]string `yaml:"columnComments"`
 }
 
+// Option function change Config
+type Option func(*Config) error
+
+// DSN return Option set Config.DSN
+func DSN(dsn string) Option {
+	return func(c *Config) error {
+		c.DSN = dsn
+		return nil
+	}
+}
+
+// DocPath return Option set Config.DocPath
+func DocPath(docPath string) Option {
+	return func(c *Config) error {
+		c.DocPath = docPath
+		return nil
+	}
+}
+
+// Adjust return Option set Config.Format.Adjust
+func Adjust(adjust bool) Option {
+	return func(c *Config) error {
+		if adjust {
+			c.Format.Adjust = adjust
+		}
+		return nil
+	}
+}
+
+// Sort return Option set Config.Format.Sort
+func Sort(sort bool) Option {
+	return func(c *Config) error {
+		if sort {
+			c.Format.Sort = sort
+		}
+		return nil
+	}
+}
+
+// ERSkip return Option set Config.ER.Skip
+func ERSkip(skip bool) Option {
+	return func(c *Config) error {
+		c.ER.Skip = skip
+		return nil
+	}
+}
+
+// ERFormat return Option set Config.ER.Format
+func ERFormat(erFormat string) Option {
+	return func(c *Config) error {
+		c.ER.Format = erFormat
+		return nil
+	}
+}
+
 // NewConfig return Config
 func NewConfig() (*Config, error) {
 	c := Config{
@@ -52,7 +124,7 @@ func NewConfig() (*Config, error) {
 }
 
 // Load load config with all method
-func (c *Config) Load(configPath string, args []string) error {
+func (c *Config) Load(configPath string, options ...Option) error {
 	err := c.LoadConfigFile(configPath)
 	if err != nil {
 		return err
@@ -63,13 +135,19 @@ func (c *Config) Load(configPath string, args []string) error {
 		return err
 	}
 
-	err = c.LoadArgs(args)
-	if err != nil {
-		return err
+	for _, option := range options {
+		err = option(c)
+		if err != nil {
+			return err
+		}
 	}
 
 	if c.DocPath == "" {
 		c.DocPath = defaultDocPath
+	}
+
+	if c.ER.Format == "" {
+		c.ER.Format = DefaultERFormat
 	}
 
 	return nil
@@ -84,21 +162,6 @@ func (c *Config) LoadEnviron() error {
 	docPath := os.Getenv("TBLS_DOC_PATH")
 	if docPath != "" {
 		c.DocPath = docPath
-	}
-	return nil
-}
-
-// LoadArgs load args slice
-func (c *Config) LoadArgs(args []string) error {
-	if len(args) > 2 {
-		return errors.WithStack(errors.New("too many arguments"))
-	}
-	if len(args) == 2 {
-		c.DSN = args[0]
-		c.DocPath = args[1]
-	}
-	if len(args) == 1 {
-		c.DSN = args[0]
 	}
 	return nil
 }

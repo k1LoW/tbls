@@ -28,6 +28,7 @@ import (
 	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/datasource"
 	"github.com/labstack/gommon/color"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -43,7 +44,13 @@ var lintCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		err = c.Load(configPath, args)
+		options, err := loadLintArgs(args)
+		if err != nil {
+			printError(err)
+			os.Exit(1)
+		}
+
+		err = c.Load(configPath, options...)
 		if err != nil {
 			printError(err)
 			os.Exit(1)
@@ -81,6 +88,21 @@ var lintCmd = &cobra.Command{
 			os.Exit(1)
 		}
 	},
+}
+
+func loadLintArgs(args []string) ([]config.Option, error) {
+	options := []config.Option{}
+	if len(args) > 2 {
+		return options, errors.WithStack(errors.New("too many arguments"))
+	}
+	if len(args) == 2 {
+		options = append(options, config.DSN(args[0]))
+		options = append(options, config.DocPath(args[1]))
+	}
+	if len(args) == 1 {
+		options = append(options, config.DSN(args[0]))
+	}
+	return options, nil
 }
 
 func init() {
