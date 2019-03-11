@@ -9,31 +9,18 @@ Key features of `tbls` are:
 - **CI-Friendly**
 - **Work as linter for database document**
 
----
+### Table of Contents
 
-<!-- toc -->
-<!-- toc:start -->
+  - [Quick Start](#quick-start)
+  - [Install](#install)
+  - [Getting Started](#getting-started)
+    - [Document a database](#document-a-database)
+    - [Diff database and document](#diff-database-and-document)
+    - [Lint a database](#lint-a-database)
+    - [Continuous Integration](#continuous-integration)
+  - [Support Database](#support-database)
 
-  * [Quick Start](#quickstart)
-  * [Install](#install)
-  * [Getting Started](#gettingstarted)
-    * [Document a database](#documentadatabase)
-    * [Diff database and document](#diffdatabaseanddocument)
-    * [Continuous Integration using tbls](#continuousintegrationusingtbls)
-  * [Configration](#configration)
-  * [How to specify DSN and Document path](#howtospecifydsnanddocumentpath)
-    * [2. Use ](#2use)
-  * [``` yaml](#```yaml)
-  * [``` yaml](#```yaml)
-    * [3. Envirionment](#3envirionment)
-  * [Add additional data (relations, comments) to schema](#addadditionaldata(relations,comments)toschema)
-  * [Lint database document](#lintdatabasedocument)
-  * [Support Database](#supportdatabase)
-
-
-<!-- toc:end -->
-
----
+<br>
 
 ## Quick Start
 
@@ -143,11 +130,46 @@ diff postgres://dbuser:*****@hostname:5432/dbname doc/schema/users.md
 
 > **Notice:** `tbls diff` shows the difference Markdown documents only.
 
-### Continuous Integration using tbls
+### Lint a database
+
+Add linting rule to `.tbls.yml` following
+
+``` yaml
+# .tbls.yml
+lint:
+  requireColumnComment:
+    enabled: true
+    exclude:
+      - id
+      - created
+      - updated
+  columnCount:
+    enabled: true
+    max: 10
+```
+
+Run `tbls lint` to check the database according to `lint:` rules
+
+``` console
+$ tbls lint
+users.username: column comment required.
+users.password: column comment required.
+users.phone_number: column comment required.
+posts.user_id: column comment required.
+posts.title: column comment required.
+posts.labels: column comment required.
+comments.post_id: column comment required.
+comment_stars.user_id: column comment required.
+post_comments.comment: column comment required.
+posts has too many columns. [12/10]
+comments has too many columns. [11/10]
+```
+
+### Continuous Integration
 
 1. Commit the document using `tbls doc`.
 2. Update the database schema in the development cycle.
-3. Check for document updates by running `tbls diff` in CI.
+3. Check for document updates by running `tbls diff` or `tbls lint` in CI.
 
 **Example: Travis CI**
 
@@ -158,6 +180,7 @@ install:
   - source <(curl -sL https://git.io/use-tbls)
 script:
   - tbls diff
+  - tbls lint
 ```
 
 > **Tips:** If your CI based on Debian/Ubuntu (`/bin/sh -> dash`), you can use following install command `curl -sL https://git.io/use-tbls > use-tbls.tmp && . ./use-tbls.tmp && rm ./use-tbls.tmp`
