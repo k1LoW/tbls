@@ -9,6 +9,8 @@ Key features of `tbls` are:
 - **CI-Friendly**
 - **Work as linter for database document**
 
+---
+
 <!-- toc -->
 <!-- toc:start -->
 
@@ -30,6 +32,8 @@ Key features of `tbls` are:
 
 
 <!-- toc:end -->
+
+---
 
 ## Quick Start
 
