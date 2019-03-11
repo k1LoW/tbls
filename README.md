@@ -127,6 +127,8 @@ diff postgres://dbuser:*****@hostname:5432/dbname doc/schema/users.md
 
 ``` yaml
 # .travis.yml
+install:
+  - source <(curl -sL https://git.io/use-tbls)
 script:
   - tbls diff
 ```
