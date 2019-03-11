@@ -9,7 +9,27 @@ Key features of `tbls` are:
 - **CI-Friendly**
 - **Work as linter for database document**
 
-[Quick Start](#quick-start) | [Sample Document](sample/postgres/README.md) | [Install](#install) | [Getting Started](#getting-started) | [Support Database](#support-database)
+<!-- toc -->
+<!-- toc:start -->
+
+  * [Quick Start](#quickstart)
+  * [Install](#install)
+  * [Getting Started](#gettingstarted)
+    * [Document a database](#documentadatabase)
+    * [Diff database and document](#diffdatabaseanddocument)
+    * [Continuous Integration using tbls](#continuousintegrationusingtbls)
+  * [Configration](#configration)
+  * [How to specify DSN and Document path](#howtospecifydsnanddocumentpath)
+    * [2. Use ](#2use)
+  * [``` yaml](#```yaml)
+  * [``` yaml](#```yaml)
+    * [3. Envirionment](#3envirionment)
+  * [Add additional data (relations, comments) to schema](#addadditionaldata(relations,comments)toschema)
+  * [Lint database document](#lintdatabasedocument)
+  * [Support Database](#supportdatabase)
+
+
+<!-- toc:end -->
 
 ## Quick Start
 
@@ -79,6 +99,8 @@ View the document on GitHub.
 ![sample](sample/doc.png)
 
 ### Diff database and document
+
+Update database schema.
 
 ``` console
 $ psql -U dbuser -d dbname -h hostname -p 5432 -c 'ALTER TABLE users ADD COLUMN phone_number varchar(15);'
