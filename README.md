@@ -64,10 +64,10 @@ $ tbls doc
 
 > **Tips:** If you can use Graphviz `dot` command, `tbls doc` generate ER diagram images at the same time.
 
-Commit the document.
+Commit `.tbls.yml` and the document.
 
 ``` console
-$ git add doc/schema
+$ git add .tbls.yml doc/schema
 $ git commit -m'Add database document'
 $ git push origin master
 ```
@@ -127,9 +127,14 @@ diff postgres://dbuser:*****@hostname:5432/dbname doc/schema/users.md
 
 ``` yaml
 # .travis.yml
+language: go
+install:
+  - source <(curl -sL https://git.io/use-tbls)
 script:
   - tbls diff
 ```
+
+> **Tips:** If your CI based on Debian/Ubuntu (`/bin/sh -> dash`), you can use following install command `curl -sL https://git.io/use-tbls > use-tbls.tmp && . ./use-tbls.tmp && rm ./use-tbls.tmp`
 
 > **Tips:** If the order of the columns does not match, you can use the `--sort` option.
 
