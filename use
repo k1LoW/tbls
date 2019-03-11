@@ -47,3 +47,4 @@ then
   unzip -foq -d "$TMPDIR" "$ARCHIVE"
 fi
 export PATH=${TMPDIR}:$PATH
+echo -e '\e[36mYou can use `tbls` command in this session.\e[m'
