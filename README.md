@@ -7,7 +7,7 @@ Key features of `tbls` are:
 - **Document a database automatically in GitHub Friendly Markdown format**
 - **Single binary**
 - **CI-Friendly**
-- **Work as linter for database document**
+- **Work as linter for database**
 
 ### Table of Contents
 
@@ -251,12 +251,60 @@ dsn: sq:///path/to/dbname.db
 
 ### Document path
 
+`tbls doc` generates document in the directory specified by `docPath`.
+
+``` yaml
+# .tbls.yml
+# Default is `dbdoc`
+docPath: doc/schema
+```
+
+`docPath` can expand environment variables.
+
+``` yaml
+# .tbls.yml
+docPath: ${DOC_PATH}
+```
+
 ### Lint
+
+`tbls lint` work as linter for database.
+
+``` yaml
+lint:
+  # require table comment
+  requireTableComment:
+    enabled: true
+  # require column comment
+  requireColumnComment:
+    enabled: true
+    # exclude columns from warnings
+    exclude:
+      - id
+      - created_at
+      - updated_at
+    # exclude tables from warnings
+    excludedTables:
+      - logs
+      - comment_stars
+  # find a table that has no relation
+  unrelatedTable:
+    enabled: true
+    # exclude tables from warnings
+    exclude:
+      - logs
+  # check max column count
+  columnCount:
+    enabled: true
+    max: 10
+    # exclude tables from warnings
+    exclude:
+      - user_options
+```
 
 ### Comments
 
 ### Relations
-
 
 
 
