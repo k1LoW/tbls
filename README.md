@@ -18,7 +18,17 @@ Key features of `tbls` are:
     - [Diff database and document](#diff-database-and-document)
     - [Lint a database](#lint-a-database)
     - [Continuous Integration](#continuous-integration)
-  - [Support Database](#support-database)
+  - [Configration](#configration)
+    - [DSN](#dsn)
+      - [Support Database](#support-database)
+    - [Document path](#document-path)
+    - [Table format](#table-format)
+    - [ER diagram](#er-diagram)
+    - [Lint](#lint)
+    - [Comments](#comments)
+    - [Relations](#relations)
+  - [Command arguments](#command-arguments)
+  - [Envirionment variables](#environment-variables)
 
 <br>
 
@@ -72,8 +82,6 @@ Run `tbls doc` to analyzes the database and generate document in GitHub Friendly
 ``` console
 $ tbls doc
 ```
-
-> **Tips:** If you can use Graphviz `dot` command, `tbls doc` generate ER diagram images at the same time.
 
 Commit `.tbls.yml` and the document.
 
@@ -195,14 +203,14 @@ script:
 
 ### DSN
 
-`DSN` (Data Srouce Name) is used to connect to database.
+`DSN:` (Data Srouce Name) is used to connect to database.
 
 ``` yaml
 # .tbls.yml
 dsn: my://dbuser:dbpass@hostname:3306/dbname
 ```
 
-`DSN` can expand environment variables.
+`DSN:` can expand environment variables.
 
 ``` yaml
 # .tbls.yml
@@ -251,7 +259,7 @@ dsn: sq:///path/to/dbname.db
 
 ### Document path
 
-`tbls doc` generates document in the directory specified by `docPath`.
+`tbls doc` generates document in the directory specified by `docPath:`.
 
 ``` yaml
 # .tbls.yml
@@ -259,11 +267,41 @@ dsn: sq:///path/to/dbname.db
 docPath: doc/schema
 ```
 
-`docPath` can expand environment variables.
+`docPath:` can expand environment variables.
 
 ``` yaml
 # .tbls.yml
 docPath: ${DOC_PATH}
+```
+
+### Table format
+
+`format:` is used to change the document format.
+
+``` yaml
+# .tbls.yml
+format:
+  # Adjust the column width of Markdown format table
+  # Default is false
+  adjust: true
+  # Sort the order of table list and  columns
+  # Default is false
+  sort: false
+```
+
+### ER diagram
+
+If you can use Graphviz `dot` command, `tbls doc` generate ER diagram images at the same time.
+
+``` yaml
+# .tbls.yml
+er:
+  # Skip generation of ER diagram
+  # Default is false
+  skip: false
+  # ER diagram format
+  # Default is `png`
+  format: svg
 ```
 
 ### Lint
@@ -271,6 +309,7 @@ docPath: ${DOC_PATH}
 `tbls lint` work as linter for database.
 
 ``` yaml
+# .tbls.yml
 lint:
   # require table comment
   requireTableComment:
@@ -304,40 +343,44 @@ lint:
 
 ### Comments
 
+`comments:` is used to add table/column comment to database document without `ALTER TABLE`.
+
+For example, you can add comment about VIEW TABLE or SQLite tables/columns.
+
+``` yaml
+# .tbls.yml
+comments:
+  -
+    table: users
+    # table comment
+    tableComment: Users table
+    # column comments
+    columnComments:
+      email: Email address as login id. ex. user@example.com
+  -
+    table: post_comments
+    tableComment: post and comments View table
+    columnComments:
+      id: comments.id
+      title: posts.title
+      post_user: posts.users.username
+      comment_user: comments.users.username
+      created: comments.created
+      updated: comments.updated
+```
+
 ### Relations
 
 
 
-### 1. Command arguments
+## Command arguments
 
 ``` console
 $ tbls doc my://root:mypass@localhost:33306/testdb sample/mysql
 ```
 
-### 2. Use `.tbls.yml` or set `--config` option
-
-Put `.tbls.yml` on execute directory or specify with the `--config` option.
-
-YAML format is follows
-
-``` yaml
----
-dsn: my://root:mypass@localhost:33306/testdb
-docPath: sample/mysql
-```
-
-``` yaml
----
-dsn: my://${MYSQL_USER}:${MYSQL_PASSWORD}@localhost:33306/${MYSQL_DATABASE}
-docPath: sample/mysql
-```
-
-### 3. Envirionment
+## Envirionment variables
 
 ``` console
 $ env TBLS_DSN=my://root:mypass@localhost:33306/testdb TBLS_DOC_PATH=sample/mysql tbls doc
 ```
-
-## Add additional data (relations, comments) to schema
-
-To add additional data to the schema, add settings to `.tbls.yml` or `--config` like [YAML file](testdata/additional_data.yml) (`relations`, `comments`)
