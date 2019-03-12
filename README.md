@@ -167,15 +167,19 @@ comments has too many columns. [11/10]
 
 ### Continuous Integration
 
+Continuous integration using tbls.
+
 1. Commit the document using `tbls doc`.
 2. Update the database schema in the development cycle.
 3. Check for document updates by running `tbls diff` or `tbls lint` in CI.
+4. Return to **1**.
 
 **Example: Travis CI**
 
 ``` yaml
 # .travis.yml
 language: go
+
 install:
   - source <(curl -sL https://git.io/use-tbls)
 script:
@@ -189,7 +193,72 @@ script:
 
 ## Configration
 
-## How to specify DSN and Document path
+### DSN
+
+`DSN` (Data Srouce Name) is used to connect to database.
+
+``` yaml
+# .tbls.yml
+dsn: my://dbuser:dbpass@hostname:3306/dbname
+```
+
+`DSN` can expand environment variables.
+
+``` yaml
+# .tbls.yml
+dsn: my://${MYSQL_USER}:${MYSQL_PASSWORD}@localhost:3306/${MYSQL_DATABASE}
+```
+
+#### Support Database
+
+tbls support following databases.
+
+**PostgreSQL:**
+
+``` yaml
+# .tbls.yml
+dsn: postgres://dbuser:dbpass@hostname:5432/dbname
+```
+
+``` yaml
+# .tbls.yml
+dsn: pg://dbuser:dbpass@hostname:5432/dbname
+```
+
+**MySQL:**
+
+``` yaml
+# .tbls.yml
+dsn: mysql://dbuser:dbpass@hostname:3306/dbname
+```
+
+``` yaml
+# .tbls.yml
+dsn: my://dbuser:dbpass@hostname:3306/dbname
+```
+
+**SQLite:**
+
+``` yaml
+# .tbls.yml
+dsn: sqlite:///path/to/dbname.db
+```
+
+``` yaml
+# .tbls.yml
+dsn: sq:///path/to/dbname.db
+```
+
+### Document path
+
+### Lint
+
+### Comments
+
+### Relations
+
+
+
 
 ### 1. Command arguments
 
@@ -224,13 +293,3 @@ $ env TBLS_DSN=my://root:mypass@localhost:33306/testdb TBLS_DOC_PATH=sample/mysq
 ## Add additional data (relations, comments) to schema
 
 To add additional data to the schema, add settings to `.tbls.yml` or `--config` like [YAML file](testdata/additional_data.yml) (`relations`, `comments`)
-
-## Lint database document
-
-To check database document, add settings to `.tbls.yml` or `--config` like [YAML file](testdata/additional_data.yml) (`lint`)
-
-## Support Database
-
-- PostgreSQL
-- MySQL
-- SQLite
