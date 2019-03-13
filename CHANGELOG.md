@@ -1,5 +1,17 @@
 # Changelog
 
+## [v1.10.0](https://github.com/k1LoW/tbls/compare/v1.9.0...v1.10.0) (2019-03-13)
+
+* Update document [#83](https://github.com/k1LoW/tbls/pull/83) ([k1LoW](https://github.com/k1LoW))
+* Update `tbls lint` detect message [#87](https://github.com/k1LoW/tbls/pull/87) ([k1LoW](https://github.com/k1LoW))
+* Update `tbls lint` detect message [#87](https://github.com/k1LoW/tbls/pull/87) ([k1LoW](https://github.com/k1LoW))
+* Add a temporary installation script for CI [#86](https://github.com/k1LoW/tbls/pull/86) ([k1LoW](https://github.com/k1LoW))
+* Add a temporary installation script for CI [#86](https://github.com/k1LoW/tbls/pull/86) ([k1LoW](https://github.com/k1LoW))
+* Change `tbls diff` output to unified format [#85](https://github.com/k1LoW/tbls/pull/85) ([k1LoW](https://github.com/k1LoW))
+* Change `tbls diff` output to unified format [#85](https://github.com/k1LoW/tbls/pull/85) ([k1LoW](https://github.com/k1LoW))
+* Fix config.Config internal [#84](https://github.com/k1LoW/tbls/pull/84) ([k1LoW](https://github.com/k1LoW))
+* Fix config.Config internal [#84](https://github.com/k1LoW/tbls/pull/84) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.9.0](https://github.com/k1LoW/tbls/compare/v1.8.3...v1.9.0) (2019-03-09)
 
 * Use goreleaser [#82](https://github.com/k1LoW/tbls/pull/82) ([k1LoW](https://github.com/k1LoW))
