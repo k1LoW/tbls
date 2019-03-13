@@ -5,7 +5,7 @@
 #
 # Reference:
 #   https://github.com/goreleaser/get
-set -e
+set -u
 
 GOOS=linux
 EXT=tar.gz
