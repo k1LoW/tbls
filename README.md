@@ -371,16 +371,79 @@ comments:
 
 ### Relations
 
+`comments:` is used to add table relation to database document without `FOREIGN KEY`.
 
+You can create ER diagrams with relations without having foreign key constraints.
+
+``` yaml
+relations:
+  -
+    table: logs
+    columns:
+      - user_id
+    parentTable: users
+    parentColumns:
+      - id
+    # Relation definition
+    # Default is `Additional Relation`
+    def: logs->users
+  -
+    table: logs
+    columns:
+      - post_id
+    parentTable: posts
+    parentColumns:
+      - id
+  -
+    table: logs
+    columns:
+      - comment_id
+    parentTable: comments
+    parentColumns:
+      - id
+  -
+    table: logs
+    columns:
+      - comment_star_id
+    parentTable: comment_stars
+    parentColumns:
+      - id
+```
+
+![img](sample/mysql/logs.png)
 
 ## Command arguments
 
+tbls subcommands ( `doc`,`diff`, etc) accepts arguments and options
+
 ``` console
-$ tbls doc my://root:mypass@localhost:33306/testdb sample/mysql
+$ tbls doc my://root:mypass@localhost:3306/testdb doc/schema
+```
+
+You can check available arguments and options using `tbls help [COMMAND]`.
+
+``` console
+$ tbls help doc
+'tbls doc' analyzes a database and generate document in GitHub Friendly Markdown format.
+
+Usage:
+  tbls doc [DSN] [DOC_PATH] [flags]
+
+Flags:
+  -a, --add config         additional schema data path (deprecated, use config)
+  -j, --adjust-table       adjust column width of table
+  -c, --config string      config file path
+  -t, --er-format string   ER diagrams output format [png, svg, jpg, ...]. default: png
+  -f, --force              force
+  -h, --help               help for doc
+      --sort               sort
+      --without-er         no generate ER diagrams
 ```
 
 ## Envirionment variables
 
+tbls accepts envirionment variables `TBLS_DSN` and `TBLS_DOC_PATH`
+
 ``` console
-$ env TBLS_DSN=my://root:mypass@localhost:33306/testdb TBLS_DOC_PATH=sample/mysql tbls doc
+$ env TBLS_DSN=my://root:mypass@localhost:3306/testdb TBLS_DOC_PATH=doc/schema tbls doc
 ```
