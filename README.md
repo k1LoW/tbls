@@ -169,8 +169,10 @@ posts.labels: column comment required.
 comments.post_id: column comment required.
 comment_stars.user_id: column comment required.
 post_comments.comment: column comment required.
-posts has too many columns. [12/10]
-comments has too many columns. [11/10]
+posts: too many columns. [12/10]
+comments: too many columns. [11/10]
+
+11 detected
 ```
 
 ### Continuous Integration
