@@ -4,136 +4,448 @@
 
 Key features of `tbls` are:
 
-- Single binary
-- Document in GitHub Friendly Markdown format
-- CI-Friendly
+- **Document a database automatically in GitHub Friendly Markdown format**
+- **Single binary**
+- **CI-Friendly**
+- **Work as linter for database**
 
-[Usage](#usage) | [Sample](sample/postgres/) | [Integration with CI tools](#integration-with-ci-tools) | [Installation](#installation) | [Database Support](#database-support)
+### Table of Contents
 
-## Usage
+  - [Quick Start](#quick-start)
+  - [Install](#install)
+  - [Getting Started](#getting-started)
+    - [Document a database](#document-a-database)
+    - [Diff database and document](#diff-database-and-document)
+    - [Lint a database](#lint-a-database)
+    - [Continuous Integration](#continuous-integration)
+  - [Configration](#configration)
+    - [DSN](#dsn)
+      - [Support Database](#support-database)
+    - [Document path](#document-path)
+    - [Table format](#table-format)
+    - [ER diagram](#er-diagram)
+    - [Lint](#lint)
+    - [Comments](#comments)
+    - [Relations](#relations)
+  - [Command arguments](#command-arguments)
+  - [Envirionment variables](#environment-variables)
 
-```console
-$ tbls
-tbls is a tool for document a database, written in Go.
+<br>
 
-Usage:
-  tbls [command]
+## Quick Start
 
-Available Commands:
-  diff        diff database and document
-  doc         document a database
-  help        Help about any command
-  lint        check database document
-  out         analyzes a database and output
-  version     print tbls version
-
-Flags:
-  -h, --help   help for tbls
-
-Use "tbls [command] --help" for more information about a command.
-```
-
-### Document a database schema
-
-`tbls doc` analyzes a database and generate document in GitHub Friendly Markdown format.
-
-```console
-$ tbls doc postgres://user:pass@hostname:5432/dbname ./dbdoc
-```
-
-If you can use Graphviz `dot` command, `tbls doc` generate ER diagram images at the same time.
-
-Sample [document](sample/postgres/) and [schema](testdata/pg.sql).
-
-> NOTICE: If you are using a symbol such as `#` `<` in database password, URL-encode the password
-
-### Diff database schema and document
-
-`tbls diff` shows the difference between database schema and generated document.
-
-```console
-$ tbls diff postgres://user:pass@hostname:5432/dbname ./dbdoc
-```
-
-**Notice:** `tbls diff` shows the difference Markdown documents only.
-
-## Integration with CI tools
-
-1. Commit document using `tbls doc`.
-2. Check document updates using `tbls diff`
-
-Set following code to [`your-ci-config.yml`](https://github.com/k1LoW/tbls/blob/ffad9d7463bb22baa236c7b673fd679f1850f37d/.travis.yml#L19).
-
-```sh
-$ tbls diff postgres://user:pass@localhost:5432/testdb?sslmode=disable ./dbdoc
-```
-
-Makefile sample is following
-
-``` makefile
-doc: ## Document database schema
-	tbls doc postgres://user:pass@localhost:5432/testdb?sslmode=disable ./dbdoc
-
-testdoc: ## Test database schema document
-	tbls diff postgres://user:pass@localhost:5432/testdb?sslmode=disable ./dbdoc
-```
-
-**Tips:** If the order of the columns does not match, you can use the `--sort` option.
-
-## How to specify DSN and Document path
-
-### 1. Command arguments
+Document a database with one command.
 
 ``` console
-$ tbls doc my://root:mypass@localhost:33306/testdb sample/mysql
+$ tbls doc postgres://dbuser:dbpass@hostname:5432/dbname
 ```
 
-### 2. Use `.tbls.yml` or set `--config` option
+## Install
 
-Put `.tbls.yml` on execute directory or specify with the `--config` option.
-
-YAML format is follows
-
-``` yaml
----
-dsn: my://root:mypass@localhost:33306/testdb
-docPath: sample/mysql
-```
-
-``` yaml
----
-dsn: my://${MYSQL_USER}:${MYSQL_PASSWORD}@localhost:33306/${MYSQL_DATABASE}
-docPath: sample/mysql
-```
-
-### 3. Envirionment
-
-``` console
-$ env TBLS_DSN=my://root:mypass@localhost:33306/testdb TBLS_DOC_PATH=sample/mysql tbls doc
-```
-
-## Add additional data (relations, comments) to schema
-
-To add additional data to the schema, add settings to `.tbls.yml` or `--config` like [YAML file](testdata/additional_data.yml) (`relations`, `comments`)
-
-## Lint database document
-
-To check database document, add settings to `.tbls.yml` or `--config` like [YAML file](testdata/additional_data.yml) (`lint`)
-
-## Installation
-
-```console
-$ go get github.com/k1LoW/tbls
-```
-
-or
+**homebrew tap:**
 
 ```console
 $ brew install k1LoW/tap/tbls
 ```
 
-## Database Support
+**manually:**
 
-- PostgreSQL
-- MySQL
-- SQLite
+Download binany from [releases page](https://github.com/k1LoW/tbls/releases)
+
+**go get:**
+
+```console
+$ go get github.com/k1LoW/tbls
+```
+
+## Getting Started
+
+### Document a database
+
+Add `.tbls.yml` file to your repogitory.
+
+``` yaml
+# .tbls.yml
+
+# DSN (Databaase Source Name) to connect database
+dsn: postgres://dbuser:dbpass@localhost:5432/dbname
+
+# Path to generate document
+# Default is `dbdoc`
+docPath: doc/schema
+```
+
+> **Notice:** If you are using a symbol such as `#` `<` in database password, URL-encode the password
+
+Run `tbls doc` to analyzes the database and generate document in GitHub Friendly Markdown format.
+
+``` console
+$ tbls doc
+```
+
+Commit `.tbls.yml` and the document.
+
+``` console
+$ git add .tbls.yml doc/schema
+$ git commit -m'Add database document'
+$ git push origin master
+```
+
+View the document on GitHub.
+
+[Sample document](sample/postgres/README.md)
+
+![sample](sample/doc.png)
+
+### Diff database and document
+
+Update database schema.
+
+``` console
+$ psql -U dbuser -d dbname -h hostname -p 5432 -c 'ALTER TABLE users ADD COLUMN phone_number varchar(15);'
+Password for user dbuser:
+ALTER TABLE
+```
+
+`tbls diff` shows the difference between database schema and generated document.
+
+``` diff
+$ tbls diff
+diff postgres://dbuser:*****@hostname:5432/dbname doc/schema/README.md
+--- postgres://dbuser:*****@hostname:5432/dbname
++++ doc/schema/README.md
+@@ -4,7 +4,7 @@
+
+ | Name | Columns | Comment | Type |
+ | ---- | ------- | ------- | ---- |
+-| [users](users.md) | 7 | Users table | BASE TABLE |
++| [users](users.md) | 6 | Users table | BASE TABLE |
+ | [user_options](user_options.md) | 4 | User options table | BASE TABLE |
+ | [posts](posts.md) | 8 | Posts table | BASE TABLE |
+ | [comments](comments.md) | 6 | Comments<br>Multi-line<br>table<br>comment | BASE TABLE |
+diff postgres://dbuser:*****@hostname:5432/dbname doc/schema/users.md
+--- postgres://dbuser:*****@hostname:5432/dbname
++++ doc/schema/users.md
+@@ -14,7 +14,6 @@
+ | email | varchar(355) |  | false |  |  | ex. user@example.com |
+ | created | timestamp without time zone |  | false |  |  |  |
+ | updated | timestamp without time zone |  | true |  |  |  |
+-| phone_number | varchar(15) |  | true |  |  |  |
+
+ ## Constraints
+
+```
+
+> **Notice:** `tbls diff` shows the difference Markdown documents only.
+
+### Lint a database
+
+Add linting rule to `.tbls.yml` following
+
+``` yaml
+# .tbls.yml
+lint:
+  requireColumnComment:
+    enabled: true
+    exclude:
+      - id
+      - created
+      - updated
+  columnCount:
+    enabled: true
+    max: 10
+```
+
+Run `tbls lint` to check the database according to `lint:` rules
+
+``` console
+$ tbls lint
+users.username: column comment required.
+users.password: column comment required.
+users.phone_number: column comment required.
+posts.user_id: column comment required.
+posts.title: column comment required.
+posts.labels: column comment required.
+comments.post_id: column comment required.
+comment_stars.user_id: column comment required.
+post_comments.comment: column comment required.
+posts: too many columns. [12/10]
+comments: too many columns. [11/10]
+
+11 detected
+```
+
+### Continuous Integration
+
+Continuous integration using tbls.
+
+1. Commit the document using `tbls doc`.
+2. Update the database schema in the development cycle.
+3. Check for document updates by running `tbls diff` or `tbls lint` in CI.
+4. Return to **1**.
+
+**Example: Travis CI**
+
+``` yaml
+# .travis.yml
+language: go
+
+install:
+  - source <(curl -sL https://git.io/use-tbls)
+script:
+  - tbls diff
+  - tbls lint
+```
+
+> **Tips:** If your CI based on Debian/Ubuntu (`/bin/sh -> dash`), you can use following install command `curl -sL https://git.io/use-tbls > use-tbls.tmp && . ./use-tbls.tmp && rm ./use-tbls.tmp`
+
+> **Tips:** If the order of the columns does not match, you can use the `--sort` option.
+
+## Configration
+
+### DSN
+
+`DSN:` (Data Srouce Name) is used to connect to database.
+
+``` yaml
+# .tbls.yml
+dsn: my://dbuser:dbpass@hostname:3306/dbname
+```
+
+`DSN:` can expand environment variables.
+
+``` yaml
+# .tbls.yml
+dsn: my://${MYSQL_USER}:${MYSQL_PASSWORD}@localhost:3306/${MYSQL_DATABASE}
+```
+
+#### Support Database
+
+tbls support following databases.
+
+**PostgreSQL:**
+
+``` yaml
+# .tbls.yml
+dsn: postgres://dbuser:dbpass@hostname:5432/dbname
+```
+
+``` yaml
+# .tbls.yml
+dsn: pg://dbuser:dbpass@hostname:5432/dbname
+```
+
+**MySQL:**
+
+``` yaml
+# .tbls.yml
+dsn: mysql://dbuser:dbpass@hostname:3306/dbname
+```
+
+``` yaml
+# .tbls.yml
+dsn: my://dbuser:dbpass@hostname:3306/dbname
+```
+
+**SQLite:**
+
+``` yaml
+# .tbls.yml
+dsn: sqlite:///path/to/dbname.db
+```
+
+``` yaml
+# .tbls.yml
+dsn: sq:///path/to/dbname.db
+```
+
+### Document path
+
+`tbls doc` generates document in the directory specified by `docPath:`.
+
+``` yaml
+# .tbls.yml
+# Default is `dbdoc`
+docPath: doc/schema
+```
+
+`docPath:` can expand environment variables.
+
+``` yaml
+# .tbls.yml
+docPath: ${DOC_PATH}
+```
+
+### Table format
+
+`format:` is used to change the document format.
+
+``` yaml
+# .tbls.yml
+format:
+  # Adjust the column width of Markdown format table
+  # Default is false
+  adjust: true
+  # Sort the order of table list and  columns
+  # Default is false
+  sort: false
+```
+
+### ER diagram
+
+If you can use Graphviz `dot` command, `tbls doc` generate ER diagram images at the same time.
+
+``` yaml
+# .tbls.yml
+er:
+  # Skip generation of ER diagram
+  # Default is false
+  skip: false
+  # ER diagram format
+  # Default is `png`
+  format: svg
+```
+
+### Lint
+
+`tbls lint` work as linter for database.
+
+``` yaml
+# .tbls.yml
+lint:
+  # require table comment
+  requireTableComment:
+    enabled: true
+  # require column comment
+  requireColumnComment:
+    enabled: true
+    # exclude columns from warnings
+    exclude:
+      - id
+      - created_at
+      - updated_at
+    # exclude tables from warnings
+    excludedTables:
+      - logs
+      - comment_stars
+  # find a table that has no relation
+  unrelatedTable:
+    enabled: true
+    # exclude tables from warnings
+    exclude:
+      - logs
+  # check max column count
+  columnCount:
+    enabled: true
+    max: 10
+    # exclude tables from warnings
+    exclude:
+      - user_options
+```
+
+### Comments
+
+`comments:` is used to add table/column comment to database document without `ALTER TABLE`.
+
+For example, you can add comment about VIEW TABLE or SQLite tables/columns.
+
+``` yaml
+# .tbls.yml
+comments:
+  -
+    table: users
+    # table comment
+    tableComment: Users table
+    # column comments
+    columnComments:
+      email: Email address as login id. ex. user@example.com
+  -
+    table: post_comments
+    tableComment: post and comments View table
+    columnComments:
+      id: comments.id
+      title: posts.title
+      post_user: posts.users.username
+      comment_user: comments.users.username
+      created: comments.created
+      updated: comments.updated
+```
+
+### Relations
+
+`comments:` is used to add table relation to database document without `FOREIGN KEY`.
+
+You can create ER diagrams with relations without having foreign key constraints.
+
+``` yaml
+relations:
+  -
+    table: logs
+    columns:
+      - user_id
+    parentTable: users
+    parentColumns:
+      - id
+    # Relation definition
+    # Default is `Additional Relation`
+    def: logs->users
+  -
+    table: logs
+    columns:
+      - post_id
+    parentTable: posts
+    parentColumns:
+      - id
+  -
+    table: logs
+    columns:
+      - comment_id
+    parentTable: comments
+    parentColumns:
+      - id
+  -
+    table: logs
+    columns:
+      - comment_star_id
+    parentTable: comment_stars
+    parentColumns:
+      - id
+```
+
+![img](sample/mysql/logs.png)
+
+## Command arguments
+
+tbls subcommands ( `doc`,`diff`, etc) accepts arguments and options
+
+``` console
+$ tbls doc my://root:mypass@localhost:3306/testdb doc/schema
+```
+
+You can check available arguments and options using `tbls help [COMMAND]`.
+
+``` console
+$ tbls help doc
+'tbls doc' analyzes a database and generate document in GitHub Friendly Markdown format.
+
+Usage:
+  tbls doc [DSN] [DOC_PATH] [flags]
+
+Flags:
+  -a, --add config         additional schema data path (deprecated, use config)
+  -j, --adjust-table       adjust column width of table
+  -c, --config string      config file path
+  -t, --er-format string   ER diagrams output format [png, svg, jpg, ...]. default: png
+  -f, --force              force
+  -h, --help               help for doc
+      --sort               sort
+      --without-er         no generate ER diagrams
+```
+
+## Envirionment variables
+
+tbls accepts envirionment variables `TBLS_DSN` and `TBLS_DOC_PATH`
+
+``` console
+$ env TBLS_DSN=my://root:mypass@localhost:3306/testdb TBLS_DOC_PATH=doc/schema tbls doc
+```

@@ -1,6 +1,11 @@
 ---
 dsn: my://root:mypass@localhost:33306/testdb
 docPath: sample/mysql
+format:
+  adjust: false
+er:
+  skip: false
+  format: png
 relations:
   -
     table: logs
