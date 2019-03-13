@@ -16,6 +16,7 @@ type Lint struct {
 
 // RuleWarn is struct of Rule error
 type RuleWarn struct {
+	Target  string
 	Message string
 }
 
@@ -38,12 +39,13 @@ func (r RequireTableComment) IsEnabled() bool {
 
 // Check table comment
 func (r RequireTableComment) Check(s *schema.Schema) []RuleWarn {
-	msgFmt := "%s: table comment required."
+	msg := "table comment required."
 	warns := []RuleWarn{}
 	for _, t := range s.Tables {
 		if !contains(r.Exclude, t.Name) && t.Comment == "" {
 			warns = append(warns, RuleWarn{
-				Message: fmt.Sprintf(msgFmt, t.Name),
+				Target:  t.Name,
+				Message: msg,
 			})
 		}
 	}
@@ -64,7 +66,7 @@ func (r RequireColumnComment) IsEnabled() bool {
 
 // Check column comment
 func (r RequireColumnComment) Check(s *schema.Schema) []RuleWarn {
-	msgFmt := "%s.%s: column comment required."
+	msg := "column comment required."
 	warns := []RuleWarn{}
 	for _, t := range s.Tables {
 		if contains(r.ExcludedTables, t.Name) {
@@ -73,7 +75,8 @@ func (r RequireColumnComment) Check(s *schema.Schema) []RuleWarn {
 		for _, c := range t.Columns {
 			if !contains(r.Exclude, c.Name) && c.Comment == "" {
 				warns = append(warns, RuleWarn{
-					Message: fmt.Sprintf(msgFmt, t.Name, c.Name),
+					Target:  fmt.Sprintf("%s.%s", t.Name, c.Name),
+					Message: msg,
 				})
 			}
 		}
@@ -109,6 +112,7 @@ func (r UnrelatedTable) Check(s *schema.Schema) []RuleWarn {
 	}
 	if len(tableMap) > 0 {
 		warns = append(warns, RuleWarn{
+			Target:  s.Name,
 			Message: fmt.Sprintf(msgFmt, len(tableMap)),
 		})
 	}
@@ -129,12 +133,13 @@ func (r ColumnCount) IsEnabled() bool {
 
 // Check table column count
 func (r ColumnCount) Check(s *schema.Schema) []RuleWarn {
-	msgFmt := "%s has too many columns. [%d/%d]"
+	msgFmt := "too many columns. [%d/%d]"
 	warns := []RuleWarn{}
 	for _, t := range s.Tables {
 		if !contains(r.Exclude, t.Name) && len(t.Columns) > r.Max {
 			warns = append(warns, RuleWarn{
-				Message: fmt.Sprintf(msgFmt, t.Name, len(t.Columns), r.Max),
+				Target:  t.Name,
+				Message: fmt.Sprintf(msgFmt, len(t.Columns), r.Max),
 			})
 		}
 	}
