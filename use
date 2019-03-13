@@ -5,8 +5,6 @@
 #
 # Reference:
 #   https://github.com/goreleaser/get
-set -u
-
 GOOS=linux
 EXT=tar.gz
 ARCH=amd64
