@@ -1,14 +1,14 @@
 ---
 lint:
-  requireTableComment:
-    enabled: true
   requireColumnComment:
     enabled: true
-  unrelatedTable:
-    enabled: true
+    exclude:
+      - id
+      - created
+      - updated
   columnCount:
     enabled: true
-    max: 10
+    max: 5
 relations:
   -
     table: logs
