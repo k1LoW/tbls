@@ -1,12 +1,9 @@
 language: go
-matrix:
-  include:
-  - go: 1.11.x
-    env: GO111MODULE=on RELEASE_BUILD=true
-  - go: 1.12.x
-    env: GO111MODULE=on
-  - go: master
-    env: GO111MODULE=on
+go:
+  - 1.11.x
+  - 1.12.x
+  - master
+env: GO111MODULE=on
 services:
   - docker
 addons:
@@ -22,10 +19,3 @@ script:
   - make ci
 after_script:
   - codecov
-deploy:
-- provider: script
-  skip_cleanup: true
-  script: curl -sL https://git.io/goreleaser | bash
-  on:
-    tags: true
-    condition: $TRAVIS_OS_NAME = linux && $RELEASE_BUILD = true

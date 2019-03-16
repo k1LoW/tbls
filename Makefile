@@ -82,6 +82,6 @@ prerelease:
 	git tag ${VER}
 
 release:
-	goreleaser
+	goreleaser --rm-dist
 
 .PHONY: default test
