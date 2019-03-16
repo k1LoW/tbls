@@ -26,6 +26,8 @@ builds:
     - CC=/usr/local/bin/x86_64-linux-musl-cc
   goos:
     - linux
+  goarch:
+    - amd64
 - hooks:
     pre: packr
     post: packr clean
