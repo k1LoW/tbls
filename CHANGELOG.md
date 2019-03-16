@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.10.1](https://github.com/k1LoW/tbls/compare/v1.10.0...v1.10.1) (2019-03-16)
+
+* Fix .goreleaser.yml for CGO_ENABLED=1 [#88](https://github.com/k1LoW/tbls/pull/88) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.10.0](https://github.com/k1LoW/tbls/compare/v1.9.0...v1.10.0) (2019-03-13)
 
 * Update document [#83](https://github.com/k1LoW/tbls/pull/83) ([k1LoW](https://github.com/k1LoW))
