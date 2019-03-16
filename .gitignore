@@ -4,3 +4,4 @@ coverage.txt
 *-packr.go
 testdb.sqlite3
 .envrc
+.go-version
