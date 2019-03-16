@@ -3,17 +3,42 @@ before:
     - go mod download
     - go mod tidy
 builds:
-- env:
-    - CGO_ENABLED=0
-  hooks:
+- hooks:
     pre: packr
     post: packr clean
-  goos:
-    - linux
-    - darwin
-    - windows
   ldflags:
     - -s -w -X github.com/k1LoW/tbls.version={{.Version}} -X github.com/k1LoW/tbls.commit={{.FullCommit}} -X github.com/k1LoW/tbls.date={{.Date}} -X github.com/k1LoW/tbls/version.Version={{.Version}}
+  env:
+    - CGO_ENABLED=1
+  goos:
+    - darwin
+  goarch:
+    - amd64
+- hooks:
+    pre: packr
+    post: packr clean
+  ldflags:
+    - -s -w -X github.com/k1LoW/tbls.version={{.Version}} -X github.com/k1LoW/tbls.commit={{.FullCommit}} -X github.com/k1LoW/tbls.date={{.Date}} -X github.com/k1LoW/tbls/version.Version={{.Version}}
+    - -linkmode external
+    - -extldflags '-static'
+  env:
+    - CGO_ENABLED=1
+    - CC=/usr/local/bin/x86_64-linux-musl-cc
+  goos:
+    - linux
+- hooks:
+    pre: packr
+    post: packr clean
+  ldflags:
+    - -s -w -X github.com/k1LoW/tbls.version={{.Version}} -X github.com/k1LoW/tbls.commit={{.FullCommit}} -X github.com/k1LoW/tbls.date={{.Date}} -X github.com/k1LoW/tbls/version.Version={{.Version}}
+    - -extldflags '-static'
+  env:
+    - CGO_ENABLED=1
+    - CC=x86_64-w64-mingw32-gcc
+  goos:
+    - windows
+  goarch:
+    - amd64
 archive:
   name_template: '{{ .ProjectName }}_v{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
   format_overrides:
