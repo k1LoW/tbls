@@ -6,6 +6,7 @@ go:
 env: GO111MODULE=on
 services:
   - docker
+dist: xenial
 addons:
   apt:
     update: true
