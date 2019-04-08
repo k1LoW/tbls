@@ -72,7 +72,7 @@ depsdev:
 	go get golang.org/x/lint/golint
 	go get github.com/linyows/git-semv/cmd/git-semv
 	go get github.com/Songmu/ghch/cmd/ghch
-	go get github.com/xo/usql@v0.7.1
+	go get github.com/xo/usql
 	go get github.com/gobuffalo/packr/packr
 
 prerelease:
