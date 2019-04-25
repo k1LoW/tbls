@@ -47,12 +47,6 @@ var outCmd = &cobra.Command{
 	Use:   "out [DSN]",
 	Short: "analyzes a database and output",
 	Long:  `'tbls out' analyzes a database and output.`,
-	Args: func(cmd *cobra.Command, args []string) error {
-		if len(args) > 1 {
-			return errors.WithStack(errors.New("requires one arg"))
-		}
-		return nil
-	},
 	Run: func(cmd *cobra.Command, args []string) {
 		c, err := config.NewConfig()
 		if err != nil {
@@ -65,7 +59,13 @@ var outCmd = &cobra.Command{
 			configPath = additionalDataPath
 		}
 
-		err = c.Load(configPath, config.DSN(args[0]), config.Sort(sort))
+		options, err := loadOutArgs(args)
+		if err != nil {
+			printError(err)
+			os.Exit(1)
+		}
+
+		err = c.Load(configPath, options...)
 		if err != nil {
 			printError(err)
 			os.Exit(1)
@@ -136,6 +136,18 @@ var outCmd = &cobra.Command{
 			os.Exit(1)
 		}
 	},
+}
+
+func loadOutArgs(args []string) ([]config.Option, error) {
+	options := []config.Option{}
+	if len(args) > 1 {
+		return options, errors.WithStack(errors.New("too many arguments"))
+	}
+	options = append(options, config.Sort(sort))
+	if len(args) == 1 {
+		options = append(options, config.DSN(args[0]))
+	}
+	return options, nil
 }
 
 func init() {
