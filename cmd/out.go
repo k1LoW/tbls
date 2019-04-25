@@ -22,6 +22,7 @@ package cmd
 
 import (
 	"fmt"
+	"io"
 	"os"
 
 	"github.com/k1LoW/tbls/config"
@@ -37,6 +38,7 @@ import (
 
 var (
 	format    string
+	outPath   string
 	tableName string
 )
 
@@ -105,15 +107,28 @@ var outCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
+		var wr io.Writer
+		if outPath != "" {
+			file, err := os.OpenFile(outPath, os.O_WRONLY|os.O_CREATE, 0666)
+			if err != nil {
+				printError(err)
+				os.Exit(1)
+			}
+			defer file.Close()
+			wr = file
+		} else {
+			wr = os.Stdout
+		}
+
 		if tableName == "" {
-			err = o.OutputSchema(os.Stdout, s)
+			err = o.OutputSchema(wr, s)
 		} else {
 			t, err := s.FindTableByName(tableName)
 			if err != nil {
 				printError(err)
 				os.Exit(1)
 			}
-			err = o.OutputTable(os.Stdout, t)
+			err = o.OutputTable(wr, t)
 		}
 
 		if err != nil {
@@ -128,6 +143,7 @@ func init() {
 	outCmd.Flags().BoolVarP(&sort, "sort", "", false, "sort")
 	outCmd.Flags().StringVarP(&configPath, "config", "c", "", "config file path")
 	outCmd.Flags().StringVarP(&format, "format", "t", "json", "output format")
+	outCmd.Flags().StringVarP(&outPath, "out", "o", "", "output file path")
 	outCmd.Flags().StringVar(&tableName, "table", "", "table name")
 	outCmd.Flags().StringVarP(&additionalDataPath, "add", "a", "", "additional schema data path (deprecated, use `config`)")
 }
