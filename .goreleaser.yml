@@ -3,7 +3,9 @@ before:
     - go mod download
     - go mod tidy
 builds:
-- hooks:
+-
+  id: tbls-darwin
+  hooks:
     pre: packr
     post: packr clean
   ldflags:
@@ -14,7 +16,9 @@ builds:
     - darwin
   goarch:
     - amd64
-- hooks:
+-
+  id: tbls-linux
+  hooks:
     pre: packr
     post: packr clean
   ldflags:
@@ -28,7 +32,9 @@ builds:
     - linux
   goarch:
     - amd64
-- hooks:
+-
+  id: tbls-windows
+  hooks:
     pre: packr
     post: packr clean
   ldflags:
