@@ -14,7 +14,7 @@ import (
 // Xlsx struct
 type Xlsx struct{}
 
-// OutputSchema output JSON format for full relation.
+// OutputSchema output Xlsx format for full relation.
 func (x *Xlsx) OutputSchema(wr io.Writer, s *schema.Schema) error {
 	w, err := excl.Create()
 	if err != nil {
@@ -45,7 +45,7 @@ func (x *Xlsx) OutputSchema(wr io.Writer, s *schema.Schema) error {
 	return nil
 }
 
-// OutputTable output dot format for table.
+// OutputTable output Xlsx format for table.
 func (x *Xlsx) OutputTable(wr io.Writer, t *schema.Table) error {
 	w, err := excl.Create()
 	if err != nil {
@@ -77,7 +77,6 @@ func createSchemaSheet(w *excl.Workbook, s *schema.Schema) error {
 	if err != nil {
 		return errors.WithStack(err)
 	}
-
 	setString(sheet, 1, 1, s.Name).SetFont(excl.Font{Bold: true})
 
 	setString(sheet, 3, 1, "Tables").SetFont(excl.Font{Bold: true})
@@ -170,6 +169,7 @@ func createTableSheet(w *excl.Workbook, t *schema.Table) error {
 
 func setHeader(sheet *excl.Sheet, rowNo int, values []string) {
 	for i, v := range values {
+		sheet.SetColWidth(10, i+1)
 		setStringWithBorder(sheet, rowNo, i+1, v).SetFont(excl.Font{Bold: true})
 	}
 }
