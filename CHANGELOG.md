@@ -1,5 +1,10 @@
 # Changelog
 
+## [v1.11.0](https://github.com/k1LoW/tbls/compare/v1.10.1...v1.11.0) (2019-04-25)
+
+* Add `--out` option to set output file path. [#90](https://github.com/k1LoW/tbls/pull/90) ([k1LoW](https://github.com/k1LoW))
+* Add `xlsx` output format [#89](https://github.com/k1LoW/tbls/pull/89) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.10.1](https://github.com/k1LoW/tbls/compare/v1.10.0...v1.10.1) (2019-03-16)
 
 * Fix .goreleaser.yml for CGO_ENABLED=1 [#88](https://github.com/k1LoW/tbls/pull/88) ([k1LoW](https://github.com/k1LoW))
