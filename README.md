@@ -1,6 +1,6 @@
 <p align="center">
 <br>
-<img src="https://github.com/k1LoW/tbls/raw/master/logo.png" width="200">
+<img src="https://github.com/k1LoW/tbls/raw/master/logo.png" width="200" alt="tbls">
 <br><br>
 </p>
 
