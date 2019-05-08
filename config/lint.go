@@ -12,6 +12,7 @@ type Lint struct {
 	RequireColumnComment RequireColumnComment `yaml:"requireColumnComment"`
 	UnrelatedTable       UnrelatedTable       `yaml:"unrelatedTable"`
 	ColumnCount          ColumnCount          `yaml:"columnCount"`
+	RequireColumns       RequireColumns       `yaml:"requireColumns"`
 }
 
 // RuleWarn is struct of Rule error
@@ -153,4 +154,53 @@ func contains(s []string, e string) bool {
 		}
 	}
 	return false
+}
+
+// RequireColumns check required table columns
+type RequireColumns struct {
+	Enabled bool                   `yaml:"enabled"`
+	Columns []RequireColumnsColumn `yaml:"columns"`
+}
+
+// RequireColumnsColumn is required column
+type RequireColumnsColumn struct {
+	Name    string   `yaml:"name"`
+	Exclude []string `yaml:"exclude"`
+}
+
+// IsEnabled return Rule is enabled or not
+func (r RequireColumns) IsEnabled() bool {
+	return r.Enabled
+}
+
+// Check the existence of a table columns
+func (r *RequireColumns) Check(s *schema.Schema) []RuleWarn {
+	warns := []RuleWarn{}
+	for _, t := range s.Tables {
+		for _, cc := range r.Columns {
+			excluded := false
+			for _, tt := range cc.Exclude {
+				if t.Name == tt {
+					excluded = true
+				}
+			}
+			if excluded {
+				continue
+			}
+			exists := false
+			msgFmt := "column '%s' required."
+			for _, c := range t.Columns {
+				if c.Name == cc.Name {
+					exists = true
+				}
+			}
+			if !exists {
+				warns = append(warns, RuleWarn{
+					Target:  t.Name,
+					Message: fmt.Sprintf(msgFmt, cc.Name),
+				})
+			}
+		}
+	}
+	return warns
 }

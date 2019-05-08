@@ -95,8 +95,9 @@ func TestColumnCount(t *testing.T) {
 	}
 	s := newTestSchema()
 	warns := r.Check(s)
-	if len(warns) != 1 {
-		t.Errorf("actual %v\nwant %v", len(warns), 1)
+	want := 1
+	if len(warns) != want {
+		t.Errorf("actual %v\nwant %v", len(warns), want)
 	}
 }
 
@@ -108,8 +109,53 @@ func TestColumnCountWithExclude(t *testing.T) {
 	}
 	s := newTestSchema()
 	warns := r.Check(s)
-	if len(warns) != 0 {
-		t.Errorf("actual %v\nwant %v", len(warns), 1)
+	want := 0
+	if len(warns) != want {
+		t.Errorf("actual %v\nwant %v", len(warns), want)
+	}
+}
+
+func TestRequireColumns(t *testing.T) {
+	r := RequireColumns{
+		Enabled: true,
+		Columns: []RequireColumnsColumn{
+			RequireColumnsColumn{
+				Name:    "a2",
+				Exclude: []string{},
+			},
+			RequireColumnsColumn{
+				Name:    "b2",
+				Exclude: []string{},
+			},
+		},
+	}
+	s := newTestSchema()
+	warns := r.Check(s)
+	want := 4
+	if len(warns) != want {
+		t.Errorf("actual %v\nwant %v", len(warns), want)
+	}
+}
+
+func TestRequireColumnsWithExclude(t *testing.T) {
+	r := RequireColumns{
+		Enabled: true,
+		Columns: []RequireColumnsColumn{
+			RequireColumnsColumn{
+				Name:    "a2",
+				Exclude: []string{"b", "c"},
+			},
+			RequireColumnsColumn{
+				Name:    "b2",
+				Exclude: []string{"a", "c"},
+			},
+		},
+	}
+	s := newTestSchema()
+	warns := r.Check(s)
+	want := 0
+	if len(warns) != want {
+		t.Errorf("actual %v\nwant %v", len(warns), want)
 	}
 }
 
