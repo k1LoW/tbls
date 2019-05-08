@@ -347,6 +347,17 @@ lint:
     # exclude tables from warnings
     exclude:
       - user_options
+  # require columns
+  requireColumns:
+    enabled: true
+    columns:
+      -
+        name: created
+      -
+        name: updated
+        exclude:
+          - logs
+          - CamelizeTable
 ```
 
 ### Comments
