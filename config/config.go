@@ -2,6 +2,7 @@ package config
 
 import (
 	"bytes"
+	"fmt"
 	"html/template"
 	"io/ioutil"
 	"net/url"
@@ -27,6 +28,7 @@ type Config struct {
 	DocPath   string               `yaml:"docPath"`
 	Format    Format               `yaml:"format"`
 	ER        ER                   `yaml:"er"`
+	Exclude   []string             `yaml:"exclude"`
 	Lint      Lint                 `yaml:"lint"`
 	Relations []AdditionalRelation `yaml:"relations"`
 	Comments  []AdditionalComment  `yaml:"comments"`
@@ -202,6 +204,25 @@ func (c *Config) LoadConfigFile(path string) error {
 	return nil
 }
 
+// ModifySchema modify schema.Schema by config
+func (c *Config) ModifySchema(s *schema.Schema) error {
+	err := c.MergeAdditionalData(s)
+	if err != nil {
+		return err
+	}
+	err = c.ExcludeTables(s)
+	if err != nil {
+		return err
+	}
+	if c.Format.Sort {
+		err = s.Sort()
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 // MergeAdditionalData merge additional* to schema.Schema
 func (c *Config) MergeAdditionalData(s *schema.Schema) error {
 	err := mergeAdditionalRelations(s, c.Relations)
@@ -212,6 +233,63 @@ func (c *Config) MergeAdditionalData(s *schema.Schema) error {
 	if err != nil {
 		return err
 	}
+	return nil
+}
+
+// ExcludeTables exclude tables from schema.Schema
+func (c *Config) ExcludeTables(s *schema.Schema) error {
+	for _, e := range c.Exclude {
+		for _, r := range s.Relations {
+			if r.ParentTable.Name == e {
+				return errors.New(fmt.Sprintf("failed to exclude table '%s': '%s' is related by '%s'", e, e, r.Table.Name))
+			}
+		}
+		err := excludeTableFromSchema(e, s)
+		if err != nil {
+			return errors.Wrap(errors.WithStack(err), fmt.Sprintf("failed to exclude table '%s'", e))
+		}
+	}
+	return nil
+}
+
+func excludeTableFromSchema(name string, s *schema.Schema) error {
+	// Tables
+	tables := []*schema.Table{}
+	for _, t := range s.Tables {
+		if t.Name != name {
+			tables = append(tables, t)
+		}
+		for _, c := range t.Columns {
+			// ChildRelations
+			childRelations := []*schema.Relation{}
+			for _, r := range c.ChildRelations {
+				if r.Table.Name != name {
+					childRelations = append(childRelations, r)
+				}
+			}
+			c.ChildRelations = childRelations
+
+			// ParentRelations
+			parentRelations := []*schema.Relation{}
+			for _, r := range c.ParentRelations {
+				if r.Table.Name != name {
+					parentRelations = append(parentRelations, r)
+				}
+			}
+			c.ParentRelations = parentRelations
+		}
+	}
+	s.Tables = tables
+
+	// Relations
+	relations := []*schema.Relation{}
+	for _, r := range s.Relations {
+		if r.Table.Name != name {
+			relations = append(relations, r)
+		}
+	}
+	s.Relations = relations
+
 	return nil
 }
 

@@ -1,4 +1,6 @@
 ---
+exclude:
+  - migrations
 relations:
   -
     table: posts

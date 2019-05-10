@@ -62,7 +62,7 @@ var lintCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		err = c.MergeAdditionalData(s)
+		err = c.ModifySchema(s)
 		if err != nil {
 			printError(err)
 			os.Exit(1)
