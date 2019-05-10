@@ -138,6 +138,158 @@ func TestMergeAditionalData(t *testing.T) {
 	}
 }
 
+func TestExcludeTables(t *testing.T) {
+	s := schema.Schema{
+		Name: "testschema",
+		Tables: []*schema.Table{
+			&schema.Table{
+				Name:    "users",
+				Comment: "users comment",
+				Columns: []*schema.Column{
+					&schema.Column{
+						Name: "id",
+						Type: "serial",
+					},
+					&schema.Column{
+						Name: "username",
+						Type: "text",
+					},
+				},
+			},
+			&schema.Table{
+				Name:    "posts",
+				Comment: "posts comment",
+				Columns: []*schema.Column{
+					&schema.Column{
+						Name: "id",
+						Type: "serial",
+					},
+					&schema.Column{
+						Name: "user_id",
+						Type: "int",
+					},
+					&schema.Column{
+						Name: "title",
+						Type: "text",
+					},
+				},
+			},
+			&schema.Table{
+				Name: "migrations",
+				Columns: []*schema.Column{
+					&schema.Column{
+						Name: "id",
+						Type: "serial",
+					},
+					&schema.Column{
+						Name: "name",
+						Type: "text",
+					},
+				},
+			},
+		},
+	}
+	c, err := NewConfig()
+	if err != nil {
+		t.Error(err)
+	}
+	err = c.LoadConfigFile(filepath.Join(testdataDir(), "config_test_tbls.yml"))
+	if err != nil {
+		t.Error(err)
+	}
+	err = c.ExcludeTables(&s)
+	if err != nil {
+		t.Error(err)
+	}
+	expected := 2
+	actual := len(s.Tables)
+	if actual != expected {
+		t.Errorf("actual %v\nwant %v", actual, expected)
+	}
+}
+
+func TestModifySchema(t *testing.T) {
+	s := schema.Schema{
+		Name: "testschema",
+		Tables: []*schema.Table{
+			&schema.Table{
+				Name:    "users",
+				Comment: "users comment",
+				Columns: []*schema.Column{
+					&schema.Column{
+						Name: "id",
+						Type: "serial",
+					},
+					&schema.Column{
+						Name: "username",
+						Type: "text",
+					},
+				},
+			},
+			&schema.Table{
+				Name:    "posts",
+				Comment: "posts comment",
+				Columns: []*schema.Column{
+					&schema.Column{
+						Name: "id",
+						Type: "serial",
+					},
+					&schema.Column{
+						Name: "user_id",
+						Type: "int",
+					},
+					&schema.Column{
+						Name: "title",
+						Type: "text",
+					},
+				},
+			},
+			&schema.Table{
+				Name: "migrations",
+				Columns: []*schema.Column{
+					&schema.Column{
+						Name: "id",
+						Type: "serial",
+					},
+					&schema.Column{
+						Name: "name",
+						Type: "text",
+					},
+				},
+			},
+		},
+	}
+	c, err := NewConfig()
+	if err != nil {
+		t.Error(err)
+	}
+	err = c.LoadConfigFile(filepath.Join(testdataDir(), "config_test_tbls.yml"))
+	if err != nil {
+		t.Error(err)
+	}
+	err = c.ModifySchema(&s)
+	if err != nil {
+		t.Error(err)
+	}
+	expected := 1
+	actual := len(s.Relations)
+	if actual != expected {
+		t.Errorf("actual %v\nwant %v", actual, expected)
+	}
+	posts, _ := s.FindTableByName("posts")
+	title, _ := posts.FindColumnByName("title")
+	expected2 := "post title"
+	actual2 := title.Comment
+	if actual2 != expected2 {
+		t.Errorf("actual %v\nwant %v", actual2, expected2)
+	}
+	expected3 := 2
+	actual3 := len(s.Tables)
+	if actual3 != expected3 {
+		t.Errorf("actual %v\nwant %v", actual, expected)
+	}
+}
+
 func testdataDir() string {
 	wd, _ := os.Getwd()
 	dir, _ := filepath.Abs(filepath.Join(filepath.Dir(wd), "testdata"))
