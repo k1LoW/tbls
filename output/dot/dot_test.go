@@ -17,7 +17,7 @@ func TestOutputSchema(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	err = c.LoadConfigFile(filepath.Join(testdataDir(), "md_test_additional_data.yml"))
+	err = c.LoadConfigFile(filepath.Join(testdataDir(), "md_test_tbls.yml"))
 	if err != nil {
 		t.Error(err)
 	}
@@ -44,7 +44,7 @@ func TestOutputTable(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	err = c.LoadConfigFile(filepath.Join(testdataDir(), "md_test_additional_data.yml"))
+	err = c.LoadConfigFile(filepath.Join(testdataDir(), "md_test_tbls.yml"))
 	if err != nil {
 		t.Error(err)
 	}

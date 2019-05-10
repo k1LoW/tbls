@@ -31,7 +31,7 @@ func TestLoadDefault(t *testing.T) {
 func TestLoadConfigFile(t *testing.T) {
 	_ = os.Setenv("TBLS_TEST_PG_PASS", "pgpass")
 	_ = os.Setenv("TBLS_TEST_PG_DOC_PATH", "sample/pg")
-	configFilepath := filepath.Join(testdataDir(), "env_testdb_config.yml")
+	configFilepath := filepath.Join(testdataDir(), "env_testdb_tbls.yml")
 	config, err := NewConfig()
 	if err != nil {
 		t.Fatal(err)
@@ -116,7 +116,7 @@ func TestMergeAditionalData(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	err = c.LoadConfigFile(filepath.Join(testdataDir(), "schema_test_additional_data.yml"))
+	err = c.LoadConfigFile(filepath.Join(testdataDir(), "config_test_tbls.yml"))
 	if err != nil {
 		t.Error(err)
 	}
