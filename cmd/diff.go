@@ -66,18 +66,10 @@ var diffCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		err = c.MergeAdditionalData(s)
+		err = c.ModifySchema(s)
 		if err != nil {
 			printError(err)
 			os.Exit(1)
-		}
-
-		if c.Format.Sort {
-			err = s.Sort()
-			if err != nil {
-				printError(err)
-				os.Exit(1)
-			}
 		}
 
 		diff, err := md.Diff(s, c)
