@@ -5,7 +5,7 @@ require (
 	github.com/gobuffalo/packd v0.1.0 // indirect
 	github.com/gobuffalo/packr v1.25.0
 	github.com/labstack/gommon v0.2.8
-	github.com/lib/pq v1.1.0
+	github.com/lib/pq v1.1.1
 	github.com/loadoff/excl v0.0.0-20171207172601-c6a9e4c4b4c4
 	github.com/mattn/go-colorable v0.1.1 // indirect
 	github.com/mattn/go-isatty v0.0.7 // indirect
@@ -15,8 +15,8 @@ require (
 	github.com/pmezard/go-difflib v1.0.0
 	github.com/spf13/cobra v0.0.3
 	github.com/xo/dburl v0.0.0-20190203050942-98997a05b24f
-	golang.org/x/sys v0.0.0-20190424175732-18eb32c0e2f0 // indirect
-	golang.org/x/text v0.3.1 // indirect
+	golang.org/x/sys v0.0.0-20190509141414-a5b02f93d862 // indirect
+	golang.org/x/text v0.3.2 // indirect
 	google.golang.org/appengine v1.5.0 // indirect
 	gopkg.in/yaml.v2 v2.2.2
 )
