@@ -13,12 +13,21 @@ import (
 var reFK = regexp.MustCompile(`FOREIGN KEY \((.+)\) REFERENCES ([^\s]+)\s?\((.+)\)`)
 
 // Mysql struct
-type Mysql struct{}
+type Mysql struct{
+	db *sql.DB
+}
+
+// NewMysql return new Mysql
+func NewMysql(db *sql.DB) *Mysql {
+  return &Mysql{
+		db: db,
+	}
+}
 
 // Analyze MySQL database schema
-func (m *Mysql) Analyze(db *sql.DB, s *schema.Schema) error {
+func (m *Mysql) Analyze(s *schema.Schema) error {
 	// tables and comments
-	tableRows, err := db.Query(`
+	tableRows, err := m.db.Query(`
 SELECT table_name, table_type, table_comment FROM information_schema.tables WHERE table_schema = ?;`, s.Name)
 	defer tableRows.Close()
 	if err != nil {
@@ -46,7 +55,7 @@ SELECT table_name, table_type, table_comment FROM information_schema.tables WHER
 
 		// table definition
 		if tableType == "BASE TABLE" {
-			tableDefRows, err := db.Query(fmt.Sprintf("SHOW CREATE TABLE %s", tableName))
+			tableDefRows, err := m.db.Query(fmt.Sprintf("SHOW CREATE TABLE %s", tableName))
 			defer tableDefRows.Close()
 			if err != nil {
 				return errors.WithStack(err)
@@ -66,7 +75,7 @@ SELECT table_name, table_type, table_comment FROM information_schema.tables WHER
 
 		// view definition
 		if tableType == "VIEW" {
-			viewDefRows, err := db.Query(`
+			viewDefRows, err := m.db.Query(`
 SELECT view_definition FROM information_schema.views
 WHERE table_schema = ?
 AND table_name = ?;
@@ -86,7 +95,7 @@ AND table_name = ?;
 		}
 
 		// indexes
-		indexRows, err := db.Query(`
+		indexRows, err := m.db.Query(`
 SELECT
 (CASE WHEN s.index_name='PRIMARY' AND s.non_unique=0 THEN 'PRIMARY KEY'
       WHEN s.index_name!='PRIMARY' AND s.non_unique=0 THEN 'UNIQUE KEY'
@@ -134,7 +143,7 @@ GROUP BY key_type, s.table_name, s.index_name, s.index_type`, s.Name, tableName)
 		table.Indexes = indexes
 
 		// constraints
-		constraintRows, err := db.Query(`
+		constraintRows, err := m.db.Query(`
 SELECT
   kcu.constraint_name,
   sub.costraint_type,
@@ -213,7 +222,7 @@ GROUP BY kcu.constraint_name, sub.costraint_type, kcu.referenced_table_name`, ta
 		table.Constraints = constraints
 
 		// triggers
-		triggerRows, err := db.Query(`
+		triggerRows, err := m.db.Query(`
 SELECT
 trigger_name,
 action_timing,
@@ -254,7 +263,7 @@ AND event_object_table = ?
 		table.Triggers = triggers
 
 		// columns and comments
-		columnRows, err := db.Query(`
+		columnRows, err := m.db.Query(`
 SELECT column_name, column_default, is_nullable, column_type, column_comment
 FROM information_schema.columns
 WHERE table_schema = ? AND table_name = ? ORDER BY ordinal_position`, s.Name, tableName)
@@ -327,9 +336,9 @@ WHERE table_schema = ? AND table_name = ? ORDER BY ordinal_position`, s.Name, ta
 }
 
 // Info return schema.Driver
-func (m *Mysql) Info(db *sql.DB) (*schema.Driver, error) {
+func (m *Mysql) Info() (*schema.Driver, error) {
 	var v string
-	row := db.QueryRow(`SELECT version();`)
+	row := m.db.QueryRow(`SELECT version();`)
 	row.Scan(&v)
 
 	d := &schema.Driver{

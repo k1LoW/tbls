@@ -26,8 +26,8 @@ func TestMain(m *testing.M) {
 }
 
 func TestAnalyzeView(t *testing.T) {
-	driver := new(Mysql)
-	err := driver.Analyze(db, s)
+	driver := NewMysql(db)
+	err := driver.Analyze(s)
 	if err != nil {
 		t.Errorf("%v", err)
 	}
@@ -39,8 +39,8 @@ func TestAnalyzeView(t *testing.T) {
 }
 
 func TestInfo(t *testing.T) {
-	driver := new(Mysql)
-	d, err := driver.Info(db)
+	driver := NewMysql(db)
+	d, err := driver.Info()
 	if err != nil {
 		t.Errorf("%v", err)
 	}

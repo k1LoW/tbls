@@ -18,7 +18,16 @@ var reFTS = regexp.MustCompile(`(?i)USING\s+fts([34])`)
 var shadowTables []string
 
 // Sqlite struct
-type Sqlite struct{}
+type Sqlite struct{
+	db *sql.DB
+}
+
+// NewSqlite return new Sqlite
+func NewSqlite(db *sql.DB) *Sqlite {
+  return &Sqlite{
+		db: db,
+	}
+}
 
 type fk struct {
 	ID                 string
@@ -31,9 +40,9 @@ type fk struct {
 }
 
 // Analyze SQLite database schema
-func (l *Sqlite) Analyze(db *sql.DB, s *schema.Schema) error {
+func (l *Sqlite) Analyze(s *schema.Schema) error {
 	// tables
-	tableRows, err := db.Query(`
+	tableRows, err := l.db.Query(`
 SELECT name, type, sql
 FROM sqlite_master
 WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
@@ -78,7 +87,7 @@ WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
 		constraints := []*schema.Constraint{}
 
 		// columns
-		columnRows, err := db.Query(fmt.Sprintf("PRAGMA table_info(%s)", tableName))
+		columnRows, err := l.db.Query(fmt.Sprintf("PRAGMA table_info(%s)", tableName))
 		defer columnRows.Close()
 		if err != nil {
 			return errors.WithStack(err)
@@ -121,7 +130,7 @@ WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
 		fkMap := map[string]*fk{}
 		fkSlice := []*fk{}
 
-		foreignKeyRows, err := db.Query(fmt.Sprintf("PRAGMA foreign_key_list(%s)", tableName))
+		foreignKeyRows, err := l.db.Query(fmt.Sprintf("PRAGMA foreign_key_list(%s)", tableName))
 		defer foreignKeyRows.Close()
 		if err != nil {
 			return errors.WithStack(err)
@@ -192,7 +201,7 @@ WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
 		}
 
 		// indexes and constraints(UNIQUE, PRIMARY KEY)
-		indexRows, err := db.Query(fmt.Sprintf("PRAGMA index_list(%s)", tableName))
+		indexRows, err := l.db.Query(fmt.Sprintf("PRAGMA index_list(%s)", tableName))
 		defer indexRows.Close()
 		if err != nil {
 			return errors.WithStack(err)
@@ -220,7 +229,7 @@ WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
 			}
 
 			if indexCreatedBy == "c" {
-				row, err := db.Query(`SELECT sql FROM sqlite_master WHERE type = 'index' AND tbl_name = ? AND name = ?;
+				row, err := l.db.Query(`SELECT sql FROM sqlite_master WHERE type = 'index' AND tbl_name = ? AND name = ?;
 `, tableName, indexName)
 				for row.Next() {
 					err = row.Scan(
@@ -237,7 +246,7 @@ WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
 					col                string
 					cols               []string
 				)
-				row, err := db.Query(fmt.Sprintf("PRAGMA index_info(%s)", indexName))
+				row, err := l.db.Query(fmt.Sprintf("PRAGMA index_info(%s)", indexName))
 				for row.Next() {
 					err = row.Scan(
 						&colRank,
@@ -284,7 +293,7 @@ WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
 		}
 
 		// triggers
-		triggerRows, err := db.Query(`
+		triggerRows, err := l.db.Query(`
 SELECT name, sql FROM sqlite_master WHERE type = 'trigger' AND tbl_name = ?;
 `, tableName)
 		defer triggerRows.Close()
@@ -361,9 +370,9 @@ SELECT name, sql FROM sqlite_master WHERE type = 'trigger' AND tbl_name = ?;
 }
 
 // Info return schema.Driver
-func (l *Sqlite) Info(db *sql.DB) (*schema.Driver, error) {
+func (l *Sqlite) Info() (*schema.Driver, error) {
 	var v string
-	row := db.QueryRow(`SELECT sqlite_version();`)
+	row := l.db.QueryRow(`SELECT sqlite_version();`)
 	row.Scan(&v)
 
 	d := &schema.Driver{

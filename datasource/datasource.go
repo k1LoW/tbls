@@ -44,29 +44,29 @@ func Analyze(urlstr string) (*schema.Schema, error) {
 	switch u.Driver {
 	case "postgres":
 		s.Name = splitted[1]
-		driver = new(postgres.Postgres)
+		driver = postgres.NewPostgres(db)
 	case "mysql":
 		s.Name = splitted[1]
-		driver = new(mysql.Mysql)
+		driver = mysql.NewMysql(db)
 	case "sqlite3":
 		s.Name = splitted[len(splitted)-1]
-		driver = new(sqlite.Sqlite)
+		driver = sqlite.NewSqlite(db)
 	default:
 		return s, errors.WithStack(fmt.Errorf("unsupported driver '%s'", u.Driver))
 	}
-	d, err := driver.Info(db)
+	d, err := driver.Info()
 	if err != nil {
 		return s, err
 	}
 	s.Driver = d
-	err = driver.Analyze(db, s)
+	err = driver.Analyze(s)
 	if err != nil {
 		return s, err
 	}
 	return s, nil
 }
 
-// AnalizeJSON analize `json://`
+// AnalizeJSON analyze `json://`
 func AnalizeJSON(urlstr string) (*schema.Schema, error) {
 	s := &schema.Schema{}
 	splitted := strings.Split(urlstr, "json://")

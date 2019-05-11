@@ -14,13 +14,22 @@ var reFK = regexp.MustCompile(`FOREIGN KEY \((.+)\) REFERENCES ([^\s]+)\s?\((.+)
 var defaultSchemaName = "public"
 
 // Postgres struct
-type Postgres struct{}
+type Postgres struct{
+	db *sql.DB
+}
+
+// NewPostgres return new Postgres
+func NewPostgres(db *sql.DB) *Postgres {
+  return &Postgres{
+		db: db,
+	}
+}
 
 // Analyze PostgreSQL database schema
-func (p *Postgres) Analyze(db *sql.DB, s *schema.Schema) error {
+func (p *Postgres) Analyze(s *schema.Schema) error {
 
 	// tables
-	tableRows, err := db.Query(`
+	tableRows, err := p.db.Query(`
 SELECT DISTINCT cls.oid AS oid, cls.relname AS table_name, tbl.table_type AS table_type, tbl.table_schema AS table_schema
 FROM pg_catalog.pg_class cls
 INNER JOIN pg_namespace ns ON cls.relnamespace = ns.oid
@@ -60,7 +69,7 @@ ORDER BY oid`, s.Name)
 		}
 
 		// table comment
-		tableCommentRows, err := db.Query(`
+		tableCommentRows, err := p.db.Query(`
 SELECT pd.description as comment
 FROM pg_stat_user_tables AS ps, pg_description AS pd
 WHERE ps.relid=pd.objoid
@@ -83,7 +92,7 @@ AND ps.schemaname = $2`, tableName, tableSchema)
 
 		// view definition
 		if tableType == "VIEW" {
-			viewDefRows, err := db.Query(`
+			viewDefRows, err := p.db.Query(`
 SELECT view_definition FROM information_schema.views
 WHERE table_catalog = $1
 AND table_name = $2
@@ -104,7 +113,7 @@ AND table_schema = $3;
 		}
 
 		// indexes
-		indexRows, err := db.Query(`
+		indexRows, err := p.db.Query(`
 SELECT
 i.relname AS indexname,
 pg_get_indexdef(i.oid) AS indexdef
@@ -141,7 +150,7 @@ ORDER BY x.indexrelid
 		table.Indexes = indexes
 
 		// constraints
-		constraintRows, err := db.Query(`
+		constraintRows, err := p.db.Query(`
 SELECT
   pc.conname AS name,
   (CASE WHEN contype='t' THEN pg_get_triggerdef((SELECT oid FROM pg_trigger WHERE tgconstraint = pc.oid LIMIT 1))
@@ -186,7 +195,7 @@ ORDER BY pc.conrelid, pc.conindid, pc.conname`, tableName, tableSchema)
 		table.Constraints = constraints
 
 		// triggers
-		triggerRows, err := db.Query(`
+		triggerRows, err := p.db.Query(`
 SELECT tgname, pg_get_triggerdef(pt.oid)
 FROM pg_trigger AS pt
 LEFT JOIN pg_stat_user_tables AS ps ON ps.relid = pt.tgrelid
@@ -219,7 +228,7 @@ ORDER BY pt.tgrelid
 		table.Triggers = triggers
 
 		// columns comments
-		columnCommentRows, err := db.Query(`
+		columnCommentRows, err := p.db.Query(`
 SELECT pa.attname AS column_name, pd.description AS comment
 FROM pg_stat_all_tables AS ps ,pg_description AS pd ,pg_attribute AS pa
 WHERE ps.relid=pd.objoid
@@ -247,7 +256,7 @@ AND ps.schemaname = $2`, tableName, tableSchema)
 		}
 
 		// columns
-		columnRows, err := db.Query(`
+		columnRows, err := p.db.Query(`
 SELECT column_name, column_default, is_nullable, data_type, udt_name, character_maximum_length
 FROM information_schema.columns
 WHERE table_name = $1
@@ -326,9 +335,9 @@ ORDER BY ordinal_position
 }
 
 // Info return schema.Driver
-func (p *Postgres) Info(db *sql.DB) (*schema.Driver, error) {
+func (p *Postgres) Info() (*schema.Driver, error) {
 	var v string
-	row := db.QueryRow(`SELECT version();`)
+	row := p.db.QueryRow(`SELECT version();`)
 	row.Scan(&v)
 
 	d := &schema.Driver{
