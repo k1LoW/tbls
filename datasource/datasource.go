@@ -1,12 +1,16 @@
 package datasource
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
+	"net/url"
 	"os"
 	"strings"
 
+	"cloud.google.com/go/bigquery"
 	"github.com/k1LoW/tbls/drivers"
+	"github.com/k1LoW/tbls/drivers/bq"
 	"github.com/k1LoW/tbls/drivers/mysql"
 	"github.com/k1LoW/tbls/drivers/postgres"
 	"github.com/k1LoW/tbls/drivers/sqlite"
@@ -19,6 +23,9 @@ import (
 func Analyze(urlstr string) (*schema.Schema, error) {
 	if strings.Index(urlstr, "json://") == 0 {
 		return AnalizeJSON(urlstr)
+	}
+	if strings.Index(urlstr, "bq://") == 0 || strings.Index(urlstr, "bigquery://") == 0 {
+		return AnalizeBigquery(urlstr)
 	}
 	s := &schema.Schema{}
 	u, err := dburl.Parse(urlstr)
@@ -79,6 +86,42 @@ func AnalizeJSON(urlstr string) (*schema.Schema, error) {
 	err = s.Repair()
 	if err != nil {
 		return s, errors.WithStack(err)
+	}
+	return s, nil
+}
+
+// AnalizeBigquery ...
+func AnalizeBigquery(urlstr string) (*schema.Schema, error) {
+	s := &schema.Schema{}
+	u, err := url.Parse(urlstr)
+	if err != nil {
+		return s, err
+	}
+	splitted := strings.Split(u.Path, "/")
+
+	projectID := u.Host
+	datasetID := splitted[1]
+
+	ctx := context.Background()
+	client, err := bigquery.NewClient(ctx, projectID)
+	if err != nil {
+		return s, err
+	}
+	defer client.Close()
+
+	s.Name = datasetID
+	driver, err := bq.NewBigquery(ctx, client, datasetID)
+	if err != nil {
+		return s, err
+	}
+	d, err := driver.Info()
+	if err != nil {
+		return s, err
+	}
+	s.Driver = d
+	err = driver.Analyze(s)
+	if err != nil {
+		return s, err
 	}
 	return s, nil
 }
