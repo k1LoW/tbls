@@ -1,5 +1,10 @@
 # Changelog
 
+## [v1.12.0](https://github.com/k1LoW/tbls/compare/v1.11.1...v1.12.0) (2019-05-11)
+
+*  Add `exclude` for excluding tables from the document [#96](https://github.com/k1LoW/tbls/pull/96) ([k1LoW](https://github.com/k1LoW))
+* Add lint rule `requireColumns` [#95](https://github.com/k1LoW/tbls/pull/95) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.11.1](https://github.com/k1LoW/tbls/compare/v1.11.0...v1.11.1) (2019-04-25)
 
 * Fix loading args when `tbls out` [#91](https://github.com/k1LoW/tbls/pull/91) ([k1LoW](https://github.com/k1LoW))
