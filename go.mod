@@ -5,6 +5,9 @@ require (
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/gobuffalo/packd v0.1.0 // indirect
 	github.com/gobuffalo/packr v1.25.0
+	github.com/golang/protobuf v1.3.1 // indirect
+	github.com/google/go-cmp v0.3.0 // indirect
+	github.com/hashicorp/golang-lru v0.5.1 // indirect
 	github.com/labstack/gommon v0.2.8
 	github.com/lib/pq v1.1.1
 	github.com/loadoff/excl v0.0.0-20171207172601-c6a9e4c4b4c4
@@ -16,11 +19,13 @@ require (
 	github.com/pmezard/go-difflib v1.0.0
 	github.com/spf13/cobra v0.0.3
 	github.com/xo/dburl v0.0.0-20190203050942-98997a05b24f
-	golang.org/x/crypto v0.0.0-20190510104115-cbcb75029529 // indirect
 	golang.org/x/net v0.0.0-20190509222800-a4d6f7feada5 // indirect
+	golang.org/x/oauth2 v0.0.0-20190402181905-9f3314589c9a // indirect
 	golang.org/x/sys v0.0.0-20190509141414-a5b02f93d862 // indirect
 	golang.org/x/text v0.3.2 // indirect
-	golang.org/x/tools v0.0.0-20190511041617-99f201b6807e // indirect
+	google.golang.org/api v0.5.0 // indirect
 	google.golang.org/appengine v1.5.0 // indirect
+	google.golang.org/genproto v0.0.0-20190508193815-b515fa19cec8 // indirect
+	google.golang.org/grpc v1.20.1 // indirect
 	gopkg.in/yaml.v2 v2.2.2
 )
