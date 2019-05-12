@@ -15,7 +15,7 @@ BUILD_LDFLAGS = -X $(PKG).commit=$(COMMIT) -X $(PKG).date=$(DATE)
 
 default: test
 
-ci: build test testdoc test_too_many_tables test_json
+ci: build test testdoc test_too_many_tables test_json test_bigquery
 
 test:
 	usql pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -f testdata/pg.sql
@@ -65,10 +65,10 @@ test_config:
 	rm .tbls.yml
 
 test_bigquery:
-	./tbls doc bq://bigquery-public-data/bitcoin_blockchain?creds=test-google-application-credentials.json -f sample/bigquery_bitcoin_blockchain
-	./tbls diff bq://bigquery-public-data/bitcoin_blockchain?creds=test-google-application-credentials.json sample/bigquery_bitcoin_blockchain
-	./tbls doc bq://bigquery-public-data/census_bureau_international?creds=test-google-application-credentials.json -f sample/bigquery_census_bureau_international
-	./tbls diff bq://bigquery-public-data/census_bureau_international?creds=test-google-application-credentials.json sample/bigquery_census_bureau_international
+	./tbls doc bq://bigquery-public-data/bitcoin_blockchain?creds=client_secrets.json -f sample/bigquery_bitcoin_blockchain
+	./tbls diff bq://bigquery-public-data/bitcoin_blockchain?creds=client_secrets.json sample/bigquery_bitcoin_blockchain
+	./tbls doc bq://bigquery-public-data/census_bureau_international?creds=client_secrets.json -f sample/bigquery_census_bureau_international
+	./tbls diff bq://bigquery-public-data/census_bureau_international?creds=client_secrets.json sample/bigquery_census_bureau_international
 
 build:
 	packr
