@@ -1,5 +1,12 @@
 # Changelog
 
+## [v1.13.0](https://github.com/k1LoW/tbls/compare/v1.12.0...v1.13.0) (2019-05-12)
+
+* Fix dot file format [#100](https://github.com/k1LoW/tbls/pull/100) ([k1LoW](https://github.com/k1LoW))
+* Fix command options [#99](https://github.com/k1LoW/tbls/pull/99) ([k1LoW](https://github.com/k1LoW))
+* Support BigQuery [#98](https://github.com/k1LoW/tbls/pull/98) ([k1LoW](https://github.com/k1LoW))
+* Refactor drivers [#97](https://github.com/k1LoW/tbls/pull/97) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.12.0](https://github.com/k1LoW/tbls/compare/v1.11.1...v1.12.0) (2019-05-11)
 
 *  Add `exclude` for excluding tables from the document [#96](https://github.com/k1LoW/tbls/pull/96) ([k1LoW](https://github.com/k1LoW))
