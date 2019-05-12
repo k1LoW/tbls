@@ -270,6 +270,11 @@ dsn: sq:///path/to/dbname.db
 
 ``` yaml
 # .tbls.yml
+dsn: bigquery://project-id/dataset-id?creds=/path/to/google_application_credentials.json
+```
+
+``` yaml
+# .tbls.yml
 dsn: bq://project-id/dataset-id?creds=/path/to/google_application_credentials.json
 ```
 
