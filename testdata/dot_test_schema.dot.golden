@@ -17,5 +17,5 @@ digraph "testschema" {
               </table>>];
 
   // Relations
-  "a":a -> "b":b [dir=back, arrowtail=crow,  taillabel=<<table cellpadding="5" border="0" cellborder="0"><tr><td></td></tr></table>>];
+  "a":"a" -> "b":"b" [dir=back, arrowtail=crow,  taillabel=<<table cellpadding="5" border="0" cellborder="0"><tr><td></td></tr></table>>];
 }
