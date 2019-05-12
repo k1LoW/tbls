@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.13.1](https://github.com/k1LoW/tbls/compare/v1.13.0...v1.13.1) (2019-05-12)
+
+* Fix BigQuery dataset schema name [#101](https://github.com/k1LoW/tbls/pull/101) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.13.0](https://github.com/k1LoW/tbls/compare/v1.12.0...v1.13.0) (2019-05-12)
 
 * Fix dot file format [#100](https://github.com/k1LoW/tbls/pull/100) ([k1LoW](https://github.com/k1LoW))
