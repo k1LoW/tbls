@@ -5,6 +5,7 @@ import (
 	"io"
 	"io/ioutil"
 	"strings"
+	"unicode/utf8"
 
 	"github.com/k1LoW/tbls/schema"
 	"github.com/loadoff/excl"
@@ -72,6 +73,9 @@ func (x *Xlsx) OutputTable(wr io.Writer, t *schema.Table) error {
 
 func createSchemaSheet(w *excl.Workbook, s *schema.Schema) error {
 	sheetName := fmt.Sprintf("Tables of %s", s.Name)
+	if utf8.RuneCountInString(sheetName) > 31 { // MS Excel assumes a maximum length of 31 characters for sheet name
+		sheetName = "Tables"
+	}
 	sheet, err := w.OpenSheet(sheetName)
 	defer sheet.Close()
 	if err != nil {
@@ -94,6 +98,10 @@ func createSchemaSheet(w *excl.Workbook, s *schema.Schema) error {
 
 func createTableSheet(w *excl.Workbook, t *schema.Table) error {
 	sheetName := t.Name
+	if utf8.RuneCountInString(sheetName) > 31 { // MS Excel assumes a maximum length of 31 characters for sheet name
+		r := []rune(sheetName)
+		sheetName = string(r[0:31])
+	}
 	sheet, err := w.OpenSheet(sheetName)
 	defer sheet.Close()
 	if err != nil {
