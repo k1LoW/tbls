@@ -1,6 +1,7 @@
 module github.com/k1LoW/tbls
 
 require (
+	cloud.google.com/go v0.38.0
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/gobuffalo/packd v0.1.0 // indirect
 	github.com/gobuffalo/packr v1.25.0
@@ -15,8 +16,11 @@ require (
 	github.com/pmezard/go-difflib v1.0.0
 	github.com/spf13/cobra v0.0.3
 	github.com/xo/dburl v0.0.0-20190203050942-98997a05b24f
+	golang.org/x/crypto v0.0.0-20190510104115-cbcb75029529 // indirect
+	golang.org/x/net v0.0.0-20190509222800-a4d6f7feada5 // indirect
 	golang.org/x/sys v0.0.0-20190509141414-a5b02f93d862 // indirect
 	golang.org/x/text v0.3.2 // indirect
+	golang.org/x/tools v0.0.0-20190511041617-99f201b6807e // indirect
 	google.golang.org/appengine v1.5.0 // indirect
 	gopkg.in/yaml.v2 v2.2.2
 )

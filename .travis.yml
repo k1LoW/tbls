@@ -10,6 +10,9 @@ dist: xenial
 addons:
   apt:
     update: true
+before_install:
+  - openssl aes-256-cbc -K $encrypted_41d865494e68_key -iv $encrypted_41d865494e68_iv
+    -in client_secrets.json.enc -out client_secrets.json -d
 install:
   - echo $TRAVIS_GO_VERSION
   - sudo pip install codecov

@@ -15,14 +15,14 @@ BUILD_LDFLAGS = -X $(PKG).commit=$(COMMIT) -X $(PKG).date=$(DATE)
 
 default: test
 
-ci: build test testdoc test_too_many_tables test_json
+ci: build test testdoc test_too_many_tables test_json test_bigquery
 
 test:
 	usql pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -f testdata/pg.sql
 	usql my://root:mypass@localhost:33306/testdb -f testdata/my.sql
 	usql my://root:mypass@localhost:33308/testdb -f testdata/my.sql
 	sqlite3 $(PWD)/testdata/testdb.sqlite3 < testdata/sqlite.sql
-	go test ./... -coverprofile=coverage.txt -covermode=count
+	go test ./... -v -coverprofile=coverage.txt -covermode=count
 	make testdoc
 
 doc: build
@@ -63,6 +63,14 @@ test_config:
 	cp testdata/mysql_testdb_config.yml .tbls.yml
 	./tbls diff
 	rm .tbls.yml
+
+doc_bigquery:
+	./tbls doc bq://bigquery-public-data/bitcoin_blockchain?creds=client_secrets.json -f sample/bigquery_bitcoin_blockchain
+	./tbls doc bq://bigquery-public-data/census_bureau_international?creds=client_secrets.json -f sample/bigquery_census_bureau_international
+
+test_bigquery:
+	./tbls diff bq://bigquery-public-data/bitcoin_blockchain?creds=client_secrets.json sample/bigquery_bitcoin_blockchain
+	./tbls diff bq://bigquery-public-data/census_bureau_international?creds=client_secrets.json sample/bigquery_census_bureau_international
 
 build:
 	packr
