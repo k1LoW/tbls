@@ -5,3 +5,4 @@ coverage.txt
 testdb.sqlite3
 .envrc
 .go-version
+test-google-application-credentials.json

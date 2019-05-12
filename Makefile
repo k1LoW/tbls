@@ -64,6 +64,12 @@ test_config:
 	./tbls diff
 	rm .tbls.yml
 
+test_bigquery:
+	./tbls doc bq://bigquery-public-data/bitcoin_blockchain?creds=test-google-application-credentials.json -f sample/bigquery_bitcoin_blockchain
+	./tbls diff bq://bigquery-public-data/bitcoin_blockchain?creds=test-google-application-credentials.json sample/bigquery_bitcoin_blockchain
+	./tbls doc bq://bigquery-public-data/census_bureau_international?creds=test-google-application-credentials.json -f sample/bigquery_census_bureau_international
+	./tbls diff bq://bigquery-public-data/census_bureau_international?creds=test-google-application-credentials.json sample/bigquery_census_bureau_international
+
 build:
 	packr
 	go build -ldflags="$(BUILD_LDFLAGS)"
