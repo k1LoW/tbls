@@ -89,8 +89,12 @@ func loadDiffArgs(args []string) ([]config.Option, error) {
 	if len(args) > 2 {
 		return options, errors.WithStack(errors.New("too many arguments"))
 	}
-	options = append(options, config.Adjust(adjust))
-	options = append(options, config.Sort(sort))
+	if adjust {
+		options = append(options, config.Adjust(adjust))
+	}
+	if sort {
+		options = append(options, config.Sort(sort))
+	}
 	options = append(options, config.ERFormat(erFormat))
 	if len(args) == 2 {
 		options = append(options, config.DSN(args[0]))
