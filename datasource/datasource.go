@@ -97,6 +97,13 @@ func AnalizeBigquery(urlstr string) (*schema.Schema, error) {
 	if err != nil {
 		return s, err
 	}
+
+	values := u.Query()
+	err = setEnvGoogleApplicationCredentials(values)
+	if err != nil {
+		return s, err
+	}
+
 	splitted := strings.Split(u.Path, "/")
 
 	projectID := u.Host
@@ -124,4 +131,18 @@ func AnalizeBigquery(urlstr string) (*schema.Schema, error) {
 		return s, err
 	}
 	return s, nil
+}
+
+func setEnvGoogleApplicationCredentials(values url.Values) error {
+	keys := []string{
+		"google_application_credentials",
+		"credentials",
+		"creds",
+	}
+	for _, k := range keys {
+		if values.Get(k) != "" {
+			return os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", values.Get(k))
+		}
+	}
+	return nil
 }
