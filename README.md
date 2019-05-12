@@ -266,7 +266,7 @@ dsn: sqlite:///path/to/dbname.db
 dsn: sq:///path/to/dbname.db
 ```
 
-**BigQuery**
+**BigQuery:**
 
 ``` yaml
 # .tbls.yml

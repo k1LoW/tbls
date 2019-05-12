@@ -6,7 +6,7 @@
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| block_id | STRING |  | true |  |  |  |
+| block_id | STRING |  | true | [transactions](transactions.md) |  |  |
 | previous_block | STRING |  | true |  |  |  |
 | merkle_root | STRING |  | true |  |  |  |
 | timestamp | INTEGER |  | true |  |  |  |
@@ -16,7 +16,7 @@
 | work_terahash | INTEGER |  | true |  |  |  |
 | work_error | STRING |  | true |  |  |  |
 | transactions | RECORD |  | true |  |  |  |
-| transactions.transaction_id | STRING |  | true |  |  |  |
+| transactions.transaction_id | STRING |  | true |  | [transactions](transactions.md) |  |
 | transactions.inputs | RECORD |  | true |  |  |  |
 | transactions.inputs.input_script_bytes | BYTES |  | true |  |  |  |
 | transactions.inputs.input_script_string | STRING |  | true |  |  |  |
