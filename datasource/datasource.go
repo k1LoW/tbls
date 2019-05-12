@@ -116,7 +116,7 @@ func AnalizeBigquery(urlstr string) (*schema.Schema, error) {
 	}
 	defer client.Close()
 
-	s.Name = datasetID
+	s.Name = fmt.Sprintf("%s:%s", projectID, datasetID)
 	driver, err := bq.NewBigquery(ctx, client, datasetID)
 	if err != nil {
 		return s, err

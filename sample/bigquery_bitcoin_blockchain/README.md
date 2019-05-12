@@ -1,4 +1,4 @@
-# bitcoin_blockchain
+# bigquery-public-data:bitcoin_blockchain
 
 ## Tables
 
