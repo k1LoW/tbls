@@ -276,10 +276,10 @@ dsn: bq://project-id/dataset-id?creds=/path/to/google_application_credentials.js
 To set `GOOGLE_APPLICATION_CREDENTIALS` envrionment valiable, you can use
 
 1. `export GOOGLE_APPLICATION_CREDENTIALS` or `env GOOGLE_APPLICATION_CREDENTIALS`
-2. dsn query
-  - `?google_application_credentials=/path/to/google_application_credentials.json`
-  - `?credentials=/path/to/google_application_credentials.json`
-  - `?creds=/path/to/google_application_credentials.json`
+2. Add query to DSN
+    - `?google_application_credentials=/path/to/client_secrets.json`
+    - `?credentials=/path/to/client_secrets.json`
+    - `?creds=/path/to/client_secrets.json`
 
 ### Document path
 
