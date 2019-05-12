@@ -135,7 +135,9 @@ func loadOutArgs(args []string) ([]config.Option, error) {
 	if len(args) > 1 {
 		return options, errors.WithStack(errors.New("too many arguments"))
 	}
-	options = append(options, config.Sort(sort))
+	if sort {
+		options = append(options, config.Sort(sort))
+	}
 	if len(args) == 1 {
 		options = append(options, config.DSN(args[0]))
 	}
