@@ -55,5 +55,5 @@ func initClient(t *testing.T) (context.Context, *bigquery.Client) {
 
 func credentialPath() string {
 	wd, _ := os.Getwd()
-	return filepath.Join(filepath.Dir(wd), "client_secrets.json")
+	return filepath.Join(filepath.Dir(filepath.Dir(wd)), "client_secrets.json")
 }
