@@ -266,6 +266,21 @@ dsn: sqlite:///path/to/dbname.db
 dsn: sq:///path/to/dbname.db
 ```
 
+**BigQuery**
+
+``` yaml
+# .tbls.yml
+dsn: bq://project-id/dataset-id?creds=/path/to/google_application_credentials.json
+```
+
+To set `GOOGLE_APPLICATION_CREDENTIALS` envrionment valiable, you can use
+
+1. `export GOOGLE_APPLICATION_CREDENTIALS` or `env GOOGLE_APPLICATION_CREDENTIALS`
+2. dsn query
+  - `?google_application_credentials=/path/to/google_application_credentials.json`
+  - `?credentials=/path/to/google_application_credentials.json`
+  - `?creds=/path/to/google_application_credentials.json`
+
 ### Document path
 
 `tbls doc` generates document in the directory specified by `docPath:`.
