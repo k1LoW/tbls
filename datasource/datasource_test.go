@@ -30,7 +30,7 @@ func TestMain(m *testing.M) {
 			tableCount    int
 			relationCount int
 		}{
-			"bq://bigquery-public-data/bitcoin_blockchain", "bitcoin_blockchain", 2, 0,
+			"bq://bigquery-public-data/bitcoin_blockchain", "bigquery-public-data:bitcoin_blockchain", 2, 0,
 		}
 		tests = append(tests, bqTest)
 	}
