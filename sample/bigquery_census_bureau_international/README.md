@@ -1,4 +1,4 @@
-# census_bureau_international
+# bigquery-public-data:census_bureau_international
 
 ## Tables
 
