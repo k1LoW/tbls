@@ -22,7 +22,7 @@ test:
 	usql my://root:mypass@localhost:33306/testdb -f testdata/my.sql
 	usql my://root:mypass@localhost:33308/testdb -f testdata/my.sql
 	sqlite3 $(PWD)/testdata/testdb.sqlite3 < testdata/sqlite.sql
-	go test ./... -coverprofile=coverage.txt -covermode=count
+	go test ./... -v -coverprofile=coverage.txt -covermode=count
 	make testdoc
 
 doc: build
@@ -64,10 +64,12 @@ test_config:
 	./tbls diff
 	rm .tbls.yml
 
-test_bigquery:
+doc_bigquery:
 	./tbls doc bq://bigquery-public-data/bitcoin_blockchain?creds=client_secrets.json -f sample/bigquery_bitcoin_blockchain
-	./tbls diff bq://bigquery-public-data/bitcoin_blockchain?creds=client_secrets.json sample/bigquery_bitcoin_blockchain
 	./tbls doc bq://bigquery-public-data/census_bureau_international?creds=client_secrets.json -f sample/bigquery_census_bureau_international
+
+test_bigquery:
+	./tbls diff bq://bigquery-public-data/bitcoin_blockchain?creds=client_secrets.json sample/bigquery_bitcoin_blockchain
 	./tbls diff bq://bigquery-public-data/census_bureau_international?creds=client_secrets.json sample/bigquery_census_bureau_international
 
 build:
