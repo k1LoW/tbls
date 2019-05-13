@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.13.3](https://github.com/k1LoW/tbls/compare/v1.13.2...v1.13.3) (2019-05-13)
+
+* Fix config.RequireColumns is not config.Rule [#104](https://github.com/k1LoW/tbls/pull/104) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.13.2](https://github.com/k1LoW/tbls/compare/v1.13.1...v1.13.2) (2019-05-12)
 
 * Truncate xlsx worksheet name for MS Excel [#102](https://github.com/k1LoW/tbls/pull/102) ([k1LoW](https://github.com/k1LoW))
