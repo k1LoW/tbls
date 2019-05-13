@@ -333,8 +333,13 @@ func (p *Postgres) Info() (*schema.Driver, error) {
 	row := p.db.QueryRow(`SELECT version();`)
 	row.Scan(&v)
 
+	name := "postgres"
+	if p.rsMode {
+		name = "redshift"
+	}
+
 	d := &schema.Driver{
-		Name:            "postgres",
+		Name:            name,
 		DatabaseVersion: v,
 	}
 	return d, nil
