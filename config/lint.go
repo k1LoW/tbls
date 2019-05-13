@@ -174,7 +174,7 @@ func (r RequireColumns) IsEnabled() bool {
 }
 
 // Check the existence of a table columns
-func (r *RequireColumns) Check(s *schema.Schema) []RuleWarn {
+func (r RequireColumns) Check(s *schema.Schema) []RuleWarn {
 	warns := []RuleWarn{}
 	for _, t := range s.Tables {
 		for _, cc := range r.Columns {
