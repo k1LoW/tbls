@@ -13,6 +13,7 @@ import (
 	"github.com/k1LoW/tbls/drivers/bq"
 	"github.com/k1LoW/tbls/drivers/mysql"
 	"github.com/k1LoW/tbls/drivers/postgres"
+	"github.com/k1LoW/tbls/drivers/redshift"
 	"github.com/k1LoW/tbls/drivers/sqlite"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/pkg/errors"
@@ -51,7 +52,11 @@ func Analyze(urlstr string) (*schema.Schema, error) {
 	switch u.Driver {
 	case "postgres":
 		s.Name = splitted[1]
-		driver = postgres.NewPostgres(db)
+		if u.Scheme == "rs" || u.Scheme == "redshift" {
+			driver = redshift.NewRedshift(db)
+		} else {
+			driver = postgres.NewPostgres(db)
+		}
 	case "mysql":
 		s.Name = splitted[1]
 		driver = mysql.NewMysql(db)
