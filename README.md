@@ -286,6 +286,18 @@ To set `GOOGLE_APPLICATION_CREDENTIALS` envrionment valiable, you can use
     - `?credentials=/path/to/client_secrets.json`
     - `?creds=/path/to/client_secrets.json`
 
+**Amazon Redshift:**
+
+``` yaml
+# .tbls.yml
+dsn: redshift://dbuser:dbpass@hostname:5432/dbname
+```
+
+``` yaml
+# .tbls.yml
+dsn: rs://dbuser:dbpass@hostname:5432/dbname
+```
+
 ### Document path
 
 `tbls doc` generates document in the directory specified by `docPath:`.
