@@ -361,7 +361,7 @@ FROM pg_constraint AS pc
 LEFT JOIN pg_stat_user_tables AS ps ON ps.relid = pc.conrelid
 WHERE ps.relname = $1
 AND ps.schemaname = $2
-ORDER BY pc.conrelid, pc.conindid, pc.conname`
+ORDER BY pc.conrelid, pc.conname`
 	}
 	return `
 SELECT
