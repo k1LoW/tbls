@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.14.0](https://github.com/k1LoW/tbls/compare/v1.13.3...v1.14.0) (2019-05-15)
+
+* Support Amazon Redshift [#105](https://github.com/k1LoW/tbls/pull/105) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.13.3](https://github.com/k1LoW/tbls/compare/v1.13.2...v1.13.3) (2019-05-13)
 
 * Fix config.RequireColumns is not config.Rule [#104](https://github.com/k1LoW/tbls/pull/104) ([k1LoW](https://github.com/k1LoW))
