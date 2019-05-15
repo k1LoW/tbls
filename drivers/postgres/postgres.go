@@ -14,14 +14,16 @@ var reFK = regexp.MustCompile(`FOREIGN KEY \((.+)\) REFERENCES ([^\s]+)\s?\((.+)
 var defaultSchemaName = "public"
 
 // Postgres struct
-type Postgres struct{
-	db *sql.DB
+type Postgres struct {
+	db     *sql.DB
+	rsMode bool
 }
 
 // NewPostgres return new Postgres
 func NewPostgres(db *sql.DB) *Postgres {
-  return &Postgres{
-		db: db,
+	return &Postgres{
+		db:     db,
+		rsMode: false,
 	}
 }
 
@@ -150,18 +152,7 @@ ORDER BY x.indexrelid
 		table.Indexes = indexes
 
 		// constraints
-		constraintRows, err := p.db.Query(`
-SELECT
-  pc.conname AS name,
-  (CASE WHEN contype='t' THEN pg_get_triggerdef((SELECT oid FROM pg_trigger WHERE tgconstraint = pc.oid LIMIT 1))
-        ELSE pg_get_constraintdef(pc.oid)
-   END) AS def,
-  contype AS type
-FROM pg_constraint AS pc
-LEFT JOIN pg_stat_user_tables AS ps ON ps.relid = pc.conrelid
-WHERE ps.relname = $1
-AND ps.schemaname = $2
-ORDER BY pc.conrelid, pc.conindid, pc.conname`, tableName, tableSchema)
+		constraintRows, err := p.db.Query(p.queryForConstraints(), tableName, tableSchema)
 		defer constraintRows.Close()
 		if err != nil {
 			return errors.WithStack(err)
@@ -195,7 +186,8 @@ ORDER BY pc.conrelid, pc.conindid, pc.conname`, tableName, tableSchema)
 		table.Constraints = constraints
 
 		// triggers
-		triggerRows, err := p.db.Query(`
+		if !p.rsMode {
+			triggerRows, err := p.db.Query(`
 SELECT tgname, pg_get_triggerdef(pt.oid)
 FROM pg_trigger AS pt
 LEFT JOIN pg_stat_user_tables AS ps ON ps.relid = pt.tgrelid
@@ -204,28 +196,29 @@ AND ps.relname = $1
 AND ps.schemaname = $2
 ORDER BY pt.tgrelid
 `, tableName, tableSchema)
-		defer triggerRows.Close()
-		if err != nil {
-			return errors.WithStack(err)
-		}
-
-		triggers := []*schema.Trigger{}
-		for triggerRows.Next() {
-			var (
-				triggerName string
-				triggerDef  string
-			)
-			err = triggerRows.Scan(&triggerName, &triggerDef)
+			defer triggerRows.Close()
 			if err != nil {
 				return errors.WithStack(err)
 			}
-			trigger := &schema.Trigger{
-				Name: triggerName,
-				Def:  triggerDef,
+
+			triggers := []*schema.Trigger{}
+			for triggerRows.Next() {
+				var (
+					triggerName string
+					triggerDef  string
+				)
+				err = triggerRows.Scan(&triggerName, &triggerDef)
+				if err != nil {
+					return errors.WithStack(err)
+				}
+				trigger := &schema.Trigger{
+					Name: triggerName,
+					Def:  triggerDef,
+				}
+				triggers = append(triggers, trigger)
 			}
-			triggers = append(triggers, trigger)
+			table.Triggers = triggers
 		}
-		table.Triggers = triggers
 
 		// columns comments
 		columnCommentRows, err := p.db.Query(`
@@ -340,11 +333,48 @@ func (p *Postgres) Info() (*schema.Driver, error) {
 	row := p.db.QueryRow(`SELECT version();`)
 	row.Scan(&v)
 
+	name := "postgres"
+	if p.rsMode {
+		name = "redshift"
+	}
+
 	d := &schema.Driver{
-		Name:            "postgres",
+		Name:            name,
 		DatabaseVersion: v,
 	}
 	return d, nil
+}
+
+// EnableRsMode enable rsMode
+func (p *Postgres) EnableRsMode() {
+	p.rsMode = true
+}
+
+func (p *Postgres) queryForConstraints() string {
+	if p.rsMode {
+		return `
+SELECT
+  pc.conname AS name,
+  pg_get_constraintdef(pc.oid) AS def,
+  contype AS type
+FROM pg_constraint AS pc
+LEFT JOIN pg_stat_user_tables AS ps ON ps.relid = pc.conrelid
+WHERE ps.relname = $1
+AND ps.schemaname = $2
+ORDER BY pc.conrelid, pc.conname`
+	}
+	return `
+SELECT
+  pc.conname AS name,
+  (CASE WHEN contype='t' THEN pg_get_triggerdef((SELECT oid FROM pg_trigger WHERE tgconstraint = pc.oid LIMIT 1))
+        ELSE pg_get_constraintdef(pc.oid)
+   END) AS def,
+  contype AS type
+FROM pg_constraint AS pc
+LEFT JOIN pg_stat_user_tables AS ps ON ps.relid = pc.conrelid
+WHERE ps.relname = $1
+AND ps.schemaname = $2
+ORDER BY pc.conrelid, pc.conindid, pc.conname`
 }
 
 func convertColmunType(t string, udtName string, characterMaximumLength sql.NullInt64) string {
