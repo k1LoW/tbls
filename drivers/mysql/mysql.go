@@ -192,7 +192,6 @@ GROUP BY kcu.constraint_name, sub.costraint_type, kcu.referenced_table_name`, ta
 			)
 			err = constraintRows.Scan(&constraintName, &constraintType, &constraintColumnName, &constraintRefTableName, &constraintRefColumnName)
 			if err != nil {
-				fmt.Printf("%s\n", tableName)
 				return errors.WithStack(err)
 			}
 			switch constraintType {
@@ -212,9 +211,15 @@ GROUP BY kcu.constraint_name, sub.costraint_type, kcu.referenced_table_name`, ta
 			}
 
 			constraint := &schema.Constraint{
-				Name: constraintName,
-				Type: constraintType,
-				Def:  constraintDef,
+				Name:    constraintName,
+				Type:    constraintType,
+				Def:     constraintDef,
+				Table:   &table.Name,
+				Columns: strings.Split(constraintColumnName, ", "),
+			}
+			if constraintRefTableName.String != "" {
+				constraint.ReferenceTable = &constraintRefTableName.String
+				constraint.ReferenceColumns = strings.Split(constraintRefColumnName.String, ", ")
 			}
 
 			constraints = append(constraints, constraint)
@@ -224,12 +229,12 @@ GROUP BY kcu.constraint_name, sub.costraint_type, kcu.referenced_table_name`, ta
 		// triggers
 		triggerRows, err := m.db.Query(`
 SELECT
-trigger_name,
-action_timing,
-event_manipulation,
-event_object_table,
-action_orientation,
-action_statement
+  trigger_name,
+  action_timing,
+  event_manipulation,
+  event_object_table,
+  action_orientation,
+  action_statement
 FROM information_schema.triggers
 WHERE event_object_schema = ?
 AND event_object_table = ?
