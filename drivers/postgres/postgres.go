@@ -127,8 +127,8 @@ AND table_schema = $3;
 		// indexes
 		indexRows, err := p.db.Query(`
 SELECT
-i.relname AS indexname,
-pg_get_indexdef(i.oid) AS indexdef
+  i.relname AS indexname,
+  pg_get_indexdef(i.oid) AS indexdef
 FROM ((((pg_index x
 JOIN pg_class c ON ((c.oid = x.indrelid)))
 JOIN pg_class i ON ((i.oid = x.indexrelid)))
