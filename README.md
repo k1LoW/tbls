@@ -24,7 +24,6 @@ Key features of `tbls` are:
     - [Diff database and document](#diff-database-and-document)
     - [Lint a database](#lint-a-database)
     - [Continuous Integration](#continuous-integration)
-    - [Output Formats](#output-formats)
   - [Configration](#configration)
     - [DSN](#dsn)
       - [Support Database](#support-database)
@@ -35,6 +34,7 @@ Key features of `tbls` are:
     - [Lint](#lint)
     - [Comments](#comments)
     - [Relations](#relations)
+  - [Output formats](#output-formats)
   - [Command arguments](#command-arguments)
   - [Envirionment variables](#environment-variables)
 
@@ -208,46 +208,6 @@ script:
 > **Tips:** If your CI based on Debian/Ubuntu (`/bin/sh -> dash`), you can use following install command `curl -sL https://git.io/use-tbls > use-tbls.tmp && . ./use-tbls.tmp && rm ./use-tbls.tmp`
 
 > **Tips:** If the order of the columns does not match, you can use the `--sort` option.
-
-### Output formats
-
-`tbls out` output in various formats.
-
-**Markdown:**
-
-``` console
-$ tbls out -t md -o schema.md
-```
-
-**DOT:**
-
-``` console
-$ tbls out -t dot -o schema.dot
-```
-
-**PlantUML:**
-
-``` console
-$ tbls out -t plantuml -o schema.puml
-```
-
-**JSON:**
-
-``` console
-$ tbls out -t json -o schema.json
-```
-
-> **Tips:** `tbls doc` can load `schema.json` as DSN.
->
-> ``` console
-> $ tbls doc json:///path/to/schema.json
-> ```
-
-**Excel:**
-
-``` console
-$ tbls out -t xlsx -o schema.xlsx
-```
 
 ## Configration
 
@@ -515,6 +475,46 @@ relations:
 ```
 
 ![img](sample/mysql/logs.png)
+
+## Output formats
+
+`tbls out` output in various formats.
+
+**Markdown:**
+
+``` console
+$ tbls out -t md -o schema.md
+```
+
+**DOT:**
+
+``` console
+$ tbls out -t dot -o schema.dot
+```
+
+**PlantUML:**
+
+``` console
+$ tbls out -t plantuml -o schema.puml
+```
+
+**JSON:**
+
+``` console
+$ tbls out -t json -o schema.json
+```
+
+> **Tips:** `tbls doc` can load `schema.json` as DSN.
+>
+> ``` console
+> $ tbls doc json:///path/to/schema.json
+> ```
+
+**Excel:**
+
+``` console
+$ tbls out -t xlsx -o schema.xlsx
+```
 
 ## Command arguments
 
