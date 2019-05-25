@@ -18,13 +18,13 @@ var reFTS = regexp.MustCompile(`(?i)USING\s+fts([34])`)
 var shadowTables []string
 
 // Sqlite struct
-type Sqlite struct{
+type Sqlite struct {
 	db *sql.DB
 }
 
 // NewSqlite return new Sqlite
 func NewSqlite(db *sql.DB) *Sqlite {
-  return &Sqlite{
+	return &Sqlite{
 		db: db,
 	}
 }
@@ -268,7 +268,6 @@ WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
 					}
 					constraints = append(constraints, constraint)
 				case "pk":
-					// MEMO: Does not work ?
 					indexDef = fmt.Sprintf("PRIMARY KEY (%s)", strings.Join(cols, ", "))
 					constraint := &schema.Constraint{
 						Name: indexName,
