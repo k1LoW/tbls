@@ -24,6 +24,7 @@ Key features of `tbls` are:
     - [Diff database and document](#diff-database-and-document)
     - [Lint a database](#lint-a-database)
     - [Continuous Integration](#continuous-integration)
+    - [Output Formats](#output-formats)
   - [Configration](#configration)
     - [DSN](#dsn)
       - [Support Database](#support-database)
@@ -207,6 +208,40 @@ script:
 > **Tips:** If your CI based on Debian/Ubuntu (`/bin/sh -> dash`), you can use following install command `curl -sL https://git.io/use-tbls > use-tbls.tmp && . ./use-tbls.tmp && rm ./use-tbls.tmp`
 
 > **Tips:** If the order of the columns does not match, you can use the `--sort` option.
+
+### Output formats
+
+`tbls out` output in various formats.
+
+**Markdown:**
+
+``` console
+$ tbls out -t md -o schema.md
+```
+
+**DOT:**
+
+``` console
+$ tbls out -t dot -o schema.dot
+```
+
+**JSON:**
+
+``` console
+$ tbls out -t json -o schema.json
+```
+
+> **Tips:** `tbls doc` can load `schema.json` as DSN.
+>
+> ``` console
+> $ tbls doc json:///path/to/schema.json
+> ```
+
+**Excel:**
+
+``` console
+$ tbls out -t xlsx -o schema.xlsx
+```
 
 ## Configration
 
