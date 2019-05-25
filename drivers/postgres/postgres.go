@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"regexp"
+	"strconv"
 	"strings"
 
 	"github.com/k1LoW/tbls/schema"
@@ -19,6 +20,14 @@ type Postgres struct {
 	rsMode bool
 }
 
+type constraintLink struct {
+	constraint     *schema.Constraint
+	table          string
+	referenceTable string
+	conkey         string
+	confkey        string
+}
+
 // NewPostgres return new Postgres
 func NewPostgres(db *sql.DB) *Postgres {
 	return &Postgres{
@@ -29,6 +38,7 @@ func NewPostgres(db *sql.DB) *Postgres {
 
 // Analyze PostgreSQL database schema
 func (p *Postgres) Analyze(s *schema.Schema) error {
+	constraintLinks := []constraintLink{}
 
 	// tables
 	tableRows, err := p.db.Query(`
@@ -159,13 +169,17 @@ ORDER BY x.indexrelid
 		}
 
 		constraints := []*schema.Constraint{}
+
 		for constraintRows.Next() {
 			var (
-				constraintName string
-				constraintDef  string
-				constraintType string
+				constraintName           string
+				constraintDef            string
+				constraintType           string
+				constraintReferenceTable sql.NullString
+				constraintConkey         sql.NullString
+				constraintConfkey        sql.NullString
 			)
-			err = constraintRows.Scan(&constraintName, &constraintDef, &constraintType)
+			err = constraintRows.Scan(&constraintName, &constraintDef, &constraintType, &constraintReferenceTable, &constraintConkey, &constraintConfkey)
 			if err != nil {
 				return errors.WithStack(err)
 			}
@@ -182,6 +196,13 @@ ORDER BY x.indexrelid
 				relations = append(relations, relation)
 			}
 			constraints = append(constraints, constraint)
+			constraintLinks = append(constraintLinks, constraintLink{
+				constraint:     constraint,
+				table:          table.Name,
+				referenceTable: constraintReferenceTable.String,
+				conkey:         constraintConkey.String,
+				confkey:        constraintConfkey.String,
+			})
 		}
 		table.Constraints = constraints
 
@@ -293,6 +314,36 @@ ORDER BY ordinal_position
 
 	s.Tables = tables
 
+	// Link Constraints
+	for _, l := range constraintLinks {
+		if l.table != "" {
+			table, err := s.FindTableByName(l.table)
+			if err != nil {
+				return err
+			}
+			l.constraint.Table = &table.Name
+			if l.conkey != "" {
+				idxs := colkeyToInts(l.conkey)
+				for _, idx := range idxs {
+					l.constraint.Columns = append(l.constraint.Columns, table.Columns[idx-1].Name)
+				}
+			}
+		}
+		if l.referenceTable != "" {
+			referenceTable, err := s.FindTableByName(l.referenceTable)
+			if err != nil {
+				return err
+			}
+			l.constraint.ReferenceTable = &referenceTable.Name
+			if l.confkey != "" {
+				idxs := colkeyToInts(l.confkey)
+				for _, idx := range idxs {
+					l.constraint.ReferenceColumns = append(l.constraint.ReferenceColumns, referenceTable.Columns[idx-1].Name)
+				}
+			}
+		}
+	}
+
 	// Relations
 	for _, r := range relations {
 		result := reFK.FindAllStringSubmatch(r.Def, -1)
@@ -356,9 +407,13 @@ func (p *Postgres) queryForConstraints() string {
 SELECT
   pc.conname AS name,
   pg_get_constraintdef(pc.oid) AS def,
-  contype AS type
+  contype AS type,
+  psf.relname,
+  pc.conkey::text,
+  pc.confkey::text
 FROM pg_constraint AS pc
 LEFT JOIN pg_stat_user_tables AS ps ON ps.relid = pc.conrelid
+LEFT JOIN pg_stat_user_tables AS psf ON psf.relid = pc.confrelid
 WHERE ps.relname = $1
 AND ps.schemaname = $2
 ORDER BY pc.conrelid, pc.conname`
@@ -369,12 +424,29 @@ SELECT
   (CASE WHEN contype='t' THEN pg_get_triggerdef((SELECT oid FROM pg_trigger WHERE tgconstraint = pc.oid LIMIT 1))
         ELSE pg_get_constraintdef(pc.oid)
    END) AS def,
-  contype AS type
+  contype AS type,
+  psf.relname,
+  pc.conkey::text,
+  pc.confkey::text
 FROM pg_constraint AS pc
 LEFT JOIN pg_stat_user_tables AS ps ON ps.relid = pc.conrelid
+LEFT JOIN pg_stat_user_tables AS psf ON psf.relid = pc.confrelid
 WHERE ps.relname = $1
 AND ps.schemaname = $2
 ORDER BY pc.conrelid, pc.conindid, pc.conname`
+}
+
+func colkeyToInts(colkey string) []int {
+	ints := []int{}
+	if colkey == "" {
+		return ints
+	}
+	strs := strings.Split(strings.Trim(colkey, "{}"), ",")
+	for _, s := range strs {
+		i, _ := strconv.Atoi(s)
+		ints = append(ints, i)
+	}
+	return ints
 }
 
 func convertColmunType(t string, udtName string, characterMaximumLength sql.NullInt64) string {
