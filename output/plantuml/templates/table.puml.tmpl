@@ -17,7 +17,7 @@ table("{{ .Table.Name }}") {
 view("{{ .Table.Name }}") {
 {{- end }}
 {{- range $i, $c := .Table.Columns }}
-  {{ $c.Name | html }} {{ $c.Type | html }}
+  <b>{{ $c.Name | html }}</b> [{{ $c.Type | html }}]
 {{- end }}
 }
 {{- range $i, $t := .Tables }}
@@ -27,14 +27,14 @@ table("{{ $t.Name }}") {
 view("{{ $t.Name }}") {
 {{- end }}
 {{- range $ii, $c := $t.Columns }}
-  {{ $c.Name | html }} {{ $c.Type | html }}
+  <b>{{ $c.Name | html }}</b> [{{ $c.Type | html }}]
 {{- end }}
 }
 {{- end }}
 
 ' relations
 {{- range $j, $r := .Relations }}
-"{{ $r.Table.Name }}" -- "{{ $r.ParentTable.Name }}" : "{{ $r.Def | html }}"
+"{{ $r.Table.Name }}" }-- "{{ $r.ParentTable.Name }}" : "{{ $r.Def | html }}"
 {{- end }}
 
 @enduml
