@@ -1,0 +1,40 @@
+@startuml
+!define table(name) entity name << (T,#5DBCD2) >>
+!define view(name) entity name << (V,#C6EDDB) >>
+hide methods
+hide stereotypes
+
+skinparam class {
+  BackgroundColor White
+  BorderColor #6E6E6E
+  ArrowColor #6E6E6E
+}
+
+' tables
+{{- if ne .Table.Type "VIEW" }}
+table("{{ .Table.Name }}") {
+{{- else }}
+view("{{ .Table.Name }}") {
+{{- end }}
+{{- range $i, $c := .Table.Columns }}
+  <b>{{ $c.Name | html }}</b> [{{ $c.Type | html }}]
+{{- end }}
+}
+{{- range $i, $t := .Tables }}
+{{- if ne $t.Type "VIEW" }}
+table("{{ $t.Name }}") {
+{{- else }}
+view("{{ $t.Name }}") {
+{{- end }}
+{{- range $ii, $c := $t.Columns }}
+  <b>{{ $c.Name | html }}</b> [{{ $c.Type | html }}]
+{{- end }}
+}
+{{- end }}
+
+' relations
+{{- range $j, $r := .Relations }}
+"{{ $r.Table.Name }}" }-- "{{ $r.ParentTable.Name }}" : "{{ $r.Def | html }}"
+{{- end }}
+
+@enduml

@@ -225,6 +225,12 @@ $ tbls out -t md -o schema.md
 $ tbls out -t dot -o schema.dot
 ```
 
+**PlantUML:**
+
+``` console
+$ tbls out -t plantuml -o schema.puml
+```
+
 **JSON:**
 
 ``` console

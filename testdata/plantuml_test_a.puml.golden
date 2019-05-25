@@ -1,0 +1,26 @@
+@startuml
+!define table(name) entity name << (T,#5DBCD2) >>
+!define view(name) entity name << (V,#C6EDDB) >>
+hide methods
+hide stereotypes
+
+skinparam class {
+  BackgroundColor White
+  BorderColor #6E6E6E
+  ArrowColor #6E6E6E
+}
+
+' tables
+table("a") {
+  <b>a</b> []
+  <b>a2</b> []
+}
+table("b") {
+  <b>b</b> []
+  <b>b2</b> []
+}
+
+' relations
+"a" }-- "b" : ""
+
+@enduml
