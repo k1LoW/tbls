@@ -13,13 +13,13 @@ import (
 var reFK = regexp.MustCompile(`FOREIGN KEY \((.+)\) REFERENCES ([^\s]+)\s?\((.+)\)`)
 
 // Mysql struct
-type Mysql struct{
+type Mysql struct {
 	db *sql.DB
 }
 
 // NewMysql return new Mysql
 func NewMysql(db *sql.DB) *Mysql {
-  return &Mysql{
+	return &Mysql{
 		db: db,
 	}
 }
