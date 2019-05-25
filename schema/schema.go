@@ -17,9 +17,11 @@ type Index struct {
 
 // Constraint is the struct for database constraint
 type Constraint struct {
-	Name string `json:"name"`
-	Type string `json:"type"`
-	Def  string `json:"def"`
+	Name             string    `json:"name"`
+	Type             string    `json:"type"`
+	Def              string    `json:"def"`
+	Columns          []*Column `json:"columns"`
+	ReferenceColumns []*Column `json:"reference_columns"`
 }
 
 // Trigger is the struct for database trigger
