@@ -124,43 +124,6 @@ AND table_schema = $3;
 			}
 		}
 
-		// indexes
-		indexRows, err := p.db.Query(`
-SELECT
-  i.relname AS indexname,
-  pg_get_indexdef(i.oid) AS indexdef
-FROM ((((pg_index x
-JOIN pg_class c ON ((c.oid = x.indrelid)))
-JOIN pg_class i ON ((i.oid = x.indexrelid)))
-LEFT JOIN pg_namespace n ON ((n.oid = c.relnamespace))))
-WHERE ((c.relkind = ANY (ARRAY['r'::"char", 'm'::"char"])) AND (i.relkind = 'i'::"char"))
-AND c.relname = $1
-AND n.nspname = $2
-ORDER BY x.indexrelid
-`, tableName, tableSchema)
-		defer indexRows.Close()
-		if err != nil {
-			return errors.WithStack(err)
-		}
-
-		indexes := []*schema.Index{}
-		for indexRows.Next() {
-			var (
-				indexName string
-				indexDef  string
-			)
-			err = indexRows.Scan(&indexName, &indexDef)
-			if err != nil {
-				return errors.WithStack(err)
-			}
-			index := &schema.Index{
-				Name: indexName,
-				Def:  indexDef,
-			}
-			indexes = append(indexes, index)
-		}
-		table.Indexes = indexes
-
 		// constraints
 		constraintRows, err := p.db.Query(p.queryForConstraints(), tableName, tableSchema)
 		defer constraintRows.Close()
@@ -309,6 +272,51 @@ ORDER BY ordinal_position
 		}
 		table.Columns = columns
 
+		// indexes
+		indexRows, err := p.db.Query(`
+SELECT
+  i.relname AS indexname,
+  pg_get_indexdef(i.oid) AS indexdef,
+  indkey::text
+FROM ((((pg_index x
+JOIN pg_class c ON ((c.oid = x.indrelid)))
+JOIN pg_class i ON ((i.oid = x.indexrelid)))
+LEFT JOIN pg_namespace n ON ((n.oid = c.relnamespace))))
+WHERE ((c.relkind = ANY (ARRAY['r'::"char", 'm'::"char"])) AND (i.relkind = 'i'::"char"))
+AND c.relname = $1
+AND n.nspname = $2
+ORDER BY x.indexrelid
+`, tableName, tableSchema)
+		defer indexRows.Close()
+		if err != nil {
+			return errors.WithStack(err)
+		}
+
+		indexes := []*schema.Index{}
+		for indexRows.Next() {
+			var (
+				indexName string
+				indexDef  string
+				indkey    string
+			)
+			err = indexRows.Scan(&indexName, &indexDef, &indkey)
+			if err != nil {
+				return errors.WithStack(err)
+			}
+			index := &schema.Index{
+				Name:  indexName,
+				Def:   indexDef,
+				Table: &table.Name,
+			}
+			idxs := indkeyToInts(indkey)
+			for _, idx := range idxs {
+				index.Columns = append(index.Columns, table.Columns[idx-1].Name)
+			}
+
+			indexes = append(indexes, index)
+		}
+		table.Indexes = indexes
+
 		tables = append(tables, table)
 	}
 
@@ -442,6 +450,19 @@ func colkeyToInts(colkey string) []int {
 		return ints
 	}
 	strs := strings.Split(strings.Trim(colkey, "{}"), ",")
+	for _, s := range strs {
+		i, _ := strconv.Atoi(s)
+		ints = append(ints, i)
+	}
+	return ints
+}
+
+func indkeyToInts(indkey string) []int {
+	ints := []int{}
+	if indkey == "" {
+		return ints
+	}
+	strs := strings.Split(indkey, " ")
 	for _, s := range strs {
 		i, _ := strconv.Atoi(s)
 		ints = append(ints, i)
