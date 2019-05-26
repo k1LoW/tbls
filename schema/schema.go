@@ -11,8 +11,10 @@ import (
 
 // Index is the struct for database index
 type Index struct {
-	Name string `json:"name"`
-	Def  string `json:"def"`
+	Name    string   `json:"name"`
+	Def     string   `json:"def"`
+	Table   *string  `json:"table"`
+	Columns []string `json:"columns"`
 }
 
 // Constraint is the struct for database constraint

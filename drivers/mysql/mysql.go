@@ -135,8 +135,10 @@ GROUP BY key_type, s.table_name, s.index_name, s.index_type`, s.Name, tableName)
 			}
 
 			index := &schema.Index{
-				Name: indexName,
-				Def:  indexDef,
+				Name:    indexName,
+				Def:     indexDef,
+				Table:   &table.Name,
+				Columns: strings.Split(indexColumnName, ", "),
 			}
 			indexes = append(indexes, index)
 		}

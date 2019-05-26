@@ -234,7 +234,27 @@ WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
 				return errors.WithStack(err)
 			}
 
-			if indexCreatedBy == "c" {
+			var (
+				colRank            string
+				colRankWithinTable string
+				col                string
+				cols               []string
+			)
+			row, err := l.db.Query(fmt.Sprintf("PRAGMA index_info(%s)", indexName))
+			for row.Next() {
+				err = row.Scan(
+					&colRank,
+					&colRankWithinTable,
+					&col,
+				)
+				if err != nil {
+					return errors.WithStack(err)
+				}
+				cols = append(cols, col)
+			}
+
+			switch indexCreatedBy {
+			case "c":
 				row, err := l.db.Query(`SELECT sql FROM sqlite_master WHERE type = 'index' AND tbl_name = ? AND name = ?;
 `, tableName, indexName)
 				for row.Next() {
@@ -245,52 +265,33 @@ WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
 						return errors.WithStack(err)
 					}
 				}
-			} else {
-				var (
-					colRank            string
-					colRankWithinTable string
-					col                string
-					cols               []string
-				)
-				row, err := l.db.Query(fmt.Sprintf("PRAGMA index_info(%s)", indexName))
-				for row.Next() {
-					err = row.Scan(
-						&colRank,
-						&colRankWithinTable,
-						&col,
-					)
-					if err != nil {
-						return errors.WithStack(err)
-					}
-					cols = append(cols, col)
+			case "u":
+				indexDef = fmt.Sprintf("UNIQUE (%s)", strings.Join(cols, ", "))
+				constraint := &schema.Constraint{
+					Name:    indexName,
+					Type:    "UNIQUE",
+					Def:     indexDef,
+					Table:   &table.Name,
+					Columns: cols,
 				}
-				switch indexCreatedBy {
-				case "u":
-					indexDef = fmt.Sprintf("UNIQUE (%s)", strings.Join(cols, ", "))
-					constraint := &schema.Constraint{
-						Name:    indexName,
-						Type:    "UNIQUE",
-						Def:     indexDef,
-						Table:   &table.Name,
-						Columns: cols,
-					}
-					constraints = append(constraints, constraint)
-				case "pk":
-					indexDef = fmt.Sprintf("PRIMARY KEY (%s)", strings.Join(cols, ", "))
-					constraint := &schema.Constraint{
-						Name:    indexName,
-						Type:    "PRIMARY KEY",
-						Def:     indexDef,
-						Table:   &table.Name,
-						Columns: cols,
-					}
-					constraints = append(constraints, constraint)
+				constraints = append(constraints, constraint)
+			case "pk":
+				indexDef = fmt.Sprintf("PRIMARY KEY (%s)", strings.Join(cols, ", "))
+				constraint := &schema.Constraint{
+					Name:    indexName,
+					Type:    "PRIMARY KEY",
+					Def:     indexDef,
+					Table:   &table.Name,
+					Columns: cols,
 				}
+				constraints = append(constraints, constraint)
 			}
 
 			index := &schema.Index{
-				Name: indexName,
-				Def:  indexDef,
+				Name:    indexName,
+				Def:     indexDef,
+				Table:   &table.Name,
+				Columns: cols,
 			}
 			indexes = append(indexes, index)
 		}
