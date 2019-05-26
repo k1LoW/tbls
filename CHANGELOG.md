@@ -1,5 +1,12 @@
 # Changelog
 
+## [v1.15.0](https://github.com/k1LoW/tbls/compare/v1.14.0...v1.15.0) (2019-05-26)
+
+* Fix PlantUML output format [#109](https://github.com/k1LoW/tbls/pull/109) ([k1LoW](https://github.com/k1LoW))
+* Fix schema.Index [#108](https://github.com/k1LoW/tbls/pull/108) ([k1LoW](https://github.com/k1LoW))
+* Fix schema.Constraint [#107](https://github.com/k1LoW/tbls/pull/107) ([k1LoW](https://github.com/k1LoW))
+* Add PlantUML output format [#106](https://github.com/k1LoW/tbls/pull/106) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.14.0](https://github.com/k1LoW/tbls/compare/v1.13.3...v1.14.0) (2019-05-15)
 
 * Support Amazon Redshift [#105](https://github.com/k1LoW/tbls/pull/105) ([k1LoW](https://github.com/k1LoW))
