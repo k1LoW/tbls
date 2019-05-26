@@ -118,9 +118,11 @@ WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
 			if columnPk != "0" {
 				constraintDef := fmt.Sprintf("PRIMARY KEY (%s)", columnName)
 				constraint := &schema.Constraint{
-					Name: columnName,
-					Type: "PRIMARY KEY",
-					Def:  constraintDef,
+					Name:    columnName,
+					Type:    "PRIMARY KEY",
+					Def:     constraintDef,
+					Table:   &table.Name,
+					Columns: []string{columnName},
 				}
 				constraints = append(constraints, constraint)
 			}
@@ -187,9 +189,13 @@ WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
 			foreignKeyDef := fmt.Sprintf("FOREIGN KEY (%s) REFERENCES %s (%s) ON UPDATE %s ON DELETE %s MATCH %s",
 				strings.Join(f.ColumnNames, ", "), f.ForeignTableName, strings.Join(f.ForeignColumnNames, ", "), f.OnUpdate, f.OnDelete, f.Match)
 			constraint := &schema.Constraint{
-				Name: fmt.Sprintf("- (Foreign key ID: %s)", f.ID),
-				Type: "FOREIGN KEY",
-				Def:  foreignKeyDef,
+				Name:             fmt.Sprintf("- (Foreign key ID: %s)", f.ID),
+				Type:             "FOREIGN KEY",
+				Def:              foreignKeyDef,
+				Table:            &table.Name,
+				Columns:          f.ColumnNames,
+				ReferenceTable:   &f.ForeignTableName,
+				ReferenceColumns: f.ForeignColumnNames,
 			}
 			relation := &schema.Relation{
 				Table: table,
@@ -262,17 +268,21 @@ WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
 				case "u":
 					indexDef = fmt.Sprintf("UNIQUE (%s)", strings.Join(cols, ", "))
 					constraint := &schema.Constraint{
-						Name: indexName,
-						Type: "UNIQUE",
-						Def:  indexDef,
+						Name:    indexName,
+						Type:    "UNIQUE",
+						Def:     indexDef,
+						Table:   &table.Name,
+						Columns: cols,
 					}
 					constraints = append(constraints, constraint)
 				case "pk":
 					indexDef = fmt.Sprintf("PRIMARY KEY (%s)", strings.Join(cols, ", "))
 					constraint := &schema.Constraint{
-						Name: indexName,
-						Type: "PRIMARY KEY",
-						Def:  indexDef,
+						Name:    indexName,
+						Type:    "PRIMARY KEY",
+						Def:     indexDef,
+						Table:   &table.Name,
+						Columns: cols,
 					}
 					constraints = append(constraints, constraint)
 				}
@@ -283,12 +293,6 @@ WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
 				Def:  indexDef,
 			}
 			indexes = append(indexes, index)
-		}
-
-		// constraints(CHECK)
-		checkConstraints := parseCheckConstraints(tableDef)
-		for _, c := range checkConstraints {
-			constraints = append(constraints, c)
 		}
 
 		// triggers
@@ -319,6 +323,13 @@ SELECT name, sql FROM sqlite_master WHERE type = 'trigger' AND tbl_name = ?;
 
 		table.Columns = columns
 		table.Indexes = indexes
+
+		// constraints(CHECK)
+		checkConstraints := parseCheckConstraints(table, tableDef)
+		for _, c := range checkConstraints {
+			constraints = append(constraints, c)
+		}
+
 		table.Constraints = constraints
 		table.Triggers = triggers
 
@@ -388,7 +399,7 @@ func convertColumnNullable(str string) bool {
 	return true
 }
 
-func parseCheckConstraints(sql string) []*schema.Constraint {
+func parseCheckConstraints(table *schema.Table, sql string) []*schema.Constraint {
 	// tokenize
 	re := regexp.MustCompile(`\s+`)
 	separator := "__SEP__"
@@ -419,11 +430,19 @@ func parseCheckConstraints(sql string) []*schema.Constraint {
 			def = def + v
 			counter = counter - 1
 			if counter == 0 {
+				replaced := r3.Replace(def)
 				constraint := &schema.Constraint{
-					Name: "-",
-					Type: "CHECK",
-					Def:  r3.Replace(def),
+					Name:  "-",
+					Type:  "CHECK",
+					Def:   replaced,
+					Table: &table.Name,
 				}
+				for _, c := range table.Columns {
+					if strings.Count(replaced, c.Name) > strings.Count(replaced, fmt.Sprintf("%s(", c.Name)) { // to distinguish between 'length' and 'length('
+						constraint.Columns = append(constraint.Columns, c.Name)
+					}
+				}
+
 				constraints = append(constraints, constraint)
 				def = ""
 			}
