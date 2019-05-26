@@ -1,6 +1,7 @@
 @startuml
 !define table(name) entity name << (T,#5DBCD2) >>
 !define view(name) entity name << (V,#C6EDDB) >>
+!define column(x, y) x <font color="#666666">[y]</font>
 hide methods
 hide stereotypes
 
@@ -17,7 +18,7 @@ table("{{ .Table.Name }}") {
 view("{{ .Table.Name }}") {
 {{- end }}
 {{- range $i, $c := .Table.Columns }}
-  {{ $c.Name | html }} <font color="#666666">[{{ $c.Type | html }}]</font>
+  column("{{ $c.Name | html }}", "{{ $c.Type | html }}")
 {{- end }}
 }
 {{- range $i, $t := .Tables }}
@@ -27,7 +28,7 @@ table("{{ $t.Name }}") {
 view("{{ $t.Name }}") {
 {{- end }}
 {{- range $ii, $c := $t.Columns }}
-  {{ $c.Name | html }} <font color="#666666">[{{ $c.Type | html }}]</font>
+  column("{{ $c.Name | html }}", "{{ $c.Type | html }}")
 {{- end }}
 }
 {{- end }}
