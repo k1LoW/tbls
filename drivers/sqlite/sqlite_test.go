@@ -58,6 +58,29 @@ func TestInfo(t *testing.T) {
 }
 
 func TestParseCheckConstraints(t *testing.T) {
+	table := &schema.Table{
+		Name: "check_constraints",
+		Columns: []*schema.Column{
+			&schema.Column{
+				Name: "id",
+			},
+			&schema.Column{
+				Name: "col",
+			},
+			&schema.Column{
+				Name: "brackets",
+			},
+			&schema.Column{
+				Name: "checkcheck",
+			},
+			&schema.Column{
+				Name: "downcase",
+			},
+			&schema.Column{
+				Name: "nl",
+			},
+		},
+	}
 	sql := `CREATE TABLE check_constraints (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   col TEXT CHECK(length(col) > 4),
@@ -68,34 +91,45 @@ func TestParseCheckConstraints(t *testing.T) {
     NULL check(length(nl) > 4 OR
       nl != 'ln')
 );`
+	tableName := "check_constraints"
 	expected := []*schema.Constraint{
 		&schema.Constraint{
-			Name: "-",
-			Type: "CHECK",
-			Def:  "CHECK(length(col) > 4)",
+			Name:    "-",
+			Type:    "CHECK",
+			Def:     "CHECK(length(col) > 4)",
+			Table:   &tableName,
+			Columns: []string{"col"},
 		},
 		&schema.Constraint{
-			Name: "-",
-			Type: "CHECK",
-			Def:  "CHECK(((length(brackets) > 4)))",
+			Name:    "-",
+			Type:    "CHECK",
+			Def:     "CHECK(((length(brackets) > 4)))",
+			Table:   &tableName,
+			Columns: []string{"brackets"},
 		},
 		&schema.Constraint{
-			Name: "-",
-			Type: "CHECK",
-			Def:  "CHECK(length(checkcheck) > 4)",
+			Name:    "-",
+			Type:    "CHECK",
+			Def:     "CHECK(length(checkcheck) > 4)",
+			Table:   &tableName,
+			Columns: []string{"checkcheck"},
 		},
 		&schema.Constraint{
-			Name: "-",
-			Type: "CHECK",
-			Def:  "check(length(downcase) > 4)",
+			Name:    "-",
+			Type:    "CHECK",
+			Def:     "check(length(downcase) > 4)",
+			Table:   &tableName,
+			Columns: []string{"downcase"},
 		},
 		&schema.Constraint{
-			Name: "-",
-			Type: "CHECK",
-			Def:  "check(length(nl) > 4 OR nl != 'ln')",
+			Name:    "-",
+			Type:    "CHECK",
+			Def:     "check(length(nl) > 4 OR nl != 'ln')",
+			Table:   &tableName,
+			Columns: []string{"nl"},
 		},
 	}
-	actual := parseCheckConstraints(sql)
+	actual := parseCheckConstraints(table, sql)
 	if !reflect.DeepEqual(actual, expected) {
 		t.Errorf("got: %#v\nwant: %#v", actual, expected)
 	}

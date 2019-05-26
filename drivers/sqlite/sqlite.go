@@ -327,7 +327,6 @@ SELECT name, sql FROM sqlite_master WHERE type = 'trigger' AND tbl_name = ?;
 		// constraints(CHECK)
 		checkConstraints := parseCheckConstraints(table, tableDef)
 		for _, c := range checkConstraints {
-			c.Table = &table.Name
 			constraints = append(constraints, c)
 		}
 
@@ -433,9 +432,10 @@ func parseCheckConstraints(table *schema.Table, sql string) []*schema.Constraint
 			if counter == 0 {
 				replaced := r3.Replace(def)
 				constraint := &schema.Constraint{
-					Name: "-",
-					Type: "CHECK",
-					Def:  replaced,
+					Name:  "-",
+					Type:  "CHECK",
+					Def:   replaced,
+					Table: &table.Name,
 				}
 				for _, c := range table.Columns {
 					if strings.Count(replaced, c.Name) > strings.Count(replaced, fmt.Sprintf("%s(", c.Name)) { // to distinguish between 'length' and 'length('
