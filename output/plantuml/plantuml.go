@@ -1,7 +1,9 @@
 package plantuml
 
 import (
+	"fmt"
 	"io"
+	"strings"
 	"text/template"
 
 	"github.com/gobuffalo/packr"
@@ -14,6 +16,10 @@ type PlantUML struct{}
 
 // OutputSchema output dot format for full relation.
 func (p *PlantUML) OutputSchema(wr io.Writer, s *schema.Schema) error {
+	for _, t := range s.Tables {
+		addPrefix(t)
+	}
+
 	box := packr.NewBox("./templates")
 	ts, _ := box.FindString("schema.puml.tmpl")
 	tmpl := template.Must(template.New(s.Name).Parse(ts))
@@ -29,6 +35,7 @@ func (p *PlantUML) OutputSchema(wr io.Writer, s *schema.Schema) error {
 
 // OutputTable output dot format for table.
 func (p *PlantUML) OutputTable(wr io.Writer, t *schema.Table) error {
+	addPrefix(t)
 	encountered := make(map[string]bool)
 	tables := []*schema.Table{}
 	relations := []*schema.Relation{}
@@ -36,6 +43,7 @@ func (p *PlantUML) OutputTable(wr io.Writer, t *schema.Table) error {
 		for _, r := range c.ParentRelations {
 			if !encountered[r.ParentTable.Name] {
 				encountered[r.ParentTable.Name] = true
+				addPrefix(r.ParentTable)
 				tables = append(tables, r.ParentTable)
 			}
 			if !contains(relations, r) {
@@ -45,6 +53,7 @@ func (p *PlantUML) OutputTable(wr io.Writer, t *schema.Table) error {
 		for _, r := range c.ChildRelations {
 			if !encountered[r.Table.Name] {
 				encountered[r.Table.Name] = true
+				addPrefix(r.Table)
 				tables = append(tables, r.Table)
 			}
 			if !contains(relations, r) {
@@ -66,6 +75,29 @@ func (p *PlantUML) OutputTable(wr io.Writer, t *schema.Table) error {
 		return errors.WithStack(err)
 	}
 
+	return nil
+}
+
+func addPrefix(t *schema.Table) error {
+	// PRIMARY KEY
+	for _, i := range t.Indexes {
+		if strings.Index(i.Def, "PRIMARY") < 0 {
+			continue
+		}
+		for _, c := range i.Columns {
+			column, err := t.FindColumnByName(c)
+			if err != nil {
+				return err
+			}
+			column.Name = fmt.Sprintf("+ %s", column.Name)
+		}
+	}
+	// Foreign Key (Relations)
+	for _, c := range t.Columns {
+		if len(c.ParentRelations) > 0 && strings.Index(c.Name, "+") < 0 {
+			c.Name = fmt.Sprintf("# %s", c.Name)
+		}
+	}
 	return nil
 }
 

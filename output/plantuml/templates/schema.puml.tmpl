@@ -18,7 +18,7 @@ table("{{ $t.Name }}") {
 view("{{ $t.Name }}") {
 {{- end }}
 {{- range $ii, $c := $t.Columns }}
-  <b>{{ $c.Name | html }}</b> [{{ $c.Type | html }}]
+  {{ $c.Name | html }} <font color="#666666">[{{ $c.Type | html }}]</font>
 {{- end }}
 }
 {{- end }}

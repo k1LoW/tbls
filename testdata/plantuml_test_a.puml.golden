@@ -12,15 +12,15 @@ skinparam class {
 
 ' tables
 table("a") {
-  <b>a</b> []
-  <b>a2</b> []
+  + a <font color="#666666">[]</font>
+  a2 <font color="#666666">[]</font>
 }
 table("b") {
-  <b>b</b> []
-  <b>b2</b> []
+  # b <font color="#666666">[]</font>
+  b2 <font color="#666666">[]</font>
 }
 
 ' relations
-"a" }-- "b" : ""
+"b" }-- "a" : ""
 
 @enduml
