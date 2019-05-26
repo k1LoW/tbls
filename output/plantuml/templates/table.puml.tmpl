@@ -17,7 +17,7 @@ table("{{ .Table.Name }}") {
 view("{{ .Table.Name }}") {
 {{- end }}
 {{- range $i, $c := .Table.Columns }}
-  <b>{{ $c.Name | html }}</b> [{{ $c.Type | html }}]
+  {{ $c.Name | html }} <font color="#666666">[{{ $c.Type | html }}]</font>
 {{- end }}
 }
 {{- range $i, $t := .Tables }}
@@ -27,7 +27,7 @@ table("{{ $t.Name }}") {
 view("{{ $t.Name }}") {
 {{- end }}
 {{- range $ii, $c := $t.Columns }}
-  <b>{{ $c.Name | html }}</b> [{{ $c.Type | html }}]
+  {{ $c.Name | html }} <font color="#666666">[{{ $c.Type | html }}]</font>
 {{- end }}
 }
 {{- end }}

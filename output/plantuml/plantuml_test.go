@@ -91,6 +91,14 @@ func newTestSchema() *schema.Schema {
 			},
 		},
 	}
+	ta.Indexes = []*schema.Index{
+		&schema.Index{
+			Name:    "PRIMARY KEY",
+			Def:     "PRIMARY KEY(a)",
+			Table:   &ta.Name,
+			Columns: []string{"a"},
+		},
+	}
 	tb := &schema.Table{
 		Name:    "b",
 		Comment: "table b",
@@ -103,13 +111,13 @@ func newTestSchema() *schema.Schema {
 		},
 	}
 	r := &schema.Relation{
-		Table:         ta,
-		Columns:       []*schema.Column{ca},
-		ParentTable:   tb,
-		ParentColumns: []*schema.Column{cb},
+		Table:         tb,
+		Columns:       []*schema.Column{cb},
+		ParentTable:   ta,
+		ParentColumns: []*schema.Column{ca},
 	}
-	ca.ParentRelations = []*schema.Relation{r}
-	cb.ChildRelations = []*schema.Relation{r}
+	ca.ChildRelations = []*schema.Relation{r}
+	cb.ParentRelations = []*schema.Relation{r}
 
 	s := &schema.Schema{
 		Name: "testschema",
