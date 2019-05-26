@@ -1,6 +1,7 @@
 @startuml
 !define table(name) entity name << (T,#5DBCD2) >>
 !define view(name) entity name << (V,#C6EDDB) >>
+!define column(x, y) x <font color="#666666">[y]</font>
 hide methods
 hide stereotypes
 
@@ -12,12 +13,12 @@ skinparam class {
 
 ' tables
 table("a") {
-  + a <font color="#666666">[]</font>
-  a2 <font color="#666666">[]</font>
+  column("+ a", "")
+  column("a2", "")
 }
 table("b") {
-  # b <font color="#666666">[]</font>
-  b2 <font color="#666666">[]</font>
+  column("# b", "")
+  column("b2", "")
 }
 
 ' relations
