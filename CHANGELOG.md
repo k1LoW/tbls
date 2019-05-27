@@ -1,5 +1,10 @@
 # Changelog
 
+## [v1.15.3](https://github.com/k1LoW/tbls/compare/v1.15.2...v1.15.3) (2019-05-27)
+
+* Redshift can not analyze indexes [#115](https://github.com/k1LoW/tbls/pull/115) ([k1LoW](https://github.com/k1LoW))
+* Fixed a typo in "repository" [#112](https://github.com/k1LoW/tbls/pull/112) ([AntonNguyen](https://github.com/AntonNguyen))
+
 ## [v1.15.2](https://github.com/k1LoW/tbls/compare/v1.15.1...v1.15.2) (2019-05-27)
 
 * Redshift can not analyze constraints [#114](https://github.com/k1LoW/tbls/pull/114) ([k1LoW](https://github.com/k1LoW))
