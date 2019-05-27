@@ -436,7 +436,7 @@ func (p *Postgres) queryForIndexes() string {
 SELECT
   i.relname AS indexname,
   pg_get_indexdef(i.oid) AS indexdef,
-  NULL,
+  NULL
 FROM ((((pg_index x
 JOIN pg_class c ON ((c.oid = x.indrelid)))
 JOIN pg_class i ON ((i.oid = x.indexrelid)))
