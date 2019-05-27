@@ -308,10 +308,10 @@ ORDER BY x.indexrelid
 				Def:   indexDef,
 				Table: &table.Name,
 			}
-			idxs := indkeyToInts(indkey)
-			for _, idx := range idxs {
-				index.Columns = append(index.Columns, table.Columns[idx-1].Name)
-			}
+			// idxs := indkeyToInts(indkey)
+			// for _, idx := range idxs {
+			// 	index.Columns = append(index.Columns, table.Columns[idx-1].Name)
+			// }
 
 			indexes = append(indexes, index)
 		}
@@ -330,12 +330,12 @@ ORDER BY x.indexrelid
 				return err
 			}
 			l.constraint.Table = &table.Name
-			if l.conkey != "" {
-				idxs := colkeyToInts(l.conkey)
-				for _, idx := range idxs {
-					l.constraint.Columns = append(l.constraint.Columns, table.Columns[idx-1].Name)
-				}
-			}
+			// if l.conkey != "" {
+			// 	idxs := colkeyToInts(l.conkey)
+			// 	for _, idx := range idxs {
+			// 		l.constraint.Columns = append(l.constraint.Columns, table.Columns[idx-1].Name)
+			// 	}
+			// }
 		}
 		if l.referenceTable != "" {
 			referenceTable, err := s.FindTableByName(l.referenceTable)
@@ -343,12 +343,12 @@ ORDER BY x.indexrelid
 				return err
 			}
 			l.constraint.ReferenceTable = &referenceTable.Name
-			if l.confkey != "" {
-				idxs := colkeyToInts(l.confkey)
-				for _, idx := range idxs {
-					l.constraint.ReferenceColumns = append(l.constraint.ReferenceColumns, referenceTable.Columns[idx-1].Name)
-				}
-			}
+			// if l.confkey != "" {
+			// 	idxs := colkeyToInts(l.confkey)
+			// 	for _, idx := range idxs {
+			// 		l.constraint.ReferenceColumns = append(l.constraint.ReferenceColumns, referenceTable.Columns[idx-1].Name)
+			// 	}
+			// }
 		}
 	}
 
