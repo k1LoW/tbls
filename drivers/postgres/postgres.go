@@ -416,12 +416,11 @@ SELECT
   pc.conname AS name,
   pg_get_constraintdef(pc.oid) AS def,
   contype AS type,
-  psf.relname,
-  pc.conkey::text,
-  pc.confkey::text
+  NULL,
+  NULL,
+  NULL
 FROM pg_constraint AS pc
 LEFT JOIN pg_stat_user_tables AS ps ON ps.relid = pc.conrelid
-LEFT JOIN pg_stat_user_tables AS psf ON psf.relid = pc.confrelid
 WHERE ps.relname = $1
 AND ps.schemaname = $2
 ORDER BY pc.conrelid, pc.conname`
