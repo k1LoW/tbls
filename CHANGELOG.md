@@ -1,5 +1,10 @@
 # Changelog
 
+## [v1.15.2](https://github.com/k1LoW/tbls/compare/v1.15.1...v1.15.2) (2019-05-27)
+
+* Redshift can not analyze constraints [#114](https://github.com/k1LoW/tbls/pull/114) ([k1LoW](https://github.com/k1LoW))
+* Revert Postgres driver parsing logic schema.Constaint/schema.Index [#113](https://github.com/k1LoW/tbls/pull/113) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.15.0](https://github.com/k1LoW/tbls/compare/v1.14.0...v1.15.0) (2019-05-26)
 
 * Fix PlantUML output format [#109](https://github.com/k1LoW/tbls/pull/109) ([k1LoW](https://github.com/k1LoW))
