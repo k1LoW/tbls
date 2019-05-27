@@ -70,7 +70,7 @@ $ go get github.com/k1LoW/tbls
 
 ### Document a database
 
-Add `.tbls.yml` file to your repogitory.
+Add `.tbls.yml` file to your repository.
 
 ``` yaml
 # .tbls.yml
