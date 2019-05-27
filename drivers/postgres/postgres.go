@@ -273,20 +273,7 @@ ORDER BY ordinal_position
 		table.Columns = columns
 
 		// indexes
-		indexRows, err := p.db.Query(`
-SELECT
-  i.relname AS indexname,
-  pg_get_indexdef(i.oid) AS indexdef,
-  indkey::text
-FROM ((((pg_index x
-JOIN pg_class c ON ((c.oid = x.indrelid)))
-JOIN pg_class i ON ((i.oid = x.indexrelid)))
-LEFT JOIN pg_namespace n ON ((n.oid = c.relnamespace))))
-WHERE ((c.relkind = ANY (ARRAY['r'::"char", 'm'::"char"])) AND (i.relkind = 'i'::"char"))
-AND c.relname = $1
-AND n.nspname = $2
-ORDER BY x.indexrelid
-`, tableName, tableSchema)
+		indexRows, err := p.db.Query(p.queryForIndexes(), tableName, tableSchema)
 		defer indexRows.Close()
 		if err != nil {
 			return errors.WithStack(err)
@@ -297,7 +284,7 @@ ORDER BY x.indexrelid
 			var (
 				indexName string
 				indexDef  string
-				indkey    string
+				indkey    sql.NullString
 			)
 			err = indexRows.Scan(&indexName, &indexDef, &indkey)
 			if err != nil {
@@ -308,7 +295,7 @@ ORDER BY x.indexrelid
 				Def:   indexDef,
 				Table: &table.Name,
 			}
-			// idxs := indkeyToInts(indkey)
+			// idxs := indkeyToInts(indkey.String)
 			// for _, idx := range idxs {
 			// 	index.Columns = append(index.Columns, table.Columns[idx-1].Name)
 			// }
@@ -441,6 +428,38 @@ LEFT JOIN pg_stat_user_tables AS psf ON psf.relid = pc.confrelid
 WHERE ps.relname = $1
 AND ps.schemaname = $2
 ORDER BY pc.conrelid, pc.conindid, pc.conname`
+}
+
+func (p *Postgres) queryForIndexes() string {
+	if p.rsMode {
+		return `
+SELECT
+  i.relname AS indexname,
+  pg_get_indexdef(i.oid) AS indexdef,
+  NULL,
+FROM ((((pg_index x
+JOIN pg_class c ON ((c.oid = x.indrelid)))
+JOIN pg_class i ON ((i.oid = x.indexrelid)))
+LEFT JOIN pg_namespace n ON ((n.oid = c.relnamespace))))
+WHERE ((c.relkind = ANY (ARRAY['r'::"char", 'm'::"char"])) AND (i.relkind = 'i'::"char"))
+AND c.relname = $1
+AND n.nspname = $2
+ORDER BY x.indexrelid`
+	}
+	return `
+SELECT
+  i.relname AS indexname,
+  pg_get_indexdef(i.oid) AS indexdef,
+  indkey::text
+FROM ((((pg_index x
+JOIN pg_class c ON ((c.oid = x.indrelid)))
+JOIN pg_class i ON ((i.oid = x.indexrelid)))
+LEFT JOIN pg_namespace n ON ((n.oid = c.relnamespace))))
+WHERE ((c.relkind = ANY (ARRAY['r'::"char", 'm'::"char"])) AND (i.relkind = 'i'::"char"))
+AND c.relname = $1
+AND n.nspname = $2
+ORDER BY x.indexrelid
+`
 }
 
 func colkeyToInts(colkey string) []int {
