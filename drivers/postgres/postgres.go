@@ -115,12 +115,12 @@ AND table_schema = $3;
 				return errors.WithStack(err)
 			}
 			for viewDefRows.Next() {
-				var tableDef string
+				var tableDef sql.NullString
 				err := viewDefRows.Scan(&tableDef)
 				if err != nil {
 					return errors.WithStack(err)
 				}
-				table.Def = fmt.Sprintf("CREATE VIEW %s AS (\n%s\n)", tableName, strings.TrimRight(tableDef, ";"))
+				table.Def = fmt.Sprintf("CREATE VIEW %s AS (\n%s\n)", tableName, strings.TrimRight(tableDef.String, ";"))
 			}
 		}
 
