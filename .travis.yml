@@ -11,7 +11,7 @@ addons:
   apt:
     update: true
 before_install:
-  - test "$TRAVIS_BRANCH" = 'master' && openssl aes-256-cbc -K $encrypted_41d865494e68_key -iv $encrypted_41d865494e68_iv
+  - test "$TRAVIS_BRANCH" != 'master' || openssl aes-256-cbc -K $encrypted_41d865494e68_key -iv $encrypted_41d865494e68_iv
     -in client_secrets.json.enc -out client_secrets.json -d
 install:
   - echo $TRAVIS_GO_VERSION
@@ -21,6 +21,6 @@ install:
   - sleep 20s
 script:
   - make ci
-  - test "$TRAVIS_BRANCH" = 'master' && make test_bigquery
+  - test "$TRAVIS_BRANCH" != 'master' || make test_bigquery
 after_script:
   - codecov
