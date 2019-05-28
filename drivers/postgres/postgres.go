@@ -20,14 +20,6 @@ type Postgres struct {
 	rsMode bool
 }
 
-type constraintLink struct {
-	constraint     *schema.Constraint
-	table          string
-	referenceTable string
-	conkey         string
-	confkey        string
-}
-
 // NewPostgres return new Postgres
 func NewPostgres(db *sql.DB) *Postgres {
 	return &Postgres{
@@ -38,8 +30,6 @@ func NewPostgres(db *sql.DB) *Postgres {
 
 // Analyze PostgreSQL database schema
 func (p *Postgres) Analyze(s *schema.Schema) error {
-	constraintLinks := []constraintLink{}
-
 	// tables
 	tableRows, err := p.db.Query(`
 SELECT DISTINCT cls.oid AS oid, cls.relname AS table_name, tbl.table_type AS table_type, tbl.table_schema AS table_schema
@@ -135,21 +125,26 @@ AND table_schema = $3;
 
 		for constraintRows.Next() {
 			var (
-				constraintName           string
-				constraintDef            string
-				constraintType           string
-				constraintReferenceTable sql.NullString
-				constraintConkey         sql.NullString
-				constraintConfkey        sql.NullString
+				constraintName                string
+				constraintDef                 string
+				constraintType                string
+				constraintReferenceTable      sql.NullString
+				constraintColumnName          sql.NullString
+				constraintReferenceColumnName sql.NullString
 			)
-			err = constraintRows.Scan(&constraintName, &constraintDef, &constraintType, &constraintReferenceTable, &constraintConkey, &constraintConfkey)
+			err = constraintRows.Scan(&constraintName, &constraintDef, &constraintType, &constraintReferenceTable, &constraintColumnName, &constraintReferenceColumnName)
 			if err != nil {
 				return errors.WithStack(err)
 			}
+			rt := constraintReferenceTable.String
 			constraint := &schema.Constraint{
-				Name: constraintName,
-				Type: convertConstraintType(constraintType),
-				Def:  constraintDef,
+				Name:             constraintName,
+				Type:             convertConstraintType(constraintType),
+				Def:              constraintDef,
+				Table:            &table.Name,
+				Columns:          strings.Split(constraintColumnName.String, ", "),
+				ReferenceTable:   &rt,
+				ReferenceColumns: strings.Split(constraintReferenceColumnName.String, ", "),
 			}
 			if constraintType == "f" {
 				relation := &schema.Relation{
@@ -159,13 +154,6 @@ AND table_schema = $3;
 				relations = append(relations, relation)
 			}
 			constraints = append(constraints, constraint)
-			constraintLinks = append(constraintLinks, constraintLink{
-				constraint:     constraint,
-				table:          table.Name,
-				referenceTable: constraintReferenceTable.String,
-				conkey:         constraintConkey.String,
-				confkey:        constraintConfkey.String,
-			})
 		}
 		table.Constraints = constraints
 
@@ -282,23 +270,20 @@ ORDER BY ordinal_position
 		indexes := []*schema.Index{}
 		for indexRows.Next() {
 			var (
-				indexName string
-				indexDef  string
-				indkey    sql.NullString
+				indexName       string
+				indexDef        string
+				indexColumnName sql.NullString
 			)
-			err = indexRows.Scan(&indexName, &indexDef, &indkey)
+			err = indexRows.Scan(&indexName, &indexDef, &indexColumnName)
 			if err != nil {
 				return errors.WithStack(err)
 			}
 			index := &schema.Index{
-				Name:  indexName,
-				Def:   indexDef,
-				Table: &table.Name,
+				Name:    indexName,
+				Def:     indexDef,
+				Table:   &table.Name,
+				Columns: strings.Split(indexColumnName.String, ", "),
 			}
-			// idxs := indkeyToInts(indkey.String)
-			// for _, idx := range idxs {
-			// 	index.Columns = append(index.Columns, table.Columns[idx-1].Name)
-			// }
 
 			indexes = append(indexes, index)
 		}
@@ -308,36 +293,6 @@ ORDER BY ordinal_position
 	}
 
 	s.Tables = tables
-
-	// Link Constraints
-	for _, l := range constraintLinks {
-		if l.table != "" {
-			table, err := s.FindTableByName(l.table)
-			if err != nil {
-				return err
-			}
-			l.constraint.Table = &table.Name
-			// if l.conkey != "" {
-			// 	idxs := colkeyToInts(l.conkey)
-			// 	for _, idx := range idxs {
-			// 		l.constraint.Columns = append(l.constraint.Columns, table.Columns[idx-1].Name)
-			// 	}
-			// }
-		}
-		if l.referenceTable != "" {
-			referenceTable, err := s.FindTableByName(l.referenceTable)
-			if err != nil {
-				return err
-			}
-			l.constraint.ReferenceTable = &referenceTable.Name
-			// if l.confkey != "" {
-			// 	idxs := colkeyToInts(l.confkey)
-			// 	for _, idx := range idxs {
-			// 		l.constraint.ReferenceColumns = append(l.constraint.ReferenceColumns, referenceTable.Columns[idx-1].Name)
-			// 	}
-			// }
-		}
-	}
 
 	// Relations
 	for _, r := range relations {
@@ -415,18 +370,23 @@ ORDER BY pc.conrelid, pc.conname`
 	return `
 SELECT
   pc.conname AS name,
-  (CASE WHEN contype='t' THEN pg_get_triggerdef((SELECT oid FROM pg_trigger WHERE tgconstraint = pc.oid LIMIT 1))
+  (CASE WHEN pc.contype='t' THEN pg_get_triggerdef((SELECT oid FROM pg_trigger WHERE tgconstraint = pc.oid LIMIT 1))
         ELSE pg_get_constraintdef(pc.oid)
    END) AS def,
-  contype AS type,
+  pc.contype AS type,
   psf.relname,
-  pc.conkey::text,
-  pc.confkey::text
+  ARRAY_TO_STRING(ARRAY_AGG(a.attname), ', '),
+  ARRAY_TO_STRING(ARRAY_AGG(af.attname), ', ')
 FROM pg_constraint AS pc
 LEFT JOIN pg_stat_user_tables AS ps ON ps.relid = pc.conrelid
 LEFT JOIN pg_stat_user_tables AS psf ON psf.relid = pc.confrelid
+LEFT JOIN pg_attribute a ON a.attrelid = pc.conrelid
+LEFT JOIN pg_attribute af ON af.attrelid = pc.confrelid
 WHERE ps.relname = $1
 AND ps.schemaname = $2
+AND (a.attnum = ANY(pc.conkey) OR pc.conkey IS NULL)
+AND (af.attnum = ANY(pc.confkey) OR pc.confkey IS NULL)
+GROUP BY pc.conname, pc.contype, pc.oid, psf.relname, pc.conkey, pc.confkey, pc.conrelid, pc.conindid
 ORDER BY pc.conrelid, pc.conindid, pc.conname`
 }
 
@@ -437,11 +397,11 @@ SELECT
   i.relname AS indexname,
   pg_get_indexdef(i.oid) AS indexdef,
   NULL
-FROM ((((pg_index x
-JOIN pg_class c ON ((c.oid = x.indrelid)))
-JOIN pg_class i ON ((i.oid = x.indexrelid)))
-LEFT JOIN pg_namespace n ON ((n.oid = c.relnamespace))))
-WHERE ((c.relkind = ANY (ARRAY['r'::"char", 'm'::"char"])) AND (i.relkind = 'i'::"char"))
+FROM pg_index x
+JOIN pg_class c ON c.oid = x.indrelid
+JOIN pg_class i ON i.oid = x.indexrelid
+LEFT JOIN pg_namespace n ON n.oid = c.relnamespace
+WHERE c.relkind = ANY (ARRAY['r'::"char", 'm'::"char"]) AND i.relkind = 'i'::"char"
 AND c.relname = $1
 AND n.nspname = $2
 ORDER BY x.indexrelid`
@@ -450,16 +410,17 @@ ORDER BY x.indexrelid`
 SELECT
   i.relname AS indexname,
   pg_get_indexdef(i.oid) AS indexdef,
-  indkey::text
-FROM ((((pg_index x
-JOIN pg_class c ON ((c.oid = x.indrelid)))
-JOIN pg_class i ON ((i.oid = x.indexrelid)))
-LEFT JOIN pg_namespace n ON ((n.oid = c.relnamespace))))
-WHERE ((c.relkind = ANY (ARRAY['r'::"char", 'm'::"char"])) AND (i.relkind = 'i'::"char"))
+  ARRAY_TO_STRING(ARRAY_AGG(a.attname), ', ')
+FROM pg_index x
+JOIN pg_class c ON c.oid = x.indrelid
+JOIN pg_class i ON i.oid = x.indexrelid
+JOIN pg_attribute a ON i.oid = a.attrelid
+JOIN pg_namespace n ON n.oid = c.relnamespace
+WHERE c.relkind = ANY (ARRAY['r', 'm']) AND i.relkind = 'i'
 AND c.relname = $1
 AND n.nspname = $2
-ORDER BY x.indexrelid
-`
+GROUP BY c.relname, n.nspname, i.relname, i.oid, x.indexrelid
+ORDER BY x.indexrelid`
 }
 
 func colkeyToInts(colkey string) []int {
