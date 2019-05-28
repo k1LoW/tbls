@@ -52,6 +52,10 @@ test_too_many_tables:
 test_json:
 	./tbls out my://root:mypass@localhost:33306/testdb -c testdata/test_tbls.yml -t json > /tmp/tbls.json
 	./tbls diff json:///tmp/tbls.json sample/mysql
+	./tbls out pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -c testdata/test_tbls.yml -t json > /tmp/tbls.json
+	./tbls diff json:///tmp/tbls.json sample/postgres
+	./tbls out sq://$(PWD)/testdata/testdb.sqlite3 -c testdata/test_tbls.yml -t json > /tmp/tbls.json
+	./tbls diff json:///tmp/tbls.json sample/sqlite
 
 test_env:
 	env TBLS_DSN=my://root:mypass@localhost:33306/testdb TBLS_DOC_PATH=sample/mysql ./tbls doc -c testdata/test_tbls.yml -f
