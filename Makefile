@@ -22,7 +22,8 @@ test:
 	usql my://root:mypass@localhost:33306/testdb -f testdata/my.sql
 	usql my://root:mypass@localhost:33308/testdb -f testdata/my.sql
 	sqlite3 $(PWD)/testdata/testdb.sqlite3 < testdata/sqlite.sql
-	usql ms://SA:MSSQLServer-Passw0rd@localhost:11433/master -f testdata/mssql.sql
+	usql ms://SA:MSSQLServer-Passw0rd@localhost:11433/master -c "IF NOT EXISTS (SELECT * FROM sys.databases WHERE NAME = 'testdb') CREATE DATABASE testdb;"
+	usql ms://SA:MSSQLServer-Passw0rd@localhost:11433/testdb -f testdata/mssql.sql
 	go test ./... -v -coverprofile=coverage.txt -covermode=count
 	make testdoc
 
