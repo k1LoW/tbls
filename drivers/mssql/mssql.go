@@ -9,6 +9,8 @@ import (
 	"github.com/pkg/errors"
 )
 
+var defaultSchemaName = "dbo"
+
 // Mssql struct
 type Mssql struct {
 	db *sql.DB
@@ -24,7 +26,7 @@ func NewMssql(db *sql.DB) *Mssql {
 func (m *Mssql) Analyze(s *schema.Schema) error {
 	// tables
 	tableRows, err := m.db.Query(`
-SELECT name, object_id, type FROM sys.objects WHERE type IN ('U', 'V');
+SELECT schema_name(schema_id) AS table_schema, name, object_id, type FROM sys.objects WHERE type IN ('U', 'V');
 `)
 	defer tableRows.Close()
 	if err != nil {
@@ -34,18 +36,24 @@ SELECT name, object_id, type FROM sys.objects WHERE type IN ('U', 'V');
 	tables := []*schema.Table{}
 	for tableRows.Next() {
 		var (
-			tableName string
-			tableOid  string
-			tableType string
+			tableSchema string
+			tableName   string
+			tableOid    string
+			tableType   string
 		)
-		err := tableRows.Scan(&tableName, &tableOid, &tableType)
+		err := tableRows.Scan(&tableSchema, &tableName, &tableOid, &tableType)
 		if err != nil {
 			return errors.WithStack(err)
 		}
 		tableType = convertTableType(tableType)
 
+		name := tableName
+		if tableSchema != defaultSchemaName {
+			name = fmt.Sprintf("%s.%s", tableSchema, tableName)
+		}
+
 		table := &schema.Table{
-			Name: tableName,
+			Name: name,
 			Type: tableType,
 		}
 
