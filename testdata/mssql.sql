@@ -1,7 +1,3 @@
-IF NOT EXISTS (SELECT * FROM sys.databases WHERE NAME = 'testdb') CREATE DATABASE testdb;
-
-USE testdb;
-
 DROP VIEW IF EXISTS post_comments;
 DROP TABLE IF EXISTS "CamelizeTable";
 DROP TABLE IF EXISTS logs;

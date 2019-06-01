@@ -26,3 +26,11 @@ services:
     environment:
       - MYSQL_DATABASE=testdb
       - MYSQL_ROOT_PASSWORD=mypass
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2017-latest
+    restart: always
+    ports:
+      - "11433:1433"
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=MSSQLServer-Passw0rd
