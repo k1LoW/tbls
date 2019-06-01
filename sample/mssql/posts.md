@@ -6,10 +6,10 @@
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | int |  | false |  |  |  |
+| id | int |  | false | [logs](logs.md) |  |  |
 | user_id | int |  | false |  |  |  |
 | title | varchar(255) |  | false |  |  |  |
-| body | text |  | false |  |  |  |
+| body | text |  | false |  |  | post body |
 | created | date |  | false |  |  |  |
 | updated | date |  | true |  |  |  |
 

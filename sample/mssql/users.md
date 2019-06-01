@@ -6,7 +6,7 @@
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | int |  | false |  |  |  |
+| id | int |  | false | [logs](logs.md) |  |  |
 | username | varchar(50) |  | false |  |  |  |
 | password | varchar(50) |  | false |  |  |  |
 | email | varchar(355) |  | false |  |  |  |

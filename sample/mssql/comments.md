@@ -6,7 +6,7 @@
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | int |  | false |  |  |  |
+| id | int |  | false | [logs](logs.md) |  |  |
 | post_id | int |  | false |  |  |  |
 | user_id | int |  | false |  |  |  |
 | comment | text |  | false |  |  |  |

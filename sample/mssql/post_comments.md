@@ -2,6 +2,8 @@
 
 ## Description
 
+post and comments View table
+
 <details>
 <summary><strong>Table Definition</strong></summary>
 
@@ -21,13 +23,13 @@ CREATE VIEW post_comments AS (
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | int |  | true |  |  |  |
-| title | varchar(255) |  | false |  |  |  |
-| post_user | varchar(50) |  | true |  |  |  |
+| id | int |  | true |  |  | comments.id |
+| title | varchar(255) |  | false |  |  | posts.title |
+| post_user | varchar(50) |  | true |  |  | posts.users.username |
 | comment | text |  | true |  |  |  |
-| comment_user | varchar(50) |  | true |  |  |  |
-| created | date |  | true |  |  |  |
-| updated | date |  | true |  |  |  |
+| comment_user | varchar(50) |  | true |  |  | comments.users.username |
+| created | date |  | true |  |  | comments.created |
+| updated | date |  | true |  |  | comments.updated |
 
 ## Relations
 
