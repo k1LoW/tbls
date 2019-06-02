@@ -10,6 +10,8 @@ import (
 )
 
 var defaultSchemaName = "dbo"
+var typeFk = "FOREIGN KEY"
+var typeCheck = "CHECK"
 
 // Mssql struct
 type Mssql struct {
@@ -111,6 +113,144 @@ ORDER BY c.column_id
 			columns = append(columns, column)
 		}
 		table.Columns = columns
+
+		// constraints
+		constraints := []*schema.Constraint{}
+		/// key constraints
+		keyRows, err := m.db.Query(`
+SELECT
+  c.name,
+  i.type_desc,
+  i.is_unique,
+  i.is_primary_key,
+  i.is_unique_constraint,
+  STRING_AGG(COL_NAME(ic.object_id, ic.column_id), ', ') WITHIN GROUP ( ORDER BY ic.key_ordinal )
+FROM sys.key_constraints AS c
+LEFT JOIN sys.indexes AS i ON i.object_id = c.parent_object_id AND i.index_id = c.unique_index_id
+INNER JOIN sys.index_columns AS ic
+ON i.object_id = ic.object_id AND i.index_id = ic.index_id
+WHERE i.object_id = OBJECT_ID($1)
+GROUP BY c.name, i.index_id, i.type_desc, i.is_unique, i.is_primary_key, i.is_unique_constraint
+ORDER BY i.index_id
+`, fmt.Sprintf("%s.%s", tableSchema, tableName))
+		defer keyRows.Close()
+		if err != nil {
+			return errors.WithStack(err)
+		}
+		for keyRows.Next() {
+			var (
+				indexName               string
+				indexClusterType        string
+				indexIsUnique           bool
+				indexIsPrimaryKey       bool
+				indexIsUniqueConstraint bool
+				indexColumnName         sql.NullString
+			)
+			err = keyRows.Scan(&indexName, &indexClusterType, &indexIsUnique, &indexIsPrimaryKey, &indexIsUniqueConstraint, &indexColumnName)
+			if err != nil {
+				return errors.WithStack(err)
+			}
+			indexType := "-"
+			indexDef := []string{
+				indexClusterType,
+			}
+			if indexIsUnique {
+				indexDef = append(indexDef, "unique")
+			}
+			if indexIsPrimaryKey {
+				indexType = "PRIMARY KEY"
+				indexDef = append(indexDef, "part of a PRIMARY KEY constraint")
+			}
+			if indexIsUniqueConstraint {
+				indexType = "UNIQUE"
+				indexDef = append(indexDef, "part of a UNIQUE constraint")
+			}
+			indexDef = append(indexDef, fmt.Sprintf("[ %s ]", indexColumnName.String))
+
+			constraint := &schema.Constraint{
+				Name:    indexName,
+				Type:    indexType,
+				Def:     strings.Join(indexDef, ", "),
+				Table:   &table.Name,
+				Columns: strings.Split(indexColumnName.String, ", "),
+			}
+			constraints = append(constraints, constraint)
+		}
+
+		/// foreign_keys
+		fkRows, err := m.db.Query(`
+SELECT
+  f.name AS f_name,
+  object_name(f.parent_object_id) AS table_name,
+  object_name(f.referenced_object_id) AS parent_table_name,
+  STRING_AGG(COL_NAME(fc.parent_object_id, fc.parent_column_id), ', ') AS column_names,
+  STRING_AGG(COL_NAME(fc.referenced_object_id, fc.referenced_column_id), ', ') AS parent_column_names,
+  update_referential_action_desc,
+  delete_referential_action_desc
+FROM sys.foreign_keys AS f
+LEFT JOIN sys.foreign_key_columns AS fc ON f.object_id = fc.constraint_object_id
+WHERE f.parent_object_id = OBJECT_ID($1)
+GROUP BY f.name, f.parent_object_id, f.referenced_object_id, delete_referential_action_desc, update_referential_action_desc
+`, fmt.Sprintf("%s.%s", tableSchema, tableName))
+		defer fkRows.Close()
+		if err != nil {
+			return errors.WithStack(err)
+		}
+		for fkRows.Next() {
+			var (
+				fkName              string
+				fkTableName         string
+				fkParentTableName   string
+				fkColumnNames       string
+				fkParentColumnNames string
+				fkUpdateAction      string
+				fkDeleteAction      string
+			)
+			err = fkRows.Scan(&fkName, &fkTableName, &fkParentTableName, &fkColumnNames, &fkParentColumnNames, &fkUpdateAction, &fkDeleteAction)
+			if err != nil {
+				return errors.WithStack(err)
+			}
+			fkDef := fmt.Sprintf("FOREIGN KEY(%s) REFERENCES %s(%s) ON UPDATE %s ON DELETE %s", fkColumnNames, fkParentTableName, fkParentColumnNames, fkUpdateAction, fkDeleteAction)
+			constraint := &schema.Constraint{
+				Name:             fkName,
+				Type:             typeFk,
+				Def:              fkDef,
+				Table:            &table.Name,
+				Columns:          strings.Split(fkColumnNames, ", "),
+				ReferenceTable:   &fkParentTableName,
+				ReferenceColumns: strings.Split(fkParentColumnNames, ", "),
+			}
+			constraints = append(constraints, constraint)
+		}
+
+		/// check_constraints
+		checkRows, err := m.db.Query(`
+SELECT name, definition FROM sys.check_constraints
+WHERE parent_object_id = OBJECT_ID($1)
+`, fmt.Sprintf("%s.%s", tableSchema, tableName))
+		defer checkRows.Close()
+		if err != nil {
+			return errors.WithStack(err)
+		}
+		for checkRows.Next() {
+			var (
+				checkName string
+				checkDef  string
+			)
+			err = checkRows.Scan(&checkName, &checkDef)
+			if err != nil {
+				return errors.WithStack(err)
+			}
+			constraint := &schema.Constraint{
+				Name:  checkName,
+				Type:  typeCheck,
+				Def:   fmt.Sprintf("CHECK%s", checkDef),
+				Table: &table.Name,
+			}
+			constraints = append(constraints, constraint)
+		}
+
+		table.Constraints = constraints
 
 		// indexes
 		indexRows, err := m.db.Query(`

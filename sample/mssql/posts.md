@@ -13,12 +13,20 @@
 | created | date |  | false |  |  |  |
 | updated | date |  | true |  |  |  |
 
+## Constraints
+
+| Name | Type | Definition |
+| ---- | ---- | ---------- |
+| posts_id_pk | PRIMARY KEY | CLUSTERED, unique, part of a PRIMARY KEY constraint, [ id ] |
+| UQ__posts__87EC96B56544F089 | UNIQUE | NONCLUSTERED, unique, part of a UNIQUE constraint, [ user_id, title ] |
+| posts_user_id_fk | FOREIGN KEY | FOREIGN KEY(user_id) REFERENCES users(id) ON UPDATE NO_ACTION ON DELETE CASCADE |
+
 ## Indexes
 
 | Name | Definition |
 | ---- | ---------- |
 | posts_id_pk | CLUSTERED, unique, part of a PRIMARY KEY constraint, [ id ] |
-| UQ__posts__87EC96B581266F04 | NONCLUSTERED, unique, part of a UNIQUE constraint, [ user_id, title ] |
+| UQ__posts__87EC96B56544F089 | NONCLUSTERED, unique, part of a UNIQUE constraint, [ user_id, title ] |
 | posts_user_id_idx | NONCLUSTERED, [ user_id ] |
 
 ## Relations

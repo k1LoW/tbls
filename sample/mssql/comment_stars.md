@@ -13,11 +13,19 @@
 | created | date |  | false |  |  |  |
 | updated | date |  | true |  |  |  |
 
+## Constraints
+
+| Name | Type | Definition |
+| ---- | ---- | ---------- |
+| UQ__comment___88FE6139E56169D5 | UNIQUE | NONCLUSTERED, unique, part of a UNIQUE constraint, [ user_id, comment_post_id, comment_user_id ] |
+| comment_stars_user_id_fk | FOREIGN KEY | FOREIGN KEY(comment_user_id) REFERENCES users(id) ON UPDATE NO_ACTION ON DELETE NO_ACTION |
+| comment_stars_user_id_post_id_fk | FOREIGN KEY | FOREIGN KEY(comment_post_id, comment_user_id) REFERENCES comments(post_id, user_id) ON UPDATE NO_ACTION ON DELETE NO_ACTION |
+
 ## Indexes
 
 | Name | Definition |
 | ---- | ---------- |
-| UQ__comment___88FE61392D9BB296 | NONCLUSTERED, unique, part of a UNIQUE constraint, [ user_id, comment_post_id, comment_user_id ] |
+| UQ__comment___88FE6139E56169D5 | NONCLUSTERED, unique, part of a UNIQUE constraint, [ user_id, comment_post_id, comment_user_id ] |
 
 ## Relations
 

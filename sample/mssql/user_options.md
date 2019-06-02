@@ -11,11 +11,18 @@
 | created | date |  | false |  |  |  |
 | updated | date |  | true |  |  |  |
 
+## Constraints
+
+| Name | Type | Definition |
+| ---- | ---- | ---------- |
+| PK__user_opt__B9BE370F2A379532 | PRIMARY KEY | CLUSTERED, unique, part of a PRIMARY KEY constraint, [ user_id ] |
+| user_options_user_id_fk | FOREIGN KEY | FOREIGN KEY(user_id) REFERENCES users(id) ON UPDATE NO_ACTION ON DELETE CASCADE |
+
 ## Indexes
 
 | Name | Definition |
 | ---- | ---------- |
-| PK__user_opt__B9BE370F990AE7B2 | CLUSTERED, unique, part of a PRIMARY KEY constraint, [ user_id ] |
+| PK__user_opt__B9BE370F2A379532 | CLUSTERED, unique, part of a PRIMARY KEY constraint, [ user_id ] |
 
 ## Relations
 
