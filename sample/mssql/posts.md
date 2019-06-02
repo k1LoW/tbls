@@ -6,8 +6,8 @@
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | int |  | false | [logs](logs.md) |  |  |
-| user_id | int |  | false |  |  |  |
+| id | int |  | false | [comments](comments.md) [logs](logs.md) |  |  |
+| user_id | int |  | false |  | [users](users.md) |  |
 | title | varchar(255) |  | false |  |  |  |
 | body | text |  | false |  |  | post body |
 | created | date |  | false |  |  |  |
@@ -18,7 +18,7 @@
 | Name | Type | Definition |
 | ---- | ---- | ---------- |
 | posts_id_pk | PRIMARY KEY | CLUSTERED, unique, part of a PRIMARY KEY constraint, [ id ] |
-| UQ__posts__87EC96B56544F089 | UNIQUE | NONCLUSTERED, unique, part of a UNIQUE constraint, [ user_id, title ] |
+| UQ__posts__87EC96B532D66A4D | UNIQUE | NONCLUSTERED, unique, part of a UNIQUE constraint, [ user_id, title ] |
 | posts_user_id_fk | FOREIGN KEY | FOREIGN KEY(user_id) REFERENCES users(id) ON UPDATE NO_ACTION ON DELETE CASCADE |
 
 ## Indexes
@@ -26,7 +26,7 @@
 | Name | Definition |
 | ---- | ---------- |
 | posts_id_pk | CLUSTERED, unique, part of a PRIMARY KEY constraint, [ id ] |
-| UQ__posts__87EC96B56544F089 | NONCLUSTERED, unique, part of a UNIQUE constraint, [ user_id, title ] |
+| UQ__posts__87EC96B532D66A4D | NONCLUSTERED, unique, part of a UNIQUE constraint, [ user_id, title ] |
 | posts_user_id_idx | NONCLUSTERED, [ user_id ] |
 
 ## Relations

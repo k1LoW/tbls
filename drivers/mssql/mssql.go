@@ -18,6 +18,13 @@ type Mssql struct {
 	db *sql.DB
 }
 
+type relationLink struct {
+	table         string
+	columns       []string
+	parentTable   string
+	parentColumns []string
+}
+
 // NewMssql ...
 func NewMssql(db *sql.DB) *Mssql {
 	return &Mssql{
@@ -36,6 +43,8 @@ SELECT schema_name(schema_id) AS table_schema, name, object_id, type FROM sys.ob
 	}
 
 	tables := []*schema.Table{}
+	links := []relationLink{}
+
 	for tableRows.Next() {
 		var (
 			tableSchema string
@@ -220,6 +229,13 @@ GROUP BY f.name, f.parent_object_id, f.referenced_object_id, delete_referential_
 				ReferenceTable:   &fkParentTableName,
 				ReferenceColumns: strings.Split(fkParentColumnNames, ", "),
 			}
+			links = append(links, relationLink{
+				table:         table.Name,
+				columns:       strings.Split(fkColumnNames, ", "),
+				parentTable:   fkParentTableName,
+				parentColumns: strings.Split(fkParentColumnNames, ", "),
+			})
+
 			constraints = append(constraints, constraint)
 		}
 
@@ -316,6 +332,41 @@ ORDER BY i.index_id
 	}
 
 	s.Tables = tables
+
+	// relations
+	relations := []*schema.Relation{}
+	for _, l := range links {
+		r := &schema.Relation{}
+		table, err := s.FindTableByName(l.table)
+		if err != nil {
+			return err
+		}
+		r.Table = table
+		for _, c := range l.columns {
+			column, err := table.FindColumnByName(c)
+			if err != nil {
+				return err
+			}
+			r.Columns = append(r.Columns, column)
+			column.ParentRelations = append(column.ParentRelations, r)
+		}
+		parentTable, err := s.FindTableByName(l.parentTable)
+		if err != nil {
+			return err
+		}
+		r.ParentTable = parentTable
+		for _, c := range l.parentColumns {
+			column, err := parentTable.FindColumnByName(c)
+			if err != nil {
+				return err
+			}
+			r.ParentColumns = append(r.ParentColumns, column)
+			column.ChildRelations = append(column.ChildRelations, r)
+		}
+		relations = append(relations, r)
+	}
+
+	s.Relations = relations
 
 	return nil
 }

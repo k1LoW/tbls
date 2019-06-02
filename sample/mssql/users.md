@@ -6,7 +6,7 @@
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | int |  | false | [logs](logs.md) |  |  |
+| id | int |  | false | [user_options](user_options.md) [posts](posts.md) [comments](comments.md) [comment_stars](comment_stars.md) [logs](logs.md) |  |  |
 | username | varchar(50) |  | false |  |  |  |
 | password | varchar(50) |  | false |  |  |  |
 | email | varchar(355) |  | false |  |  |  |
@@ -17,18 +17,18 @@
 
 | Name | Type | Definition |
 | ---- | ---- | ---------- |
-| PK__users__3213E83F39B6F4F9 | PRIMARY KEY | CLUSTERED, unique, part of a PRIMARY KEY constraint, [ id ] |
-| UQ__users__AB6E61642930E16D | UNIQUE | NONCLUSTERED, unique, part of a UNIQUE constraint, [ email ] |
-| UQ__users__F3DBC572409DC16A | UNIQUE | NONCLUSTERED, unique, part of a UNIQUE constraint, [ username ] |
-| CK__users__username__4297D63B | CHECK | CHECK(len([username])>(4)) |
+| PK__users__3213E83F9D8925B4 | PRIMARY KEY | CLUSTERED, unique, part of a PRIMARY KEY constraint, [ id ] |
+| UQ__users__AB6E6164DFDC3CB6 | UNIQUE | NONCLUSTERED, unique, part of a UNIQUE constraint, [ email ] |
+| UQ__users__F3DBC5724E051868 | UNIQUE | NONCLUSTERED, unique, part of a UNIQUE constraint, [ username ] |
+| CK__users__username__5A6F5FCC | CHECK | CHECK(len([username])>(4)) |
 
 ## Indexes
 
 | Name | Definition |
 | ---- | ---------- |
-| PK__users__3213E83F39B6F4F9 | CLUSTERED, unique, part of a PRIMARY KEY constraint, [ id ] |
-| UQ__users__AB6E61642930E16D | NONCLUSTERED, unique, part of a UNIQUE constraint, [ email ] |
-| UQ__users__F3DBC572409DC16A | NONCLUSTERED, unique, part of a UNIQUE constraint, [ username ] |
+| PK__users__3213E83F9D8925B4 | CLUSTERED, unique, part of a PRIMARY KEY constraint, [ id ] |
+| UQ__users__AB6E6164DFDC3CB6 | NONCLUSTERED, unique, part of a UNIQUE constraint, [ email ] |
+| UQ__users__F3DBC5724E051868 | NONCLUSTERED, unique, part of a UNIQUE constraint, [ username ] |
 
 ## Relations
 
