@@ -17,18 +17,18 @@
 
 | Name | Type | Definition |
 | ---- | ---- | ---------- |
-| PK__users__3213E83F9D8925B4 | PRIMARY KEY | CLUSTERED, unique, part of a PRIMARY KEY constraint, [ id ] |
-| UQ__users__AB6E6164DFDC3CB6 | UNIQUE | NONCLUSTERED, unique, part of a UNIQUE constraint, [ email ] |
-| UQ__users__F3DBC5724E051868 | UNIQUE | NONCLUSTERED, unique, part of a UNIQUE constraint, [ username ] |
-| CK__users__username__5A6F5FCC | CHECK | CHECK(len([username])>(4)) |
+| PK__users_* | PRIMARY KEY | CLUSTERED, unique, part of a PRIMARY KEY constraint, [ id ] |
+| UQ__users_* | UNIQUE | NONCLUSTERED, unique, part of a UNIQUE constraint, [ email ] |
+| UQ__users_* | UNIQUE | NONCLUSTERED, unique, part of a UNIQUE constraint, [ username ] |
+| CK__users__username_* | CHECK | CHECK(len([username])>(4)) |
 
 ## Indexes
 
 | Name | Definition |
 | ---- | ---------- |
-| PK__users__3213E83F9D8925B4 | CLUSTERED, unique, part of a PRIMARY KEY constraint, [ id ] |
-| UQ__users__AB6E6164DFDC3CB6 | NONCLUSTERED, unique, part of a UNIQUE constraint, [ email ] |
-| UQ__users__F3DBC5724E051868 | NONCLUSTERED, unique, part of a UNIQUE constraint, [ username ] |
+| PK__users_* | CLUSTERED, unique, part of a PRIMARY KEY constraint, [ id ] |
+| UQ__users_* | NONCLUSTERED, unique, part of a UNIQUE constraint, [ email ] |
+| UQ__users_* | NONCLUSTERED, unique, part of a UNIQUE constraint, [ username ] |
 
 ## Relations
 

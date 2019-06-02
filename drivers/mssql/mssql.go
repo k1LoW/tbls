@@ -3,6 +3,7 @@ package mssql
 import (
 	"database/sql"
 	"fmt"
+	"regexp"
 	"strings"
 
 	"github.com/k1LoW/tbls/schema"
@@ -12,6 +13,7 @@ import (
 var defaultSchemaName = "dbo"
 var typeFk = "FOREIGN KEY"
 var typeCheck = "CHECK"
+var reSystemNamed = regexp.MustCompile(`_[^_]+$`)
 
 // Mssql struct
 type Mssql struct {
@@ -133,13 +135,14 @@ SELECT
   i.is_unique,
   i.is_primary_key,
   i.is_unique_constraint,
-  STRING_AGG(COL_NAME(ic.object_id, ic.column_id), ', ') WITHIN GROUP ( ORDER BY ic.key_ordinal )
+  STRING_AGG(COL_NAME(ic.object_id, ic.column_id), ', ') WITHIN GROUP ( ORDER BY ic.key_ordinal ),
+  c.is_system_named
 FROM sys.key_constraints AS c
 LEFT JOIN sys.indexes AS i ON i.object_id = c.parent_object_id AND i.index_id = c.unique_index_id
 INNER JOIN sys.index_columns AS ic
 ON i.object_id = ic.object_id AND i.index_id = ic.index_id
 WHERE i.object_id = OBJECT_ID($1)
-GROUP BY c.name, i.index_id, i.type_desc, i.is_unique, i.is_primary_key, i.is_unique_constraint
+GROUP BY c.name, i.index_id, i.type_desc, i.is_unique, i.is_primary_key, i.is_unique_constraint, c.is_system_named
 ORDER BY i.index_id
 `, fmt.Sprintf("%s.%s", tableSchema, tableName))
 		defer keyRows.Close()
@@ -154,8 +157,9 @@ ORDER BY i.index_id
 				indexIsPrimaryKey       bool
 				indexIsUniqueConstraint bool
 				indexColumnName         sql.NullString
+				indexIsSystemNamed      bool
 			)
-			err = keyRows.Scan(&indexName, &indexClusterType, &indexIsUnique, &indexIsPrimaryKey, &indexIsUniqueConstraint, &indexColumnName)
+			err = keyRows.Scan(&indexName, &indexClusterType, &indexIsUnique, &indexIsPrimaryKey, &indexIsUniqueConstraint, &indexColumnName, &indexIsSystemNamed)
 			if err != nil {
 				return errors.WithStack(err)
 			}
@@ -177,7 +181,7 @@ ORDER BY i.index_id
 			indexDef = append(indexDef, fmt.Sprintf("[ %s ]", indexColumnName.String))
 
 			constraint := &schema.Constraint{
-				Name:    indexName,
+				Name:    convertSystemNamed(indexName, indexIsSystemNamed),
 				Type:    indexType,
 				Def:     strings.Join(indexDef, ", "),
 				Table:   &table.Name,
@@ -195,11 +199,12 @@ SELECT
   STRING_AGG(COL_NAME(fc.parent_object_id, fc.parent_column_id), ', ') AS column_names,
   STRING_AGG(COL_NAME(fc.referenced_object_id, fc.referenced_column_id), ', ') AS parent_column_names,
   update_referential_action_desc,
-  delete_referential_action_desc
+  delete_referential_action_desc,
+  f.is_system_named
 FROM sys.foreign_keys AS f
 LEFT JOIN sys.foreign_key_columns AS fc ON f.object_id = fc.constraint_object_id
 WHERE f.parent_object_id = OBJECT_ID($1)
-GROUP BY f.name, f.parent_object_id, f.referenced_object_id, delete_referential_action_desc, update_referential_action_desc
+GROUP BY f.name, f.parent_object_id, f.referenced_object_id, delete_referential_action_desc, update_referential_action_desc, f.is_system_named
 `, fmt.Sprintf("%s.%s", tableSchema, tableName))
 		defer fkRows.Close()
 		if err != nil {
@@ -214,14 +219,15 @@ GROUP BY f.name, f.parent_object_id, f.referenced_object_id, delete_referential_
 				fkParentColumnNames string
 				fkUpdateAction      string
 				fkDeleteAction      string
+				fkIsSystemNamed     bool
 			)
-			err = fkRows.Scan(&fkName, &fkTableName, &fkParentTableName, &fkColumnNames, &fkParentColumnNames, &fkUpdateAction, &fkDeleteAction)
+			err = fkRows.Scan(&fkName, &fkTableName, &fkParentTableName, &fkColumnNames, &fkParentColumnNames, &fkUpdateAction, &fkDeleteAction, &fkIsSystemNamed)
 			if err != nil {
 				return errors.WithStack(err)
 			}
 			fkDef := fmt.Sprintf("FOREIGN KEY(%s) REFERENCES %s(%s) ON UPDATE %s ON DELETE %s", fkColumnNames, fkParentTableName, fkParentColumnNames, fkUpdateAction, fkDeleteAction)
 			constraint := &schema.Constraint{
-				Name:             fkName,
+				Name:             convertSystemNamed(fkName, fkIsSystemNamed),
 				Type:             typeFk,
 				Def:              fkDef,
 				Table:            &table.Name,
@@ -241,7 +247,7 @@ GROUP BY f.name, f.parent_object_id, f.referenced_object_id, delete_referential_
 
 		/// check_constraints
 		checkRows, err := m.db.Query(`
-SELECT name, definition FROM sys.check_constraints
+SELECT name, definition, is_system_named FROM sys.check_constraints
 WHERE parent_object_id = OBJECT_ID($1)
 `, fmt.Sprintf("%s.%s", tableSchema, tableName))
 		defer checkRows.Close()
@@ -250,15 +256,16 @@ WHERE parent_object_id = OBJECT_ID($1)
 		}
 		for checkRows.Next() {
 			var (
-				checkName string
-				checkDef  string
+				checkName          string
+				checkDef           string
+				checkIsSystemNamed bool
 			)
-			err = checkRows.Scan(&checkName, &checkDef)
+			err = checkRows.Scan(&checkName, &checkDef, &checkIsSystemNamed)
 			if err != nil {
 				return errors.WithStack(err)
 			}
 			constraint := &schema.Constraint{
-				Name:  checkName,
+				Name:  convertSystemNamed(checkName, checkIsSystemNamed),
 				Type:  typeCheck,
 				Def:   fmt.Sprintf("CHECK%s", checkDef),
 				Table: &table.Name,
@@ -276,12 +283,15 @@ SELECT
   i.is_unique,
   i.is_primary_key,
   i.is_unique_constraint,
-  STRING_AGG(COL_NAME(ic.object_id, ic.column_id), ', ') WITHIN GROUP ( ORDER BY ic.key_ordinal )
+  STRING_AGG(COL_NAME(ic.object_id, ic.column_id), ', ') WITHIN GROUP ( ORDER BY ic.key_ordinal ),
+  c.is_system_named
 FROM sys.indexes AS i
 INNER JOIN sys.index_columns AS ic
 ON i.object_id = ic.object_id AND i.index_id = ic.index_id
+LEFT JOIN sys.key_constraints AS c
+ON i.object_id = c.parent_object_id AND i.index_id = c.unique_index_id
 WHERE i.object_id = OBJECT_ID($1)
-GROUP BY i.name, i.index_id, i.type_desc, i.is_unique, i.is_primary_key, i.is_unique_constraint
+GROUP BY i.name, i.index_id, i.type_desc, i.is_unique, i.is_primary_key, i.is_unique_constraint, c.is_system_named
 ORDER BY i.index_id
 `, fmt.Sprintf("%s.%s", tableSchema, tableName))
 		defer indexRows.Close()
@@ -297,8 +307,9 @@ ORDER BY i.index_id
 				indexIsPrimaryKey       bool
 				indexIsUniqueConstraint bool
 				indexColumnName         sql.NullString
+				indexIsSytemNamed       sql.NullBool
 			)
-			err = indexRows.Scan(&indexName, &indexType, &indexIsUnique, &indexIsPrimaryKey, &indexIsUniqueConstraint, &indexColumnName)
+			err = indexRows.Scan(&indexName, &indexType, &indexIsUnique, &indexIsPrimaryKey, &indexIsUniqueConstraint, &indexColumnName, &indexIsSytemNamed)
 			if err != nil {
 				return errors.WithStack(err)
 			}
@@ -318,7 +329,7 @@ ORDER BY i.index_id
 			indexDef = append(indexDef, fmt.Sprintf("[ %s ]", indexColumnName.String))
 
 			index := &schema.Index{
-				Name:    indexName,
+				Name:    convertSystemNamed(indexName, indexIsSytemNamed.Bool),
 				Def:     strings.Join(indexDef, ", "),
 				Table:   &table.Name,
 				Columns: strings.Split(indexColumnName.String, ", "),
@@ -401,4 +412,11 @@ func convertColmunType(t string, maxLength int) string {
 	default:
 		return t
 	}
+}
+
+func convertSystemNamed(name string, isSytemNamed bool) string {
+	if isSytemNamed {
+		return reSystemNamed.ReplaceAllString(name, "*")
+	}
+	return name
 }
