@@ -13,6 +13,14 @@
 | created | date |  | false |  |  |  |
 | updated | date |  | true |  |  |  |
 
+## Indexes
+
+| Name | Definition |
+| ---- | ---------- |
+| posts_id_pk | CLUSTERED, unique, part of a PRIMARY KEY constraint, [ id ] |
+| UQ__posts__87EC96B581266F04 | NONCLUSTERED, unique, part of a UNIQUE constraint, [ user_id, title ] |
+| posts_user_id_idx | NONCLUSTERED, [ user_id ] |
+
 ## Relations
 
 ![er](posts.png)

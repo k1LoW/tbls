@@ -11,6 +11,12 @@
 | created | date |  | false |  |  |  |
 | updated | date |  | true |  |  |  |
 
+## Indexes
+
+| Name | Definition |
+| ---- | ---------- |
+| PK__user_opt__B9BE370F990AE7B2 | CLUSTERED, unique, part of a PRIMARY KEY constraint, [ user_id ] |
+
 ## Relations
 
 ![er](user_options.png)

@@ -13,6 +13,12 @@
 | created | date |  | false |  |  |  |
 | updated | date |  | true |  |  |  |
 
+## Indexes
+
+| Name | Definition |
+| ---- | ---------- |
+| UQ__comment___88FE61392D9BB296 | NONCLUSTERED, unique, part of a UNIQUE constraint, [ user_id, comment_post_id, comment_user_id ] |
+
 ## Relations
 
 ![er](comment_stars.png)

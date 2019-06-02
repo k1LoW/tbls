@@ -112,6 +112,66 @@ ORDER BY c.column_id
 		}
 		table.Columns = columns
 
+		// indexes
+		indexRows, err := m.db.Query(`
+SELECT
+  i.name AS index_name,
+  i.type_desc,
+  i.is_unique,
+  i.is_primary_key,
+  i.is_unique_constraint,
+  STRING_AGG(COL_NAME(ic.object_id, ic.column_id), ', ') WITHIN GROUP ( ORDER BY ic.key_ordinal )
+FROM sys.indexes AS i
+INNER JOIN sys.index_columns AS ic
+ON i.object_id = ic.object_id AND i.index_id = ic.index_id
+WHERE i.object_id = OBJECT_ID($1)
+GROUP BY i.name, i.index_id, i.type_desc, i.is_unique, i.is_primary_key, i.is_unique_constraint
+ORDER BY i.index_id
+`, fmt.Sprintf("%s.%s", tableSchema, tableName))
+		defer indexRows.Close()
+		if err != nil {
+			return errors.WithStack(err)
+		}
+		indexes := []*schema.Index{}
+		for indexRows.Next() {
+			var (
+				indexName               string
+				indexType               string
+				indexIsUnique           bool
+				indexIsPrimaryKey       bool
+				indexIsUniqueConstraint bool
+				indexColumnName         sql.NullString
+			)
+			err = indexRows.Scan(&indexName, &indexType, &indexIsUnique, &indexIsPrimaryKey, &indexIsUniqueConstraint, &indexColumnName)
+			if err != nil {
+				return errors.WithStack(err)
+			}
+
+			indexDef := []string{
+				indexType,
+			}
+			if indexIsUnique {
+				indexDef = append(indexDef, "unique")
+			}
+			if indexIsPrimaryKey {
+				indexDef = append(indexDef, "part of a PRIMARY KEY constraint")
+			}
+			if indexIsUniqueConstraint {
+				indexDef = append(indexDef, "part of a UNIQUE constraint")
+			}
+			indexDef = append(indexDef, fmt.Sprintf("[ %s ]", indexColumnName.String))
+
+			index := &schema.Index{
+				Name:    indexName,
+				Def:     strings.Join(indexDef, ", "),
+				Table:   &table.Name,
+				Columns: strings.Split(indexColumnName.String, ", "),
+			}
+
+			indexes = append(indexes, index)
+		}
+		table.Indexes = indexes
+
 		tables = append(tables, table)
 	}
 
