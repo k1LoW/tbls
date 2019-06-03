@@ -37,7 +37,9 @@ func NewMssql(db *sql.DB) *Mssql {
 func (m *Mssql) Analyze(s *schema.Schema) error {
 	// tables
 	tableRows, err := m.db.Query(`
-SELECT schema_name(schema_id) AS table_schema, name, object_id, type FROM sys.objects WHERE type IN ('U', 'V') ORDER BY object_id;
+SELECT schema_name(schema_id) AS table_schema, name, object_id, type
+FROM sys.objects
+WHERE type IN ('U', 'V') ORDER BY object_id
 `)
 	defer tableRows.Close()
 	if err != nil {
@@ -91,7 +93,14 @@ SELECT definition FROM sys.sql_modules WHERE object_id = $1
 
 		// columns
 		columnRows, err := m.db.Query(`
-SELECT c.name, t.name AS type, c.max_length, c.is_nullable, c.is_identity, object_definition(c.default_object_id) FROM sys.columns AS c
+SELECT
+  c.name,
+  t.name AS type,
+  c.max_length,
+  c.is_nullable,
+  c.is_identity,
+  object_definition(c.default_object_id)
+FROM sys.columns AS c
 LEFT JOIN sys.types AS t ON c.system_type_id = t.system_type_id
 WHERE c.object_id = $1
 ORDER BY c.column_id
@@ -247,7 +256,8 @@ GROUP BY f.name, f.parent_object_id, f.referenced_object_id, delete_referential_
 
 		/// check_constraints
 		checkRows, err := m.db.Query(`
-SELECT name, definition, is_system_named FROM sys.check_constraints
+SELECT name, definition, is_system_named
+FROM sys.check_constraints
 WHERE parent_object_id = object_id($1)
 `, fmt.Sprintf("%s.%s", tableSchema, tableName))
 		defer checkRows.Close()
@@ -277,7 +287,8 @@ WHERE parent_object_id = object_id($1)
 
 		// triggers
 		triggerRows, err := m.db.Query(`
-SELECT name, definition FROM sys.triggers AS t
+SELECT name, definition
+FROM sys.triggers AS t
 INNER JOIN sys.sql_modules AS sm
 ON sm.object_id = t.object_id
 WHERE type = 'TR'
