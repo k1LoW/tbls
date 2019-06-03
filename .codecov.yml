@@ -4,3 +4,5 @@ coverage:
       default:
         target: 70%
     patch: off
+ignore:
+  - "drivers/bq"

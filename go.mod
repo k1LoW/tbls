@@ -2,6 +2,7 @@ module github.com/k1LoW/tbls
 
 require (
 	cloud.google.com/go v0.39.0
+	github.com/denisenkom/go-mssqldb v0.0.0-20190515213511-eb9f6a1743f3
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/gobuffalo/packd v0.1.0 // indirect
 	github.com/gobuffalo/packr v1.25.0

@@ -11,6 +11,7 @@ import (
 	"cloud.google.com/go/bigquery"
 	"github.com/k1LoW/tbls/drivers"
 	"github.com/k1LoW/tbls/drivers/bq"
+	"github.com/k1LoW/tbls/drivers/mssql"
 	"github.com/k1LoW/tbls/drivers/mysql"
 	"github.com/k1LoW/tbls/drivers/postgres"
 	"github.com/k1LoW/tbls/drivers/redshift"
@@ -63,6 +64,9 @@ func Analyze(urlstr string) (*schema.Schema, error) {
 	case "sqlite3":
 		s.Name = splitted[len(splitted)-1]
 		driver = sqlite.NewSqlite(db)
+	case "mssql":
+		s.Name = splitted[1]
+		driver = mssql.NewMssql(db)
 	default:
 		return s, errors.WithStack(fmt.Errorf("unsupported driver '%s'", u.Driver))
 	}

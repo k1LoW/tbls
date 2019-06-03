@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
+	_ "github.com/denisenkom/go-mssqldb"
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/lib/pq"
 )
@@ -18,6 +19,7 @@ var tests = []struct {
 	{"my://root:mypass@localhost:33306/testdb", "testdb", 8, 6},
 	{"pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable", "testdb", 9, 7},
 	{"json://../testdata/testdb.json", "testdb", 7, 9},
+	{"ms://SA:MSSQLServer-Passw0rd@localhost:11433/testdb", "testdb", 8, 6},
 }
 
 func TestMain(m *testing.M) {
