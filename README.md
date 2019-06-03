@@ -224,7 +224,7 @@ dsn: my://dbuser:dbpass@hostname:3306/dbname
 
 ``` yaml
 # .tbls.yml
-dsn: my://${MYSQL_USER}:${MYSQL_PASSWORD}@localhost:3306/${MYSQL_DATABASE}
+dsn: my://${MYSQL_USER}:${MYSQL_PASSWORD}@hostname:3306/${MYSQL_DATABASE}
 ```
 
 #### Support Database
@@ -267,6 +267,11 @@ dsn: sqlite:///path/to/dbname.db
 dsn: sq:///path/to/dbname.db
 ```
 
+``` yaml
+# .tbls.yml
+dsn: ms://DbUser:SQLServer-DbPassw0rd@localhost:1433/testdb
+```
+
 **BigQuery:**
 
 ``` yaml
@@ -297,6 +302,18 @@ dsn: redshift://dbuser:dbpass@hostname:5432/dbname
 ``` yaml
 # .tbls.yml
 dsn: rs://dbuser:dbpass@hostname:5432/dbname
+```
+
+**Microsoft SQL Server:**
+
+``` yaml
+# .tbls.yml
+dsn: mssql://DbUser:SQLServer-DbPassw0rd@hostname:1433/testdb
+```
+
+``` yaml
+# .tbls.yml
+dsn: sqlserver://DbUser:SQLServer-DbPassw0rd@hostname:1433/testdb
 ```
 
 ### Document path
