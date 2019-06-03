@@ -37,7 +37,7 @@ func NewMssql(db *sql.DB) *Mssql {
 func (m *Mssql) Analyze(s *schema.Schema) error {
 	// tables
 	tableRows, err := m.db.Query(`
-SELECT schema_name(schema_id) AS table_schema, name, object_id, type FROM sys.objects WHERE type IN ('U', 'V');
+SELECT schema_name(schema_id) AS table_schema, name, object_id, type FROM sys.objects WHERE type IN ('U', 'V') ORDER BY object_id;
 `)
 	defer tableRows.Close()
 	if err != nil {
@@ -141,7 +141,7 @@ FROM sys.key_constraints AS c
 LEFT JOIN sys.indexes AS i ON i.object_id = c.parent_object_id AND i.index_id = c.unique_index_id
 INNER JOIN sys.index_columns AS ic
 ON i.object_id = ic.object_id AND i.index_id = ic.index_id
-WHERE i.object_id = OBJECT_ID($1)
+WHERE i.object_id = object_id($1)
 GROUP BY c.name, i.index_id, i.type_desc, i.is_unique, i.is_primary_key, i.is_unique_constraint, c.is_system_named
 ORDER BY i.index_id
 `, fmt.Sprintf("%s.%s", tableSchema, tableName))
@@ -203,7 +203,7 @@ SELECT
   f.is_system_named
 FROM sys.foreign_keys AS f
 LEFT JOIN sys.foreign_key_columns AS fc ON f.object_id = fc.constraint_object_id
-WHERE f.parent_object_id = OBJECT_ID($1)
+WHERE f.parent_object_id = object_id($1)
 GROUP BY f.name, f.parent_object_id, f.referenced_object_id, delete_referential_action_desc, update_referential_action_desc, f.is_system_named
 `, fmt.Sprintf("%s.%s", tableSchema, tableName))
 		defer fkRows.Close()
@@ -248,7 +248,7 @@ GROUP BY f.name, f.parent_object_id, f.referenced_object_id, delete_referential_
 		/// check_constraints
 		checkRows, err := m.db.Query(`
 SELECT name, definition, is_system_named FROM sys.check_constraints
-WHERE parent_object_id = OBJECT_ID($1)
+WHERE parent_object_id = object_id($1)
 `, fmt.Sprintf("%s.%s", tableSchema, tableName))
 		defer checkRows.Close()
 		if err != nil {
@@ -281,7 +281,7 @@ SELECT name, definition FROM sys.triggers AS t
 INNER JOIN sys.sql_modules AS sm
 ON sm.object_id = t.object_id
 WHERE type = 'TR'
-AND parent_id = OBJECT_ID($1)
+AND parent_id = object_id($1)
 `, fmt.Sprintf("%s.%s", tableSchema, tableName))
 		defer triggerRows.Close()
 		if err != nil {
@@ -321,7 +321,7 @@ INNER JOIN sys.index_columns AS ic
 ON i.object_id = ic.object_id AND i.index_id = ic.index_id
 LEFT JOIN sys.key_constraints AS c
 ON i.object_id = c.parent_object_id AND i.index_id = c.unique_index_id
-WHERE i.object_id = OBJECT_ID($1)
+WHERE i.object_id = object_id($1)
 GROUP BY i.name, i.index_id, i.type_desc, i.is_unique, i.is_primary_key, i.is_unique_constraint, c.is_system_named
 ORDER BY i.index_id
 `, fmt.Sprintf("%s.%s", tableSchema, tableName))
