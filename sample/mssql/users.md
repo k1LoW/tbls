@@ -30,6 +30,12 @@
 | UQ__users_* | NONCLUSTERED, unique, part of a UNIQUE constraint, [ email ] |
 | UQ__users_* | NONCLUSTERED, unique, part of a UNIQUE constraint, [ username ] |
 
+## Triggers
+
+| Name | Definition |
+| ---- | ---------- |
+| update_users_updated | CREATE TRIGGER update_users_updated<br>ON users<br>AFTER UPDATE<br>AS<br>BEGIN<br>  UPDATE users SET updated = GETDATE()<br>  WHERE id = ( SELECT id FROM deleted)<br>END; |
+
 ## Relations
 
 ![er](users.png)

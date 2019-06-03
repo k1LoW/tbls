@@ -1,3 +1,5 @@
+DROP TRIGGER IF EXISTS update_users_updated;
+DROP TRIGGER IF EXISTS update_posts_updated;
 DROP VIEW IF EXISTS post_comments;
 DROP TABLE IF EXISTS "CamelizeTable";
 DROP TABLE IF EXISTS logs;
@@ -88,3 +90,21 @@ CREATE TABLE "CamelizeTable" (
   id int NOT NULL,
   created date NOT NULL
 );
+
+CREATE TRIGGER update_users_updated
+ON users
+AFTER UPDATE
+AS
+BEGIN
+  UPDATE users SET updated = GETDATE()
+  WHERE id = ( SELECT id FROM deleted)
+END;
+
+CREATE TRIGGER update_posts_updated
+ON posts
+AFTER UPDATE
+AS
+BEGIN
+  UPDATE users SET updated = GETDATE()
+  WHERE id = ( SELECT user_id FROM deleted)
+END;

@@ -275,6 +275,37 @@ WHERE parent_object_id = OBJECT_ID($1)
 
 		table.Constraints = constraints
 
+		// triggers
+		triggerRows, err := m.db.Query(`
+SELECT name, definition FROM sys.triggers AS t
+INNER JOIN sys.sql_modules AS sm
+ON sm.object_id = t.object_id
+WHERE type = 'TR'
+AND parent_id = OBJECT_ID($1)
+`, fmt.Sprintf("%s.%s", tableSchema, tableName))
+		defer triggerRows.Close()
+		if err != nil {
+			return errors.WithStack(err)
+		}
+
+		triggers := []*schema.Trigger{}
+		for triggerRows.Next() {
+			var (
+				triggerName string
+				triggerDef  string
+			)
+			err = triggerRows.Scan(&triggerName, &triggerDef)
+			if err != nil {
+				return errors.WithStack(err)
+			}
+			trigger := &schema.Trigger{
+				Name: triggerName,
+				Def:  triggerDef,
+			}
+			triggers = append(triggers, trigger)
+		}
+		table.Triggers = triggers
+
 		// indexes
 		indexRows, err := m.db.Query(`
 SELECT

@@ -29,6 +29,12 @@
 | UQ__posts_* | NONCLUSTERED, unique, part of a UNIQUE constraint, [ user_id, title ] |
 | posts_user_id_idx | NONCLUSTERED, [ user_id ] |
 
+## Triggers
+
+| Name | Definition |
+| ---- | ---------- |
+| update_posts_updated | CREATE TRIGGER update_posts_updated<br>ON posts<br>AFTER UPDATE<br>AS<br>BEGIN<br>  UPDATE users SET updated = GETDATE()<br>  WHERE id = ( SELECT user_id FROM deleted)<br>END; |
+
 ## Relations
 
 ![er](posts.png)
