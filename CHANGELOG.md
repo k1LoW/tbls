@@ -1,5 +1,8 @@
 # Changelog
 
+## [v1.16.0](https://github.com/k1LoW/tbls/compare/v1.15.5...v1.16.0) (2019-06-04)
+
+
 ## [v1.15.4](https://github.com/k1LoW/tbls/compare/v1.15.3...v1.15.4) (2019-05-28)
 
 * Postgres driver support new schema.Constraint schema.Index [#116](https://github.com/k1LoW/tbls/pull/116) ([k1LoW](https://github.com/k1LoW))
