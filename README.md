@@ -267,11 +267,6 @@ dsn: sqlite:///path/to/dbname.db
 dsn: sq:///path/to/dbname.db
 ```
 
-``` yaml
-# .tbls.yml
-dsn: ms://DbUser:SQLServer-DbPassw0rd@localhost:1433/testdb
-```
-
 **BigQuery:**
 
 ``` yaml
@@ -314,6 +309,11 @@ dsn: mssql://DbUser:SQLServer-DbPassw0rd@hostname:1433/testdb
 ``` yaml
 # .tbls.yml
 dsn: sqlserver://DbUser:SQLServer-DbPassw0rd@hostname:1433/testdb
+```
+
+``` yaml
+# .tbls.yml
+dsn: ms://DbUser:SQLServer-DbPassw0rd@localhost:1433/testdb
 ```
 
 ### Document path
