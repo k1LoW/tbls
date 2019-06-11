@@ -7,12 +7,22 @@ import (
 	"text/template"
 
 	"github.com/gobuffalo/packr"
+	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/pkg/errors"
 )
 
 // PlantUML struct
-type PlantUML struct{}
+type PlantUML struct {
+	config *config.Config
+}
+
+// NewPlantUML return PlantUML
+func NewPlantUML(c *config.Config) *PlantUML {
+	return &PlantUML{
+		config: c,
+	}
+}
 
 // OutputSchema output dot format for full relation.
 func (p *PlantUML) OutputSchema(wr io.Writer, s *schema.Schema) error {

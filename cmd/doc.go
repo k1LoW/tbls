@@ -124,7 +124,7 @@ func withDot(s *schema.Schema, c *config.Config, force bool) error {
 	var stderr bytes.Buffer
 	cmd.Stderr = &stderr
 
-	dot := new(dot.Dot)
+	dot := dot.NewDot(c)
 
 	err = dot.OutputSchema(tmpfile, s)
 	if err != nil {

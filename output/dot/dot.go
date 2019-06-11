@@ -5,12 +5,22 @@ import (
 	"text/template"
 
 	"github.com/gobuffalo/packr"
+	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/pkg/errors"
 )
 
 // Dot struct
-type Dot struct{}
+type Dot struct {
+	config *config.Config
+}
+
+// NewDot return Dot
+func NewDot(c *config.Config) *Dot {
+	return &Dot{
+		config: c,
+	}
+}
 
 // OutputSchema output dot format for full relation.
 func (d *Dot) OutputSchema(wr io.Writer, s *schema.Schema) error {
