@@ -112,7 +112,9 @@ func ERSkip(skip bool) Option {
 // ERFormat return Option set Config.ER.Format
 func ERFormat(erFormat string) Option {
 	return func(c *Config) error {
-		c.ER.Format = erFormat
+		if erFormat != "" {
+			c.ER.Format = erFormat
+		}
 		return nil
 	}
 }
