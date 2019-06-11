@@ -12,6 +12,15 @@ import (
 	"github.com/pkg/errors"
 )
 
+var templateFuncs = map[string]interface{}{
+	"escape_nl": func(text string) string {
+		return strings.Replace(strings.Replace(strings.Replace(text, "\r\n", "\\n", -1), "\n", "\\n", -1), "\r", "\\n", -1)
+	},
+	"nl2space": func(text string) string {
+		return strings.Replace(strings.Replace(strings.Replace(text, "\r\n", " ", -1), "\n", " ", -1), "\r", " ", -1)
+	},
+}
+
 // PlantUML struct
 type PlantUML struct {
 	config *config.Config
@@ -32,9 +41,10 @@ func (p *PlantUML) OutputSchema(wr io.Writer, s *schema.Schema) error {
 
 	box := packr.NewBox("./templates")
 	ts, _ := box.FindString("schema.puml.tmpl")
-	tmpl := template.Must(template.New(s.Name).Parse(ts))
+	tmpl := template.Must(template.New(s.Name).Funcs(templateFuncs).Parse(ts))
 	err := tmpl.Execute(wr, map[string]interface{}{
-		"Schema": s,
+		"Schema":      s,
+		"showComment": p.config.ER.Comment,
 	})
 	if err != nil {
 		return errors.WithStack(err)
@@ -77,9 +87,10 @@ func (p *PlantUML) OutputTable(wr io.Writer, t *schema.Table) error {
 	ts, _ := box.FindString("table.puml.tmpl")
 	tmpl := template.Must(template.New(t.Name).Parse(ts))
 	err := tmpl.Execute(wr, map[string]interface{}{
-		"Table":     t,
-		"Tables":    tables,
-		"Relations": relations,
+		"Table":       t,
+		"Tables":      tables,
+		"Relations":   relations,
+		"showComment": p.config.ER.Comment,
 	})
 	if err != nil {
 		return errors.WithStack(err)
