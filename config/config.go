@@ -42,8 +42,9 @@ type Format struct {
 
 // ER is er diagram setting
 type ER struct {
-	Skip   bool   `yaml:"skip"`
-	Format string `yaml:"format"`
+	Skip    bool   `yaml:"skip"`
+	Format  string `yaml:"format"`
+	Comment bool   `yaml:"comment"`
 }
 
 // AdditionalRelation is the struct for table relation from yaml
