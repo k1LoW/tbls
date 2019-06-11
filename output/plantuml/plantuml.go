@@ -85,7 +85,7 @@ func (p *PlantUML) OutputTable(wr io.Writer, t *schema.Table) error {
 	box := packr.NewBox("./templates")
 
 	ts, _ := box.FindString("table.puml.tmpl")
-	tmpl := template.Must(template.New(t.Name).Parse(ts))
+	tmpl := template.Must(template.New(t.Name).Funcs(templateFuncs).Parse(ts))
 	err := tmpl.Execute(wr, map[string]interface{}{
 		"Table":       t,
 		"Tables":      tables,

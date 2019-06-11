@@ -28,7 +28,8 @@ func (d *Dot) OutputSchema(wr io.Writer, s *schema.Schema) error {
 	ts, _ := box.FindString("schema.dot.tmpl")
 	tmpl := template.Must(template.New(s.Name).Parse(ts))
 	err := tmpl.Execute(wr, map[string]interface{}{
-		"Schema": s,
+		"Schema":      s,
+		"showComment": d.config.ER.Comment,
 	})
 	if err != nil {
 		return errors.WithStack(err)
@@ -68,9 +69,10 @@ func (d *Dot) OutputTable(wr io.Writer, t *schema.Table) error {
 	ts, _ := box.FindString("table.dot.tmpl")
 	tmpl := template.Must(template.New(t.Name).Parse(ts))
 	err := tmpl.Execute(wr, map[string]interface{}{
-		"Table":     t,
-		"Tables":    tables,
-		"Relations": relations,
+		"Table":       t,
+		"Tables":      tables,
+		"Relations":   relations,
+		"showComment": d.config.ER.Comment,
 	})
 	if err != nil {
 		return errors.WithStack(err)
