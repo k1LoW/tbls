@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.16.1](https://github.com/k1LoW/tbls/compare/v1.16.0...v1.16.1) (2019-06-11)
+
+* Fix loading ER diagram format from .tbls.yml [#120](https://github.com/k1LoW/tbls/pull/120) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.16.0](https://github.com/k1LoW/tbls/compare/v1.15.4...v1.16.0) (2019-06-04)
 
 * Support for Microsoft SQL Server [#118](https://github.com/k1LoW/tbls/pull/118) ([k1LoW](https://github.com/k1LoW))
