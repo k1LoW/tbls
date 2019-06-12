@@ -20,19 +20,17 @@ import (
 
 // Md struct
 type Md struct {
-	adjust   bool
-	er       bool
-	erFormat string
-	box      packr.Box
+	config *config.Config
+	er     bool
+	box    packr.Box
 }
 
 // NewMd return Md
-func NewMd(adjust bool, er bool, erFormat string) *Md {
+func NewMd(c *config.Config, er bool) *Md {
 	return &Md{
-		adjust:   adjust,
-		er:       er,
-		erFormat: erFormat,
-		box:      packr.NewBox("./templates"),
+		config: c,
+		er:     er,
+		box:    packr.NewBox("./templates"),
 	}
 }
 
@@ -40,9 +38,9 @@ func NewMd(adjust bool, er bool, erFormat string) *Md {
 func (m *Md) OutputSchema(wr io.Writer, s *schema.Schema) error {
 	ts, _ := m.box.FindString("index.md.tmpl")
 	tmpl := template.Must(template.New("index").Funcs(funcMap()).Parse(ts))
-	templateData := makeSchemaTemplateData(s, m.adjust)
+	templateData := makeSchemaTemplateData(s, m.config.Format.Adjust)
 	templateData["er"] = m.er
-	templateData["erFormat"] = m.erFormat
+	templateData["erFormat"] = m.config.ER.Format
 	err := tmpl.Execute(wr, templateData)
 	if err != nil {
 		return errors.WithStack(err)
@@ -54,9 +52,9 @@ func (m *Md) OutputSchema(wr io.Writer, s *schema.Schema) error {
 func (m *Md) OutputTable(wr io.Writer, t *schema.Table) error {
 	ts, _ := m.box.FindString("table.md.tmpl")
 	tmpl := template.Must(template.New(t.Name).Funcs(funcMap()).Parse(ts))
-	templateData := makeTableTemplateData(t, m.adjust)
+	templateData := makeTableTemplateData(t, m.config.Format.Adjust)
 	templateData["er"] = m.er
-	templateData["erFormat"] = m.erFormat
+	templateData["erFormat"] = m.config.ER.Format
 
 	err := tmpl.Execute(wr, templateData)
 	if err != nil {
@@ -69,8 +67,6 @@ func (m *Md) OutputTable(wr io.Writer, t *schema.Table) error {
 // Output generate markdown files.
 func Output(s *schema.Schema, c *config.Config, force bool) error {
 	docPath := c.DocPath
-	adjust := c.Format.Adjust
-	erFormat := c.ER.Format
 
 	fullPath, err := filepath.Abs(docPath)
 	if err != nil {
@@ -90,11 +86,11 @@ func Output(s *schema.Schema, c *config.Config, force bool) error {
 		return errors.WithStack(err)
 	}
 	er := false
-	if _, err := os.Lstat(filepath.Join(fullPath, fmt.Sprintf("schema.%s", erFormat))); err == nil {
+	if _, err := os.Lstat(filepath.Join(fullPath, fmt.Sprintf("schema.%s", c.ER.Format))); err == nil {
 		er = true
 	}
 
-	md := NewMd(adjust, er, erFormat)
+	md := NewMd(c, er)
 
 	err = md.OutputSchema(file, s)
 	if err != nil {
@@ -111,11 +107,11 @@ func Output(s *schema.Schema, c *config.Config, force bool) error {
 		}
 
 		er := false
-		if _, err := os.Lstat(filepath.Join(fullPath, fmt.Sprintf("%s.%s", t.Name, erFormat))); err == nil {
+		if _, err := os.Lstat(filepath.Join(fullPath, fmt.Sprintf("%s.%s", t.Name, c.ER.Format))); err == nil {
 			er = true
 		}
 
-		md := NewMd(adjust, er, erFormat)
+		md := NewMd(c, er)
 
 		err = md.OutputTable(file, t)
 		if err != nil {
@@ -131,8 +127,6 @@ func Output(s *schema.Schema, c *config.Config, force bool) error {
 // Diff database and markdown files.
 func Diff(s *schema.Schema, c *config.Config) (string, error) {
 	docPath := c.DocPath
-	adjust := c.Format.Adjust
-	erFormat := c.ER.Format
 
 	var diff string
 	fullPath, err := filepath.Abs(docPath)
@@ -147,11 +141,11 @@ func Diff(s *schema.Schema, c *config.Config) (string, error) {
 	// README.md
 	a := new(bytes.Buffer)
 	er := false
-	if _, err := os.Lstat(filepath.Join(fullPath, fmt.Sprintf("schema.%s", erFormat))); err == nil {
+	if _, err := os.Lstat(filepath.Join(fullPath, fmt.Sprintf("schema.%s", c.ER.Format))); err == nil {
 		er = true
 	}
 
-	md := NewMd(adjust, er, erFormat)
+	md := NewMd(c, er)
 
 	err = md.OutputSchema(a, s)
 	if err != nil {
@@ -188,11 +182,11 @@ func Diff(s *schema.Schema, c *config.Config) (string, error) {
 	for _, t := range s.Tables {
 		a := new(bytes.Buffer)
 		er := false
-		if _, err := os.Lstat(filepath.Join(fullPath, fmt.Sprintf("%s.%s", t.Name, erFormat))); err == nil {
+		if _, err := os.Lstat(filepath.Join(fullPath, fmt.Sprintf("%s.%s", t.Name, c.ER.Format))); err == nil {
 			er = true
 		}
 
-		md := NewMd(adjust, er, erFormat)
+		md := NewMd(c, er)
 
 		err := md.OutputTable(a, t)
 		if err != nil {

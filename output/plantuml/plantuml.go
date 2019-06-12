@@ -24,12 +24,14 @@ var templateFuncs = map[string]interface{}{
 // PlantUML struct
 type PlantUML struct {
 	config *config.Config
+	box    packr.Box
 }
 
 // NewPlantUML return PlantUML
 func NewPlantUML(c *config.Config) *PlantUML {
 	return &PlantUML{
 		config: c,
+		box:    packr.NewBox("./templates"),
 	}
 }
 
@@ -39,8 +41,7 @@ func (p *PlantUML) OutputSchema(wr io.Writer, s *schema.Schema) error {
 		addPrefix(t)
 	}
 
-	box := packr.NewBox("./templates")
-	ts, _ := box.FindString("schema.puml.tmpl")
+	ts, _ := p.box.FindString("schema.puml.tmpl")
 	tmpl := template.Must(template.New(s.Name).Funcs(templateFuncs).Parse(ts))
 	err := tmpl.Execute(wr, map[string]interface{}{
 		"Schema":      s,
@@ -82,9 +83,7 @@ func (p *PlantUML) OutputTable(wr io.Writer, t *schema.Table) error {
 		}
 	}
 
-	box := packr.NewBox("./templates")
-
-	ts, _ := box.FindString("table.puml.tmpl")
+	ts, _ := p.box.FindString("table.puml.tmpl")
 	tmpl := template.Must(template.New(t.Name).Funcs(templateFuncs).Parse(ts))
 	err := tmpl.Execute(wr, map[string]interface{}{
 		"Table":       t,

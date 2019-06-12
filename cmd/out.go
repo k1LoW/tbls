@@ -92,7 +92,7 @@ var outCmd = &cobra.Command{
 		case "dot":
 			o = dot.NewDot(c)
 		case "md":
-			o = md.NewMd(false, false, "")
+			o = md.NewMd(c, false)
 		case "xlsx":
 			o = new(xlsx.Xlsx)
 		case "plantuml":

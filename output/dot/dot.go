@@ -23,19 +23,20 @@ var templateFuncs = map[string]interface{}{
 // Dot struct
 type Dot struct {
 	config *config.Config
+	box    packr.Box
 }
 
 // NewDot return Dot
 func NewDot(c *config.Config) *Dot {
 	return &Dot{
 		config: c,
+		box:    packr.NewBox("./templates"),
 	}
 }
 
 // OutputSchema output dot format for full relation.
 func (d *Dot) OutputSchema(wr io.Writer, s *schema.Schema) error {
-	box := packr.NewBox("./templates")
-	ts, _ := box.FindString("schema.dot.tmpl")
+	ts, _ := d.box.FindString("schema.dot.tmpl")
 	tmpl := template.Must(template.New(s.Name).Funcs(templateFuncs).Parse(ts))
 	err := tmpl.Execute(wr, map[string]interface{}{
 		"Schema":      s,
@@ -74,9 +75,7 @@ func (d *Dot) OutputTable(wr io.Writer, t *schema.Table) error {
 		}
 	}
 
-	box := packr.NewBox("./templates")
-
-	ts, _ := box.FindString("table.dot.tmpl")
+	ts, _ := d.box.FindString("table.dot.tmpl")
 	tmpl := template.Must(template.New(t.Name).Funcs(templateFuncs).Parse(ts))
 	err := tmpl.Execute(wr, map[string]interface{}{
 		"Table":       t,
