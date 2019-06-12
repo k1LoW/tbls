@@ -2,6 +2,7 @@ package dot
 
 import (
 	"io"
+	"strings"
 	"text/template"
 
 	"github.com/gobuffalo/packr"
@@ -9,6 +10,15 @@ import (
 	"github.com/k1LoW/tbls/schema"
 	"github.com/pkg/errors"
 )
+
+var templateFuncs = map[string]interface{}{
+	"nl2br": func(text string) string {
+		return strings.Replace(strings.Replace(strings.Replace(text, "\r\n", "<br />", -1), "\n", "<br />", -1), "\r", "<br />", -1)
+	},
+	"nl2space": func(text string) string {
+		return strings.Replace(strings.Replace(strings.Replace(text, "\r\n", " ", -1), "\n", " ", -1), "\r", " ", -1)
+	},
+}
 
 // Dot struct
 type Dot struct {
@@ -26,7 +36,7 @@ func NewDot(c *config.Config) *Dot {
 func (d *Dot) OutputSchema(wr io.Writer, s *schema.Schema) error {
 	box := packr.NewBox("./templates")
 	ts, _ := box.FindString("schema.dot.tmpl")
-	tmpl := template.Must(template.New(s.Name).Parse(ts))
+	tmpl := template.Must(template.New(s.Name).Funcs(templateFuncs).Parse(ts))
 	err := tmpl.Execute(wr, map[string]interface{}{
 		"Schema":      s,
 		"showComment": d.config.ER.Comment,
@@ -67,7 +77,7 @@ func (d *Dot) OutputTable(wr io.Writer, t *schema.Table) error {
 	box := packr.NewBox("./templates")
 
 	ts, _ := box.FindString("table.dot.tmpl")
-	tmpl := template.Must(template.New(t.Name).Parse(ts))
+	tmpl := template.Must(template.New(t.Name).Funcs(templateFuncs).Parse(ts))
 	err := tmpl.Execute(wr, map[string]interface{}{
 		"Table":       t,
 		"Tables":      tables,
