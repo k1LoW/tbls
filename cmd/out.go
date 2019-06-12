@@ -90,13 +90,13 @@ var outCmd = &cobra.Command{
 		case "json":
 			o = new(json.JSON)
 		case "dot":
-			o = new(dot.Dot)
+			o = dot.NewDot(c)
 		case "md":
 			o = md.NewMd(false, false, "")
 		case "xlsx":
 			o = new(xlsx.Xlsx)
 		case "plantuml":
-			o = new(plantuml.PlantUML)
+			o = plantuml.NewPlantUML(c)
 		default:
 			printError(fmt.Errorf("unsupported format '%s'", format))
 			os.Exit(1)

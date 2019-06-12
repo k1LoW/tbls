@@ -17,7 +17,7 @@ func TestOutputSchema(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	err = c.LoadConfigFile(filepath.Join(testdataDir(), "md_test_tbls.yml"))
+	err = c.LoadConfigFile(filepath.Join(testdataDir(), "out_test_tbls.yml"))
 	if err != nil {
 		t.Error(err)
 	}
@@ -25,7 +25,7 @@ func TestOutputSchema(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	o := new(PlantUML)
+	o := NewPlantUML(c)
 	buf := &bytes.Buffer{}
 	err = o.OutputSchema(buf, s)
 	if err != nil {
@@ -44,7 +44,7 @@ func TestOutputTable(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	err = c.LoadConfigFile(filepath.Join(testdataDir(), "md_test_tbls.yml"))
+	err = c.LoadConfigFile(filepath.Join(testdataDir(), "out_test_tbls.yml"))
 	if err != nil {
 		t.Error(err)
 	}
@@ -54,7 +54,7 @@ func TestOutputTable(t *testing.T) {
 	}
 	ta := s.Tables[0]
 
-	o := new(PlantUML)
+	o := NewPlantUML(c)
 	buf := &bytes.Buffer{}
 	_ = o.OutputTable(buf, ta)
 	expected, _ := ioutil.ReadFile(filepath.Join(testdataDir(), "plantuml_test_a.puml.golden"))

@@ -361,6 +361,9 @@ er:
   # ER diagram format
   # Default is `png`
   format: svg
+  # Add table/column comment to ER diagram
+  # Default is false
+  comment: true
 ```
 
 ### Lint

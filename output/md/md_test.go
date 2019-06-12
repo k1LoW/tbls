@@ -34,7 +34,7 @@ func TestOutput(t *testing.T) {
 		adjust := tt.adjust
 		erFormat := "png"
 		defer os.RemoveAll(tempDir)
-		err = c.Load(filepath.Join(testdataDir(), "md_test_tbls.yml"), config.DocPath(tempDir), config.Adjust(adjust), config.ERFormat(erFormat))
+		err = c.Load(filepath.Join(testdataDir(), "out_test_tbls.yml"), config.DocPath(tempDir), config.Adjust(adjust), config.ERFormat(erFormat))
 		if err != nil {
 			t.Error(err)
 		}
@@ -72,7 +72,7 @@ func TestDiff(t *testing.T) {
 		adjust := tt.adjust
 		erFormat := "png"
 		defer os.RemoveAll(tempDir)
-		err = c.Load(filepath.Join(testdataDir(), "md_test_tbls.yml"), config.DocPath(tempDir), config.Adjust(adjust), config.ERFormat(erFormat))
+		err = c.Load(filepath.Join(testdataDir(), "out_test_tbls.yml"), config.DocPath(tempDir), config.Adjust(adjust), config.ERFormat(erFormat))
 		if err != nil {
 			t.Error(err)
 		}

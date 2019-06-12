@@ -2,23 +2,44 @@ package dot
 
 import (
 	"io"
+	"strings"
 	"text/template"
 
 	"github.com/gobuffalo/packr"
+	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/pkg/errors"
 )
 
+var templateFuncs = map[string]interface{}{
+	"nl2br": func(text string) string {
+		return strings.Replace(strings.Replace(strings.Replace(text, "\r\n", "<br />", -1), "\n", "<br />", -1), "\r", "<br />", -1)
+	},
+	"nl2space": func(text string) string {
+		return strings.Replace(strings.Replace(strings.Replace(text, "\r\n", " ", -1), "\n", " ", -1), "\r", " ", -1)
+	},
+}
+
 // Dot struct
-type Dot struct{}
+type Dot struct {
+	config *config.Config
+}
+
+// NewDot return Dot
+func NewDot(c *config.Config) *Dot {
+	return &Dot{
+		config: c,
+	}
+}
 
 // OutputSchema output dot format for full relation.
 func (d *Dot) OutputSchema(wr io.Writer, s *schema.Schema) error {
 	box := packr.NewBox("./templates")
 	ts, _ := box.FindString("schema.dot.tmpl")
-	tmpl := template.Must(template.New(s.Name).Parse(ts))
+	tmpl := template.Must(template.New(s.Name).Funcs(templateFuncs).Parse(ts))
 	err := tmpl.Execute(wr, map[string]interface{}{
-		"Schema": s,
+		"Schema":      s,
+		"showComment": d.config.ER.Comment,
 	})
 	if err != nil {
 		return errors.WithStack(err)
@@ -56,11 +77,12 @@ func (d *Dot) OutputTable(wr io.Writer, t *schema.Table) error {
 	box := packr.NewBox("./templates")
 
 	ts, _ := box.FindString("table.dot.tmpl")
-	tmpl := template.Must(template.New(t.Name).Parse(ts))
+	tmpl := template.Must(template.New(t.Name).Funcs(templateFuncs).Parse(ts))
 	err := tmpl.Execute(wr, map[string]interface{}{
-		"Table":     t,
-		"Tables":    tables,
-		"Relations": relations,
+		"Table":       t,
+		"Tables":      tables,
+		"Relations":   relations,
+		"showComment": d.config.ER.Comment,
 	})
 	if err != nil {
 		return errors.WithStack(err)
