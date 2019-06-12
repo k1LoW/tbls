@@ -1,5 +1,10 @@
 # Changelog
 
+## [v1.17.0](https://github.com/k1LoW/tbls/compare/v1.16.1...v1.17.0) (2019-06-12)
+
+* Refactor out/* packages [#123](https://github.com/k1LoW/tbls/pull/123) ([k1LoW](https://github.com/k1LoW))
+* Add er.comment for add comment to ER diagram [#122](https://github.com/k1LoW/tbls/pull/122) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.16.1](https://github.com/k1LoW/tbls/compare/v1.16.0...v1.16.1) (2019-06-11)
 
 * Fix loading ER diagram format from .tbls.yml [#120](https://github.com/k1LoW/tbls/pull/120) ([k1LoW](https://github.com/k1LoW))
