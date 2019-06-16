@@ -86,12 +86,12 @@ build:
 	packr2 clean
 
 depsdev:
-	go get -u golang.org/x/tools/cmd/cover
-	go get -u golang.org/x/lint/golint
-	go get -u github.com/linyows/git-semv/cmd/git-semv
-	go get -u github.com/Songmu/ghch/cmd/ghch
-	go get -u github.com/xo/usql
-	go get -u github.com/gobuffalo/packr/v2/packr2
+	go get golang.org/x/tools/cmd/cover
+	go get golang.org/x/lint/golint
+	go get github.com/linyows/git-semv/cmd/git-semv
+	go get github.com/Songmu/ghch/cmd/ghch
+	go get github.com/xo/usql
+	go get github.com/gobuffalo/packr/v2/packr2
 
 prerelease:
 	ghch -w -N ${VER}
