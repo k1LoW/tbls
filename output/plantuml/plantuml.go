@@ -6,7 +6,7 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/gobuffalo/packr"
+	"github.com/gobuffalo/packr/v2"
 	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/pkg/errors"
@@ -24,14 +24,14 @@ var templateFuncs = map[string]interface{}{
 // PlantUML struct
 type PlantUML struct {
 	config *config.Config
-	box    packr.Box
+	box    *packr.Box
 }
 
 // NewPlantUML return PlantUML
 func NewPlantUML(c *config.Config) *PlantUML {
 	return &PlantUML{
 		config: c,
-		box:    packr.NewBox("./templates"),
+		box:    packr.New("plantuml", "./templates"),
 	}
 }
 

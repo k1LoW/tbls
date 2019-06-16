@@ -5,7 +5,7 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/gobuffalo/packr"
+	"github.com/gobuffalo/packr/v2"
 	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/pkg/errors"
@@ -23,14 +23,14 @@ var templateFuncs = map[string]interface{}{
 // Dot struct
 type Dot struct {
 	config *config.Config
-	box    packr.Box
+	box    *packr.Box
 }
 
 // NewDot return Dot
 func NewDot(c *config.Config) *Dot {
 	return &Dot{
 		config: c,
-		box:    packr.NewBox("./templates"),
+		box:    packr.New("dot", "./templates"),
 	}
 }
 

@@ -3,6 +3,9 @@ go:
   - 1.11.x
   - 1.12.x
   - master
+matrix:
+  allow_failures:
+    - go: master
 env: GO111MODULE=on
 services:
   - docker
