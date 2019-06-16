@@ -86,7 +86,7 @@ build:
 	packr2 clean
 
 depsdev:
-	go get golang.org/x/tools/cmd/cover
+	go get golang.org/x/tools/cmd/cover@latest
 	go get golang.org/x/lint/golint
 	go get github.com/linyows/git-semv/cmd/git-semv
 	go get github.com/Songmu/ghch/cmd/ghch
