@@ -81,9 +81,9 @@ test_bigquery:
 	./tbls diff bq://bigquery-public-data/census_bureau_international?creds=client_secrets.json sample/bigquery_census_bureau_international
 
 build:
-	packr
+	packr2
 	go build -ldflags="$(BUILD_LDFLAGS)"
-	packr clean
+	packr2 clean
 
 depsdev:
 	go get golang.org/x/tools/cmd/cover
@@ -91,7 +91,7 @@ depsdev:
 	go get github.com/linyows/git-semv/cmd/git-semv
 	go get github.com/Songmu/ghch/cmd/ghch
 	go get github.com/xo/usql
-	go get github.com/gobuffalo/packr/packr
+	go get github.com/gobuffalo/packr/v2/packr2
 
 prerelease:
 	ghch -w -N ${VER}

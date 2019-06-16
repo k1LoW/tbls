@@ -10,7 +10,7 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/gobuffalo/packr"
+	"github.com/gobuffalo/packr/v2"
 	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/mattn/go-runewidth"
@@ -22,7 +22,7 @@ import (
 type Md struct {
 	config *config.Config
 	er     bool
-	box    packr.Box
+	box    *packr.Box
 }
 
 // NewMd return Md
@@ -30,7 +30,7 @@ func NewMd(c *config.Config, er bool) *Md {
 	return &Md{
 		config: c,
 		er:     er,
-		box:    packr.NewBox("./templates"),
+		box:    packr.New("md", "./templates"),
 	}
 }
 
