@@ -92,9 +92,11 @@ depsdev:
 	go get github.com/Songmu/ghch/cmd/ghch
 	go get github.com/xo/usql
 	go get github.com/gobuffalo/packr/v2/packr2
+	go get github.com/Songmu/gocredits/cmd/gocredits
 
 prerelease:
 	ghch -w -N ${VER}
+	gocredits . > CREDITS
 	git add CHANGELOG.md
 	git commit -m'Bump up version number'
 	git tag ${VER}
