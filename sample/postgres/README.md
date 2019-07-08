@@ -12,6 +12,7 @@
 | [logs](logs.md) | 7 | audit log table | BASE TABLE |
 | [post_comments](post_comments.md) | 7 | post and comments View table | VIEW |
 | [CamelizeTable](CamelizeTable.md) | 2 |  | BASE TABLE |
+| [hyphen-table](hyphen-table.md) | 3 |  | BASE TABLE |
 | [administrator.blogs](administrator.blogs.md) | 6 |  | BASE TABLE |
 
 ## Relations

@@ -16,10 +16,10 @@ var tests = []struct {
 	tableCount    int
 	relationCount int
 }{
-	{"my://root:mypass@localhost:33306/testdb", "testdb", 8, 6},
-	{"pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable", "testdb", 9, 7},
+	{"my://root:mypass@localhost:33306/testdb", "testdb", 9, 6},
+	{"pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable", "testdb", 10, 7},
 	{"json://../testdata/testdb.json", "testdb", 7, 9},
-	{"ms://SA:MSSQLServer-Passw0rd@localhost:11433/testdb", "testdb", 8, 6},
+	{"ms://SA:MSSQLServer-Passw0rd@localhost:11433/testdb", "testdb", 9, 6},
 }
 
 func TestMain(m *testing.M) {

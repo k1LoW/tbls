@@ -1,5 +1,6 @@
 DROP TRIGGER IF EXISTS update_posts_updated;
 DROP VIEW IF EXISTS post_comments;
+DROP TABLE IF EXISTS `hyphen-table`;
 DROP TABLE IF EXISTS CamelizeTable;
 DROP TABLE IF EXISTS logs;
 DROP TABLE IF EXISTS comment_stars;
@@ -86,6 +87,12 @@ CREATE VIEW post_comments AS (
 
 CREATE TABLE CamelizeTable (
   id bigint PRIMARY KEY AUTO_INCREMENT,
+  created datetime NOT NULL
+);
+
+CREATE TABLE `hyphen-table` (
+  id bigint PRIMARY KEY AUTO_INCREMENT,
+  `hyphen-column` text NOT NULL,
   created datetime NOT NULL
 );
 

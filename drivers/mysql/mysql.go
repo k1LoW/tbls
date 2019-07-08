@@ -55,7 +55,7 @@ SELECT table_name, table_type, table_comment FROM information_schema.tables WHER
 
 		// table definition
 		if tableType == "BASE TABLE" {
-			tableDefRows, err := m.db.Query(fmt.Sprintf("SHOW CREATE TABLE %s", tableName))
+			tableDefRows, err := m.db.Query(fmt.Sprintf("SHOW CREATE TABLE `%s`", tableName))
 			defer tableDefRows.Close()
 			if err != nil {
 				return errors.WithStack(err)
