@@ -1,5 +1,10 @@
 # Changelog
 
+## [v1.17.1](https://github.com/k1LoW/tbls/compare/v1.17.0...v1.17.1) (2019-07-08)
+
+* Fix panic when `hyphen-table` [#126](https://github.com/k1LoW/tbls/pull/126) ([k1LoW](https://github.com/k1LoW))
+* Update gobuffalo/packr to v2 [#124](https://github.com/k1LoW/tbls/pull/124) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.17.0](https://github.com/k1LoW/tbls/compare/v1.16.1...v1.17.0) (2019-06-12)
 
 * Refactor out/* packages [#123](https://github.com/k1LoW/tbls/pull/123) ([k1LoW](https://github.com/k1LoW))
