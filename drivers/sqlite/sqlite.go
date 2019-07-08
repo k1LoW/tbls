@@ -87,7 +87,7 @@ WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
 		constraints := []*schema.Constraint{}
 
 		// columns
-		columnRows, err := l.db.Query(fmt.Sprintf("PRAGMA table_info(%s)", tableName))
+		columnRows, err := l.db.Query(fmt.Sprintf("PRAGMA table_info(`%s`)", tableName))
 		defer columnRows.Close()
 		if err != nil {
 			return errors.WithStack(err)
@@ -132,7 +132,7 @@ WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
 		fkMap := map[string]*fk{}
 		fkSlice := []*fk{}
 
-		foreignKeyRows, err := l.db.Query(fmt.Sprintf("PRAGMA foreign_key_list(%s)", tableName))
+		foreignKeyRows, err := l.db.Query(fmt.Sprintf("PRAGMA foreign_key_list(`%s`)", tableName))
 		defer foreignKeyRows.Close()
 		if err != nil {
 			return errors.WithStack(err)
@@ -207,7 +207,7 @@ WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
 		}
 
 		// indexes and constraints(UNIQUE, PRIMARY KEY)
-		indexRows, err := l.db.Query(fmt.Sprintf("PRAGMA index_list(%s)", tableName))
+		indexRows, err := l.db.Query(fmt.Sprintf("PRAGMA index_list(`%s`)", tableName))
 		defer indexRows.Close()
 		if err != nil {
 			return errors.WithStack(err)

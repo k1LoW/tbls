@@ -4,6 +4,7 @@ DROP VIEW IF EXISTS post_comments;
 DROP TABLE IF EXISTS access_log;
 DROP TABLE IF EXISTS syslog;
 DROP TABLE IF EXISTS check_constraints;
+DROP TABLE IF EXISTS 'hyphen-table';
 DROP TABLE IF EXISTS CamelizeTable;
 DROP TABLE IF EXISTS logs;
 DROP TABLE IF EXISTS comment_stars;
@@ -86,6 +87,12 @@ CREATE VIEW post_comments AS
 
 CREATE TABLE CamelizeTable (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
+  created NUMERIC NOT NULL
+);
+
+CREATE TABLE 'hyphen-table' (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  'hyphen-column' TEXT NOT NULL,
   created NUMERIC NOT NULL
 );
 
