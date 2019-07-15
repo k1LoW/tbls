@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.17.2](https://github.com/k1LoW/tbls/compare/v1.17.1...v1.17.2) (2019-07-15)
+
+* Fix .goreleaser build hooks [#129](https://github.com/k1LoW/tbls/pull/129) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.17.1](https://github.com/k1LoW/tbls/compare/v1.17.0...v1.17.1) (2019-07-08)
 
 * Fix panic when `hyphen-table` [#126](https://github.com/k1LoW/tbls/pull/126) ([k1LoW](https://github.com/k1LoW))
