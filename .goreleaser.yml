@@ -71,7 +71,8 @@ changelog:
     exclude:
     - '^docs:'
     - '^test:'
-brew:
+brews:
+-
   name: tbls
   github:
     owner: k1LoW
