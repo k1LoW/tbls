@@ -36,9 +36,12 @@ func NewDot(c *config.Config) *Dot {
 
 // OutputSchema output dot format for full relation.
 func (d *Dot) OutputSchema(wr io.Writer, s *schema.Schema) error {
-	ts, _ := d.box.FindString("schema.dot.tmpl")
+	ts, err := d.box.FindString("schema.dot.tmpl")
+	if err != nil {
+		return errors.WithStack(err)
+	}
 	tmpl := template.Must(template.New(s.Name).Funcs(templateFuncs).Parse(ts))
-	err := tmpl.Execute(wr, map[string]interface{}{
+	err = tmpl.Execute(wr, map[string]interface{}{
 		"Schema":      s,
 		"showComment": d.config.ER.Comment,
 	})
@@ -75,9 +78,12 @@ func (d *Dot) OutputTable(wr io.Writer, t *schema.Table) error {
 		}
 	}
 
-	ts, _ := d.box.FindString("table.dot.tmpl")
+	ts, err := d.box.FindString("table.dot.tmpl")
+	if err != nil {
+		return errors.WithStack(err)
+	}
 	tmpl := template.Must(template.New(t.Name).Funcs(templateFuncs).Parse(ts))
-	err := tmpl.Execute(wr, map[string]interface{}{
+	err = tmpl.Execute(wr, map[string]interface{}{
 		"Table":       t,
 		"Tables":      tables,
 		"Relations":   relations,

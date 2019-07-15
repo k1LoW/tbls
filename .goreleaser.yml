@@ -6,8 +6,8 @@ builds:
 -
   id: tbls-darwin
   hooks:
-    pre: packr
-    post: packr clean
+    pre: packr2
+    post: packr2 clean
   ldflags:
     - -s -w -X github.com/k1LoW/tbls.version={{.Version}} -X github.com/k1LoW/tbls.commit={{.FullCommit}} -X github.com/k1LoW/tbls.date={{.Date}} -X github.com/k1LoW/tbls/version.Version={{.Version}}
   env:
@@ -19,8 +19,8 @@ builds:
 -
   id: tbls-linux
   hooks:
-    pre: packr
-    post: packr clean
+    pre: packr2
+    post: packr2 clean
   ldflags:
     - -s -w -X github.com/k1LoW/tbls.version={{.Version}} -X github.com/k1LoW/tbls.commit={{.FullCommit}} -X github.com/k1LoW/tbls.date={{.Date}} -X github.com/k1LoW/tbls/version.Version={{.Version}}
     - -linkmode external
@@ -35,8 +35,8 @@ builds:
 -
   id: tbls-windows
   hooks:
-    pre: packr
-    post: packr clean
+    pre: packr2
+    post: packr2 clean
   ldflags:
     - -s -w -X github.com/k1LoW/tbls.version={{.Version}} -X github.com/k1LoW/tbls.commit={{.FullCommit}} -X github.com/k1LoW/tbls.date={{.Date}} -X github.com/k1LoW/tbls/version.Version={{.Version}}
     - -extldflags '-static'
