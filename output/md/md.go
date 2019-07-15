@@ -36,12 +36,15 @@ func NewMd(c *config.Config, er bool) *Md {
 
 // OutputSchema output .md format for all tables.
 func (m *Md) OutputSchema(wr io.Writer, s *schema.Schema) error {
-	ts, _ := m.box.FindString("index.md.tmpl")
+	ts, err := m.box.FindString("index.md.tmpl")
+	if err != nil {
+		return errors.WithStack(err)
+	}
 	tmpl := template.Must(template.New("index").Funcs(funcMap()).Parse(ts))
 	templateData := makeSchemaTemplateData(s, m.config.Format.Adjust)
 	templateData["er"] = m.er
 	templateData["erFormat"] = m.config.ER.Format
-	err := tmpl.Execute(wr, templateData)
+	err = tmpl.Execute(wr, templateData)
 	if err != nil {
 		return errors.WithStack(err)
 	}
@@ -50,13 +53,16 @@ func (m *Md) OutputSchema(wr io.Writer, s *schema.Schema) error {
 
 // OutputTable output md format for table.
 func (m *Md) OutputTable(wr io.Writer, t *schema.Table) error {
-	ts, _ := m.box.FindString("table.md.tmpl")
+	ts, err := m.box.FindString("table.md.tmpl")
+	if err != nil {
+		return errors.WithStack(err)
+	}
 	tmpl := template.Must(template.New(t.Name).Funcs(funcMap()).Parse(ts))
 	templateData := makeTableTemplateData(t, m.config.Format.Adjust)
 	templateData["er"] = m.er
 	templateData["erFormat"] = m.config.ER.Format
 
-	err := tmpl.Execute(wr, templateData)
+	err = tmpl.Execute(wr, templateData)
 	if err != nil {
 		return errors.WithStack(err)
 	}

@@ -41,9 +41,12 @@ func (p *PlantUML) OutputSchema(wr io.Writer, s *schema.Schema) error {
 		addPrefix(t)
 	}
 
-	ts, _ := p.box.FindString("schema.puml.tmpl")
+	ts, err := p.box.FindString("schema.puml.tmpl")
+	if err != nil {
+		return errors.WithStack(err)
+	}
 	tmpl := template.Must(template.New(s.Name).Funcs(templateFuncs).Parse(ts))
-	err := tmpl.Execute(wr, map[string]interface{}{
+	err = tmpl.Execute(wr, map[string]interface{}{
 		"Schema":      s,
 		"showComment": p.config.ER.Comment,
 	})
@@ -83,9 +86,12 @@ func (p *PlantUML) OutputTable(wr io.Writer, t *schema.Table) error {
 		}
 	}
 
-	ts, _ := p.box.FindString("table.puml.tmpl")
+	ts, err := p.box.FindString("table.puml.tmpl")
+	if err != nil {
+		return errors.WithStack(err)
+	}
 	tmpl := template.Must(template.New(t.Name).Funcs(templateFuncs).Parse(ts))
-	err := tmpl.Execute(wr, map[string]interface{}{
+	err = tmpl.Execute(wr, map[string]interface{}{
 		"Table":       t,
 		"Tables":      tables,
 		"Relations":   relations,
