@@ -24,7 +24,7 @@ Key features of `tbls` are:
     - [Diff database and document](#diff-database-and-document)
     - [Lint a database](#lint-a-database)
     - [Continuous Integration](#continuous-integration)
-  - [Configration](#configration)
+  - [Configuration](#configration)
     - [DSN](#dsn)
       - [Support Database](#support-database)
     - [Document path](#document-path)
@@ -36,7 +36,7 @@ Key features of `tbls` are:
     - [Relations](#relations)
   - [Output formats](#output-formats)
   - [Command arguments](#command-arguments)
-  - [Envirionment variables](#environment-variables)
+  - [Environment variables](#environment-variables)
 
 <br>
 
@@ -58,7 +58,7 @@ $ brew install k1LoW/tap/tbls
 
 **manually:**
 
-Download binany from [releases page](https://github.com/k1LoW/tbls/releases)
+Download binary from [releases page](https://github.com/k1LoW/tbls/releases)
 
 **go get:**
 
@@ -75,7 +75,7 @@ Add `.tbls.yml` file to your repository.
 ``` yaml
 # .tbls.yml
 
-# DSN (Databaase Source Name) to connect database
+# DSN (Database Source Name) to connect database
 dsn: postgres://dbuser:dbpass@localhost:5432/dbname
 
 # Path to generate document
@@ -95,7 +95,7 @@ Commit `.tbls.yml` and the document.
 
 ``` console
 $ git add .tbls.yml doc/schema
-$ git commit -m'Add database document'
+$ git commit -m 'Add database document'
 $ git push origin master
 ```
 
@@ -209,11 +209,11 @@ script:
 
 > **Tips:** If the order of the columns does not match, you can use the `--sort` option.
 
-## Configration
+## Configuration
 
 ### DSN
 
-`DSN:` (Data Srouce Name) is used to connect to database.
+`DSN:` (Data Source Name) is used to connect to database.
 
 ``` yaml
 # .tbls.yml
@@ -279,7 +279,7 @@ dsn: bigquery://project-id/dataset-id?creds=/path/to/google_application_credenti
 dsn: bq://project-id/dataset-id?creds=/path/to/google_application_credentials.json
 ```
 
-To set `GOOGLE_APPLICATION_CREDENTIALS` envrionment valiable, you can use
+To set `GOOGLE_APPLICATION_CREDENTIALS` environment variable, you can use
 
 1. `export GOOGLE_APPLICATION_CREDENTIALS` or `env GOOGLE_APPLICATION_CREDENTIALS`
 2. Add query to DSN
@@ -564,9 +564,9 @@ Flags:
       --without-er         no generate ER diagrams
 ```
 
-## Envirionment variables
+## Environment variables
 
-tbls accepts envirionment variables `TBLS_DSN` and `TBLS_DOC_PATH`
+tbls accepts environment variables `TBLS_DSN` and `TBLS_DOC_PATH`
 
 ``` console
 $ env TBLS_DSN=my://root:mypass@localhost:3306/testdb TBLS_DOC_PATH=doc/schema tbls doc
