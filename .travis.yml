@@ -17,9 +17,9 @@ before_install:
   - test $TRAVIS_BRANCH != 'master' || test $TRAVIS_PULL_REQUEST_BRANCH != '' || openssl aes-256-cbc -K $encrypted_41d865494e68_key -iv $encrypted_41d865494e68_iv
     -in client_secrets.json.enc -out client_secrets.json -d
 install:
-  - echo "Go version: $TRAVIS_GO_VERSION"
-  - echo "branch: $TRAVIS_BRANCH"
-  - echo "pull request branch: $TRAVIS_PULL_REQUEST_BRANCH"
+  - echo $TRAVIS_GO_VERSION
+  - echo $TRAVIS_BRANCH
+  - echo $TRAVIS_PULL_REQUEST_BRANCH
   - sudo pip install codecov
   - make depsdev
   - docker-compose up -d
