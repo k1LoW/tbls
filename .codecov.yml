@@ -2,7 +2,8 @@ coverage:
   status:
     project:
       default:
-        target: 70%
+        target: 65%
     patch: off
 ignore:
   - "drivers/bq"
+  - "drivers/spanner"

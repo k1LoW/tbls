@@ -9,12 +9,14 @@ import (
 	"strings"
 
 	"cloud.google.com/go/bigquery"
+	cloudspanner "cloud.google.com/go/spanner"
 	"github.com/k1LoW/tbls/drivers"
 	"github.com/k1LoW/tbls/drivers/bq"
 	"github.com/k1LoW/tbls/drivers/mssql"
 	"github.com/k1LoW/tbls/drivers/mysql"
 	"github.com/k1LoW/tbls/drivers/postgres"
 	"github.com/k1LoW/tbls/drivers/redshift"
+	"github.com/k1LoW/tbls/drivers/spanner"
 	"github.com/k1LoW/tbls/drivers/sqlite"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/pkg/errors"
@@ -28,6 +30,9 @@ func Analyze(urlstr string) (*schema.Schema, error) {
 	}
 	if strings.Index(urlstr, "bq://") == 0 || strings.Index(urlstr, "bigquery://") == 0 {
 		return AnalizeBigquery(urlstr)
+	}
+	if strings.Index(urlstr, "spanner://") == 0 {
+		return AnalizeSpanner(urlstr)
 	}
 	s := &schema.Schema{}
 	u, err := dburl.Parse(urlstr)
@@ -99,7 +104,7 @@ func AnalizeJSON(urlstr string) (*schema.Schema, error) {
 	return s, nil
 }
 
-// AnalizeBigquery ...
+// AnalizeBigquery analyze `bq://`
 func AnalizeBigquery(urlstr string) (*schema.Schema, error) {
 	s := &schema.Schema{}
 	u, err := url.Parse(urlstr)
@@ -127,6 +132,50 @@ func AnalizeBigquery(urlstr string) (*schema.Schema, error) {
 
 	s.Name = fmt.Sprintf("%s:%s", projectID, datasetID)
 	driver, err := bq.NewBigquery(ctx, client, datasetID)
+	if err != nil {
+		return s, err
+	}
+	d, err := driver.Info()
+	if err != nil {
+		return s, err
+	}
+	s.Driver = d
+	err = driver.Analyze(s)
+	if err != nil {
+		return s, err
+	}
+	return s, nil
+}
+
+// AnalizeSpanner analyze `spanner://`
+func AnalizeSpanner(urlstr string) (*schema.Schema, error) {
+	s := &schema.Schema{}
+	u, err := url.Parse(urlstr)
+	if err != nil {
+		return s, err
+	}
+
+	values := u.Query()
+	err = setEnvGoogleApplicationCredentials(values)
+	if err != nil {
+		return s, err
+	}
+
+	splitted := strings.Split(u.Path, "/")
+	projectID := u.Host
+	instanceID := splitted[1]
+	databaseID := splitted[2]
+
+	db := fmt.Sprintf("projects/%s/instances/%s/databases/%s", projectID, instanceID, databaseID)
+	ctx := context.Background()
+	client, err := cloudspanner.NewClient(ctx, db)
+	if err != nil {
+		return s, err
+	}
+	defer client.Close()
+	s.Name = db
+
+	driver, err := spanner.NewSpanner(ctx, client)
 	if err != nil {
 		return s, err
 	}

@@ -5,4 +5,4 @@ coverage.txt
 testdb.sqlite3
 .envrc
 .go-version
-client_secrets.json
+*client_secrets.json
