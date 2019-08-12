@@ -291,7 +291,7 @@ To set `GOOGLE_APPLICATION_CREDENTIALS` environment variable, you can use
 
 ``` yaml
 # .tbls.yml
-dsn: spanner://project-id/instance-id/dbbane?creds=/path/to/google_application_credentials.json
+dsn: spanner://project-id/instance-id/dbname?creds=/path/to/google_application_credentials.json
 ```
 
 To set `GOOGLE_APPLICATION_CREDENTIALS` environment variable, you can use
