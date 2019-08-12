@@ -6,3 +6,4 @@ coverage:
     patch: off
 ignore:
   - "drivers/bq"
+  - "drivers/spanner"
