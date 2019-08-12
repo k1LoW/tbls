@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.18.0](https://github.com/k1LoW/tbls/compare/v1.17.2...v1.18.0) (2019-08-13)
+
+* Support Cloud Spanner [#132](https://github.com/k1LoW/tbls/pull/132) ([k1LoW](https://github.com/k1LoW))
+* Fix .travis.yml condition [#131](https://github.com/k1LoW/tbls/pull/131) ([k1LoW](https://github.com/k1LoW))
+* fix typo for readme [#130](https://github.com/k1LoW/tbls/pull/130) ([kojirock5260](https://github.com/kojirock5260))
+
 ## [v1.17.2](https://github.com/k1LoW/tbls/compare/v1.17.1...v1.17.2) (2019-07-15)
 
 * Fix .goreleaser build hooks [#129](https://github.com/k1LoW/tbls/pull/129) ([k1LoW](https://github.com/k1LoW))
