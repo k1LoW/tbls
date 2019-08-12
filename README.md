@@ -287,6 +287,21 @@ To set `GOOGLE_APPLICATION_CREDENTIALS` environment variable, you can use
     - `?credentials=/path/to/client_secrets.json`
     - `?creds=/path/to/client_secrets.json`
 
+**Cloud Spanner:**
+
+``` yaml
+# .tbls.yml
+dsn: spanner://project-id/instance-id/dbbane?creds=/path/to/google_application_credentials.json
+```
+
+To set `GOOGLE_APPLICATION_CREDENTIALS` environment variable, you can use
+
+1. `export GOOGLE_APPLICATION_CREDENTIALS` or `env GOOGLE_APPLICATION_CREDENTIALS`
+2. Add query to DSN
+    - `?google_application_credentials=/path/to/client_secrets.json`
+    - `?credentials=/path/to/client_secrets.json`
+    - `?creds=/path/to/client_secrets.json`
+
 **Amazon Redshift:**
 
 ``` yaml
