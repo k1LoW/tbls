@@ -6,7 +6,7 @@
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| user_id | INT64 |  | false | [comment_stars](comment_stars.md) [posts](posts.md) [user_options](user_options.md) |  |  |
+| user_id | INT64 |  | false | [comment_stars](comment_stars.md) [posts](posts.md) [user_options](user_options.md) [comments](comments.md) [logs](logs.md) |  |  |
 | username | STRING(50) |  | false |  |  |  |
 | password | STRING(50) |  | false |  |  |  |
 | email | STRING(255) |  | false |  |  |  |

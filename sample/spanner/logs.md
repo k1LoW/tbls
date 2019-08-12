@@ -7,8 +7,8 @@
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
 | log_id | INT64 |  | false |  |  |  |
-| user_id | INT64 |  | false |  |  |  |
-| post_id | INT64 |  | true |  |  |  |
+| user_id | INT64 |  | false |  | [users](users.md) |  |
+| post_id | INT64 |  | true |  | [posts](posts.md) |  |
 | comment_id | INT64 |  | true |  |  |  |
 | comment_star_id | INT64 |  | true |  |  |  |
 | payload | STRING(MAX) |  | true |  |  |  |

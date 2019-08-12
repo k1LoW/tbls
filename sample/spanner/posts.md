@@ -7,7 +7,7 @@
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
 | user_id | INT64 |  | false | [comments](comments.md) | [users](users.md) |  |
-| post_id | INT64 |  | false | [comments](comments.md) | [users](users.md) |  |
+| post_id | INT64 |  | false | [comments](comments.md) [logs](logs.md) | [users](users.md) |  |
 | title | STRING(255) |  | false |  |  |  |
 | body | STRING(MAX) |  | false |  |  |  |
 | image | BYTES(MAX) |  | false |  |  |  |

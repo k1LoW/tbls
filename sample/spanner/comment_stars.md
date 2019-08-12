@@ -8,8 +8,8 @@
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
 | user_id | INT64 |  | false |  | [users](users.md) |  |
 | comment_star_id | INT64 |  | false |  | [users](users.md) |  |
-| comment_post_id | INT64 |  | false |  |  |  |
-| comment_user_id | INT64 |  | false |  |  |  |
+| comment_post_id | INT64 |  | false |  | [comments](comments.md) |  |
+| comment_user_id | INT64 |  | false |  | [comments](comments.md) |  |
 | created | TIMESTAMP |  | false |  |  |  |
 | updated | TIMESTAMP (allow_commit_timestamp=TRUE) |  | true |  |  |  |
 
