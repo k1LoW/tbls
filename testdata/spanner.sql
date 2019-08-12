@@ -40,8 +40,8 @@ CREATE TABLE comments (
   updated TIMESTAMP OPTIONS (allow_commit_timestamp=true)
 ) PRIMARY KEY(user_id, post_id, comment_id),
 INTERLEAVE IN PARENT posts ON DELETE CASCADE;
-
 CREATE UNIQUE INDEX comments_post_id_user_id_idx ON comments(post_id, user_id);
+CREATE INDEX comments_post_id_idx ON comments(user_id, post_id, comment_id, comment DESC), INTERLEAVE IN posts;
 
 CREATE TABLE comment_stars (
   user_id INT64 NOT NULL,
