@@ -31,7 +31,7 @@ func Analyze(urlstr string) (*schema.Schema, error) {
 	if strings.Index(urlstr, "bq://") == 0 || strings.Index(urlstr, "bigquery://") == 0 {
 		return AnalizeBigquery(urlstr)
 	}
-	if strings.Index(urlstr, "spanner://") == 0 {
+	if strings.Index(urlstr, "span://") == 0 || strings.Index(urlstr, "spanner://") == 0 {
 		return AnalizeSpanner(urlstr)
 	}
 	s := &schema.Schema{}
