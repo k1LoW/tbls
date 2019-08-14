@@ -2,6 +2,8 @@
 
 ## Description
 
+Stars of Blog comments
+
 ## Columns
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |

@@ -2,12 +2,14 @@
 
 ## Description
 
+User options
+
 ## Columns
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
 | user_id | INT64 |  | false |  | [users](users.md) |  |
-| show_email | BOOL |  | false |  |  |  |
+| show_email | BOOL |  | false |  |  | Show email address |
 | created | TIMESTAMP |  | false |  |  |  |
 | updated | TIMESTAMP (allow_commit_timestamp=TRUE) |  | true |  |  |  |
 

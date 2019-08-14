@@ -1,4 +1,28 @@
 ---
+comments:
+  -
+    table: users
+    tableComment: Users
+    columnComments:
+      email: Email address as login id. ex. user@example.com
+  -
+    table: user_options
+    tableComment: User options
+    columnComments:
+      show_email: Show email address
+  -
+    table: posts
+    tableComment: Blog entries
+    columnComments:
+      title: Title of entry
+      title: Content of entry
+      image: Hero image
+  -
+    table: comments
+    tableComment: Blog comments
+  -
+    table: comment_stars
+    tableComment: Stars of Blog comments
 relations:
   -
     table: comments
