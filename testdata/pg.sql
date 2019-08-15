@@ -1,5 +1,6 @@
 DROP TRIGGER IF EXISTS update_users_updated ON users;
 DROP TRIGGER IF EXISTS update_posts_updated ON posts;
+DROP TABLE IF EXISTS backup.blogs;
 DROP TABLE IF EXISTS administrator.blogs;
 DROP VIEW IF EXISTS post_comments;
 DROP TABLE IF EXISTS "hyphen-table";
@@ -13,6 +14,7 @@ DROP TABLE IF EXISTS user_options;
 DROP TABLE IF EXISTS users;
 DROP FUNCTION IF EXISTS update_updated;
 DROP SCHEMA IF EXISTS administrator;
+DROP SCHEMA IF EXISTS backup;
 
 DROP EXTENSION IF EXISTS "uuid-ossp";
 CREATE EXTENSION "uuid-ossp";
@@ -145,3 +147,13 @@ CREATE CONSTRAINT TRIGGER update_posts_updated
 CREATE TRIGGER update_users_updated
   AFTER INSERT OR UPDATE ON users FOR EACH ROW
   EXECUTE PROCEDURE update_updated();
+
+CREATE SCHEMA backup;
+
+CREATE TABLE backup.blogs (
+  id serial PRIMARY KEY,
+  user_id int NOT NULL,
+  dump text NOT NULL,
+  created timestamp NOT NULL,
+  updated timestamp
+);
