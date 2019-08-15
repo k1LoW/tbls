@@ -83,7 +83,10 @@ func Output(s *schema.Schema, c *config.Config, force bool) error {
 		return errors.New("output files already exists")
 	}
 
-	_ = os.MkdirAll(fullPath, 0755)
+	err = os.MkdirAll(fullPath, 0755) // #nosec
+	if err != nil {
+		return errors.WithStack(err)
+	}
 
 	// README.md
 	file, err := os.Create(filepath.Join(fullPath, "README.md"))
@@ -108,7 +111,7 @@ func Output(s *schema.Schema, c *config.Config, force bool) error {
 	for _, t := range s.Tables {
 		file, err := os.Create(filepath.Join(fullPath, fmt.Sprintf("%s.md", t.Name)))
 		if err != nil {
-			file.Close()
+			_ = file.Close()
 			return errors.WithStack(err)
 		}
 
@@ -121,11 +124,14 @@ func Output(s *schema.Schema, c *config.Config, force bool) error {
 
 		err = md.OutputTable(file, t)
 		if err != nil {
-			file.Close()
+			_ = file.Close()
 			return errors.WithStack(err)
 		}
 		fmt.Printf("%s\n", filepath.Join(docPath, fmt.Sprintf("%s.md", t.Name)))
-		file.Close()
+		err = file.Close()
+		if err != nil {
+			return errors.WithStack(err)
+		}
 	}
 	return nil
 }
@@ -159,7 +165,7 @@ func Diff(s *schema.Schema, c *config.Config) (string, error) {
 	}
 
 	targetPath := filepath.Join(fullPath, "README.md")
-	b, err := ioutil.ReadFile(targetPath)
+	b, err := ioutil.ReadFile(filepath.Clean(targetPath))
 	if err != nil {
 		b = []byte{}
 	}
@@ -199,7 +205,7 @@ func Diff(s *schema.Schema, c *config.Config) (string, error) {
 			return "", errors.WithStack(err)
 		}
 		targetPath := filepath.Join(fullPath, fmt.Sprintf("%s.md", t.Name))
-		b, err := ioutil.ReadFile(targetPath)
+		b, err := ioutil.ReadFile(filepath.Clean(targetPath))
 		if err != nil {
 			b = []byte{}
 		}

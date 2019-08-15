@@ -186,7 +186,7 @@ func (c *Config) LoadConfigFile(path string) error {
 		return errors.Wrap(errors.WithStack(err), "failed to load config file")
 	}
 
-	buf, err := ioutil.ReadFile(fullPath)
+	buf, err := ioutil.ReadFile(filepath.Clean(fullPath))
 	if err != nil {
 		return errors.Wrap(errors.WithStack(err), "failed to load config file")
 	}

@@ -132,7 +132,10 @@ func (c *Column) UnmarshalJSON(data []byte) error {
 		ParentRelations []*Relation `json:"-"`
 		ChildRelations  []*Relation `json:"-"`
 	}{}
-	json.Unmarshal(data, &s)
+	err := json.Unmarshal(data, &s)
+	if err != nil {
+		return err
+	}
 	c.Name = s.Name
 	c.Type = s.Type
 	c.Nullable = s.Nullable
