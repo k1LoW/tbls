@@ -14,7 +14,10 @@ type JSON struct{}
 func (j *JSON) OutputSchema(wr io.Writer, s *schema.Schema) error {
 	encoder := json.NewEncoder(wr)
 	encoder.SetIndent("", "  ")
-	encoder.Encode(s)
+	err := encoder.Encode(s)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -22,6 +25,9 @@ func (j *JSON) OutputSchema(wr io.Writer, s *schema.Schema) error {
 func (j *JSON) OutputTable(wr io.Writer, t *schema.Table) error {
 	encoder := json.NewEncoder(wr)
 	encoder.SetIndent("", "  ")
-	encoder.Encode(t)
+	err := encoder.Encode(t)
+	if err != nil {
+		return err
+	}
 	return nil
 }

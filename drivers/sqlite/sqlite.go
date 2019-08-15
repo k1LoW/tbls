@@ -187,7 +187,7 @@ WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
 
 		for _, f := range fkSlice {
 			foreignKeyDef := fmt.Sprintf("FOREIGN KEY (%s) REFERENCES %s (%s) ON UPDATE %s ON DELETE %s MATCH %s",
-				strings.Join(f.ColumnNames, ", "), f.ForeignTableName, strings.Join(f.ForeignColumnNames, ", "), f.OnUpdate, f.OnDelete, f.Match)
+				strings.Join(f.ColumnNames, ", "), f.ForeignTableName, strings.Join(f.ForeignColumnNames, ", "), f.OnUpdate, f.OnDelete, f.Match) // #nosec
 			constraint := &schema.Constraint{
 				Name:             fmt.Sprintf("- (Foreign key ID: %s)", f.ID),
 				Type:             "FOREIGN KEY",
@@ -384,7 +384,10 @@ SELECT name, sql FROM sqlite_master WHERE type = 'trigger' AND tbl_name = ?;
 func (l *Sqlite) Info() (*schema.Driver, error) {
 	var v string
 	row := l.db.QueryRow(`SELECT sqlite_version();`)
-	row.Scan(&v)
+	err := row.Scan(&v)
+	if err != nil {
+		return nil, err
+	}
 
 	d := &schema.Driver{
 		Name:            "sqlite",

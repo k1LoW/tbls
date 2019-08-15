@@ -15,7 +15,7 @@ BUILD_LDFLAGS = -X $(PKG).commit=$(COMMIT) -X $(PKG).date=$(DATE)
 
 default: test
 
-ci: build test testdoc test_too_many_tables test_json
+ci: build test testdoc test_too_many_tables test_json sec
 
 test:
 	usql pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -f testdata/pg.sql
@@ -86,6 +86,9 @@ doc_spanner:
 test_spanner:
 	./tbls diff spanner://$(GCLOUD_PROJECT)/test-instance/testdb?creds=spanner_client_secrets.json -c testdata/spanner_tbls.yml sample/spanner
 
+sec:
+	gosec ./...
+
 build:
 	packr2
 	go build -ldflags="$(BUILD_LDFLAGS)"
@@ -99,6 +102,7 @@ depsdev:
 	go get github.com/xo/usql
 	go get github.com/gobuffalo/packr/v2/packr2
 	go get github.com/Songmu/gocredits/cmd/gocredits
+	go get github.com/securego/gosec/cmd/gosec
 
 prerelease:
 	ghch -w -N ${VER}

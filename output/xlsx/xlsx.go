@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"path/filepath"
 	"strings"
 	"unicode/utf8"
 
@@ -34,8 +35,11 @@ func (x *Xlsx) OutputSchema(wr io.Writer, s *schema.Schema) error {
 	tf, _ := ioutil.TempFile("", "tbls.xlsx")
 	path := tf.Name()
 	defer tf.Close()
-	w.Save(path)
-	b, err := ioutil.ReadFile(path)
+	err = w.Save(path)
+	if err != nil {
+		return err
+	}
+	b, err := ioutil.ReadFile(filepath.Clean(path))
 	if err != nil {
 		return err
 	}
@@ -59,8 +63,11 @@ func (x *Xlsx) OutputTable(wr io.Writer, t *schema.Table) error {
 	tf, _ := ioutil.TempFile("", "tbls.xlsx")
 	path := tf.Name()
 	defer tf.Close()
-	w.Save(path)
-	b, err := ioutil.ReadFile(path)
+	err = w.Save(path)
+	if err != nil {
+		return err
+	}
+	b, err := ioutil.ReadFile(filepath.Clean(path))
 	if err != nil {
 		return err
 	}

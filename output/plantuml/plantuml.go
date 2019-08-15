@@ -38,7 +38,10 @@ func NewPlantUML(c *config.Config) *PlantUML {
 // OutputSchema output dot format for full relation.
 func (p *PlantUML) OutputSchema(wr io.Writer, s *schema.Schema) error {
 	for _, t := range s.Tables {
-		addPrefix(t)
+		err := addPrefix(t)
+		if err != nil {
+			return err
+		}
 	}
 
 	ts, err := p.box.FindString("schema.puml.tmpl")
@@ -59,7 +62,10 @@ func (p *PlantUML) OutputSchema(wr io.Writer, s *schema.Schema) error {
 
 // OutputTable output dot format for table.
 func (p *PlantUML) OutputTable(wr io.Writer, t *schema.Table) error {
-	addPrefix(t)
+	err := addPrefix(t)
+	if err != nil {
+		return err
+	}
 	encountered := make(map[string]bool)
 	tables := []*schema.Table{}
 	relations := []*schema.Relation{}
@@ -67,7 +73,10 @@ func (p *PlantUML) OutputTable(wr io.Writer, t *schema.Table) error {
 		for _, r := range c.ParentRelations {
 			if !encountered[r.ParentTable.Name] {
 				encountered[r.ParentTable.Name] = true
-				addPrefix(r.ParentTable)
+				err := addPrefix(r.ParentTable)
+				if err != nil {
+					return err
+				}
 				tables = append(tables, r.ParentTable)
 			}
 			if !contains(relations, r) {
@@ -77,7 +86,10 @@ func (p *PlantUML) OutputTable(wr io.Writer, t *schema.Table) error {
 		for _, r := range c.ChildRelations {
 			if !encountered[r.Table.Name] {
 				encountered[r.Table.Name] = true
-				addPrefix(r.Table)
+				err := addPrefix(r.Table)
+				if err != nil {
+					return err
+				}
 				tables = append(tables, r.Table)
 			}
 			if !contains(relations, r) {

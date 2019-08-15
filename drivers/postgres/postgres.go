@@ -332,7 +332,10 @@ ORDER BY ordinal_position
 func (p *Postgres) Info() (*schema.Driver, error) {
 	var v string
 	row := p.db.QueryRow(`SELECT version();`)
-	row.Scan(&v)
+	err := row.Scan(&v)
+	if err != nil {
+		return nil, err
+	}
 
 	name := "postgres"
 	if p.rsMode {

@@ -82,7 +82,7 @@ var docCmd = &cobra.Command{
 		}
 
 		if !c.ER.Skip {
-			_, err = exec.Command("which", "dot").Output()
+			_, err = exec.Command("which", "dot").Output() // #nosec
 			if err == nil {
 				err := withDot(s, c, force)
 				if err != nil {
@@ -113,14 +113,17 @@ func withDot(s *schema.Schema, c *config.Config, force bool) error {
 		return errors.New("output ER diagram files already exists")
 	}
 
-	_ = os.MkdirAll(fullPath, 0755)
+	err = os.MkdirAll(fullPath, 0755) // #nosec
+	if err != nil {
+		return errors.WithStack(err)
+	}
 
 	dotFormatOption := fmt.Sprintf("-T%s", erFormat)
 	erFileName := fmt.Sprintf("schema.%s", erFormat)
 
 	fmt.Printf("%s\n", filepath.Join(outputPath, erFileName))
 	tmpfile, _ := ioutil.TempFile("", "tblstmp")
-	cmd := exec.Command("dot", dotFormatOption, "-o", filepath.Join(fullPath, erFileName), tmpfile.Name())
+	cmd := exec.Command("dot", dotFormatOption, "-o", filepath.Clean(filepath.Join(fullPath, erFileName)), tmpfile.Name()) // #nosec
 	var stderr bytes.Buffer
 	cmd.Stderr = &stderr
 
@@ -128,21 +131,24 @@ func withDot(s *schema.Schema, c *config.Config, force bool) error {
 
 	err = dot.OutputSchema(tmpfile, s)
 	if err != nil {
-		tmpfile.Close()
-		os.Remove(tmpfile.Name())
+		_ = tmpfile.Close()
+		_ = os.Remove(tmpfile.Name())
 		return err
 	}
 	err = tmpfile.Close()
 	if err != nil {
-		os.Remove(tmpfile.Name())
+		_ = os.Remove(tmpfile.Name())
 		return errors.WithStack(err)
 	}
 	err = cmd.Run()
 	if err != nil {
-		os.Remove(tmpfile.Name())
+		_ = os.Remove(tmpfile.Name())
 		return errors.WithStack(errors.Wrap(err, stderr.String()))
 	}
-	os.Remove(tmpfile.Name())
+	err = os.Remove(tmpfile.Name())
+	if err != nil {
+		return errors.WithStack(err)
+	}
 
 	// tables
 	for _, t := range s.Tables {
@@ -150,27 +156,30 @@ func withDot(s *schema.Schema, c *config.Config, force bool) error {
 
 		fmt.Printf("%s\n", filepath.Join(outputPath, erFileName))
 		tmpfile, _ := ioutil.TempFile("", "tblstmp")
-		c := exec.Command("dot", dotFormatOption, "-o", filepath.Join(fullPath, erFileName), tmpfile.Name())
+		c := exec.Command("dot", dotFormatOption, "-o", filepath.Join(fullPath, erFileName), tmpfile.Name()) // #nosec
 		var stderr bytes.Buffer
 		c.Stderr = &stderr
 
 		err = dot.OutputTable(tmpfile, t)
 		if err != nil {
-			tmpfile.Close()
-			os.Remove(tmpfile.Name())
+			_ = tmpfile.Close()
+			_ = os.Remove(tmpfile.Name())
 			return err
 		}
 		err = tmpfile.Close()
 		if err != nil {
-			os.Remove(tmpfile.Name())
+			_ = os.Remove(tmpfile.Name())
 			return errors.WithStack(err)
 		}
 		err = c.Run()
 		if err != nil {
-			os.Remove(tmpfile.Name())
+			_ = os.Remove(tmpfile.Name())
 			return errors.WithStack(errors.Wrap(err, stderr.String()))
 		}
-		os.Remove(tmpfile.Name())
+		err = os.Remove(tmpfile.Name())
+		if err != nil {
+			return errors.WithStack(err)
+		}
 	}
 
 	return nil

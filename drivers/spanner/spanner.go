@@ -275,7 +275,7 @@ GROUP BY c.TABLE_CATALOG, c.TABLE_SCHEMA, c.TABLE_NAME, c.INDEX_NAME, c.INDEX_TY
 		if err != nil {
 			return err
 		}
-		def := fmt.Sprintf("INTERLEAVE IN PARENT %s ON DELETE %s", i.parentTableName, i.onDeleteAction)
+		def := fmt.Sprintf("INTERLEAVE IN PARENT %s ON DELETE %s", i.parentTableName, i.onDeleteAction) // #nosec
 
 		// constraints
 		constraint := &schema.Constraint{

@@ -234,7 +234,7 @@ GROUP BY f.name, f.parent_object_id, f.referenced_object_id, delete_referential_
 			if err != nil {
 				return errors.WithStack(err)
 			}
-			fkDef := fmt.Sprintf("FOREIGN KEY(%s) REFERENCES %s(%s) ON UPDATE %s ON DELETE %s", fkColumnNames, fkParentTableName, fkParentColumnNames, fkUpdateAction, fkDeleteAction)
+			fkDef := fmt.Sprintf("FOREIGN KEY(%s) REFERENCES %s(%s) ON UPDATE %s ON DELETE %s", fkColumnNames, fkParentTableName, fkParentColumnNames, fkUpdateAction, fkDeleteAction) // #nosec
 			constraint := &schema.Constraint{
 				Name:             convertSystemNamed(fkName, fkIsSystemNamed),
 				Type:             typeFk,
@@ -427,10 +427,13 @@ ORDER BY i.index_id
 func (m *Mssql) Info() (*schema.Driver, error) {
 	var v string
 	row := m.db.QueryRow(`SELECT @@VERSION`)
-	row.Scan(&v)
-	name := "mssql"
+	err := row.Scan(&v)
+	if err != nil {
+		return nil, err
+	}
+
 	d := &schema.Driver{
-		Name:            name,
+		Name:            "mssql",
 		DatabaseVersion: v,
 	}
 	return d, nil

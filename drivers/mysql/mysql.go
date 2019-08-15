@@ -346,7 +346,10 @@ WHERE table_schema = ? AND table_name = ? ORDER BY ordinal_position`, s.Name, ta
 func (m *Mysql) Info() (*schema.Driver, error) {
 	var v string
 	row := m.db.QueryRow(`SELECT version();`)
-	row.Scan(&v)
+	err := row.Scan(&v)
+	if err != nil {
+		return nil, err
+	}
 
 	d := &schema.Driver{
 		Name:            "mysql",
