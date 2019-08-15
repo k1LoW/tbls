@@ -1,5 +1,10 @@
 # Changelog
 
+## [v1.18.1](https://github.com/k1LoW/tbls/compare/v1.18.0...v1.18.1) (2019-08-15)
+
+* Fix duplicate output when multiple schemas have the same named table [#134](https://github.com/k1LoW/tbls/pull/134) ([oohira](https://github.com/oohira))
+* Support `span://` for Cloud Spanner scheme [#133](https://github.com/k1LoW/tbls/pull/133) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.18.0](https://github.com/k1LoW/tbls/compare/v1.17.2...v1.18.0) (2019-08-13)
 
 * Support Cloud Spanner [#132](https://github.com/k1LoW/tbls/pull/132) ([k1LoW](https://github.com/k1LoW))

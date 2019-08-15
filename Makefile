@@ -73,11 +73,11 @@ test_config:
 	rm .tbls.yml
 
 doc_bigquery:
-	./tbls doc bq://bigquery-public-data/bitcoin_blockchain?creds=client_secrets.json -c testdata/bitcoin_blockchain_tbls.yml -f sample/bigquery_bitcoin_blockchain
+	./tbls doc bq://bigquery-public-data/crypto_bitcoin?creds=client_secrets.json -c testdata/crypto_bitcoin_tbls.yml -f sample/bigquery_crypto_bitcoin
 	./tbls doc bq://bigquery-public-data/census_bureau_international?creds=client_secrets.json -f sample/bigquery_census_bureau_international
 
 test_bigquery:
-	./tbls diff bq://bigquery-public-data/bitcoin_blockchain?creds=client_secrets.json -c testdata/bitcoin_blockchain_tbls.yml sample/bigquery_bitcoin_blockchain
+	./tbls diff bq://bigquery-public-data/crypto_bitcoin?creds=client_secrets.json -c testdata/crypto_bitcoin_tbls.yml sample/bigquery_crypto_bitcoin
 	./tbls diff bq://bigquery-public-data/census_bureau_international?creds=client_secrets.json sample/bigquery_census_bureau_international
 
 doc_spanner:

@@ -1,0 +1,50 @@
+---
+relations:
+  -
+    table: transactions
+    columns:
+      - block_hash
+    parentTable: blocks
+    parentColumns:
+      - hash
+    def: transactions->blocks
+  -
+    table: inputs
+    columns:
+      - transaction_hash
+    parentTable: transactions
+    parentColumns:
+      - hash
+    def: inputs->transactions
+  -
+    table: inputs
+    columns:
+      - spent_transaction_hash
+    parentTable: transactions
+    parentColumns:
+      - hash
+    def: inputs->transactions
+  -
+    table: inputs
+    columns:
+      - block_hash
+    parentTable: blocks
+    parentColumns:
+      - hash
+    def: inputs->blocks
+  -
+    table: outputs
+    columns:
+      - transaction_hash
+    parentTable: transactions
+    parentColumns:
+      - hash
+    def: outputs->transactions
+  -
+    table: outputs
+    columns:
+      - block_hash
+    parentTable: blocks
+    parentColumns:
+      - hash
+    def: outputs->blocks

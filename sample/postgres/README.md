@@ -14,6 +14,7 @@
 | [CamelizeTable](CamelizeTable.md) | 2 |  | BASE TABLE |
 | [hyphen-table](hyphen-table.md) | 3 |  | BASE TABLE |
 | [administrator.blogs](administrator.blogs.md) | 6 |  | BASE TABLE |
+| [backup.blogs](backup.blogs.md) | 5 |  | BASE TABLE |
 
 ## Relations
 
