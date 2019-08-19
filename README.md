@@ -48,6 +48,12 @@ Document a database with one command.
 $ tbls doc postgres://dbuser:dbpass@hostname:5432/dbname
 ```
 
+Using docker image.
+
+```console
+$ docker run --rm -v $PWD:/work k1low/tbls doc postgres://dbuser:dbpass@hostname:5432/dbname
+```
+
 ## Install
 
 **homebrew tap:**
@@ -64,6 +70,12 @@ Download binary from [releases page](https://github.com/k1LoW/tbls/releases)
 
 ```console
 $ go get github.com/k1LoW/tbls
+```
+
+**docker:**
+
+```console
+$ docker pull k1low/tbls:latest
 ```
 
 ## Getting Started
