@@ -1,5 +1,12 @@
 # Changelog
 
+## [v1.18.2](https://github.com/k1LoW/tbls/compare/v1.18.1...v1.18.2) (2019-09-06)
+
+* Remove duplicate relation links [#138](https://github.com/k1LoW/tbls/pull/138) ([k1LoW](https://github.com/k1LoW))
+* add error handling [#137](https://github.com/k1LoW/tbls/pull/137) ([toshi0607](https://github.com/toshi0607))
+* add Dockerfile [#136](https://github.com/k1LoW/tbls/pull/136) ([peccu](https://github.com/peccu))
+* Add gosec [#135](https://github.com/k1LoW/tbls/pull/135) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.18.1](https://github.com/k1LoW/tbls/compare/v1.18.0...v1.18.1) (2019-08-15)
 
 * Fix duplicate output when multiple schemas have the same named table [#134](https://github.com/k1LoW/tbls/pull/134) ([oohira](https://github.com/oohira))
