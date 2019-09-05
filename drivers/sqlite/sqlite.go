@@ -241,6 +241,9 @@ WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
 				cols               []string
 			)
 			row, err := l.db.Query(fmt.Sprintf("PRAGMA index_info(%s)", indexName))
+			if err != nil {
+				return errors.WithStack(err)
+			}
 			for row.Next() {
 				err = row.Scan(
 					&colRank,
@@ -257,6 +260,9 @@ WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
 			case "c":
 				row, err := l.db.Query(`SELECT sql FROM sqlite_master WHERE type = 'index' AND tbl_name = ? AND name = ?;
 `, tableName, indexName)
+				if err != nil {
+					return errors.WithStack(err)
+				}
 				for row.Next() {
 					err = row.Scan(
 						&indexDef,
