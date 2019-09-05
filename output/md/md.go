@@ -291,21 +291,31 @@ func makeTableTemplateData(t *schema.Table, adjust bool) map[string]interface{} 
 		[]string{"----", "----", "-------", "--------", "--------", "-------", "-------"},
 	}
 	for _, c := range t.Columns {
-		childRelations := map[string]string{}
+		childRelations := []string{}
+		cEncountered := map[string]bool{}
 		for _, r := range c.ChildRelations {
-			childRelations[r.Table.Name] = fmt.Sprintf("[%s](%s.md)", r.Table.Name, r.Table.Name)
+			if _, ok := cEncountered[r.Table.Name]; ok {
+				continue
+			}
+			childRelations = append(childRelations, fmt.Sprintf("[%s](%s.md)", r.Table.Name, r.Table.Name))
+			cEncountered[r.Table.Name] = true
 		}
-		parentRelations := map[string]string{}
+		parentRelations := []string{}
+		pEncountered := map[string]bool{}
 		for _, r := range c.ParentRelations {
-			parentRelations[r.Table.Name] = fmt.Sprintf("[%s](%s.md)", r.ParentTable.Name, r.ParentTable.Name)
+			if _, ok := pEncountered[r.ParentTable.Name]; ok {
+				continue
+			}
+			parentRelations = append(parentRelations, fmt.Sprintf("[%s](%s.md)", r.ParentTable.Name, r.ParentTable.Name))
+			pEncountered[r.ParentTable.Name] = true
 		}
 		data := []string{
 			c.Name,
 			c.Type,
 			c.Default.String,
 			fmt.Sprintf("%v", c.Nullable),
-			stringMapJoin(childRelations, " "),
-			stringMapJoin(parentRelations, " "),
+			strings.Join(childRelations, " "),
+			strings.Join(parentRelations, " "),
 			c.Comment,
 		}
 		columnsData = append(columnsData, data)
@@ -392,12 +402,4 @@ func adjustTable(data [][]string) [][]string {
 	}
 
 	return data
-}
-
-func stringMapJoin(m map[string]string, sep string) string {
-	s := []string{}
-	for _, v := range m {
-		s = append(s, v)
-	}
-	return strings.Join(s, sep)
 }
