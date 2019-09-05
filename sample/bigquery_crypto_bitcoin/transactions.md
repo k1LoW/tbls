@@ -10,7 +10,7 @@ Data is exported using https://github.com/blockchain-etl/bitcoin-etl
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| hash | STRING |  | false | [inputs](inputs.md) [inputs](inputs.md) [outputs](outputs.md) |  | The hash of this transaction |
+| hash | STRING |  | false | [inputs](inputs.md) [outputs](outputs.md) |  | The hash of this transaction |
 | size | INTEGER |  | true |  |  | The size of this transaction in bytes |
 | virtual_size | INTEGER |  | true |  |  | The virtual transaction size (differs from size for witness transactions) |
 | version | INTEGER |  | true |  |  | Protocol version specified in block which contained this transaction |
