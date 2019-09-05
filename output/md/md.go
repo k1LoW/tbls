@@ -292,12 +292,22 @@ func makeTableTemplateData(t *schema.Table, adjust bool) map[string]interface{} 
 	}
 	for _, c := range t.Columns {
 		childRelations := []string{}
+		cEncountered := map[string]bool{}
 		for _, r := range c.ChildRelations {
+			if _, ok := cEncountered[r.Table.Name]; ok {
+				continue
+			}
 			childRelations = append(childRelations, fmt.Sprintf("[%s](%s.md)", r.Table.Name, r.Table.Name))
+			cEncountered[r.Table.Name] = true
 		}
 		parentRelations := []string{}
+		pEncountered := map[string]bool{}
 		for _, r := range c.ParentRelations {
+			if _, ok := pEncountered[r.ParentTable.Name]; ok {
+				continue
+			}
 			parentRelations = append(parentRelations, fmt.Sprintf("[%s](%s.md)", r.ParentTable.Name, r.ParentTable.Name))
+			pEncountered[r.ParentTable.Name] = true
 		}
 		data := []string{
 			c.Name,
