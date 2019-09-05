@@ -96,7 +96,10 @@ func TestRepair(t *testing.T) {
 		t.Error(err)
 	}
 	dec := json.NewDecoder(file)
-	dec.Decode(actual)
+	err = dec.Decode(actual)
+	if err != nil {
+		t.Error(err)
+	}
 	expected := newTestSchema()
 	err = actual.Repair()
 	if err != nil {

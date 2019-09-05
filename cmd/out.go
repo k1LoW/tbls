@@ -118,9 +118,9 @@ var outCmd = &cobra.Command{
 		if tableName == "" {
 			err = o.OutputSchema(wr, s)
 		} else {
-			t, err := s.FindTableByName(tableName)
-			if err != nil {
-				printError(err)
+			t, ferr := s.FindTableByName(tableName)
+			if ferr != nil {
+				printError(ferr)
 				os.Exit(1)
 			}
 			err = o.OutputTable(wr, t)
