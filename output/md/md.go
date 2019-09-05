@@ -291,21 +291,21 @@ func makeTableTemplateData(t *schema.Table, adjust bool) map[string]interface{} 
 		[]string{"----", "----", "-------", "--------", "--------", "-------", "-------"},
 	}
 	for _, c := range t.Columns {
-		childRelations := []string{}
+		childRelations := map[string]string{}
 		for _, r := range c.ChildRelations {
-			childRelations = append(childRelations, fmt.Sprintf("[%s](%s.md)", r.Table.Name, r.Table.Name))
+			childRelations[r.Table.Name] = fmt.Sprintf("[%s](%s.md)", r.Table.Name, r.Table.Name)
 		}
-		parentRelations := []string{}
+		parentRelations := map[string]string{}
 		for _, r := range c.ParentRelations {
-			parentRelations = append(parentRelations, fmt.Sprintf("[%s](%s.md)", r.ParentTable.Name, r.ParentTable.Name))
+			parentRelations[r.Table.Name] = fmt.Sprintf("[%s](%s.md)", r.ParentTable.Name, r.ParentTable.Name)
 		}
 		data := []string{
 			c.Name,
 			c.Type,
 			c.Default.String,
 			fmt.Sprintf("%v", c.Nullable),
-			strings.Join(childRelations, " "),
-			strings.Join(parentRelations, " "),
+			stringMapJoin(childRelations, " "),
+			stringMapJoin(parentRelations, " "),
 			c.Comment,
 		}
 		columnsData = append(columnsData, data)
@@ -392,4 +392,12 @@ func adjustTable(data [][]string) [][]string {
 	}
 
 	return data
+}
+
+func stringMapJoin(m map[string]string, sep string) string {
+	s := []string{}
+	for _, v := range m {
+		s = append(s, v)
+	}
+	return strings.Join(s, sep)
 }
