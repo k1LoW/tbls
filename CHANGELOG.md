@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.19.0](https://github.com/k1LoW/tbls/compare/v1.18.2...v1.19.0) (2019-09-06)
+
+* Add lint rule `duplicateRelations` [#139](https://github.com/k1LoW/tbls/pull/139) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.18.2](https://github.com/k1LoW/tbls/compare/v1.18.1...v1.18.2) (2019-09-06)
 
 * Remove duplicate relation links [#138](https://github.com/k1LoW/tbls/pull/138) ([k1LoW](https://github.com/k1LoW))
