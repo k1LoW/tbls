@@ -167,6 +167,12 @@ func TestDuplicateRelations(t *testing.T) {
 	copy := *s.Relations[0]
 	copy.Def = "copy"
 	s.Relations = append(s.Relations, &copy)
+	copy2 := *s.Relations[0]
+	copy2.Def = "copy2"
+	copy2Table := *copy2.Table
+	copy2.Table = &copy2Table
+	copy2.Table.Name = "other table"
+	s.Relations = append(s.Relations, &copy2)
 	warns := r.Check(s)
 	want := 1
 	if len(warns) != want {
