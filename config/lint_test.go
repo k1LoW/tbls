@@ -159,6 +159,21 @@ func TestRequireColumnsWithExclude(t *testing.T) {
 	}
 }
 
+func TestDuplicateRelations(t *testing.T) {
+	r := DuplicateRelations{
+		Enabled: true,
+	}
+	s := newTestSchema()
+	copy := *s.Relations[0]
+	copy.Def = "copy"
+	s.Relations = append(s.Relations, &copy)
+	warns := r.Check(s)
+	want := 1
+	if len(warns) != want {
+		t.Errorf("actual %v\nwant %v", len(warns), want)
+	}
+}
+
 func newTestSchema() *schema.Schema {
 	ca := &schema.Column{
 		Name:     "a",
