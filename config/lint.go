@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"sort"
 
 	"github.com/k1LoW/tbls/schema"
 )
@@ -13,6 +14,7 @@ type Lint struct {
 	UnrelatedTable       UnrelatedTable       `yaml:"unrelatedTable"`
 	ColumnCount          ColumnCount          `yaml:"columnCount"`
 	RequireColumns       RequireColumns       `yaml:"requireColumns"`
+	DuplicateRelations   DuplicateRelations   `yaml:"duplicateRelations"`
 }
 
 // RuleWarn is struct of Rule error
@@ -202,5 +204,46 @@ func (r RequireColumns) Check(s *schema.Schema) []RuleWarn {
 			}
 		}
 	}
+	return warns
+}
+
+// DuplicateRelations check duplicate table relations
+type DuplicateRelations struct {
+	Enabled bool `yaml:"enabled"`
+}
+
+// IsEnabled return Rule is enabled or not
+func (r DuplicateRelations) IsEnabled() bool {
+	return r.Enabled
+}
+
+// Check duplicate table relations
+func (r DuplicateRelations) Check(s *schema.Schema) []RuleWarn {
+	warns := []RuleWarn{}
+	relations := make(map[[4]string]bool)
+	msgFmt := "duplicate relations. [%s -> %s]"
+
+	for _, r := range s.Relations {
+		columns := []string{}
+		parentColumns := []string{}
+		for _, c := range r.Columns {
+			columns = append(columns, c.Name)
+		}
+		sort.SliceStable(columns, func(i, j int) bool { return columns[i] < columns[j] })
+		for _, c := range r.ParentColumns {
+			parentColumns = append(parentColumns, c.Name)
+		}
+		sort.SliceStable(parentColumns, func(i, j int) bool { return parentColumns[i] < parentColumns[j] })
+
+		key := [4]string{r.Table.Name, r.ParentTable.Name, fmt.Sprintf("%v", columns), fmt.Sprintf("%v", parentColumns)}
+		if _, dup := relations[key]; dup {
+			warns = append(warns, RuleWarn{
+				Target:  r.Table.Name,
+				Message: fmt.Sprintf(msgFmt, r.Table.Name, r.ParentTable.Name),
+			})
+		}
+		relations[key] = true
+	}
+
 	return warns
 }
