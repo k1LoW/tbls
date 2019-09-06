@@ -389,7 +389,7 @@ func parseWithEnviron(v string) (string, error) {
 func envMap() map[string]string {
 	m := map[string]string{}
 	for _, kv := range os.Environ() {
-		if strings.Index(kv, "=") == -1 {
+		if !strings.Contains(kv, "=") {
 			continue
 		}
 		parts := strings.SplitN(kv, "=", 2)
