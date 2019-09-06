@@ -439,6 +439,9 @@ lint:
         exclude:
           - logs
           - CamelizeTable
+  # check duplicate relations
+  duplicateRelations:
+    enabled: true
 ```
 
 ### Exclude tables
