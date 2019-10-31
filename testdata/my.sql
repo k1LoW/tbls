@@ -23,7 +23,7 @@ CREATE TABLE user_options (
   show_email boolean NOT NULL DEFAULT false,
   created timestamp NOT NULL,
   updated timestamp,
-  CONSTRAINT user_options_user_id_fk FOREIGN KEY(user_id) REFERENCES users(id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE
+  CONSTRAINT user_options_user_id_fk FOREIGN KEY(user_id) REFERENCES users(id) ON UPDATE NO ACTION ON DELETE CASCADE
 ) COMMENT = 'User options table';
 
 CREATE TABLE posts (
@@ -35,7 +35,7 @@ CREATE TABLE posts (
   created datetime NOT NULL,
   updated datetime,
   CONSTRAINT posts_id_pk PRIMARY KEY(id),
-  CONSTRAINT posts_user_id_fk FOREIGN KEY(user_id) REFERENCES users(id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE,
+  CONSTRAINT posts_user_id_fk FOREIGN KEY(user_id) REFERENCES users(id) ON UPDATE NO ACTION ON DELETE CASCADE,
   UNIQUE(user_id, title)
 ) COMMENT = 'Posts table';
 CREATE INDEX posts_user_id_idx ON posts(id) USING BTREE;
@@ -48,8 +48,8 @@ CREATE TABLE comments (
   created datetime NOT NULL,
   updated datetime,
   CONSTRAINT comments_id_pk PRIMARY KEY(id),
-  CONSTRAINT comments_post_id_fk FOREIGN KEY(post_id) REFERENCES posts(id) MATCH SIMPLE,
-  CONSTRAINT comments_user_id_fk FOREIGN KEY(user_id) REFERENCES users(id) MATCH SIMPLE,
+  CONSTRAINT comments_post_id_fk FOREIGN KEY(post_id) REFERENCES posts(id),
+  CONSTRAINT comments_user_id_fk FOREIGN KEY(user_id) REFERENCES users(id),
   UNIQUE(post_id, user_id)
 ) COMMENT = 'Comments\nMulti-line\r\ntable\rcomment';
 CREATE INDEX comments_post_id_user_id_idx ON comments(post_id, user_id) USING HASH;
@@ -62,8 +62,8 @@ CREATE TABLE comment_stars (
   created timestamp NOT NULL,
   updated timestamp,
   CONSTRAINT comment_stars_id_pk PRIMARY KEY(id),
-  CONSTRAINT comment_stars_user_id_post_id_fk FOREIGN KEY(comment_post_id, comment_user_id) REFERENCES comments(post_id, user_id) MATCH SIMPLE,
-  CONSTRAINT comment_stars_user_id_fk FOREIGN KEY(comment_user_id) REFERENCES users(id) MATCH SIMPLE,
+  CONSTRAINT comment_stars_user_id_post_id_fk FOREIGN KEY(comment_post_id, comment_user_id) REFERENCES comments(post_id, user_id),
+  CONSTRAINT comment_stars_user_id_fk FOREIGN KEY(comment_user_id) REFERENCES users(id),
   UNIQUE(user_id, comment_post_id, comment_user_id)
 );
 

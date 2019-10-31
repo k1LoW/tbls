@@ -19,7 +19,7 @@ CREATE TABLE `posts` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_id` (`user_id`,`title`),
   KEY `posts_user_id_idx` (`id`) USING BTREE,
-  CONSTRAINT `posts_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+  CONSTRAINT `posts_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Posts table'
 ```
 
