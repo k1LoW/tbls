@@ -16,17 +16,18 @@ jobs:
           go-version: ${{ matrix.go_version }}
         id: go
 
-      - name: Install codecov
-        run: sudo pip install codecov
-
       - name: Install packages
-        run: sudo apt install sqlite3
+        run: |
+          sudo apt install sqlite3
+          sudo pip install codecov
 
       - name: Check out source code
         uses: actions/checkout@v1
 
       - name: Start Databases
-        run: docker-compose up -d && sleep 20s
+        run: |
+          docker-compose up -d
+          sleep 20s
 
       - name: Run test
         run: env PATH=`go env GOPATH`/bin:$PATH make ci
