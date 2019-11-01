@@ -19,6 +19,9 @@ jobs:
       - name: Install codecov
         run: sudo pip install codecov
 
+      - name: Install packages
+        run: sudo apt install sqlite3
+
       - name: Check out source code
         uses: actions/checkout@v1
 
