@@ -29,7 +29,7 @@ type Rule interface {
 	Check(*schema.Schema) []RuleWarn
 }
 
-// RequireTableComment check table comment
+// RequireTableComment checks table comment
 type RequireTableComment struct {
 	Enabled bool     `yaml:"enabled"`
 	Exclude []string `yaml:"exclude"`
@@ -44,6 +44,9 @@ func (r RequireTableComment) IsEnabled() bool {
 func (r RequireTableComment) Check(s *schema.Schema) []RuleWarn {
 	msg := "table comment required."
 	warns := []RuleWarn{}
+	if !r.IsEnabled() {
+		return warns
+	}
 	for _, t := range s.Tables {
 		if !contains(r.Exclude, t.Name) && t.Comment == "" {
 			warns = append(warns, RuleWarn{
@@ -55,7 +58,7 @@ func (r RequireTableComment) Check(s *schema.Schema) []RuleWarn {
 	return warns
 }
 
-// RequireColumnComment check column comment
+// RequireColumnComment checks column comment
 type RequireColumnComment struct {
 	Enabled        bool     `yaml:"enabled"`
 	Exclude        []string `yaml:"exclude"`
@@ -71,6 +74,9 @@ func (r RequireColumnComment) IsEnabled() bool {
 func (r RequireColumnComment) Check(s *schema.Schema) []RuleWarn {
 	msg := "column comment required."
 	warns := []RuleWarn{}
+	if !r.IsEnabled() {
+		return warns
+	}
 	for _, t := range s.Tables {
 		if contains(r.ExcludedTables, t.Name) {
 			continue
@@ -87,7 +93,7 @@ func (r RequireColumnComment) Check(s *schema.Schema) []RuleWarn {
 	return warns
 }
 
-// UnrelatedTable check isolated table
+// UnrelatedTable checks isolated table
 type UnrelatedTable struct {
 	Enabled bool     `yaml:"enabled"`
 	Exclude []string `yaml:"exclude"`
@@ -102,6 +108,9 @@ func (r UnrelatedTable) IsEnabled() bool {
 func (r UnrelatedTable) Check(s *schema.Schema) []RuleWarn {
 	msgFmt := "unrelated (isolated) table exists. [%d]"
 	warns := []RuleWarn{}
+	if !r.IsEnabled() {
+		return warns
+	}
 	tableMap := map[string]*schema.Table{}
 	for _, t := range s.Tables {
 		if contains(r.Exclude, t.Name) {
@@ -122,7 +131,7 @@ func (r UnrelatedTable) Check(s *schema.Schema) []RuleWarn {
 	return warns
 }
 
-// ColumnCount check table column count
+// ColumnCount checks table column count
 type ColumnCount struct {
 	Enabled bool     `yaml:"enabled"`
 	Max     int      `yaml:"max"`
@@ -138,6 +147,9 @@ func (r ColumnCount) IsEnabled() bool {
 func (r ColumnCount) Check(s *schema.Schema) []RuleWarn {
 	msgFmt := "too many columns. [%d/%d]"
 	warns := []RuleWarn{}
+	if !r.IsEnabled() {
+		return warns
+	}
 	for _, t := range s.Tables {
 		if !contains(r.Exclude, t.Name) && len(t.Columns) > r.Max {
 			warns = append(warns, RuleWarn{
@@ -158,7 +170,7 @@ func contains(s []string, e string) bool {
 	return false
 }
 
-// RequireColumns check required table columns
+// RequireColumns checks if the table has specified columns
 type RequireColumns struct {
 	Enabled bool                   `yaml:"enabled"`
 	Columns []RequireColumnsColumn `yaml:"columns"`
@@ -178,6 +190,9 @@ func (r RequireColumns) IsEnabled() bool {
 // Check the existence of a table columns
 func (r RequireColumns) Check(s *schema.Schema) []RuleWarn {
 	warns := []RuleWarn{}
+	if !r.IsEnabled() {
+		return warns
+	}
 	for _, t := range s.Tables {
 		for _, cc := range r.Columns {
 			excluded := false
@@ -207,7 +222,7 @@ func (r RequireColumns) Check(s *schema.Schema) []RuleWarn {
 	return warns
 }
 
-// DuplicateRelations check duplicate table relations
+// DuplicateRelations checks duplicate table relations
 type DuplicateRelations struct {
 	Enabled bool `yaml:"enabled"`
 }
@@ -220,6 +235,9 @@ func (r DuplicateRelations) IsEnabled() bool {
 // Check duplicate table relations
 func (r DuplicateRelations) Check(s *schema.Schema) []RuleWarn {
 	warns := []RuleWarn{}
+	if !r.IsEnabled() {
+		return warns
+	}
 	relations := make(map[[4]string]bool)
 	msgFmt := "duplicate relations. [%s -> %s]"
 

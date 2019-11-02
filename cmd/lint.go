@@ -76,9 +76,6 @@ var lintCmd = &cobra.Command{
 			var v config.Rule
 			r := l.Field(i)
 			v = r.Interface().(config.Rule)
-			if !v.IsEnabled() {
-				continue
-			}
 			ruleWarns = append(ruleWarns, v.Check(s)...)
 		}
 		if len(ruleWarns) > 0 {
