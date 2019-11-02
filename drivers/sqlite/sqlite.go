@@ -190,7 +190,7 @@ WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
 				strings.Join(f.ColumnNames, ", "), f.ForeignTableName, strings.Join(f.ForeignColumnNames, ", "), f.OnUpdate, f.OnDelete, f.Match) // #nosec
 			constraint := &schema.Constraint{
 				Name:             fmt.Sprintf("- (Foreign key ID: %s)", f.ID),
-				Type:             "FOREIGN KEY",
+				Type:             schema.FOREIGN_KEY,
 				Def:              foreignKeyDef,
 				Table:            &table.Name,
 				Columns:          f.ColumnNames,

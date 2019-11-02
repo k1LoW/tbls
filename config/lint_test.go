@@ -18,6 +18,17 @@ func TestRequireTableComment(t *testing.T) {
 	}
 }
 
+func TestIsEnabled(t *testing.T) {
+	r := RequireTableComment{
+		Enabled: false,
+	}
+	s := newTestSchema()
+	warns := r.Check(s)
+	if len(warns) != 0 {
+		t.Errorf("actual %v\nwant %v", len(warns), 1)
+	}
+}
+
 func TestRequireTableCommentWithExclude(t *testing.T) {
 	r := RequireTableComment{
 		Enabled: true,
@@ -44,7 +55,7 @@ func TestRequireColumnComment(t *testing.T) {
 func TestRequireColumnCommentWithExclude(t *testing.T) {
 	r := RequireColumnComment{
 		Enabled: true,
-		Exclude: []string{"b"},
+		Exclude: []string{"b1"},
 	}
 	s := newTestSchema()
 	warns := r.Check(s)
@@ -180,15 +191,41 @@ func TestDuplicateRelations(t *testing.T) {
 	}
 }
 
+func TestRequireForeignKeyIndex(t *testing.T) {
+	tests := []struct {
+		enabled bool
+		exclude []string
+		want    int
+	}{
+		{true, []string{}, 1},
+		{false, []string{}, 0},
+		{true, []string{"a.a1"}, 0},
+		{true, []string{"a1"}, 0},
+	}
+
+	for i, tt := range tests {
+		r := RequireForeignKeyIndex{
+			Enabled: tt.enabled,
+			Exclude: tt.exclude,
+		}
+		s := newTestSchema()
+		warns := r.Check(s)
+		want := tt.want
+		if len(warns) != want {
+			t.Errorf("TestRequireForeignKeyIndex(%d)actual %v\nwant %v", i, len(warns), want)
+		}
+	}
+}
+
 func newTestSchema() *schema.Schema {
 	ca := &schema.Column{
-		Name:     "a",
+		Name:     "a1",
 		Type:     "bigint(20)",
 		Comment:  "column a",
 		Nullable: false,
 	}
 	cb := &schema.Column{
-		Name:     "b",
+		Name:     "b1",
 		Type:     "text",
 		Comment:  "", // empty comment
 		Nullable: true,
@@ -257,6 +294,7 @@ func newTestSchema() *schema.Schema {
 			},
 		},
 	}
+
 	r := &schema.Relation{
 		Table:         ta,
 		Columns:       []*schema.Column{ca},
@@ -265,6 +303,28 @@ func newTestSchema() *schema.Schema {
 	}
 	ca.ParentRelations = []*schema.Relation{r}
 	cb.ChildRelations = []*schema.Relation{r}
+
+	ta.Indexes = []*schema.Index{
+		&schema.Index{
+			Name:  "a2_idx",
+			Def:   "a2 index",
+			Table: &ta.Name,
+			Columns: []string{
+				"a2",
+			},
+		},
+	}
+
+	ta.Constraints = []*schema.Constraint{
+		&schema.Constraint{
+			Name:             "a1_b1_fk",
+			Type:             schema.FOREIGN_KEY,
+			Table:            &ta.Name,
+			ReferenceTable:   &tb.Name,
+			Columns:          []string{"a1"},
+			ReferenceColumns: []string{"b1"},
+		},
+	}
 
 	s := &schema.Schema{
 		Name: "testschema",

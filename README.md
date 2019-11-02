@@ -442,6 +442,11 @@ lint:
   # check duplicate relations
   duplicateRelations:
     enabled: true
+  # check if the foreign key columns have an index
+  requireForeignKeyIndex:
+    enabled: true
+    exclude:
+      - comments.user_id
 ```
 
 ### Exclude tables
