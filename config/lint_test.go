@@ -8,165 +8,139 @@ import (
 )
 
 func TestRequireTableComment(t *testing.T) {
-	r := RequireTableComment{
-		Enabled: true,
+	tests := []struct {
+		enabled bool
+		exclude []string
+		want    int
+	}{
+		{true, []string{}, 1},
+		{false, []string{}, 0},
+		{true, []string{"a"}, 0},
 	}
-	s := newTestSchema()
-	warns := r.Check(s)
-	if len(warns) != 1 {
-		t.Errorf("actual %v\nwant %v", len(warns), 1)
-	}
-}
 
-func TestIsEnabled(t *testing.T) {
-	r := RequireTableComment{
-		Enabled: false,
-	}
-	s := newTestSchema()
-	warns := r.Check(s)
-	if len(warns) != 0 {
-		t.Errorf("actual %v\nwant %v", len(warns), 1)
-	}
-}
-
-func TestRequireTableCommentWithExclude(t *testing.T) {
-	r := RequireTableComment{
-		Enabled: true,
-		Exclude: []string{"a"},
-	}
-	s := newTestSchema()
-	warns := r.Check(s)
-	if len(warns) != 0 {
-		t.Errorf("actual %v\nwant %v", len(warns), 1)
+	for i, tt := range tests {
+		r := RequireTableComment{
+			Enabled: tt.enabled,
+			Exclude: tt.exclude,
+		}
+		s := newTestSchema()
+		warns := r.Check(s)
+		if len(warns) != tt.want {
+			t.Errorf("TestRequireTableComment(%d): actual %v\nwant %v", i, len(warns), tt.want)
+		}
 	}
 }
 
 func TestRequireColumnComment(t *testing.T) {
-	r := RequireColumnComment{
-		Enabled: true,
+	tests := []struct {
+		enabled       bool
+		exclude       []string
+		excludeTables []string
+		want          int
+	}{
+		{true, []string{}, []string{}, 1},
+		{false, []string{}, []string{}, 0},
+		{true, []string{"b1"}, []string{}, 0},
+		{true, []string{"b.b1"}, []string{}, 0},
+		{true, []string{"a.b1"}, []string{}, 1},
+		{true, []string{}, []string{"b"}, 0},
 	}
-	s := newTestSchema()
-	warns := r.Check(s)
-	if len(warns) != 1 {
-		t.Errorf("actual %v\nwant %v", len(warns), 1)
-	}
-}
 
-func TestRequireColumnCommentWithExclude(t *testing.T) {
-	r := RequireColumnComment{
-		Enabled: true,
-		Exclude: []string{"b1"},
-	}
-	s := newTestSchema()
-	warns := r.Check(s)
-	if len(warns) != 0 {
-		t.Errorf("actual %v\nwant %v", len(warns), 1)
-	}
-}
-
-func TestRequireColumnCommentWithExcludedTables(t *testing.T) {
-	r := RequireColumnComment{
-		Enabled:        true,
-		ExcludedTables: []string{"b"},
-	}
-	s := newTestSchema()
-	warns := r.Check(s)
-	if len(warns) != 0 {
-		t.Errorf("actual %v\nwant %v", len(warns), 1)
+	for i, tt := range tests {
+		r := RequireColumnComment{
+			Enabled:        tt.enabled,
+			Exclude:        tt.exclude,
+			ExcludedTables: tt.excludeTables,
+		}
+		s := newTestSchema()
+		warns := r.Check(s)
+		if len(warns) != tt.want {
+			t.Errorf("TestRequireColumnComment(%d): actual %v\nwant %v", i, len(warns), tt.want)
+		}
 	}
 }
 
 func TestUnrelatedTable(t *testing.T) {
-	r := UnrelatedTable{
-		Enabled: true,
+	tests := []struct {
+		enabled bool
+		exclude []string
+		want    int
+	}{
+		{true, []string{}, 1},
+		{false, []string{}, 0},
+		{true, []string{"b"}, 1},
+		{true, []string{"c"}, 0},
 	}
-	s := newTestSchema()
-	warns := r.Check(s)
-	if len(warns) != 1 {
-		t.Errorf("actual %v\nwant %v", len(warns), 1)
-	}
-}
 
-func TestUnrelatedTableWithExclude(t *testing.T) {
-	r := UnrelatedTable{
-		Enabled: true,
-		Exclude: []string{"c"},
-	}
-	s := newTestSchema()
-	warns := r.Check(s)
-	if len(warns) != 0 {
-		t.Errorf("actual %v\nwant %v", len(warns), 1)
+	for i, tt := range tests {
+		r := UnrelatedTable{
+			Enabled: tt.enabled,
+			Exclude: tt.exclude,
+		}
+		s := newTestSchema()
+		warns := r.Check(s)
+		if len(warns) != tt.want {
+			t.Errorf("TestUnrelatedTable(%d):actual %v\nwant %v", i, len(warns), tt.want)
+		}
 	}
 }
 
 func TestColumnCount(t *testing.T) {
-	r := ColumnCount{
-		Enabled: true,
-		Max:     3,
+	tests := []struct {
+		enabled bool
+		exclude []string
+		want    int
+	}{
+		{true, []string{}, 1},
+		{false, []string{}, 0},
+		{true, []string{"c"}, 0},
 	}
-	s := newTestSchema()
-	warns := r.Check(s)
-	want := 1
-	if len(warns) != want {
-		t.Errorf("actual %v\nwant %v", len(warns), want)
-	}
-}
 
-func TestColumnCountWithExclude(t *testing.T) {
-	r := ColumnCount{
-		Enabled: true,
-		Max:     3,
-		Exclude: []string{"c"},
-	}
-	s := newTestSchema()
-	warns := r.Check(s)
-	want := 0
-	if len(warns) != want {
-		t.Errorf("actual %v\nwant %v", len(warns), want)
+	for i, tt := range tests {
+		r := ColumnCount{
+			Enabled: tt.enabled,
+			Exclude: tt.exclude,
+			Max:     3,
+		}
+		s := newTestSchema()
+		warns := r.Check(s)
+		if len(warns) != tt.want {
+			t.Errorf("TestColumnCount(%d): actual %v\nwant %v", i, len(warns), tt.want)
+		}
 	}
 }
 
 func TestRequireColumns(t *testing.T) {
-	r := RequireColumns{
-		Enabled: true,
-		Columns: []RequireColumnsColumn{
-			RequireColumnsColumn{
-				Name:    "a2",
-				Exclude: []string{},
-			},
-			RequireColumnsColumn{
-				Name:    "b2",
-				Exclude: []string{},
-			},
-		},
+	tests := []struct {
+		enabled   bool
+		excludeA2 []string
+		excludeB2 []string
+		want      int
+	}{
+		{true, []string{}, []string{}, 4},
+		{false, []string{}, []string{}, 0},
+		{true, []string{"b", "c"}, []string{"a", "c"}, 0},
 	}
-	s := newTestSchema()
-	warns := r.Check(s)
-	want := 4
-	if len(warns) != want {
-		t.Errorf("actual %v\nwant %v", len(warns), want)
-	}
-}
 
-func TestRequireColumnsWithExclude(t *testing.T) {
-	r := RequireColumns{
-		Enabled: true,
-		Columns: []RequireColumnsColumn{
-			RequireColumnsColumn{
-				Name:    "a2",
-				Exclude: []string{"b", "c"},
+	for i, tt := range tests {
+		r := RequireColumns{
+			Enabled: tt.enabled,
+			Columns: []RequireColumnsColumn{
+				RequireColumnsColumn{
+					Name:    "a2",
+					Exclude: tt.excludeA2,
+				},
+				RequireColumnsColumn{
+					Name:    "b2",
+					Exclude: tt.excludeB2,
+				},
 			},
-			RequireColumnsColumn{
-				Name:    "b2",
-				Exclude: []string{"a", "c"},
-			},
-		},
-	}
-	s := newTestSchema()
-	warns := r.Check(s)
-	want := 0
-	if len(warns) != want {
-		t.Errorf("actual %v\nwant %v", len(warns), want)
+		}
+		s := newTestSchema()
+		warns := r.Check(s)
+		if len(warns) != tt.want {
+			t.Errorf("TestRequireColumns(%d): actual %v\nwant %v", i, len(warns), tt.want)
+		}
 	}
 }
 
@@ -210,9 +184,8 @@ func TestRequireForeignKeyIndex(t *testing.T) {
 		}
 		s := newTestSchema()
 		warns := r.Check(s)
-		want := tt.want
-		if len(warns) != want {
-			t.Errorf("TestRequireForeignKeyIndex(%d)actual %v\nwant %v", i, len(warns), want)
+		if len(warns) != tt.want {
+			t.Errorf("TestRequireForeignKeyIndex(%d): actual %v\nwant %v", i, len(warns), tt.want)
 		}
 	}
 }

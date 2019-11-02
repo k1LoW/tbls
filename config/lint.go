@@ -85,9 +85,13 @@ func (r RequireColumnComment) Check(s *schema.Schema) []RuleWarn {
 			continue
 		}
 		for _, c := range t.Columns {
-			if !contains(r.Exclude, c.Name) && c.Comment == "" {
+			target := fmt.Sprintf("%s.%s", t.Name, c.Name)
+			if contains(r.Exclude, c.Name) || contains(r.Exclude, target) {
+				continue
+			}
+			if c.Comment == "" {
 				warns = append(warns, RuleWarn{
-					Target:  fmt.Sprintf("%s.%s", t.Name, c.Name),
+					Target:  target,
 					Message: msg,
 				})
 			}
