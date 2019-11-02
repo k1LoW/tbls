@@ -9,12 +9,13 @@ import (
 
 // Lint is the struct for lint config
 type Lint struct {
-	RequireTableComment  RequireTableComment  `yaml:"requireTableComment"`
-	RequireColumnComment RequireColumnComment `yaml:"requireColumnComment"`
-	UnrelatedTable       UnrelatedTable       `yaml:"unrelatedTable"`
-	ColumnCount          ColumnCount          `yaml:"columnCount"`
-	RequireColumns       RequireColumns       `yaml:"requireColumns"`
-	DuplicateRelations   DuplicateRelations   `yaml:"duplicateRelations"`
+	RequireTableComment    RequireTableComment    `yaml:"requireTableComment"`
+	RequireColumnComment   RequireColumnComment   `yaml:"requireColumnComment"`
+	UnrelatedTable         UnrelatedTable         `yaml:"unrelatedTable"`
+	ColumnCount            ColumnCount            `yaml:"columnCount"`
+	RequireColumns         RequireColumns         `yaml:"requireColumns"`
+	DuplicateRelations     DuplicateRelations     `yaml:"duplicateRelations"`
+	RequireForeignKeyIndex RequireForeignKeyIndex `yaml:"requireForeignKeyIndex"`
 }
 
 // RuleWarn is struct of Rule error
@@ -261,6 +262,47 @@ func (r DuplicateRelations) Check(s *schema.Schema) []RuleWarn {
 			})
 		}
 		relations[key] = true
+	}
+
+	return warns
+}
+
+// RequireForeignKeyIndex checks if the foreign key columns have an index
+type RequireForeignKeyIndex struct {
+	Enabled bool     `yaml:"enabled"`
+	Exclude []string `yaml:"exclude"`
+}
+
+// IsEnabled return Rule is enabled or not
+func (r RequireForeignKeyIndex) IsEnabled() bool {
+	return r.Enabled
+}
+
+// Check if the foreign key columns have an index
+func (r RequireForeignKeyIndex) Check(s *schema.Schema) []RuleWarn {
+	warns := []RuleWarn{}
+	msgFmt := "foreign key columns do not have an index. [%s]"
+
+	for _, t := range s.Tables {
+		for _, c := range t.Constraints {
+			for _, c1 := range c.Columns {
+				target := fmt.Sprintf("%s.%s", t.Name, c1)
+				exist := false
+				for _, i := range t.Indexes {
+					for _, c2 := range i.Columns {
+						if c1 == c2 {
+							exist = true
+						}
+					}
+				}
+				if !exist {
+					warns = append(warns, RuleWarn{
+						Target:  target,
+						Message: fmt.Sprintf(msgFmt, t.Name),
+					})
+				}
+			}
+		}
 	}
 
 	return warns

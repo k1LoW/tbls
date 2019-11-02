@@ -191,6 +191,18 @@ func TestDuplicateRelations(t *testing.T) {
 	}
 }
 
+func TestRequireForeignKeyIndex(t *testing.T) {
+	r := RequireForeignKeyIndex{
+		Enabled: true,
+	}
+	s := newTestSchema()
+	warns := r.Check(s)
+	want := 1
+	if len(warns) != want {
+		t.Errorf("actual %v\nwant %v", len(warns), want)
+	}
+}
+
 func newTestSchema() *schema.Schema {
 	ca := &schema.Column{
 		Name:     "a",
@@ -276,6 +288,28 @@ func newTestSchema() *schema.Schema {
 	}
 	ca.ParentRelations = []*schema.Relation{r}
 	cb.ChildRelations = []*schema.Relation{r}
+
+	ta.Indexes = []*schema.Index{
+		&schema.Index{
+			Name:  "a2_idx",
+			Def:   "a2 index",
+			Table: &ta.Name,
+			Columns: []string{
+				"a2",
+			},
+		},
+	}
+
+	ta.Constraints = []*schema.Constraint{
+		&schema.Constraint{
+			Name:             "a_b_fk",
+			Type:             schema.FOREIGN_KEY,
+			Table:            &ta.Name,
+			ReferenceTable:   &tb.Name,
+			Columns:          []string{"a"},
+			ReferenceColumns: []string{"b"},
+		},
+	}
 
 	s := &schema.Schema{
 		Name: "testschema",
