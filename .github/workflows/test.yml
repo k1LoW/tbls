@@ -38,7 +38,7 @@ jobs:
         run: gpg --quiet --batch --yes --decrypt --passphrase="$GCP_CLIENT_SECRETS_PASSPHRASE" --output $GITHUB_WORKSPACE/client_secrets.json $GITHUB_WORKSPACE/client_secrets.json.gpg
         if: github.ref == 'refs/heads/master'
         env:
-          GCP_CLIENT_SECRETS_PASSPHRASE: $
+          GCP_CLIENT_SECRETS_PASSPHRASE: ${{ secrets.GCP_CLIENT_SECRETS_PASSPHRASE }}
 
       - name: Run BigQuery Integration
         run: env PATH=`go env GOPATH`/bin:$PATH make test_bigquery
