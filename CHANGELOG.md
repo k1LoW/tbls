@@ -1,5 +1,12 @@
 # Changelog
 
+## [v1.20.0](https://github.com/k1LoW/tbls/compare/v1.19.0...v1.20.0) (2019-11-02)
+
+* lint rule `requireColumnComment` excludes `table_name.column_name` as well as `column_name` [#143](https://github.com/k1LoW/tbls/pull/143) ([k1LoW](https://github.com/k1LoW))
+* Add lint rule `requireForeignKeyIndex` [#142](https://github.com/k1LoW/tbls/pull/142) ([k1LoW](https://github.com/k1LoW))
+* Use GitHub Actions [#141](https://github.com/k1LoW/tbls/pull/141) ([k1LoW](https://github.com/k1LoW))
+* Remove `MATCH SIMPLE` from my.sql [#140](https://github.com/k1LoW/tbls/pull/140) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.19.0](https://github.com/k1LoW/tbls/compare/v1.18.2...v1.19.0) (2019-09-06)
 
 * Add lint rule `duplicateRelations` [#139](https://github.com/k1LoW/tbls/pull/139) ([k1LoW](https://github.com/k1LoW))
