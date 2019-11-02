@@ -55,7 +55,7 @@ func TestRequireColumnComment(t *testing.T) {
 func TestRequireColumnCommentWithExclude(t *testing.T) {
 	r := RequireColumnComment{
 		Enabled: true,
-		Exclude: []string{"b"},
+		Exclude: []string{"b1"},
 	}
 	s := newTestSchema()
 	warns := r.Check(s)
@@ -192,26 +192,40 @@ func TestDuplicateRelations(t *testing.T) {
 }
 
 func TestRequireForeignKeyIndex(t *testing.T) {
-	r := RequireForeignKeyIndex{
-		Enabled: true,
+	tests := []struct {
+		enabled bool
+		exclude []string
+		want    int
+	}{
+		{true, []string{}, 1},
+		{false, []string{}, 0},
+		{true, []string{"a.a1"}, 0},
+		{true, []string{"a1"}, 0},
 	}
-	s := newTestSchema()
-	warns := r.Check(s)
-	want := 1
-	if len(warns) != want {
-		t.Errorf("actual %v\nwant %v", len(warns), want)
+
+	for i, tt := range tests {
+		r := RequireForeignKeyIndex{
+			Enabled: tt.enabled,
+			Exclude: tt.exclude,
+		}
+		s := newTestSchema()
+		warns := r.Check(s)
+		want := tt.want
+		if len(warns) != want {
+			t.Errorf("TestRequireForeignKeyIndex(%d)actual %v\nwant %v", i, len(warns), want)
+		}
 	}
 }
 
 func newTestSchema() *schema.Schema {
 	ca := &schema.Column{
-		Name:     "a",
+		Name:     "a1",
 		Type:     "bigint(20)",
 		Comment:  "column a",
 		Nullable: false,
 	}
 	cb := &schema.Column{
-		Name:     "b",
+		Name:     "b1",
 		Type:     "text",
 		Comment:  "", // empty comment
 		Nullable: true,
@@ -280,6 +294,7 @@ func newTestSchema() *schema.Schema {
 			},
 		},
 	}
+
 	r := &schema.Relation{
 		Table:         ta,
 		Columns:       []*schema.Column{ca},
@@ -302,12 +317,12 @@ func newTestSchema() *schema.Schema {
 
 	ta.Constraints = []*schema.Constraint{
 		&schema.Constraint{
-			Name:             "a_b_fk",
+			Name:             "a1_b1_fk",
 			Type:             schema.FOREIGN_KEY,
 			Table:            &ta.Name,
 			ReferenceTable:   &tb.Name,
-			Columns:          []string{"a"},
-			ReferenceColumns: []string{"b"},
+			Columns:          []string{"a1"},
+			ReferenceColumns: []string{"b1"},
 		},
 	}
 

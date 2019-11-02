@@ -43,11 +43,12 @@ func (r RequireTableComment) IsEnabled() bool {
 
 // Check table comment
 func (r RequireTableComment) Check(s *schema.Schema) []RuleWarn {
-	msg := "table comment required."
 	warns := []RuleWarn{}
 	if !r.IsEnabled() {
 		return warns
 	}
+	msg := "table comment required."
+
 	for _, t := range s.Tables {
 		if !contains(r.Exclude, t.Name) && t.Comment == "" {
 			warns = append(warns, RuleWarn{
@@ -73,11 +74,12 @@ func (r RequireColumnComment) IsEnabled() bool {
 
 // Check column comment
 func (r RequireColumnComment) Check(s *schema.Schema) []RuleWarn {
-	msg := "column comment required."
 	warns := []RuleWarn{}
 	if !r.IsEnabled() {
 		return warns
 	}
+	msg := "column comment required."
+
 	for _, t := range s.Tables {
 		if contains(r.ExcludedTables, t.Name) {
 			continue
@@ -107,11 +109,12 @@ func (r UnrelatedTable) IsEnabled() bool {
 
 // Check table relation
 func (r UnrelatedTable) Check(s *schema.Schema) []RuleWarn {
-	msgFmt := "unrelated (isolated) table exists. [%d]"
 	warns := []RuleWarn{}
 	if !r.IsEnabled() {
 		return warns
 	}
+	msgFmt := "unrelated (isolated) table exists. [%d]"
+
 	tableMap := map[string]*schema.Table{}
 	for _, t := range s.Tables {
 		if contains(r.Exclude, t.Name) {
@@ -146,11 +149,12 @@ func (r ColumnCount) IsEnabled() bool {
 
 // Check table column count
 func (r ColumnCount) Check(s *schema.Schema) []RuleWarn {
-	msgFmt := "too many columns. [%d/%d]"
 	warns := []RuleWarn{}
 	if !r.IsEnabled() {
 		return warns
 	}
+	msgFmt := "too many columns. [%d/%d]"
+
 	for _, t := range s.Tables {
 		if !contains(r.Exclude, t.Name) && len(t.Columns) > r.Max {
 			warns = append(warns, RuleWarn{
@@ -281,12 +285,18 @@ func (r RequireForeignKeyIndex) IsEnabled() bool {
 // Check if the foreign key columns have an index
 func (r RequireForeignKeyIndex) Check(s *schema.Schema) []RuleWarn {
 	warns := []RuleWarn{}
+	if !r.IsEnabled() {
+		return warns
+	}
 	msgFmt := "foreign key columns do not have an index. [%s]"
 
 	for _, t := range s.Tables {
 		for _, c := range t.Constraints {
 			for _, c1 := range c.Columns {
 				target := fmt.Sprintf("%s.%s", t.Name, c1)
+				if contains(r.Exclude, c1) || contains(r.Exclude, target) {
+					continue
+				}
 				exist := false
 				for _, i := range t.Indexes {
 					for _, c2 := range i.Columns {
