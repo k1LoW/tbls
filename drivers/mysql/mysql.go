@@ -202,6 +202,7 @@ GROUP BY kcu.constraint_name, sub.costraint_type, kcu.referenced_table_name`, ta
 			case "UNIQUE":
 				constraintDef = fmt.Sprintf("UNIQUE KEY %s (%s)", constraintName, constraintColumnName)
 			case "FOREIGN KEY":
+				constraintType = schema.FOREIGN_KEY
 				constraintDef = fmt.Sprintf("FOREIGN KEY (%s) REFERENCES %s (%s)", constraintColumnName, constraintRefTableName.String, constraintRefColumnName.String)
 				relation := &schema.Relation{
 					Table: table,

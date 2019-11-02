@@ -472,7 +472,7 @@ func convertConstraintType(t string) string {
 	case "u":
 		return "UNIQUE"
 	case "f":
-		return "FOREIGN KEY"
+		return schema.FOREIGN_KEY
 	case "c":
 		return "CHECK"
 	case "t":

@@ -9,6 +9,10 @@ import (
 	"github.com/pkg/errors"
 )
 
+const (
+	FOREIGN_KEY = "FOREIGN KEY"
+)
+
 // Index is the struct for database index
 type Index struct {
 	Name    string   `json:"name"`
