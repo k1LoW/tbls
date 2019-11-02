@@ -24,7 +24,13 @@ jobs:
       - name: Check out source code
         uses: actions/checkout@v1
 
-      - name: Start Databases
+      - name: Decrypt secrets
+        run: gpg --quiet --batch --yes --decrypt --passphrase="$GCP_CLIENT_SECRETS_PASSPHRASE" --output $GITHUB_WORKSPACE/client_secrets.json $GITHUB_WORKSPACE/client_secrets.json.gpg
+        if: github.ref == 'refs/heads/master'
+        env:
+          GCP_CLIENT_SECRETS_PASSPHRASE: ${{ secrets.GCP_CLIENT_SECRETS_PASSPHRASE }}
+
+      - name: Start databases
         run: |
           docker-compose up -d
           sleep 20s
@@ -34,13 +40,7 @@ jobs:
         env:
           GOPROXY: "https://proxy.golang.org"
 
-      - name: Decrypt Secrets
-        run: gpg --quiet --batch --yes --decrypt --passphrase="$GCP_CLIENT_SECRETS_PASSPHRASE" --output $GITHUB_WORKSPACE/client_secrets.json $GITHUB_WORKSPACE/client_secrets.json.gpg
-        if: github.ref == 'refs/heads/master'
-        env:
-          GCP_CLIENT_SECRETS_PASSPHRASE: ${{ secrets.GCP_CLIENT_SECRETS_PASSPHRASE }}
-
-      - name: Run BigQuery Integration
+      - name: Run BigQuery integration
         run: env PATH=`go env GOPATH`/bin:$PATH make test_bigquery
         if: github.ref == 'refs/heads/master'
         env:
