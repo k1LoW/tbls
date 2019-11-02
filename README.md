@@ -4,7 +4,7 @@
 <br><br>
 </p>
 
-[![Build Status](https://travis-ci.org/k1LoW/tbls.svg?branch=master)](https://travis-ci.org/k1LoW/tbls) [![GitHub release](https://img.shields.io/github/release/k1LoW/tbls.svg)](https://github.com/k1LoW/tbls/releases) [![codecov](https://codecov.io/gh/k1LoW/tbls/branch/master/graph/badge.svg)](https://codecov.io/gh/k1LoW/tbls) [![Go Report Card](https://goreportcard.com/badge/github.com/k1LoW/tbls)](https://goreportcard.com/report/github.com/k1LoW/tbls) [![Docker Build](https://img.shields.io/docker/cloud/build/k1low/tbls)](https://hub.docker.com/r/k1low/tbls)
+[![Build Status](https://github.com/k1LoW/tbls/workflows/build/badge.svg)](https://github.com/k1LoW/tbls/actions) [![GitHub release](https://img.shields.io/github/release/k1LoW/tbls.svg)](https://github.com/k1LoW/tbls/releases) [![codecov](https://codecov.io/gh/k1LoW/tbls/branch/master/graph/badge.svg)](https://codecov.io/gh/k1LoW/tbls) [![Go Report Card](https://goreportcard.com/badge/github.com/k1LoW/tbls)](https://goreportcard.com/report/github.com/k1LoW/tbls) [![Docker Build](https://img.shields.io/docker/cloud/build/k1low/tbls)](https://hub.docker.com/r/k1low/tbls)
 
 `tbls` is a CI-Friendly tool for document a database, written in Go.
 

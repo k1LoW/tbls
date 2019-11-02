@@ -1,0 +1,52 @@
+name: build
+
+on: push
+
+jobs:
+  job-test:
+    name: Test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go_version: [1.12, 1.13]
+    steps:
+      - name: Set up Go ${{ matrix.go_version }}
+        uses: actions/setup-go@v1
+        with:
+          go-version: ${{ matrix.go_version }}
+        id: go
+
+      - name: Install packages
+        run: |
+          sudo apt install sqlite3
+          sudo pip install codecov
+
+      - name: Check out source code
+        uses: actions/checkout@v1
+
+      - name: Start Databases
+        run: |
+          docker-compose up -d
+          sleep 20s
+
+      - name: Run tests
+        run: env PATH=`go env GOPATH`/bin:$PATH make ci
+        env:
+          GOPROXY: "https://proxy.golang.org"
+
+      - name: Decrypt Secrets
+        run: gpg --quiet --batch --yes --decrypt --passphrase="$GCP_CLIENT_SECRETS_PASSPHRASE" --output $GITHUB_WORKSPACE/client_secrets.json $GITHUB_WORKSPACE/client_secrets.json.gpg
+        if: github.ref == 'refs/heads/master'
+        env:
+          GCP_CLIENT_SECRETS_PASSPHRASE: $
+
+      - name: Run BigQuery Integration
+        run: env PATH=`go env GOPATH`/bin:$PATH make test_bigquery
+        if: github.ref == 'refs/heads/master'
+        env:
+          GOPROXY: "https://proxy.golang.org"
+
+      - name: Run codecov
+        run: codecov
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
