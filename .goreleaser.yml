@@ -83,3 +83,18 @@ brews:
   homepage: https://github.com/k1LoW/tbls
   description: 'tbls is a CI-Friendly tool for document a database, written in Go.'
   install: bin.install 'tbls'
+nfpms:
+  -
+    id: tbls-nfpms
+    name_template: "{{ .ProjectName }}_{{ .Version }}-1_{{ .Arch }}"
+    builds:
+    - tbls-linux
+    homepage: https://github.com/k1LoW/tbls
+    maintainer: Ken'ichiro Oyama <k1lowxb@gmail.com>
+    description: tbls is a CI-Friendly tool for document a database, written in Go.
+    license: MIT
+    formats:
+      - deb
+      - rpm
+    bindir: /usr/bin
+    epoch: 1
