@@ -18,6 +18,17 @@ func TestRequireTableComment(t *testing.T) {
 	}
 }
 
+func TestIsEnabled(t *testing.T) {
+	r := RequireTableComment{
+		Enabled: false,
+	}
+	s := newTestSchema()
+	warns := r.Check(s)
+	if len(warns) != 0 {
+		t.Errorf("actual %v\nwant %v", len(warns), 1)
+	}
+}
+
 func TestRequireTableCommentWithExclude(t *testing.T) {
 	r := RequireTableComment{
 		Enabled: true,
