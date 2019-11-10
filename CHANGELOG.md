@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.21.0](https://github.com/k1LoW/tbls/compare/v1.20.0...v1.21.0) (2019-11-11)
+
+* Add `lintExclude` for exclude tables from lint. [#144](https://github.com/k1LoW/tbls/pull/144) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.20.0](https://github.com/k1LoW/tbls/compare/v1.19.0...v1.20.0) (2019-11-02)
 
 * lint rule `requireColumnComment` excludes `table_name.column_name` as well as `column_name` [#143](https://github.com/k1LoW/tbls/pull/143) ([k1LoW](https://github.com/k1LoW))
