@@ -451,12 +451,20 @@ lint:
 
 ### Exclude tables
 
-`exclude:` is used to exclude tables from the document.
+`exclude:` is used to exclude tables from `tbls *`.
 
 ``` yaml
 # .tbls.yml
 exclude:
   - logs
+  - CamelizeTable
+```
+
+`lintExclude:` is used to exclude tables from `tbls lint`.
+
+``` yaml
+# .tbls.yml
+lintExclude:
   - CamelizeTable
 ```
 
