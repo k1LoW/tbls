@@ -27,7 +27,7 @@ type RuleWarn struct {
 // Rule is interfece of `tbls lint` cop
 type Rule interface {
 	IsEnabled() bool
-	Check(*schema.Schema) []RuleWarn
+	Check(schema *schema.Schema, exclude []string) []RuleWarn
 }
 
 // RequireTableComment checks table comment
@@ -42,7 +42,7 @@ func (r RequireTableComment) IsEnabled() bool {
 }
 
 // Check table comment
-func (r RequireTableComment) Check(s *schema.Schema) []RuleWarn {
+func (r RequireTableComment) Check(s *schema.Schema, exclude []string) []RuleWarn {
 	warns := []RuleWarn{}
 	if !r.IsEnabled() {
 		return warns
@@ -73,7 +73,7 @@ func (r RequireColumnComment) IsEnabled() bool {
 }
 
 // Check column comment
-func (r RequireColumnComment) Check(s *schema.Schema) []RuleWarn {
+func (r RequireColumnComment) Check(s *schema.Schema, exclude []string) []RuleWarn {
 	warns := []RuleWarn{}
 	if !r.IsEnabled() {
 		return warns
@@ -112,7 +112,7 @@ func (r UnrelatedTable) IsEnabled() bool {
 }
 
 // Check table relation
-func (r UnrelatedTable) Check(s *schema.Schema) []RuleWarn {
+func (r UnrelatedTable) Check(s *schema.Schema, exclude []string) []RuleWarn {
 	warns := []RuleWarn{}
 	if !r.IsEnabled() {
 		return warns
@@ -152,7 +152,7 @@ func (r ColumnCount) IsEnabled() bool {
 }
 
 // Check table column count
-func (r ColumnCount) Check(s *schema.Schema) []RuleWarn {
+func (r ColumnCount) Check(s *schema.Schema, exclude []string) []RuleWarn {
 	warns := []RuleWarn{}
 	if !r.IsEnabled() {
 		return warns
@@ -197,7 +197,7 @@ func (r RequireColumns) IsEnabled() bool {
 }
 
 // Check the existence of a table columns
-func (r RequireColumns) Check(s *schema.Schema) []RuleWarn {
+func (r RequireColumns) Check(s *schema.Schema, exclude []string) []RuleWarn {
 	warns := []RuleWarn{}
 	if !r.IsEnabled() {
 		return warns
@@ -242,7 +242,7 @@ func (r DuplicateRelations) IsEnabled() bool {
 }
 
 // Check duplicate table relations
-func (r DuplicateRelations) Check(s *schema.Schema) []RuleWarn {
+func (r DuplicateRelations) Check(s *schema.Schema, exclude []string) []RuleWarn {
 	warns := []RuleWarn{}
 	if !r.IsEnabled() {
 		return warns
@@ -287,7 +287,7 @@ func (r RequireForeignKeyIndex) IsEnabled() bool {
 }
 
 // Check if the foreign key columns have an index
-func (r RequireForeignKeyIndex) Check(s *schema.Schema) []RuleWarn {
+func (r RequireForeignKeyIndex) Check(s *schema.Schema, exclude []string) []RuleWarn {
 	warns := []RuleWarn{}
 	if !r.IsEnabled() {
 		return warns

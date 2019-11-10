@@ -24,7 +24,7 @@ func TestRequireTableComment(t *testing.T) {
 			Exclude: tt.exclude,
 		}
 		s := newTestSchema()
-		warns := r.Check(s)
+		warns := r.Check(s, []string{})
 		if len(warns) != tt.want {
 			t.Errorf("TestRequireTableComment(%d): actual %v\nwant %v", i, len(warns), tt.want)
 		}
@@ -53,7 +53,7 @@ func TestRequireColumnComment(t *testing.T) {
 			ExcludedTables: tt.excludeTables,
 		}
 		s := newTestSchema()
-		warns := r.Check(s)
+		warns := r.Check(s, []string{})
 		if len(warns) != tt.want {
 			t.Errorf("TestRequireColumnComment(%d): actual %v\nwant %v", i, len(warns), tt.want)
 		}
@@ -78,7 +78,7 @@ func TestUnrelatedTable(t *testing.T) {
 			Exclude: tt.exclude,
 		}
 		s := newTestSchema()
-		warns := r.Check(s)
+		warns := r.Check(s, []string{})
 		if len(warns) != tt.want {
 			t.Errorf("TestUnrelatedTable(%d):actual %v\nwant %v", i, len(warns), tt.want)
 		}
@@ -103,7 +103,7 @@ func TestColumnCount(t *testing.T) {
 			Max:     3,
 		}
 		s := newTestSchema()
-		warns := r.Check(s)
+		warns := r.Check(s, []string{})
 		if len(warns) != tt.want {
 			t.Errorf("TestColumnCount(%d): actual %v\nwant %v", i, len(warns), tt.want)
 		}
@@ -137,7 +137,7 @@ func TestRequireColumns(t *testing.T) {
 			},
 		}
 		s := newTestSchema()
-		warns := r.Check(s)
+		warns := r.Check(s, []string{})
 		if len(warns) != tt.want {
 			t.Errorf("TestRequireColumns(%d): actual %v\nwant %v", i, len(warns), tt.want)
 		}
@@ -158,7 +158,7 @@ func TestDuplicateRelations(t *testing.T) {
 	copy2.Table = &copy2Table
 	copy2.Table.Name = "other table"
 	s.Relations = append(s.Relations, &copy2)
-	warns := r.Check(s)
+	warns := r.Check(s, []string{})
 	want := 1
 	if len(warns) != want {
 		t.Errorf("actual %v\nwant %v", len(warns), want)
@@ -183,7 +183,7 @@ func TestRequireForeignKeyIndex(t *testing.T) {
 			Exclude: tt.exclude,
 		}
 		s := newTestSchema()
-		warns := r.Check(s)
+		warns := r.Check(s, []string{})
 		if len(warns) != tt.want {
 			t.Errorf("TestRequireForeignKeyIndex(%d): actual %v\nwant %v", i, len(warns), tt.want)
 		}
