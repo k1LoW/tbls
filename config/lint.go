@@ -50,7 +50,13 @@ func (r RequireTableComment) Check(s *schema.Schema, exclude []string) []RuleWar
 	msg := "table comment required."
 
 	for _, t := range s.Tables {
-		if !contains(r.Exclude, t.Name) && t.Comment == "" {
+		if contains(exclude, t.Name) {
+			continue
+		}
+		if contains(r.Exclude, t.Name) {
+			continue
+		}
+		if t.Comment == "" {
 			warns = append(warns, RuleWarn{
 				Target:  t.Name,
 				Message: msg,
@@ -81,6 +87,9 @@ func (r RequireColumnComment) Check(s *schema.Schema, exclude []string) []RuleWa
 	msg := "column comment required."
 
 	for _, t := range s.Tables {
+		if contains(exclude, t.Name) {
+			continue
+		}
 		if contains(r.ExcludedTables, t.Name) {
 			continue
 		}
@@ -121,6 +130,9 @@ func (r UnrelatedTable) Check(s *schema.Schema, exclude []string) []RuleWarn {
 
 	tableMap := map[string]*schema.Table{}
 	for _, t := range s.Tables {
+		if contains(exclude, t.Name) {
+			continue
+		}
 		if contains(r.Exclude, t.Name) {
 			continue
 		}
@@ -160,7 +172,13 @@ func (r ColumnCount) Check(s *schema.Schema, exclude []string) []RuleWarn {
 	msgFmt := "too many columns. [%d/%d]"
 
 	for _, t := range s.Tables {
-		if !contains(r.Exclude, t.Name) && len(t.Columns) > r.Max {
+		if contains(exclude, t.Name) {
+			continue
+		}
+		if contains(r.Exclude, t.Name) {
+			continue
+		}
+		if len(t.Columns) > r.Max {
 			warns = append(warns, RuleWarn{
 				Target:  t.Name,
 				Message: fmt.Sprintf(msgFmt, len(t.Columns), r.Max),
@@ -203,6 +221,9 @@ func (r RequireColumns) Check(s *schema.Schema, exclude []string) []RuleWarn {
 		return warns
 	}
 	for _, t := range s.Tables {
+		if contains(exclude, t.Name) {
+			continue
+		}
 		for _, cc := range r.Columns {
 			excluded := false
 			for _, tt := range cc.Exclude {
@@ -251,6 +272,12 @@ func (r DuplicateRelations) Check(s *schema.Schema, exclude []string) []RuleWarn
 	msgFmt := "duplicate relations. [%s -> %s]"
 
 	for _, r := range s.Relations {
+		if contains(exclude, r.Table.Name) {
+			continue
+		}
+		if contains(exclude, r.ParentTable.Name) {
+			continue
+		}
 		columns := []string{}
 		parentColumns := []string{}
 		for _, c := range r.Columns {
@@ -295,6 +322,9 @@ func (r RequireForeignKeyIndex) Check(s *schema.Schema, exclude []string) []Rule
 	msgFmt := "foreign key columns do not have an index. [%s]"
 
 	for _, t := range s.Tables {
+		if contains(exclude, t.Name) {
+			continue
+		}
 		for _, c := range t.Constraints {
 			for _, c1 := range c.Columns {
 				target := fmt.Sprintf("%s.%s", t.Name, c1)
