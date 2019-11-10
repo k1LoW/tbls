@@ -27,7 +27,7 @@ type RuleWarn struct {
 // Rule is interfece of `tbls lint` cop
 type Rule interface {
 	IsEnabled() bool
-	Check(*schema.Schema) []RuleWarn
+	Check(schema *schema.Schema, exclude []string) []RuleWarn
 }
 
 // RequireTableComment checks table comment
@@ -42,7 +42,7 @@ func (r RequireTableComment) IsEnabled() bool {
 }
 
 // Check table comment
-func (r RequireTableComment) Check(s *schema.Schema) []RuleWarn {
+func (r RequireTableComment) Check(s *schema.Schema, exclude []string) []RuleWarn {
 	warns := []RuleWarn{}
 	if !r.IsEnabled() {
 		return warns
@@ -50,7 +50,13 @@ func (r RequireTableComment) Check(s *schema.Schema) []RuleWarn {
 	msg := "table comment required."
 
 	for _, t := range s.Tables {
-		if !contains(r.Exclude, t.Name) && t.Comment == "" {
+		if contains(exclude, t.Name) {
+			continue
+		}
+		if contains(r.Exclude, t.Name) {
+			continue
+		}
+		if t.Comment == "" {
 			warns = append(warns, RuleWarn{
 				Target:  t.Name,
 				Message: msg,
@@ -73,7 +79,7 @@ func (r RequireColumnComment) IsEnabled() bool {
 }
 
 // Check column comment
-func (r RequireColumnComment) Check(s *schema.Schema) []RuleWarn {
+func (r RequireColumnComment) Check(s *schema.Schema, exclude []string) []RuleWarn {
 	warns := []RuleWarn{}
 	if !r.IsEnabled() {
 		return warns
@@ -81,6 +87,9 @@ func (r RequireColumnComment) Check(s *schema.Schema) []RuleWarn {
 	msg := "column comment required."
 
 	for _, t := range s.Tables {
+		if contains(exclude, t.Name) {
+			continue
+		}
 		if contains(r.ExcludedTables, t.Name) {
 			continue
 		}
@@ -112,7 +121,7 @@ func (r UnrelatedTable) IsEnabled() bool {
 }
 
 // Check table relation
-func (r UnrelatedTable) Check(s *schema.Schema) []RuleWarn {
+func (r UnrelatedTable) Check(s *schema.Schema, exclude []string) []RuleWarn {
 	warns := []RuleWarn{}
 	if !r.IsEnabled() {
 		return warns
@@ -121,6 +130,9 @@ func (r UnrelatedTable) Check(s *schema.Schema) []RuleWarn {
 
 	tableMap := map[string]*schema.Table{}
 	for _, t := range s.Tables {
+		if contains(exclude, t.Name) {
+			continue
+		}
 		if contains(r.Exclude, t.Name) {
 			continue
 		}
@@ -152,7 +164,7 @@ func (r ColumnCount) IsEnabled() bool {
 }
 
 // Check table column count
-func (r ColumnCount) Check(s *schema.Schema) []RuleWarn {
+func (r ColumnCount) Check(s *schema.Schema, exclude []string) []RuleWarn {
 	warns := []RuleWarn{}
 	if !r.IsEnabled() {
 		return warns
@@ -160,7 +172,13 @@ func (r ColumnCount) Check(s *schema.Schema) []RuleWarn {
 	msgFmt := "too many columns. [%d/%d]"
 
 	for _, t := range s.Tables {
-		if !contains(r.Exclude, t.Name) && len(t.Columns) > r.Max {
+		if contains(exclude, t.Name) {
+			continue
+		}
+		if contains(r.Exclude, t.Name) {
+			continue
+		}
+		if len(t.Columns) > r.Max {
 			warns = append(warns, RuleWarn{
 				Target:  t.Name,
 				Message: fmt.Sprintf(msgFmt, len(t.Columns), r.Max),
@@ -197,12 +215,15 @@ func (r RequireColumns) IsEnabled() bool {
 }
 
 // Check the existence of a table columns
-func (r RequireColumns) Check(s *schema.Schema) []RuleWarn {
+func (r RequireColumns) Check(s *schema.Schema, exclude []string) []RuleWarn {
 	warns := []RuleWarn{}
 	if !r.IsEnabled() {
 		return warns
 	}
 	for _, t := range s.Tables {
+		if contains(exclude, t.Name) {
+			continue
+		}
 		for _, cc := range r.Columns {
 			excluded := false
 			for _, tt := range cc.Exclude {
@@ -242,7 +263,7 @@ func (r DuplicateRelations) IsEnabled() bool {
 }
 
 // Check duplicate table relations
-func (r DuplicateRelations) Check(s *schema.Schema) []RuleWarn {
+func (r DuplicateRelations) Check(s *schema.Schema, exclude []string) []RuleWarn {
 	warns := []RuleWarn{}
 	if !r.IsEnabled() {
 		return warns
@@ -251,6 +272,12 @@ func (r DuplicateRelations) Check(s *schema.Schema) []RuleWarn {
 	msgFmt := "duplicate relations. [%s -> %s]"
 
 	for _, r := range s.Relations {
+		if contains(exclude, r.Table.Name) {
+			continue
+		}
+		if contains(exclude, r.ParentTable.Name) {
+			continue
+		}
 		columns := []string{}
 		parentColumns := []string{}
 		for _, c := range r.Columns {
@@ -287,7 +314,7 @@ func (r RequireForeignKeyIndex) IsEnabled() bool {
 }
 
 // Check if the foreign key columns have an index
-func (r RequireForeignKeyIndex) Check(s *schema.Schema) []RuleWarn {
+func (r RequireForeignKeyIndex) Check(s *schema.Schema, exclude []string) []RuleWarn {
 	warns := []RuleWarn{}
 	if !r.IsEnabled() {
 		return warns
@@ -295,6 +322,9 @@ func (r RequireForeignKeyIndex) Check(s *schema.Schema) []RuleWarn {
 	msgFmt := "foreign key columns do not have an index. [%s]"
 
 	for _, t := range s.Tables {
+		if contains(exclude, t.Name) {
+			continue
+		}
 		for _, c := range t.Constraints {
 			for _, c1 := range c.Columns {
 				target := fmt.Sprintf("%s.%s", t.Name, c1)

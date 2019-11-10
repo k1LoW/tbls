@@ -24,14 +24,15 @@ const DefaultERFormat = "png"
 
 // Config is tbls config
 type Config struct {
-	DSN       string               `yaml:"dsn"`
-	DocPath   string               `yaml:"docPath"`
-	Format    Format               `yaml:"format"`
-	ER        ER                   `yaml:"er"`
-	Exclude   []string             `yaml:"exclude"`
-	Lint      Lint                 `yaml:"lint"`
-	Relations []AdditionalRelation `yaml:"relations"`
-	Comments  []AdditionalComment  `yaml:"comments"`
+	DSN         string               `yaml:"dsn"`
+	DocPath     string               `yaml:"docPath"`
+	Format      Format               `yaml:"format"`
+	ER          ER                   `yaml:"er"`
+	Exclude     []string             `yaml:"exclude"`
+	Lint        Lint                 `yaml:"lint"`
+	LintExclude []string             `yaml:"lintExclude"`
+	Relations   []AdditionalRelation `yaml:"relations"`
+	Comments    []AdditionalComment  `yaml:"comments"`
 }
 
 // Format is document format setting
