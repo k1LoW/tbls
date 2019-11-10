@@ -9,13 +9,15 @@ import (
 
 func TestRequireTableComment(t *testing.T) {
 	tests := []struct {
-		enabled bool
-		exclude []string
-		want    int
+		enabled     bool
+		lintExclude []string
+		exclude     []string
+		want        int
 	}{
-		{true, []string{}, 1},
-		{false, []string{}, 0},
-		{true, []string{"a"}, 0},
+		{true, []string{}, []string{}, 1},
+		{false, []string{}, []string{}, 0},
+		{true, []string{}, []string{"a"}, 0},
+		{true, []string{"a"}, []string{}, 0},
 	}
 
 	for i, tt := range tests {
@@ -24,7 +26,7 @@ func TestRequireTableComment(t *testing.T) {
 			Exclude: tt.exclude,
 		}
 		s := newTestSchema()
-		warns := r.Check(s, []string{})
+		warns := r.Check(s, tt.lintExclude)
 		if len(warns) != tt.want {
 			t.Errorf("TestRequireTableComment(%d): actual %v\nwant %v", i, len(warns), tt.want)
 		}
@@ -34,16 +36,18 @@ func TestRequireTableComment(t *testing.T) {
 func TestRequireColumnComment(t *testing.T) {
 	tests := []struct {
 		enabled       bool
+		lintExclude   []string
 		exclude       []string
 		excludeTables []string
 		want          int
 	}{
-		{true, []string{}, []string{}, 1},
-		{false, []string{}, []string{}, 0},
-		{true, []string{"b1"}, []string{}, 0},
-		{true, []string{"b.b1"}, []string{}, 0},
-		{true, []string{"a.b1"}, []string{}, 1},
-		{true, []string{}, []string{"b"}, 0},
+		{true, []string{}, []string{}, []string{}, 1},
+		{false, []string{}, []string{}, []string{}, 0},
+		{true, []string{}, []string{"b1"}, []string{}, 0},
+		{true, []string{}, []string{"b.b1"}, []string{}, 0},
+		{true, []string{}, []string{"a.b1"}, []string{}, 1},
+		{true, []string{}, []string{}, []string{"b"}, 0},
+		{true, []string{"b"}, []string{}, []string{}, 0},
 	}
 
 	for i, tt := range tests {
@@ -53,7 +57,7 @@ func TestRequireColumnComment(t *testing.T) {
 			ExcludedTables: tt.excludeTables,
 		}
 		s := newTestSchema()
-		warns := r.Check(s, []string{})
+		warns := r.Check(s, tt.lintExclude)
 		if len(warns) != tt.want {
 			t.Errorf("TestRequireColumnComment(%d): actual %v\nwant %v", i, len(warns), tt.want)
 		}
@@ -62,14 +66,16 @@ func TestRequireColumnComment(t *testing.T) {
 
 func TestUnrelatedTable(t *testing.T) {
 	tests := []struct {
-		enabled bool
-		exclude []string
-		want    int
+		enabled     bool
+		lintExclude []string
+		exclude     []string
+		want        int
 	}{
-		{true, []string{}, 1},
-		{false, []string{}, 0},
-		{true, []string{"b"}, 1},
-		{true, []string{"c"}, 0},
+		{true, []string{}, []string{}, 1},
+		{false, []string{}, []string{}, 0},
+		{true, []string{}, []string{"b"}, 1},
+		{true, []string{}, []string{"c"}, 0},
+		{true, []string{"c"}, []string{}, 0},
 	}
 
 	for i, tt := range tests {
@@ -78,7 +84,7 @@ func TestUnrelatedTable(t *testing.T) {
 			Exclude: tt.exclude,
 		}
 		s := newTestSchema()
-		warns := r.Check(s, []string{})
+		warns := r.Check(s, tt.lintExclude)
 		if len(warns) != tt.want {
 			t.Errorf("TestUnrelatedTable(%d):actual %v\nwant %v", i, len(warns), tt.want)
 		}
@@ -87,13 +93,15 @@ func TestUnrelatedTable(t *testing.T) {
 
 func TestColumnCount(t *testing.T) {
 	tests := []struct {
-		enabled bool
-		exclude []string
-		want    int
+		enabled     bool
+		lintExclude []string
+		exclude     []string
+		want        int
 	}{
-		{true, []string{}, 1},
-		{false, []string{}, 0},
-		{true, []string{"c"}, 0},
+		{true, []string{}, []string{}, 1},
+		{false, []string{}, []string{}, 0},
+		{true, []string{}, []string{"c"}, 0},
+		{true, []string{"c"}, []string{}, 0},
 	}
 
 	for i, tt := range tests {
@@ -103,7 +111,7 @@ func TestColumnCount(t *testing.T) {
 			Max:     3,
 		}
 		s := newTestSchema()
-		warns := r.Check(s, []string{})
+		warns := r.Check(s, tt.lintExclude)
 		if len(warns) != tt.want {
 			t.Errorf("TestColumnCount(%d): actual %v\nwant %v", i, len(warns), tt.want)
 		}
@@ -112,14 +120,17 @@ func TestColumnCount(t *testing.T) {
 
 func TestRequireColumns(t *testing.T) {
 	tests := []struct {
-		enabled   bool
-		excludeA2 []string
-		excludeB2 []string
-		want      int
+		enabled     bool
+		lintExclude []string
+		excludeA2   []string
+		excludeB2   []string
+		want        int
 	}{
-		{true, []string{}, []string{}, 4},
-		{false, []string{}, []string{}, 0},
-		{true, []string{"b", "c"}, []string{"a", "c"}, 0},
+		{true, []string{}, []string{}, []string{}, 4},
+		{false, []string{}, []string{}, []string{}, 0},
+		{true, []string{}, []string{"c"}, []string{"c"}, 2},
+		{true, []string{}, []string{"b", "c"}, []string{"a", "c"}, 0},
+		{true, []string{"c"}, []string{}, []string{}, 2},
 	}
 
 	for i, tt := range tests {
@@ -137,7 +148,7 @@ func TestRequireColumns(t *testing.T) {
 			},
 		}
 		s := newTestSchema()
-		warns := r.Check(s, []string{})
+		warns := r.Check(s, tt.lintExclude)
 		if len(warns) != tt.want {
 			t.Errorf("TestRequireColumns(%d): actual %v\nwant %v", i, len(warns), tt.want)
 		}
@@ -145,36 +156,49 @@ func TestRequireColumns(t *testing.T) {
 }
 
 func TestDuplicateRelations(t *testing.T) {
-	r := DuplicateRelations{
-		Enabled: true,
+	tests := []struct {
+		enabled     bool
+		lintExclude []string
+		want        int
+	}{
+		{true, []string{}, 1},
+		{false, []string{}, 0},
+		{true, []string{"a"}, 0},
 	}
-	s := newTestSchema()
-	copy := *s.Relations[0]
-	copy.Def = "copy"
-	s.Relations = append(s.Relations, &copy)
-	copy2 := *s.Relations[0]
-	copy2.Def = "copy2"
-	copy2Table := *copy2.Table
-	copy2.Table = &copy2Table
-	copy2.Table.Name = "other table"
-	s.Relations = append(s.Relations, &copy2)
-	warns := r.Check(s, []string{})
-	want := 1
-	if len(warns) != want {
-		t.Errorf("actual %v\nwant %v", len(warns), want)
+
+	for i, tt := range tests {
+		r := DuplicateRelations{
+			Enabled: tt.enabled,
+		}
+		s := newTestSchema()
+		copy := *s.Relations[0]
+		copy.Def = "copy"
+		s.Relations = append(s.Relations, &copy)
+		copy2 := *s.Relations[0]
+		copy2.Def = "copy2"
+		copy2Table := *copy2.Table
+		copy2.Table = &copy2Table
+		copy2.Table.Name = "other_table"
+		s.Relations = append(s.Relations, &copy2)
+		warns := r.Check(s, tt.lintExclude)
+		if len(warns) != tt.want {
+			t.Errorf("TestDuplicateRelations(%d): actual %v\nwant %v", i, len(warns), tt.want)
+		}
 	}
 }
 
 func TestRequireForeignKeyIndex(t *testing.T) {
 	tests := []struct {
-		enabled bool
-		exclude []string
-		want    int
+		enabled     bool
+		lintExclude []string
+		exclude     []string
+		want        int
 	}{
-		{true, []string{}, 1},
-		{false, []string{}, 0},
-		{true, []string{"a.a1"}, 0},
-		{true, []string{"a1"}, 0},
+		{true, []string{}, []string{}, 1},
+		{false, []string{}, []string{}, 0},
+		{true, []string{}, []string{"a.a1"}, 0},
+		{true, []string{}, []string{"a1"}, 0},
+		{true, []string{"a"}, []string{}, 0},
 	}
 
 	for i, tt := range tests {
@@ -183,7 +207,7 @@ func TestRequireForeignKeyIndex(t *testing.T) {
 			Exclude: tt.exclude,
 		}
 		s := newTestSchema()
-		warns := r.Check(s, []string{})
+		warns := r.Check(s, tt.lintExclude)
 		if len(warns) != tt.want {
 			t.Errorf("TestRequireForeignKeyIndex(%d): actual %v\nwant %v", i, len(warns), tt.want)
 		}
