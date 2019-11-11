@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.21.1](https://github.com/k1LoW/tbls/compare/v1.21.0...v1.21.1) (2019-11-11)
+
+* Fix: requireForeignKeyIndex check only FOREIGN_KEY. [#145](https://github.com/k1LoW/tbls/pull/145) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.21.0](https://github.com/k1LoW/tbls/compare/v1.20.0...v1.21.0) (2019-11-11)
 
 * Add `lintExclude` for exclude tables from lint. [#144](https://github.com/k1LoW/tbls/pull/144) ([k1LoW](https://github.com/k1LoW))
