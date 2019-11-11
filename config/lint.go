@@ -326,6 +326,9 @@ func (r RequireForeignKeyIndex) Check(s *schema.Schema, exclude []string) []Rule
 			continue
 		}
 		for _, c := range t.Constraints {
+			if c.Type != schema.FOREIGN_KEY {
+				continue
+			}
 			for _, c1 := range c.Columns {
 				target := fmt.Sprintf("%s.%s", t.Name, c1)
 				if contains(r.Exclude, c1) || contains(r.Exclude, target) {
