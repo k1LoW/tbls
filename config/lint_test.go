@@ -321,6 +321,13 @@ func newTestSchema() *schema.Schema {
 			Columns:          []string{"a1"},
 			ReferenceColumns: []string{"b1"},
 		},
+		&schema.Constraint{
+			Name:           "a1_unique",
+			Type:           "UNIQUE",
+			Table:          &ta.Name,
+			ReferenceTable: nil,
+			Columns:        []string{"a1"},
+		},
 	}
 
 	s := &schema.Schema{
