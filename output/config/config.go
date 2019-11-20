@@ -31,25 +31,25 @@ func (c *Config) OutputSchema(wr io.Writer, s *schema.Schema) error {
 
 	for _, table := range s.Tables {
 		tableExist := false
-		for _, tc := range c.config.Comments {
-			if table.Name == tc.Table {
+		for i := range c.config.Comments {
+			if table.Name == c.config.Comments[i].Table {
 				tableExist = true
 				for _, column := range table.Columns {
-					if _, ok := tc.ColumnComments[column.Name]; !ok {
+					if _, ok := c.config.Comments[i].ColumnComments[column.Name]; !ok {
 						if c.config.Lint.RequireColumnComment.IsEnabled() {
 							for _, w := range columnWarns {
 								if fmt.Sprintf("%s.%s", table.Name, column.Name) == w.Target {
-									if tc.ColumnComments == nil {
-										tc.ColumnComments = map[string]string{}
+									if c.config.Comments[i].ColumnComments == nil {
+										c.config.Comments[i].ColumnComments = map[string]string{}
 									}
-									tc.ColumnComments[column.Name] = noColumnComment
+									c.config.Comments[i].ColumnComments[column.Name] = noColumnComment
 								}
 							}
 						} else {
-							if tc.ColumnComments == nil {
-								tc.ColumnComments = map[string]string{}
+							if c.config.Comments[i].ColumnComments == nil {
+								c.config.Comments[i].ColumnComments = map[string]string{}
 							}
-							tc.ColumnComments[column.Name] = noColumnComment
+							c.config.Comments[i].ColumnComments[column.Name] = noColumnComment
 						}
 					}
 				}
@@ -72,9 +72,6 @@ func (c *Config) OutputSchema(wr io.Writer, s *schema.Schema) error {
 			}
 
 			for _, column := range table.Columns {
-				if a.ColumnComments == nil {
-					a.ColumnComments = map[string]string{}
-				}
 				if c.config.Lint.RequireColumnComment.IsEnabled() {
 					for _, w := range columnWarns {
 						if fmt.Sprintf("%s.%s", table.Name, column.Name) == w.Target {
