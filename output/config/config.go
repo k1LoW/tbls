@@ -39,10 +39,16 @@ func (c *Config) OutputSchema(wr io.Writer, s *schema.Schema) error {
 						if c.config.Lint.RequireColumnComment.IsEnabled() {
 							for _, w := range columnWarns {
 								if fmt.Sprintf("%s.%s", table.Name, column.Name) == w.Target {
+									if tc.ColumnComments == nil {
+										tc.ColumnComments = map[string]string{}
+									}
 									tc.ColumnComments[column.Name] = noColumnComment
 								}
 							}
 						} else {
+							if tc.ColumnComments == nil {
+								tc.ColumnComments = map[string]string{}
+							}
 							tc.ColumnComments[column.Name] = noColumnComment
 						}
 					}
@@ -66,6 +72,9 @@ func (c *Config) OutputSchema(wr io.Writer, s *schema.Schema) error {
 			}
 
 			for _, column := range table.Columns {
+				if a.ColumnComments == nil {
+					a.ColumnComments = map[string]string{}
+				}
 				if c.config.Lint.RequireColumnComment.IsEnabled() {
 					for _, w := range columnWarns {
 						if fmt.Sprintf("%s.%s", table.Name, column.Name) == w.Target {
