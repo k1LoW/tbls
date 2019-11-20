@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.22.1](https://github.com/k1LoW/tbls/compare/v1.22.0...v1.22.1) (2019-11-21)
+
+* Fix: panic: assignment to entry in nil map [#147](https://github.com/k1LoW/tbls/pull/147) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.22.0](https://github.com/k1LoW/tbls/compare/v1.21.1...v1.22.0) (2019-11-20)
 
 * Add .tbls.yml (tbls config file) output format [#146](https://github.com/k1LoW/tbls/pull/146) ([k1LoW](https://github.com/k1LoW))
