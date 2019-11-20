@@ -16,18 +16,18 @@ require (
 	github.com/mattn/go-colorable v0.1.4 // indirect
 	github.com/mattn/go-isatty v0.0.10 // indirect
 	github.com/mattn/go-runewidth v0.0.6
-	github.com/mattn/go-sqlite3 v1.11.0
+	github.com/mattn/go-sqlite3 v1.12.0
 	github.com/pkg/errors v0.8.1
 	github.com/pmezard/go-difflib v1.0.0
 	github.com/rogpeppe/go-internal v1.5.0 // indirect
 	github.com/spf13/cobra v0.0.5
 	github.com/spf13/pflag v1.0.5 // indirect
-	github.com/xo/dburl v0.0.0-20191005012637-293c3298d6c0
+	github.com/xo/dburl v0.0.0-20191114042849-512519f35716
 	go.opencensus.io v0.22.2 // indirect
-	golang.org/x/crypto v0.0.0-20191108234033-bd318be0434a // indirect
-	golang.org/x/net v0.0.0-20191109021931-daa7c04131f5 // indirect
-	golang.org/x/sys v0.0.0-20191105231009-c1f44814a5cd // indirect
-	golang.org/x/tools v0.0.0-20191109212701-97ad0ed33101 // indirect
+	golang.org/x/crypto v0.0.0-20191112222119-e1110fd1c708 // indirect
+	golang.org/x/net v0.0.0-20191112182307-2180aed22343 // indirect
+	golang.org/x/sys v0.0.0-20191115151921-52ab43148777 // indirect
+	golang.org/x/tools v0.0.0-20191120001058-ad01d5993d97 // indirect
 	google.golang.org/api v0.13.0
 	google.golang.org/appengine v1.6.5 // indirect
 	google.golang.org/genproto v0.0.0-20191108220845-16a3f7862a1a // indirect
