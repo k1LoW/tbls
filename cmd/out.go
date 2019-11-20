@@ -28,6 +28,7 @@ import (
 	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/datasource"
 	"github.com/k1LoW/tbls/output"
+	tbls_config "github.com/k1LoW/tbls/output/config"
 	"github.com/k1LoW/tbls/output/dot"
 	"github.com/k1LoW/tbls/output/json"
 	"github.com/k1LoW/tbls/output/md"
@@ -97,6 +98,8 @@ var outCmd = &cobra.Command{
 			o = new(xlsx.Xlsx)
 		case "plantuml":
 			o = plantuml.NewPlantUML(c)
+		case "config":
+			o = tbls_config.NewConfig(c)
 		default:
 			printError(fmt.Errorf("unsupported format '%s'", format))
 			os.Exit(1)

@@ -579,6 +579,12 @@ $ tbls out -t json -o schema.json
 $ tbls out -t xlsx -o schema.xlsx
 ```
 
+**.tbls.yml:**
+
+``` console
+$ tbls out -t config -o .tbls.new.yml
+```
+
 ## Command arguments
 
 tbls subcommands ( `doc`,`diff`, etc) accepts arguments and options
