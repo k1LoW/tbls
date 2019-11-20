@@ -81,11 +81,11 @@ func (c *Config) OutputSchema(wr io.Writer, s *schema.Schema) error {
 	}
 
 	d := yaml.NewEncoder(wr)
+	defer d.Close()
 	err := d.Encode(c.config)
 	if err != nil {
 		return errors.WithStack(err)
 	}
-	d.Close()
 	return nil
 }
 
