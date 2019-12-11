@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.23.0](https://github.com/k1LoW/tbls/compare/v1.22.1...v1.23.0) (2019-12-11)
+
+* Show table names when lint error `unrelated table exists` [#148](https://github.com/k1LoW/tbls/pull/148) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.22.1](https://github.com/k1LoW/tbls/compare/v1.22.0...v1.22.1) (2019-11-21)
 
 * Fix: panic: assignment to entry in nil map [#147](https://github.com/k1LoW/tbls/pull/147) ([k1LoW](https://github.com/k1LoW))
