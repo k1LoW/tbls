@@ -126,9 +126,9 @@ func (r UnrelatedTable) Check(s *schema.Schema, exclude []string) []RuleWarn {
 	if !r.IsEnabled() {
 		return warns
 	}
-	msgFmt := "unrelated (isolated) table exists. [%d]"
+	msgFmt := "unrelated (isolated) table exists. %s"
 
-	tableMap := map[string]*schema.Table{}
+	ut := map[string]*schema.Table{}
 	for _, t := range s.Tables {
 		if contains(exclude, t.Name) {
 			continue
@@ -136,16 +136,20 @@ func (r UnrelatedTable) Check(s *schema.Schema, exclude []string) []RuleWarn {
 		if contains(r.Exclude, t.Name) {
 			continue
 		}
-		tableMap[t.Name] = t
+		ut[t.Name] = t
 	}
 	for _, rl := range s.Relations {
-		delete(tableMap, rl.Table.Name)
-		delete(tableMap, rl.ParentTable.Name)
+		delete(ut, rl.Table.Name)
+		delete(ut, rl.ParentTable.Name)
 	}
-	if len(tableMap) > 0 {
+	if len(ut) > 0 {
+		us := []string{}
+		for _, t := range ut {
+			us = append(us, t.Name)
+		}
 		warns = append(warns, RuleWarn{
 			Target:  s.Name,
-			Message: fmt.Sprintf(msgFmt, len(tableMap)),
+			Message: fmt.Sprintf(msgFmt, us),
 		})
 	}
 	return warns
