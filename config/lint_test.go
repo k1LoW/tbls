@@ -28,7 +28,7 @@ func TestRequireTableComment(t *testing.T) {
 		s := newTestSchema()
 		warns := r.Check(s, tt.lintExclude)
 		if len(warns) != tt.want {
-			t.Errorf("TestRequireTableComment(%d): actual %v\nwant %v", i, len(warns), tt.want)
+			t.Errorf("TestRequireTableComment(%d): got %v\nwant %v", i, len(warns), tt.want)
 		}
 	}
 }
@@ -59,7 +59,7 @@ func TestRequireColumnComment(t *testing.T) {
 		s := newTestSchema()
 		warns := r.Check(s, tt.lintExclude)
 		if len(warns) != tt.want {
-			t.Errorf("TestRequireColumnComment(%d): actual %v\nwant %v", i, len(warns), tt.want)
+			t.Errorf("TestRequireColumnComment(%d): got %v\nwant %v", i, len(warns), tt.want)
 		}
 	}
 }
@@ -70,12 +70,13 @@ func TestUnrelatedTable(t *testing.T) {
 		lintExclude []string
 		exclude     []string
 		want        int
+		wantMsg     string
 	}{
-		{true, []string{}, []string{}, 1},
-		{false, []string{}, []string{}, 0},
-		{true, []string{}, []string{"b"}, 1},
-		{true, []string{}, []string{"c"}, 0},
-		{true, []string{"c"}, []string{}, 0},
+		{true, []string{}, []string{}, 1, "unrelated (isolated) table exists. [c]"},
+		{false, []string{}, []string{}, 0, ""},
+		{true, []string{}, []string{"b"}, 1, "unrelated (isolated) table exists. [c]"},
+		{true, []string{}, []string{"c"}, 0, ""},
+		{true, []string{"c"}, []string{}, 0, ""},
 	}
 
 	for i, tt := range tests {
@@ -86,7 +87,13 @@ func TestUnrelatedTable(t *testing.T) {
 		s := newTestSchema()
 		warns := r.Check(s, tt.lintExclude)
 		if len(warns) != tt.want {
-			t.Errorf("TestUnrelatedTable(%d):actual %v\nwant %v", i, len(warns), tt.want)
+			t.Errorf("TestUnrelatedTable(%d): got %v\nwant %v", i, len(warns), tt.want)
+		}
+		if len(warns) == 0 {
+			continue
+		}
+		if warns[0].Message != tt.wantMsg {
+			t.Errorf("TestUnrelatedTable(%d): got %v\nwant %v", i, warns[0].Message, tt.wantMsg)
 		}
 	}
 }
@@ -113,7 +120,7 @@ func TestColumnCount(t *testing.T) {
 		s := newTestSchema()
 		warns := r.Check(s, tt.lintExclude)
 		if len(warns) != tt.want {
-			t.Errorf("TestColumnCount(%d): actual %v\nwant %v", i, len(warns), tt.want)
+			t.Errorf("TestColumnCount(%d): got %v\nwant %v", i, len(warns), tt.want)
 		}
 	}
 }
@@ -150,7 +157,7 @@ func TestRequireColumns(t *testing.T) {
 		s := newTestSchema()
 		warns := r.Check(s, tt.lintExclude)
 		if len(warns) != tt.want {
-			t.Errorf("TestRequireColumns(%d): actual %v\nwant %v", i, len(warns), tt.want)
+			t.Errorf("TestRequireColumns(%d): got %v\nwant %v", i, len(warns), tt.want)
 		}
 	}
 }
@@ -182,7 +189,7 @@ func TestDuplicateRelations(t *testing.T) {
 		s.Relations = append(s.Relations, &copy2)
 		warns := r.Check(s, tt.lintExclude)
 		if len(warns) != tt.want {
-			t.Errorf("TestDuplicateRelations(%d): actual %v\nwant %v", i, len(warns), tt.want)
+			t.Errorf("TestDuplicateRelations(%d): got %v\nwant %v", i, len(warns), tt.want)
 		}
 	}
 }
@@ -209,7 +216,7 @@ func TestRequireForeignKeyIndex(t *testing.T) {
 		s := newTestSchema()
 		warns := r.Check(s, tt.lintExclude)
 		if len(warns) != tt.want {
-			t.Errorf("TestRequireForeignKeyIndex(%d): actual %v\nwant %v", i, len(warns), tt.want)
+			t.Errorf("TestRequireForeignKeyIndex(%d): got %v\nwant %v", i, len(warns), tt.want)
 		}
 	}
 }
