@@ -4,9 +4,11 @@ ENTRYPOINT ["tbls"]
 WORKDIR /work
 VOLUME ["/work"]
 
-ENV TBLS_VERSION=v1.20.0
+RUN apk add bash curl
+
+SHELL ["/bin/bash", "-c"]
+
 RUN set -x \
-        && wget https://github.com/k1LoW/tbls/releases/download/${TBLS_VERSION}/tbls_${TBLS_VERSION}_linux_amd64.tar.gz \
-        && tar xzf tbls_${TBLS_VERSION}_linux_amd64.tar.gz \
-        && mv tbls /usr/local/bin/ \
-        && rm tbls_${TBLS_VERSION}_linux_amd64.tar.gz
+        && source <(curl -sL https://git.io/use-tbls) \
+        && which tbls | xargs -I{} mv {} /usr/local/bin/tbls \
+        && apk del bash curl
