@@ -35,7 +35,7 @@ var completionCmd = &cobra.Command{
 	Use:   "completion",
 	Short: "output shell completion code",
 	Long: `output shell completion code.
-To configure your shell to load completions for each session add to your *shrc
+To configure your shell to load completions for each session
 
 # bash
 echo '. <(tbls completion bash)' > ~/.bashrc
