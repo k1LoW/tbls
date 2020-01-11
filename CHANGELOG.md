@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.24.0](https://github.com/k1LoW/tbls/compare/v1.23.0...v1.24.0) (2020-01-11)
+
+* Add `tbls completion` [#149](https://github.com/k1LoW/tbls/pull/149) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.23.0](https://github.com/k1LoW/tbls/compare/v1.22.1...v1.23.0) (2019-12-11)
 
 * Show table names when lint error `unrelated table exists` [#148](https://github.com/k1LoW/tbls/pull/148) ([k1LoW](https://github.com/k1LoW))
