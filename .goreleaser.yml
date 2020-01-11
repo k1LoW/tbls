@@ -82,7 +82,12 @@ brews:
     email: k1lowxb@gmail.com
   homepage: https://github.com/k1LoW/tbls
   description: 'tbls is a CI-Friendly tool for document a database, written in Go.'
-  install: bin.install 'tbls'
+  install: |
+    system './tbls', 'completion', 'bash', '--out', 'tbls.bash'
+    system './tbls', 'completion', 'zsh', '--out', 'tbls.zsh'
+    bin.install 'tbls'
+    bash_completion.install 'tbls.bash' => 'tbls'
+    zsh_completion.install 'tbls.zsh' => '_tbls'
 nfpms:
   -
     id: tbls-nfpms
