@@ -498,7 +498,7 @@ comments:
 
 ### Relations
 
-`comments:` is used to add table relation to database document without `FOREIGN KEY`.
+`relations:` is used to add table relation to database document without `FOREIGN KEY`.
 
 You can create ER diagrams with relations without having foreign key constraints.
 
