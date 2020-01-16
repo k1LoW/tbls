@@ -110,13 +110,17 @@ CREATE VIEW post_comments AS (
 
 CREATE TABLE "CamelizeTable" (
   id uuid NOT NULL DEFAULT uuid_generate_v4(),
-  created timestamp NOT NULL
+  created timestamp NOT NULL,
+  UNIQUE(id)
 );
 
 CREATE TABLE "hyphen-table" (
   id uuid NOT NULL DEFAULT uuid_generate_v4(),
   "hyphen-column" text NOT NULL,
-  created timestamp NOT NULL
+  "CamelizeTableId" uuid NOT NULL,
+  created timestamp NOT NULL,
+  CONSTRAINT "hyphen-table_CamelizeTableId_fk" FOREIGN KEY("CamelizeTableId") REFERENCES "CamelizeTable" (id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE,
+  UNIQUE("hyphen-column")
 );
 
 CREATE SCHEMA administrator;
