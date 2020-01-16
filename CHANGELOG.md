@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.24.1](https://github.com/k1LoW/tbls/compare/v1.24.0...v1.24.1) (2020-01-16)
+
+* [PostgreSQL]Fix parsing double-quoted table/column name in definition of Foreign Key [#154](https://github.com/k1LoW/tbls/pull/154) ([k1LoW](https://github.com/k1LoW))
+* Update README.md [#151](https://github.com/k1LoW/tbls/pull/151) ([ednawig](https://github.com/ednawig))
+* Dockerfile use latest version of tbls [#150](https://github.com/k1LoW/tbls/pull/150) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.24.0](https://github.com/k1LoW/tbls/compare/v1.23.0...v1.24.0) (2020-01-11)
 
 * Add `tbls completion` [#149](https://github.com/k1LoW/tbls/pull/149) ([k1LoW](https://github.com/k1LoW))
