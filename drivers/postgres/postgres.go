@@ -297,9 +297,15 @@ ORDER BY ordinal_position
 	// Relations
 	for _, r := range relations {
 		result := reFK.FindAllStringSubmatch(r.Def, -1)
-		strColumns := strings.Split(result[0][1], ", ")
-		strParentTable := result[0][2]
-		strParentColumns := strings.Split(result[0][3], ", ")
+		strColumns := []string{}
+		for _, c := range strings.Split(result[0][1], ", ") {
+			strColumns = append(strColumns, strings.Trim(c, `"`))
+		}
+		strParentTable := strings.Trim(result[0][2], `"`)
+		strParentColumns := []string{}
+		for _, c := range strings.Split(result[0][3], ", ") {
+			strParentColumns = append(strParentColumns, strings.Trim(c, `"`))
+		}
 		for _, c := range strColumns {
 			column, err := r.Table.FindColumnByName(c)
 			if err != nil {
