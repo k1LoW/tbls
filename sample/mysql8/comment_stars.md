@@ -7,10 +7,10 @@
 
 ```sql
 CREATE TABLE `comment_stars` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL,
-  `comment_post_id` bigint(20) NOT NULL,
-  `comment_user_id` int(11) NOT NULL,
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `comment_post_id` bigint NOT NULL,
+  `comment_user_id` int NOT NULL,
   `created` timestamp NOT NULL,
   `updated` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -28,10 +28,10 @@ CREATE TABLE `comment_stars` (
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | bigint(20) |  | false | [logs](logs.md) |  |  |
-| user_id | int(11) |  | false |  |  |  |
-| comment_post_id | bigint(20) |  | false |  | [comments](comments.md) |  |
-| comment_user_id | int(11) |  | false |  | [users](users.md) [comments](comments.md) |  |
+| id | bigint |  | false | [logs](logs.md) |  |  |
+| user_id | int |  | false |  |  |  |
+| comment_post_id | bigint |  | false |  | [comments](comments.md) |  |
+| comment_user_id | int |  | false |  | [users](users.md) [comments](comments.md) |  |
 | created | timestamp |  | false |  |  |  |
 | updated | timestamp |  | true |  |  |  |
 

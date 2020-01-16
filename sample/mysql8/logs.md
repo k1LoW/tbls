@@ -9,11 +9,11 @@ audit log table
 
 ```sql
 CREATE TABLE `logs` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL,
-  `post_id` bigint(20) DEFAULT NULL,
-  `comment_id` bigint(20) DEFAULT NULL,
-  `comment_star_id` bigint(20) DEFAULT NULL,
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `post_id` bigint DEFAULT NULL,
+  `comment_id` bigint DEFAULT NULL,
+  `comment_star_id` bigint DEFAULT NULL,
   `payload` text,
   `created` datetime NOT NULL,
   PRIMARY KEY (`id`)
@@ -26,11 +26,11 @@ CREATE TABLE `logs` (
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | bigint(20) |  | false |  |  |  |
-| user_id | int(11) |  | false |  | [users](users.md) |  |
-| post_id | bigint(20) |  | true |  | [posts](posts.md) |  |
-| comment_id | bigint(20) |  | true |  | [comments](comments.md) |  |
-| comment_star_id | bigint(20) |  | true |  | [comment_stars](comment_stars.md) |  |
+| id | bigint |  | false |  |  |  |
+| user_id | int |  | false |  | [users](users.md) |  |
+| post_id | bigint |  | true |  | [posts](posts.md) |  |
+| comment_id | bigint |  | true |  | [comments](comments.md) |  |
+| comment_star_id | bigint |  | true |  | [comment_stars](comment_stars.md) |  |
 | payload | text |  | true |  |  |  |
 | created | datetime |  | false |  |  |  |
 

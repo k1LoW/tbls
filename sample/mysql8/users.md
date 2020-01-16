@@ -9,7 +9,7 @@ Users table
 
 ```sql
 CREATE TABLE `users` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int NOT NULL AUTO_INCREMENT,
   `username` varchar(50) NOT NULL,
   `password` varchar(50) NOT NULL,
   `email` varchar(355) NOT NULL COMMENT 'ex. user@example.com',
@@ -27,7 +27,7 @@ CREATE TABLE `users` (
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | int(11) |  | false | [comment_stars](comment_stars.md) [comments](comments.md) [posts](posts.md) [user_options](user_options.md) [logs](logs.md) |  |  |
+| id | int |  | false | [comment_stars](comment_stars.md) [comments](comments.md) [posts](posts.md) [user_options](user_options.md) [logs](logs.md) |  |  |
 | username | varchar(50) |  | false |  |  |  |
 | password | varchar(50) |  | false |  |  |  |
 | email | varchar(355) |  | false |  |  | ex. user@example.com |

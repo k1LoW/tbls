@@ -9,7 +9,7 @@ User options table
 
 ```sql
 CREATE TABLE `user_options` (
-  `user_id` int(11) NOT NULL,
+  `user_id` int NOT NULL,
   `show_email` tinyint(1) NOT NULL DEFAULT '0',
   `created` timestamp NOT NULL,
   `updated` timestamp NULL DEFAULT NULL,
@@ -24,7 +24,7 @@ CREATE TABLE `user_options` (
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| user_id | int(11) |  | false |  | [users](users.md) |  |
+| user_id | int |  | false |  | [users](users.md) |  |
 | show_email | tinyint(1) | 0 | false |  |  |  |
 | created | timestamp |  | false |  |  |  |
 | updated | timestamp |  | true |  |  |  |

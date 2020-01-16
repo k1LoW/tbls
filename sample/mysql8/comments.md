@@ -12,9 +12,9 @@ comment
 
 ```sql
 CREATE TABLE `comments` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `post_id` bigint(20) NOT NULL,
-  `user_id` int(11) NOT NULL,
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `post_id` bigint NOT NULL,
+  `user_id` int NOT NULL,
   `comment` text NOT NULL COMMENT 'Comment\nMulti-line\r\ncolumn\rcomment',
   `created` datetime NOT NULL,
   `updated` datetime DEFAULT NULL,
@@ -33,9 +33,9 @@ CREATE TABLE `comments` (
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | bigint(20) |  | false | [logs](logs.md) |  |  |
-| post_id | bigint(20) |  | false | [comment_stars](comment_stars.md) | [posts](posts.md) |  |
-| user_id | int(11) |  | false | [comment_stars](comment_stars.md) | [users](users.md) |  |
+| id | bigint |  | false | [logs](logs.md) |  |  |
+| post_id | bigint |  | false | [comment_stars](comment_stars.md) | [posts](posts.md) |  |
+| user_id | int |  | false | [comment_stars](comment_stars.md) | [users](users.md) |  |
 | comment | text |  | false |  |  | Comment<br>Multi-line<br>column<br>comment |
 | created | datetime |  | false |  |  |  |
 | updated | datetime |  | true |  |  |  |

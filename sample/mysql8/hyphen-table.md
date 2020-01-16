@@ -7,7 +7,7 @@
 
 ```sql
 CREATE TABLE `hyphen-table` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `id` bigint NOT NULL AUTO_INCREMENT,
   `hyphen-column` text NOT NULL,
   `created` datetime NOT NULL,
   PRIMARY KEY (`id`)
@@ -20,7 +20,7 @@ CREATE TABLE `hyphen-table` (
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | bigint(20) |  | false |  |  |  |
+| id | bigint |  | false |  |  |  |
 | hyphen-column | text |  | false |  |  |  |
 | created | datetime |  | false |  |  |  |
 

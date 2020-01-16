@@ -9,8 +9,8 @@ Posts table
 
 ```sql
 CREATE TABLE `posts` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL,
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
   `title` varchar(255) NOT NULL,
   `body` text NOT NULL,
   `post_type` enum('public','private','draft') NOT NULL COMMENT 'public/private/draft',
@@ -29,8 +29,8 @@ CREATE TABLE `posts` (
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | bigint(20) |  | false | [comments](comments.md) [logs](logs.md) |  |  |
-| user_id | int(11) |  | false |  | [users](users.md) |  |
+| id | bigint |  | false | [comments](comments.md) [logs](logs.md) |  |  |
+| user_id | int |  | false |  | [users](users.md) |  |
 | title | varchar(255) |  | false |  |  |  |
 | body | text |  | false |  |  | post body |
 | post_type | enum('public','private','draft') |  | false |  |  | public/private/draft |
