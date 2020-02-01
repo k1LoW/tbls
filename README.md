@@ -10,9 +10,9 @@
 
 Key features of `tbls` are:
 
-- **Document a database automatically in GitHub Friendly Markdown format**
-- **Single binary**
-- **CI-Friendly**
+- **Document a database automatically in [GFM](https://github.github.com/gfm/) format. Output database schema [in many formats](#output-formats).**
+- **Single binary = CI-Friendly.**
+- **[Support many databases](#support-database).**
 - **Work as linter for database**
 
 ### Table of Contents
