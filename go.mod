@@ -8,7 +8,6 @@ require (
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/gobuffalo/packr/v2 v2.7.1
 	github.com/golang/groupcache v0.0.0-20191027212112-611e8accdfc9 // indirect
-	github.com/google/go-cmp v0.3.1 // indirect
 	github.com/jstemmer/go-junit-report v0.9.1 // indirect
 	github.com/labstack/gommon v0.3.0
 	github.com/lib/pq v1.2.0
@@ -17,6 +16,7 @@ require (
 	github.com/mattn/go-isatty v0.0.10 // indirect
 	github.com/mattn/go-runewidth v0.0.6
 	github.com/mattn/go-sqlite3 v1.12.0
+	github.com/minio/minio v0.0.0-20200206025938-c2c5b09bb1bc
 	github.com/pkg/errors v0.8.1
 	github.com/pmezard/go-difflib v1.0.0
 	github.com/rogpeppe/go-internal v1.5.0 // indirect
@@ -24,7 +24,6 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/xo/dburl v0.0.0-20191114042849-512519f35716
 	go.opencensus.io v0.22.2 // indirect
-	golang.org/x/crypto v0.0.0-20191112222119-e1110fd1c708 // indirect
 	golang.org/x/net v0.0.0-20191112182307-2180aed22343 // indirect
 	golang.org/x/sys v0.0.0-20191115151921-52ab43148777 // indirect
 	golang.org/x/tools v0.0.0-20191120001058-ad01d5993d97 // indirect

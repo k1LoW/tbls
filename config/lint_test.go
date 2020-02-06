@@ -18,6 +18,7 @@ func TestRequireTableComment(t *testing.T) {
 		{false, []string{}, []string{}, 0},
 		{true, []string{}, []string{"table_a"}, 0},
 		{true, []string{"table_a"}, []string{}, 0},
+		{true, []string{"*_a"}, []string{}, 0},
 	}
 
 	for i, tt := range tests {
@@ -48,6 +49,8 @@ func TestRequireColumnComment(t *testing.T) {
 		{true, []string{}, []string{"table_a.colmun_b1"}, []string{}, 1},
 		{true, []string{}, []string{}, []string{"table_b"}, 0},
 		{true, []string{"table_b"}, []string{}, []string{}, 0},
+		{true, []string{}, []string{"*_b1"}, []string{}, 0},
+		{true, []string{}, []string{"table_b.*_b1"}, []string{}, 0},
 	}
 
 	for i, tt := range tests {
@@ -77,6 +80,8 @@ func TestUnrelatedTable(t *testing.T) {
 		{true, []string{}, []string{"table_b"}, 1, "unrelated (isolated) table exists. [table_c]"},
 		{true, []string{}, []string{"table_c"}, 0, ""},
 		{true, []string{"table_c"}, []string{}, 0, ""},
+		{true, []string{}, []string{"*_c"}, 0, ""},
+		{true, []string{"*_c"}, []string{}, 0, ""},
 	}
 
 	for i, tt := range tests {
@@ -109,6 +114,8 @@ func TestColumnCount(t *testing.T) {
 		{false, []string{}, []string{}, 0},
 		{true, []string{}, []string{"table_c"}, 0},
 		{true, []string{"table_c"}, []string{}, 0},
+		{true, []string{}, []string{"*_c"}, 0},
+		{true, []string{"*_c"}, []string{}, 0},
 	}
 
 	for i, tt := range tests {
@@ -138,6 +145,7 @@ func TestRequireColumns(t *testing.T) {
 		{true, []string{}, []string{"table_c"}, []string{"table_c"}, 2},
 		{true, []string{}, []string{"table_b", "table_c"}, []string{"table_a", "table_c"}, 0},
 		{true, []string{"table_c"}, []string{}, []string{}, 2},
+		{true, []string{}, []string{"table_*"}, []string{"table_*"}, 0},
 	}
 
 	for i, tt := range tests {
@@ -171,6 +179,7 @@ func TestDuplicateRelations(t *testing.T) {
 		{true, []string{}, 1},
 		{false, []string{}, 0},
 		{true, []string{"table_a"}, 0},
+		{true, []string{"*_a"}, 0},
 	}
 
 	for i, tt := range tests {
@@ -206,6 +215,8 @@ func TestRequireForeignKeyIndex(t *testing.T) {
 		{true, []string{}, []string{"table_a.column_a1"}, 0},
 		{true, []string{}, []string{"column_a1"}, 0},
 		{true, []string{"table_a"}, []string{}, 0},
+		{true, []string{}, []string{"*_a1"}, 0},
+		{true, []string{"*_a"}, []string{}, 0},
 	}
 
 	for i, tt := range tests {
