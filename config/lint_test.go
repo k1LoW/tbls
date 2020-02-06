@@ -16,8 +16,9 @@ func TestRequireTableComment(t *testing.T) {
 	}{
 		{true, []string{}, []string{}, 1},
 		{false, []string{}, []string{}, 0},
-		{true, []string{}, []string{"a"}, 0},
-		{true, []string{"a"}, []string{}, 0},
+		{true, []string{}, []string{"table_a"}, 0},
+		{true, []string{"table_a"}, []string{}, 0},
+		{true, []string{"*_a"}, []string{}, 0},
 	}
 
 	for i, tt := range tests {
@@ -43,11 +44,13 @@ func TestRequireColumnComment(t *testing.T) {
 	}{
 		{true, []string{}, []string{}, []string{}, 1},
 		{false, []string{}, []string{}, []string{}, 0},
-		{true, []string{}, []string{"b1"}, []string{}, 0},
-		{true, []string{}, []string{"b.b1"}, []string{}, 0},
-		{true, []string{}, []string{"a.b1"}, []string{}, 1},
-		{true, []string{}, []string{}, []string{"b"}, 0},
-		{true, []string{"b"}, []string{}, []string{}, 0},
+		{true, []string{}, []string{"column_b1"}, []string{}, 0},
+		{true, []string{}, []string{"table_b.column_b1"}, []string{}, 0},
+		{true, []string{}, []string{"table_a.colmun_b1"}, []string{}, 1},
+		{true, []string{}, []string{}, []string{"table_b"}, 0},
+		{true, []string{"table_b"}, []string{}, []string{}, 0},
+		{true, []string{}, []string{"*_b1"}, []string{}, 0},
+		{true, []string{}, []string{"table_b.*_b1"}, []string{}, 0},
 	}
 
 	for i, tt := range tests {
@@ -72,11 +75,13 @@ func TestUnrelatedTable(t *testing.T) {
 		want        int
 		wantMsg     string
 	}{
-		{true, []string{}, []string{}, 1, "unrelated (isolated) table exists. [c]"},
+		{true, []string{}, []string{}, 1, "unrelated (isolated) table exists. [table_c]"},
 		{false, []string{}, []string{}, 0, ""},
-		{true, []string{}, []string{"b"}, 1, "unrelated (isolated) table exists. [c]"},
-		{true, []string{}, []string{"c"}, 0, ""},
-		{true, []string{"c"}, []string{}, 0, ""},
+		{true, []string{}, []string{"table_b"}, 1, "unrelated (isolated) table exists. [table_c]"},
+		{true, []string{}, []string{"table_c"}, 0, ""},
+		{true, []string{"table_c"}, []string{}, 0, ""},
+		{true, []string{}, []string{"*_c"}, 0, ""},
+		{true, []string{"*_c"}, []string{}, 0, ""},
 	}
 
 	for i, tt := range tests {
@@ -107,8 +112,10 @@ func TestColumnCount(t *testing.T) {
 	}{
 		{true, []string{}, []string{}, 1},
 		{false, []string{}, []string{}, 0},
-		{true, []string{}, []string{"c"}, 0},
-		{true, []string{"c"}, []string{}, 0},
+		{true, []string{}, []string{"table_c"}, 0},
+		{true, []string{"table_c"}, []string{}, 0},
+		{true, []string{}, []string{"*_c"}, 0},
+		{true, []string{"*_c"}, []string{}, 0},
 	}
 
 	for i, tt := range tests {
@@ -135,9 +142,10 @@ func TestRequireColumns(t *testing.T) {
 	}{
 		{true, []string{}, []string{}, []string{}, 4},
 		{false, []string{}, []string{}, []string{}, 0},
-		{true, []string{}, []string{"c"}, []string{"c"}, 2},
-		{true, []string{}, []string{"b", "c"}, []string{"a", "c"}, 0},
-		{true, []string{"c"}, []string{}, []string{}, 2},
+		{true, []string{}, []string{"table_c"}, []string{"table_c"}, 2},
+		{true, []string{}, []string{"table_b", "table_c"}, []string{"table_a", "table_c"}, 0},
+		{true, []string{"table_c"}, []string{}, []string{}, 2},
+		{true, []string{}, []string{"table_*"}, []string{"table_*"}, 0},
 	}
 
 	for i, tt := range tests {
@@ -145,11 +153,11 @@ func TestRequireColumns(t *testing.T) {
 			Enabled: tt.enabled,
 			Columns: []RequireColumnsColumn{
 				RequireColumnsColumn{
-					Name:    "a2",
+					Name:    "column_a2",
 					Exclude: tt.excludeA2,
 				},
 				RequireColumnsColumn{
-					Name:    "b2",
+					Name:    "column_b2",
 					Exclude: tt.excludeB2,
 				},
 			},
@@ -170,7 +178,8 @@ func TestDuplicateRelations(t *testing.T) {
 	}{
 		{true, []string{}, 1},
 		{false, []string{}, 0},
-		{true, []string{"a"}, 0},
+		{true, []string{"table_a"}, 0},
+		{true, []string{"*_a"}, 0},
 	}
 
 	for i, tt := range tests {
@@ -203,9 +212,11 @@ func TestRequireForeignKeyIndex(t *testing.T) {
 	}{
 		{true, []string{}, []string{}, 1},
 		{false, []string{}, []string{}, 0},
-		{true, []string{}, []string{"a.a1"}, 0},
-		{true, []string{}, []string{"a1"}, 0},
-		{true, []string{"a"}, []string{}, 0},
+		{true, []string{}, []string{"table_a.column_a1"}, 0},
+		{true, []string{}, []string{"column_a1"}, 0},
+		{true, []string{"table_a"}, []string{}, 0},
+		{true, []string{}, []string{"*_a1"}, 0},
+		{true, []string{"*_a"}, []string{}, 0},
 	}
 
 	for i, tt := range tests {
@@ -223,26 +234,26 @@ func TestRequireForeignKeyIndex(t *testing.T) {
 
 func newTestSchema() *schema.Schema {
 	ca := &schema.Column{
-		Name:     "a1",
+		Name:     "column_a1",
 		Type:     "bigint(20)",
 		Comment:  "column a",
 		Nullable: false,
 	}
 	cb := &schema.Column{
-		Name:     "b1",
+		Name:     "column_b1",
 		Type:     "text",
 		Comment:  "", // empty comment
 		Nullable: true,
 	}
 
 	ta := &schema.Table{
-		Name:    "a",
+		Name:    "table_a",
 		Type:    "BASE TABLE",
 		Comment: "", // empty comment
 		Columns: []*schema.Column{
 			ca,
 			&schema.Column{
-				Name:     "a2",
+				Name:     "column_a2",
 				Type:     "datetime",
 				Comment:  "column a2",
 				Nullable: false,
@@ -254,13 +265,13 @@ func newTestSchema() *schema.Schema {
 		},
 	}
 	tb := &schema.Table{
-		Name:    "b",
+		Name:    "table_b",
 		Type:    "BASE TABLE",
 		Comment: "table b",
 		Columns: []*schema.Column{
 			cb,
 			&schema.Column{
-				Name:     "b2",
+				Name:     "column_b2",
 				Comment:  "column b2",
 				Type:     "text",
 				Nullable: true,
@@ -268,30 +279,30 @@ func newTestSchema() *schema.Schema {
 		},
 	}
 	tc := &schema.Table{
-		Name:    "c",
+		Name:    "table_c",
 		Type:    "BASE TABLE",
 		Comment: "table c",
 		Columns: []*schema.Column{
 			&schema.Column{
-				Name:     "c1",
+				Name:     "column_c1",
 				Type:     "text",
 				Comment:  "column c1",
 				Nullable: false,
 			},
 			&schema.Column{
-				Name:     "c2",
+				Name:     "column_c2",
 				Type:     "text",
 				Comment:  "column c2",
 				Nullable: false,
 			},
 			&schema.Column{
-				Name:     "c3",
+				Name:     "column_c3",
 				Type:     "text",
 				Comment:  "column c3",
 				Nullable: false,
 			},
 			&schema.Column{
-				Name:     "c4",
+				Name:     "column_c4",
 				Type:     "text",
 				Comment:  "column c4",
 				Nullable: false,
@@ -314,7 +325,7 @@ func newTestSchema() *schema.Schema {
 			Def:   "a2 index",
 			Table: &ta.Name,
 			Columns: []string{
-				"a2",
+				"column_a2",
 			},
 		},
 	}
@@ -325,15 +336,15 @@ func newTestSchema() *schema.Schema {
 			Type:             schema.FOREIGN_KEY,
 			Table:            &ta.Name,
 			ReferenceTable:   &tb.Name,
-			Columns:          []string{"a1"},
-			ReferenceColumns: []string{"b1"},
+			Columns:          []string{"column_a1"},
+			ReferenceColumns: []string{"column_b1"},
 		},
 		&schema.Constraint{
 			Name:           "a1_unique",
 			Type:           "UNIQUE",
 			Table:          &ta.Name,
 			ReferenceTable: nil,
-			Columns:        []string{"a1"},
+			Columns:        []string{"column_a1"},
 		},
 	}
 
