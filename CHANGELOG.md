@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.25.0](https://github.com/k1LoW/tbls/compare/v1.24.1...v1.25.0) (2020-02-06)
+
+* lint `exclude:` `lintExclude:` support wildcard (`*`) [#160](https://github.com/k1LoW/tbls/pull/160) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.24.1](https://github.com/k1LoW/tbls/compare/v1.24.0...v1.24.1) (2020-01-16)
 
 * [PostgreSQL]Fix parsing double-quoted table/column name in definition of Foreign Key [#154](https://github.com/k1LoW/tbls/pull/154) ([k1LoW](https://github.com/k1LoW))
