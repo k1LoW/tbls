@@ -86,6 +86,49 @@ type Schema struct {
 }
 
 // MarshalJSON return custom JSON byte
+func (s Schema) MarshalJSON() ([]byte, error) {
+	if len(s.Tables) == 0 {
+		s.Tables = []*Table{}
+	}
+	if len(s.Relations) == 0 {
+		s.Relations = []*Relation{}
+	}
+	return json.Marshal(&Schema{
+		Name:      s.Name,
+		Tables:    s.Tables,
+		Relations: s.Relations,
+		Driver:    s.Driver,
+	})
+}
+
+// MarshalJSON return custom JSON byte
+func (t Table) MarshalJSON() ([]byte, error) {
+	if len(t.Columns) == 0 {
+		t.Columns = []*Column{}
+	}
+	if len(t.Indexes) == 0 {
+		t.Indexes = []*Index{}
+	}
+	if len(t.Constraints) == 0 {
+		t.Constraints = []*Constraint{}
+	}
+	if len(t.Triggers) == 0 {
+		t.Triggers = []*Trigger{}
+	}
+
+	return json.Marshal(&Table{
+		Name:        t.Name,
+		Type:        t.Type,
+		Comment:     t.Comment,
+		Columns:     t.Columns,
+		Indexes:     t.Indexes,
+		Constraints: t.Constraints,
+		Triggers:    t.Triggers,
+		Def:         t.Def,
+	})
+}
+
+// MarshalJSON return custom JSON byte
 func (c Column) MarshalJSON() ([]byte, error) {
 	if c.Default.Valid {
 		return json.Marshal(&struct {
