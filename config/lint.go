@@ -329,7 +329,7 @@ func (r RequireForeignKeyIndex) Check(s *schema.Schema, exclude []string) []Rule
 			continue
 		}
 		for _, c := range t.Constraints {
-			if c.Type != schema.FOREIGN_KEY {
+			if c.Type != schema.TypeFK {
 				continue
 			}
 			for _, c1 := range c.Columns {

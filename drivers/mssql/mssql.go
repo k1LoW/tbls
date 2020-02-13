@@ -11,7 +11,7 @@ import (
 )
 
 var defaultSchemaName = "dbo"
-var typeFk = schema.FOREIGN_KEY
+var typeFk = schema.TypeFK
 var typeCheck = "CHECK"
 var reSystemNamed = regexp.MustCompile(`_[^_]+$`)
 

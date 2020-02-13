@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	FOREIGN_KEY = "FOREIGN KEY"
+	TypeFK = "FOREIGN KEY"
 )
 
 // Index is the struct for database index

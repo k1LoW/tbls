@@ -333,7 +333,7 @@ func newTestSchema() *schema.Schema {
 	ta.Constraints = []*schema.Constraint{
 		&schema.Constraint{
 			Name:             "a1_b1_fk",
-			Type:             schema.FOREIGN_KEY,
+			Type:             schema.TypeFK,
 			Table:            &ta.Name,
 			ReferenceTable:   &tb.Name,
 			Columns:          []string{"column_a1"},
