@@ -93,7 +93,12 @@ func (s Schema) MarshalJSON() ([]byte, error) {
 	if len(s.Relations) == 0 {
 		s.Relations = []*Relation{}
 	}
-	return json.Marshal(&Schema{
+	return json.Marshal(&struct {
+		Name      string      `json:"name"`
+		Tables    []*Table    `json:"tables"`
+		Relations []*Relation `json:"relations"`
+		Driver    *Driver     `json:"driver"`
+	}{
 		Name:      s.Name,
 		Tables:    s.Tables,
 		Relations: s.Relations,
@@ -116,7 +121,16 @@ func (t Table) MarshalJSON() ([]byte, error) {
 		t.Triggers = []*Trigger{}
 	}
 
-	return json.Marshal(&Table{
+	return json.Marshal(&struct {
+		Name        string        `json:"name"`
+		Type        string        `json:"type"`
+		Comment     string        `json:"comment"`
+		Columns     []*Column     `json:"columns"`
+		Indexes     []*Index      `json:"indexes"`
+		Constraints []*Constraint `json:"constraints"`
+		Triggers    []*Trigger    `json:"triggers"`
+		Def         string        `json:"def"`
+	}{
 		Name:        t.Name,
 		Type:        t.Type,
 		Comment:     t.Comment,
