@@ -21,7 +21,7 @@ func (j *JSON) OutputSchema(wr io.Writer, s *schema.Schema) error {
 	return nil
 }
 
-// OutputTable output dot format for table.
+// OutputTable output JSON format for table.
 func (j *JSON) OutputTable(wr io.Writer, t *schema.Table) error {
 	encoder := json.NewEncoder(wr)
 	encoder.SetIndent("", "  ")
