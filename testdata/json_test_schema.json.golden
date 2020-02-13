@@ -21,9 +21,9 @@
           "comment": "column a2"
         }
       ],
-      "indexes": null,
-      "constraints": null,
-      "triggers": null,
+      "indexes": [],
+      "constraints": [],
+      "triggers": [],
       "def": ""
     },
     {
@@ -46,9 +46,9 @@
           "comment": "column b2"
         }
       ],
-      "indexes": null,
-      "constraints": null,
-      "triggers": null,
+      "indexes": [],
+      "constraints": [],
+      "triggers": [],
       "def": ""
     }
   ],
@@ -74,9 +74,9 @@
             "comment": "column a2"
           }
         ],
-        "indexes": null,
-        "constraints": null,
-        "triggers": null,
+        "indexes": [],
+        "constraints": [],
+        "triggers": [],
         "def": ""
       },
       "columns": [
@@ -108,9 +108,9 @@
             "comment": "column b2"
           }
         ],
-        "indexes": null,
-        "constraints": null,
-        "triggers": null,
+        "indexes": [],
+        "constraints": [],
+        "triggers": [],
         "def": ""
       },
       "parent_columns": [
