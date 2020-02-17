@@ -1,5 +1,10 @@
 # Changelog
 
+## [v1.25.1](https://github.com/k1LoW/tbls/compare/v1.25.0...v1.25.1) (2020-02-17)
+
+* [MySQL]Fix constraints/indexes detection bug [#162](https://github.com/k1LoW/tbls/pull/162) ([k1LoW](https://github.com/k1LoW))
+* Fix: Empty array is output as null [#161](https://github.com/k1LoW/tbls/pull/161) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.25.0](https://github.com/k1LoW/tbls/compare/v1.24.1...v1.25.0) (2020-02-06)
 
 * lint `exclude:` `lintExclude:` support wildcard (`*`) [#160](https://github.com/k1LoW/tbls/pull/160) ([k1LoW](https://github.com/k1LoW))
