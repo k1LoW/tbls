@@ -1,0 +1,94 @@
+name: testschema
+tables:
+- name: a
+  type: BASE TABLE
+  comment: table a
+  columns:
+  - name: a
+    type: bigint(20)
+    nullable: false
+    default: null
+    comment: column a
+  - name: a2
+    type: datetime
+    nullable: false
+    default: CURRENT_TIMESTAMP
+    comment: column a2
+  indexes: []
+  constraints: []
+  triggers: []
+  def: ""
+- name: b
+  type: BASE TABLE
+  comment: table b
+  columns:
+  - name: b
+    type: text
+    nullable: true
+    default: null
+    comment: column b
+  - name: b2
+    type: text
+    nullable: true
+    default: null
+    comment: column b2
+  indexes: []
+  constraints: []
+  triggers: []
+  def: ""
+relations:
+- table:
+    name: a
+    type: BASE TABLE
+    comment: table a
+    columns:
+    - name: a
+      type: bigint(20)
+      nullable: false
+      default: null
+      comment: column a
+    - name: a2
+      type: datetime
+      nullable: false
+      default: CURRENT_TIMESTAMP
+      comment: column a2
+    indexes: []
+    constraints: []
+    triggers: []
+    def: ""
+  columns:
+  - name: a
+    type: bigint(20)
+    nullable: false
+    default: null
+    comment: column a
+  parentTable:
+    name: b
+    type: BASE TABLE
+    comment: table b
+    columns:
+    - name: b
+      type: text
+      nullable: true
+      default: null
+      comment: column b
+    - name: b2
+      type: text
+      nullable: true
+      default: null
+      comment: column b2
+    indexes: []
+    constraints: []
+    triggers: []
+    def: ""
+  parentColumns:
+  - name: b
+    type: text
+    nullable: true
+    default: null
+    comment: column b
+  def: ""
+  isAdditional: false
+driver:
+  name: testdriver
+  databaseVersion: 1.0.0

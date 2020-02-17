@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"sort"
 
+	"github.com/goccy/go-yaml"
 	"github.com/pkg/errors"
 )
 
@@ -27,9 +28,9 @@ type Constraint struct {
 	Type             string   `json:"type"`
 	Def              string   `json:"def"`
 	Table            *string  `json:"table"`
-	ReferenceTable   *string  `json:"reference_table"`
+	ReferenceTable   *string  `json:"reference_table" yaml:"referenceTable"`
 	Columns          []string `json:"columns"`
-	ReferenceColumns []string `json:"reference_columns"`
+	ReferenceColumns []string `json:"reference_columns" yaml:"referenceColumns"`
 }
 
 // Trigger is the struct for database trigger
@@ -65,16 +66,16 @@ type Table struct {
 type Relation struct {
 	Table         *Table    `json:"table"`
 	Columns       []*Column `json:"columns"`
-	ParentTable   *Table    `json:"parent_table"`
-	ParentColumns []*Column `json:"parent_columns"`
+	ParentTable   *Table    `json:"parent_table" yaml:"parentTable"`
+	ParentColumns []*Column `json:"parent_columns" yaml:"parentColumns"`
 	Def           string    `json:"def"`
-	IsAdditional  bool      `json:"is_additional"`
+	IsAdditional  bool      `json:"is_additional" yaml:"isAdditional"`
 }
 
 // Driver is the struct for tbls driver information
 type Driver struct {
 	Name            string `json:"name"`
-	DatabaseVersion string `json:"database_version"`
+	DatabaseVersion string `json:"database_version" yaml:"databaseVersion"`
 }
 
 // Schema is the struct for database schema
@@ -194,6 +195,75 @@ func (c *Column) UnmarshalJSON(data []byte) error {
 		ChildRelations  []*Relation `json:"-"`
 	}{}
 	err := json.Unmarshal(data, &s)
+	if err != nil {
+		return err
+	}
+	c.Name = s.Name
+	c.Type = s.Type
+	c.Nullable = s.Nullable
+	if s.Default != nil {
+		c.Default.Valid = true
+		c.Default.String = *s.Default
+	} else {
+		c.Default.Valid = false
+		c.Default.String = ""
+	}
+	c.Comment = s.Comment
+	return nil
+}
+
+// MarshalYAML return custom YAML byte
+func (c Column) MarshalYAML() ([]byte, error) {
+	if c.Default.Valid {
+		return yaml.Marshal(&struct {
+			Name            string      `yaml:"name"`
+			Type            string      `yaml:"type"`
+			Nullable        bool        `yaml:"nullable"`
+			Default         string      `yaml:"default"`
+			Comment         string      `yaml:"comment"`
+			ParentRelations []*Relation `yaml:"-"`
+			ChildRelations  []*Relation `yaml:"-"`
+		}{
+			Name:            c.Name,
+			Type:            c.Type,
+			Nullable:        c.Nullable,
+			Default:         c.Default.String,
+			Comment:         c.Comment,
+			ParentRelations: c.ParentRelations,
+			ChildRelations:  c.ChildRelations,
+		})
+	}
+	return yaml.Marshal(&struct {
+		Name            string      `yaml:"name"`
+		Type            string      `yaml:"type"`
+		Nullable        bool        `yaml:"nullable"`
+		Default         *string     `yaml:"default"`
+		Comment         string      `yaml:"comment"`
+		ParentRelations []*Relation `yaml:"-"`
+		ChildRelations  []*Relation `yaml:"-"`
+	}{
+		Name:            c.Name,
+		Type:            c.Type,
+		Nullable:        c.Nullable,
+		Default:         nil,
+		Comment:         c.Comment,
+		ParentRelations: c.ParentRelations,
+		ChildRelations:  c.ChildRelations,
+	})
+}
+
+// UnmarshalYAML ...
+func (c *Column) UnmarshalYAML(data []byte) error {
+	s := struct {
+		Name            string      `yaml:"name"`
+		Type            string      `yaml:"type"`
+		Nullable        bool        `yaml:"nullable"`
+		Default         *string     `yaml:"default"`
+		Comment         string      `yaml:"comment"`
+		ParentRelations []*Relation `yaml:"-"`
+		ChildRelations  []*Relation `yaml:"-"`
+	}{}
+	err := yaml.Unmarshal(data, &s)
 	if err != nil {
 		return err
 	}
