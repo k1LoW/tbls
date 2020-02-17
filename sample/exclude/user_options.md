@@ -14,6 +14,7 @@ CREATE TABLE `user_options` (
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `updated` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`user_id`),
+  UNIQUE KEY `user_id` (`user_id`),
   CONSTRAINT `user_options_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='User options table'
 ```
@@ -34,6 +35,7 @@ CREATE TABLE `user_options` (
 | Name | Type | Definition |
 | ---- | ---- | ---------- |
 | PRIMARY | PRIMARY KEY | PRIMARY KEY (user_id) |
+| user_id | UNIQUE | UNIQUE KEY user_id (user_id) |
 | user_options_user_id_fk | FOREIGN KEY | FOREIGN KEY (user_id) REFERENCES users (id) |
 
 ## Indexes
@@ -41,6 +43,7 @@ CREATE TABLE `user_options` (
 | Name | Definition |
 | ---- | ---------- |
 | PRIMARY | PRIMARY KEY (user_id) USING BTREE |
+| user_id | UNIQUE KEY user_id (user_id) USING BTREE |
 
 ## Relations
 
