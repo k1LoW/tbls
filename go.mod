@@ -7,7 +7,7 @@ require (
 	github.com/denisenkom/go-mssqldb v0.0.0-20191001013358-cfbb681360f0
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/gobuffalo/packr/v2 v2.7.1
-	github.com/goccy/go-yaml v1.3.0
+	github.com/goccy/go-yaml v1.3.1
 	github.com/golang/groupcache v0.0.0-20191027212112-611e8accdfc9 // indirect
 	github.com/jstemmer/go-junit-report v0.9.1 // indirect
 	github.com/labstack/gommon v0.3.0
@@ -34,7 +34,5 @@ require (
 	gopkg.in/yaml.v2 v2.2.5
 	gopkg.in/yaml.v3 v3.0.0-20200121175148-a6ecf24a6d71 // indirect
 )
-
-replace github.com/goccy/go-yaml => github.com/k1LoW/go-yaml v1.3.1-0.20200216071019-03f0e2137f6f
 
 go 1.13
