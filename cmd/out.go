@@ -34,6 +34,7 @@ import (
 	"github.com/k1LoW/tbls/output/md"
 	"github.com/k1LoW/tbls/output/plantuml"
 	"github.com/k1LoW/tbls/output/xlsx"
+	"github.com/k1LoW/tbls/output/yaml"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
@@ -90,6 +91,8 @@ var outCmd = &cobra.Command{
 		switch format {
 		case "json":
 			o = new(json.JSON)
+		case "yaml":
+			o = new(yaml.YAML)
 		case "dot":
 			o = dot.NewDot(c)
 		case "md":

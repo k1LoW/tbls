@@ -573,6 +573,12 @@ $ tbls out -t json -o schema.json
 > $ tbls doc json:///path/to/schema.json
 > ```
 
+**YAML:**
+
+``` console
+$ tbls out -t yaml -o schema.yaml
+```
+
 **Excel:**
 
 ``` console

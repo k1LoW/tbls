@@ -7,13 +7,12 @@ require (
 	github.com/denisenkom/go-mssqldb v0.0.0-20191001013358-cfbb681360f0
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/gobuffalo/packr/v2 v2.7.1
+	github.com/goccy/go-yaml v1.3.1
 	github.com/golang/groupcache v0.0.0-20191027212112-611e8accdfc9 // indirect
 	github.com/jstemmer/go-junit-report v0.9.1 // indirect
 	github.com/labstack/gommon v0.3.0
 	github.com/lib/pq v1.2.0
 	github.com/loadoff/excl v0.0.0-20171207172601-c6a9e4c4b4c4
-	github.com/mattn/go-colorable v0.1.4 // indirect
-	github.com/mattn/go-isatty v0.0.10 // indirect
 	github.com/mattn/go-runewidth v0.0.6
 	github.com/mattn/go-sqlite3 v1.12.0
 	github.com/minio/minio v0.0.0-20200206025938-c2c5b09bb1bc
@@ -33,6 +32,7 @@ require (
 	google.golang.org/grpc v1.25.1 // indirect
 	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
 	gopkg.in/yaml.v2 v2.2.5
+	gopkg.in/yaml.v3 v3.0.0-20200121175148-a6ecf24a6d71 // indirect
 )
 
 go 1.13
