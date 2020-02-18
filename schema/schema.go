@@ -69,7 +69,7 @@ type Relation struct {
 	ParentTable   *Table    `json:"parent_table" yaml:"parentTable"`
 	ParentColumns []*Column `json:"parent_columns" yaml:"parentColumns"`
 	Def           string    `json:"def"`
-	Virtual  bool      `json:"virtual" yaml:"virtual"`
+	Virtual       bool      `json:"virtual" yaml:"virtual"`
 }
 
 // Driver is the struct for tbls driver information
@@ -183,7 +183,7 @@ func (c Column) MarshalJSON() ([]byte, error) {
 	})
 }
 
-// UnmarshalJSON ...
+// UnmarshalJSON unmarshal JSON to schema.Column
 func (c *Column) UnmarshalJSON(data []byte) error {
 	s := struct {
 		Name            string      `json:"name"`
@@ -252,7 +252,7 @@ func (c Column) MarshalYAML() ([]byte, error) {
 	})
 }
 
-// UnmarshalYAML ...
+// UnmarshalYAML unmarshal YAML to schema.Column
 func (c *Column) UnmarshalYAML(data []byte) error {
 	s := struct {
 		Name            string      `yaml:"name"`
@@ -279,6 +279,34 @@ func (c *Column) UnmarshalYAML(data []byte) error {
 	}
 	c.Comment = s.Comment
 	return nil
+}
+
+// MarshalYAML return custom YAML byte
+func (r Relation) MarshalYAML() ([]byte, error) {
+	columns := []string{}
+	parentColumns := []string{}
+	for _, c := range r.Columns {
+		columns = append(columns, c.Name)
+	}
+	for _, c := range r.ParentColumns {
+		parentColumns = append(parentColumns, c.Name)
+	}
+
+	return yaml.Marshal(&struct {
+		Table         string   `yaml:"table"`
+		Columns       []string `yaml:"columns"`
+		ParentTable   string   `yaml:"parentTable"`
+		ParentColumns []string `yaml:"parentColumns"`
+		Def           string   `yaml:"def"`
+		Virtual       bool     `yaml:"virtual"`
+	}{
+		Table:         r.Table.Name,
+		Columns:       columns,
+		ParentTable:   r.ParentTable.Name,
+		ParentColumns: parentColumns,
+		Def:           r.Def,
+		Virtual:       r.Virtual,
+	})
 }
 
 // FindTableByName find table by table name
