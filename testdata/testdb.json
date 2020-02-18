@@ -721,7 +721,7 @@
         }
       ],
       "def": "FOREIGN KEY (comment_user_id) REFERENCES users (id)",
-      "is_additional": false
+      "virtual": false
     },
     {
       "table": {
@@ -939,7 +939,7 @@
         }
       ],
       "def": "FOREIGN KEY (comment_post_id, comment_user_id) REFERENCES comments (post_id, user_id)",
-      "is_additional": false
+      "virtual": false
     },
     {
       "table": {
@@ -1146,7 +1146,7 @@
         }
       ],
       "def": "FOREIGN KEY (post_id) REFERENCES posts (id)",
-      "is_additional": false
+      "virtual": false
     },
     {
       "table": {
@@ -1341,7 +1341,7 @@
         }
       ],
       "def": "FOREIGN KEY (user_id) REFERENCES users (id)",
-      "is_additional": false
+      "virtual": false
     },
     {
       "table": {
@@ -1539,7 +1539,7 @@
         }
       ],
       "def": "FOREIGN KEY (user_id) REFERENCES users (id)",
-      "is_additional": false
+      "virtual": false
     },
     {
       "table": {
@@ -1714,7 +1714,7 @@
         }
       ],
       "def": "logs-\u003eusers",
-      "is_additional": true
+      "virtual": true
     },
     {
       "table": {
@@ -1901,7 +1901,7 @@
         }
       ],
       "def": "Additional Relation",
-      "is_additional": true
+      "virtual": true
     },
     {
       "table": {
@@ -2085,7 +2085,7 @@
         }
       ],
       "def": "Additional Relation",
-      "is_additional": true
+      "virtual": true
     },
     {
       "table": {
@@ -2269,7 +2269,7 @@
         }
       ],
       "def": "Additional Relation",
-      "is_additional": true
+      "virtual": true
     }
   ],
   "driver": {

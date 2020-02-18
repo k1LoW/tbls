@@ -311,7 +311,7 @@ func (c *Config) MaskedDSN() (string, error) {
 func mergeAdditionalRelations(s *schema.Schema, relations []AdditionalRelation) error {
 	for _, r := range relations {
 		relation := &schema.Relation{
-			IsAdditional: true,
+			Virtual: true,
 		}
 		if r.Def != "" {
 			relation.Def = r.Def

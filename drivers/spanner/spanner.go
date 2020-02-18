@@ -295,7 +295,7 @@ GROUP BY c.TABLE_CATALOG, c.TABLE_SCHEMA, c.TABLE_NAME, c.INDEX_NAME, c.INDEX_TY
 			ParentTable:   pt,
 			ParentColumns: []*schema.Column{},
 			Def:           def,
-			IsAdditional:  false,
+			Virtual:  false,
 		}
 
 		for _, c := range t.Constraints {
