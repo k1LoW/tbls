@@ -69,7 +69,7 @@ type Relation struct {
 	ParentTable   *Table    `json:"parent_table" yaml:"parentTable"`
 	ParentColumns []*Column `json:"parent_columns" yaml:"parentColumns"`
 	Def           string    `json:"def"`
-	IsAdditional  bool      `json:"is_additional" yaml:"isAdditional"`
+	Virtual  bool      `json:"virtual" yaml:"virtual"`
 }
 
 // Driver is the struct for tbls driver information
