@@ -183,6 +183,34 @@ func (c Column) MarshalJSON() ([]byte, error) {
 	})
 }
 
+// MarshalJSON return custom JSON byte
+func (r Relation) MarshalJSON() ([]byte, error) {
+	columns := []string{}
+	parentColumns := []string{}
+	for _, c := range r.Columns {
+		columns = append(columns, c.Name)
+	}
+	for _, c := range r.ParentColumns {
+		parentColumns = append(parentColumns, c.Name)
+	}
+
+	return json.Marshal(&struct {
+		Table         string   `json:"table"`
+		Columns       []string `json:"columns"`
+		ParentTable   string   `json:"parent_table"`
+		ParentColumns []string `json:"parent_columns"`
+		Def           string   `json:"def"`
+		Virtual       bool     `json:"virtual"`
+	}{
+		Table:         r.Table.Name,
+		Columns:       columns,
+		ParentTable:   r.ParentTable.Name,
+		ParentColumns: parentColumns,
+		Def:           r.Def,
+		Virtual:       r.Virtual,
+	})
+}
+
 // UnmarshalJSON unmarshal JSON to schema.Column
 func (c *Column) UnmarshalJSON(data []byte) error {
 	s := struct {
