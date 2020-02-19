@@ -1,6 +1,13 @@
 package schema
 
-import "github.com/goccy/go-yaml"
+import (
+	"regexp"
+	"strings"
+
+	"github.com/goccy/go-yaml"
+)
+
+var defaultNullRe = regexp.MustCompile(`default:\s*null`)
 
 // MarshalYAML return custom YAML byte
 func (c Column) MarshalYAML() ([]byte, error) {
@@ -42,35 +49,6 @@ func (c Column) MarshalYAML() ([]byte, error) {
 	})
 }
 
-// UnmarshalYAML unmarshal YAML to schema.Column
-func (c *Column) UnmarshalYAML(data []byte) error {
-	s := struct {
-		Name            string      `yaml:"name"`
-		Type            string      `yaml:"type"`
-		Nullable        bool        `yaml:"nullable"`
-		Default         *string     `yaml:"default"`
-		Comment         string      `yaml:"comment"`
-		ParentRelations []*Relation `yaml:"-"`
-		ChildRelations  []*Relation `yaml:"-"`
-	}{}
-	err := yaml.Unmarshal(data, &s)
-	if err != nil {
-		return err
-	}
-	c.Name = s.Name
-	c.Type = s.Type
-	c.Nullable = s.Nullable
-	if s.Default != nil {
-		c.Default.Valid = true
-		c.Default.String = *s.Default
-	} else {
-		c.Default.Valid = false
-		c.Default.String = ""
-	}
-	c.Comment = s.Comment
-	return nil
-}
-
 // MarshalYAML return custom YAML byte
 func (r Relation) MarshalYAML() ([]byte, error) {
 	columns := []string{}
@@ -100,6 +78,42 @@ func (r Relation) MarshalYAML() ([]byte, error) {
 }
 
 // UnmarshalYAML unmarshal YAML to schema.Column
+func (c *Column) UnmarshalYAML(data []byte) error {
+	s := struct {
+		Name            string      `yaml:"name"`
+		Type            string      `yaml:"type"`
+		Nullable        bool        `yaml:"nullable"`
+		Default         *string     `yaml:"default"`
+		Comment         string      `yaml:"comment"`
+		ParentRelations []*Relation `yaml:"-"`
+		ChildRelations  []*Relation `yaml:"-"`
+	}{}
+	err := yaml.Unmarshal(data, &s)
+	if err != nil {
+		return err
+	}
+
+	c.Name = s.Name
+	c.Type = s.Type
+	c.Nullable = s.Nullable
+
+	sd := string(data)
+	switch {
+	case !strings.Contains(sd, "default:"):
+		c.Default.Valid = false
+		c.Default.String = ""
+	case defaultNullRe.MatchString(sd):
+		c.Default.Valid = false
+		c.Default.String = ""
+	default:
+		c.Default.Valid = true
+		c.Default.String = *s.Default
+	}
+	c.Comment = s.Comment
+	return nil
+}
+
+// UnmarshalYAML unmarshal YAML to schema.Column
 func (r *Relation) UnmarshalYAML(data []byte) error {
 	s := struct {
 		Table         string   `yaml:"table"`
@@ -123,10 +137,10 @@ func (r *Relation) UnmarshalYAML(data []byte) error {
 		})
 	}
 	r.ParentTable = &Table{
-		Name: s.Table,
+		Name: s.ParentTable,
 	}
 	r.ParentColumns = []*Column{}
-	for _, c := range s.Columns {
+	for _, c := range s.ParentColumns {
 		r.ParentColumns = append(r.ParentColumns, &Column{
 			Name: c,
 		})

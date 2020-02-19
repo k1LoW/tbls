@@ -139,31 +139,46 @@ func (s *Schema) Sort() error {
 
 // Repair column relations
 func (s *Schema) Repair() error {
+	for _, t := range s.Tables {
+		if len(t.Columns) == 0 {
+			t.Columns = nil
+		}
+		if len(t.Indexes) == 0 {
+			t.Indexes = nil
+		}
+		if len(t.Constraints) == 0 {
+			t.Constraints = nil
+		}
+		if len(t.Triggers) == 0 {
+			t.Triggers = nil
+		}
+	}
+
 	for _, r := range s.Relations {
 		t, err := s.FindTableByName(r.Table.Name)
 		if err != nil {
 			return errors.Wrap(err, "failed to repair relation")
 		}
-		for _, rc := range r.Columns {
+		for i, rc := range r.Columns {
 			c, err := t.FindColumnByName(rc.Name)
 			if err != nil {
 				return errors.Wrap(err, "failed to repair relation")
 			}
 			c.ParentRelations = append(c.ParentRelations, r)
-			rc = c
+			r.Columns[i] = c
 		}
 		r.Table = t
 		pt, err := s.FindTableByName(r.ParentTable.Name)
 		if err != nil {
 			return errors.Wrap(err, "failed to repair relation")
 		}
-		for _, rc := range r.ParentColumns {
+		for i, rc := range r.ParentColumns {
 			pc, err := pt.FindColumnByName(rc.Name)
 			if err != nil {
 				return errors.Wrap(err, "failed to repair relation")
 			}
 			pc.ChildRelations = append(pc.ChildRelations, r)
-			rc = pc
+			r.ParentColumns[i] = pc
 		}
 		r.ParentTable = pt
 	}

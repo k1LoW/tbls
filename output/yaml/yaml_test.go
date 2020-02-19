@@ -8,6 +8,8 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/goccy/go-yaml"
+	"github.com/google/go-cmp/cmp"
 	"github.com/k1LoW/tbls/schema"
 )
 
@@ -24,6 +26,41 @@ func TestOutputSchema(t *testing.T) {
 	if actual != string(expected) {
 		t.Errorf("actual\n%v\nwant\n%v", actual, string(expected))
 	}
+}
+
+func TestEncodeAndDecode(t *testing.T) {
+	s1 := newTestSchema()
+	o := new(YAML)
+	buf := &bytes.Buffer{}
+	err := o.OutputSchema(buf, s1)
+	if err != nil {
+		t.Error(err)
+	}
+	s2 := &schema.Schema{}
+	dec := yaml.NewDecoder(buf)
+	if err := dec.Decode(s2); err != nil {
+		t.Error(err)
+	}
+	if err := s2.Repair(); err != nil {
+		t.Error(err)
+	}
+
+	_ = removeColumnRelations(s1)
+	_ = removeColumnRelations(s2)
+
+	if diff := cmp.Diff(s1, s2); diff != "" {
+		t.Errorf("schemas not equal\n%v", diff)
+	}
+}
+
+func removeColumnRelations(s *schema.Schema) error {
+	for _, t := range s.Tables {
+		for _, c := range t.Columns {
+			c.ParentRelations = nil
+			c.ChildRelations = nil
+		}
+	}
+	return nil
 }
 
 func testdataDir() string {
