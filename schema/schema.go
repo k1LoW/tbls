@@ -2,11 +2,9 @@ package schema
 
 import (
 	"database/sql"
-	"encoding/json"
 	"fmt"
 	"sort"
 
-	"github.com/goccy/go-yaml"
 	"github.com/pkg/errors"
 )
 
@@ -69,7 +67,7 @@ type Relation struct {
 	ParentTable   *Table    `json:"parent_table" yaml:"parentTable"`
 	ParentColumns []*Column `json:"parent_columns" yaml:"parentColumns"`
 	Def           string    `json:"def"`
-	Virtual  bool      `json:"virtual" yaml:"virtual"`
+	Virtual       bool      `json:"virtual" yaml:"virtual"`
 }
 
 // Driver is the struct for tbls driver information
@@ -84,201 +82,6 @@ type Schema struct {
 	Tables    []*Table    `json:"tables"`
 	Relations []*Relation `json:"relations"`
 	Driver    *Driver     `json:"driver"`
-}
-
-// MarshalJSON return custom JSON byte
-func (s Schema) MarshalJSON() ([]byte, error) {
-	if len(s.Tables) == 0 {
-		s.Tables = []*Table{}
-	}
-	if len(s.Relations) == 0 {
-		s.Relations = []*Relation{}
-	}
-	return json.Marshal(&struct {
-		Name      string      `json:"name"`
-		Tables    []*Table    `json:"tables"`
-		Relations []*Relation `json:"relations"`
-		Driver    *Driver     `json:"driver"`
-	}{
-		Name:      s.Name,
-		Tables:    s.Tables,
-		Relations: s.Relations,
-		Driver:    s.Driver,
-	})
-}
-
-// MarshalJSON return custom JSON byte
-func (t Table) MarshalJSON() ([]byte, error) {
-	if len(t.Columns) == 0 {
-		t.Columns = []*Column{}
-	}
-	if len(t.Indexes) == 0 {
-		t.Indexes = []*Index{}
-	}
-	if len(t.Constraints) == 0 {
-		t.Constraints = []*Constraint{}
-	}
-	if len(t.Triggers) == 0 {
-		t.Triggers = []*Trigger{}
-	}
-
-	return json.Marshal(&struct {
-		Name        string        `json:"name"`
-		Type        string        `json:"type"`
-		Comment     string        `json:"comment"`
-		Columns     []*Column     `json:"columns"`
-		Indexes     []*Index      `json:"indexes"`
-		Constraints []*Constraint `json:"constraints"`
-		Triggers    []*Trigger    `json:"triggers"`
-		Def         string        `json:"def"`
-	}{
-		Name:        t.Name,
-		Type:        t.Type,
-		Comment:     t.Comment,
-		Columns:     t.Columns,
-		Indexes:     t.Indexes,
-		Constraints: t.Constraints,
-		Triggers:    t.Triggers,
-		Def:         t.Def,
-	})
-}
-
-// MarshalJSON return custom JSON byte
-func (c Column) MarshalJSON() ([]byte, error) {
-	if c.Default.Valid {
-		return json.Marshal(&struct {
-			Name            string      `json:"name"`
-			Type            string      `json:"type"`
-			Nullable        bool        `json:"nullable"`
-			Default         string      `json:"default"`
-			Comment         string      `json:"comment"`
-			ParentRelations []*Relation `json:"-"`
-			ChildRelations  []*Relation `json:"-"`
-		}{
-			Name:            c.Name,
-			Type:            c.Type,
-			Nullable:        c.Nullable,
-			Default:         c.Default.String,
-			Comment:         c.Comment,
-			ParentRelations: c.ParentRelations,
-			ChildRelations:  c.ChildRelations,
-		})
-	}
-	return json.Marshal(&struct {
-		Name            string      `json:"name"`
-		Type            string      `json:"type"`
-		Nullable        bool        `json:"nullable"`
-		Default         *string     `json:"default"`
-		Comment         string      `json:"comment"`
-		ParentRelations []*Relation `json:"-"`
-		ChildRelations  []*Relation `json:"-"`
-	}{
-		Name:            c.Name,
-		Type:            c.Type,
-		Nullable:        c.Nullable,
-		Default:         nil,
-		Comment:         c.Comment,
-		ParentRelations: c.ParentRelations,
-		ChildRelations:  c.ChildRelations,
-	})
-}
-
-// UnmarshalJSON ...
-func (c *Column) UnmarshalJSON(data []byte) error {
-	s := struct {
-		Name            string      `json:"name"`
-		Type            string      `json:"type"`
-		Nullable        bool        `json:"nullable"`
-		Default         *string     `json:"default"`
-		Comment         string      `json:"comment"`
-		ParentRelations []*Relation `json:"-"`
-		ChildRelations  []*Relation `json:"-"`
-	}{}
-	err := json.Unmarshal(data, &s)
-	if err != nil {
-		return err
-	}
-	c.Name = s.Name
-	c.Type = s.Type
-	c.Nullable = s.Nullable
-	if s.Default != nil {
-		c.Default.Valid = true
-		c.Default.String = *s.Default
-	} else {
-		c.Default.Valid = false
-		c.Default.String = ""
-	}
-	c.Comment = s.Comment
-	return nil
-}
-
-// MarshalYAML return custom YAML byte
-func (c Column) MarshalYAML() ([]byte, error) {
-	if c.Default.Valid {
-		return yaml.Marshal(&struct {
-			Name            string      `yaml:"name"`
-			Type            string      `yaml:"type"`
-			Nullable        bool        `yaml:"nullable"`
-			Default         string      `yaml:"default"`
-			Comment         string      `yaml:"comment"`
-			ParentRelations []*Relation `yaml:"-"`
-			ChildRelations  []*Relation `yaml:"-"`
-		}{
-			Name:            c.Name,
-			Type:            c.Type,
-			Nullable:        c.Nullable,
-			Default:         c.Default.String,
-			Comment:         c.Comment,
-			ParentRelations: c.ParentRelations,
-			ChildRelations:  c.ChildRelations,
-		})
-	}
-	return yaml.Marshal(&struct {
-		Name            string      `yaml:"name"`
-		Type            string      `yaml:"type"`
-		Nullable        bool        `yaml:"nullable"`
-		Default         *string     `yaml:"default"`
-		Comment         string      `yaml:"comment"`
-		ParentRelations []*Relation `yaml:"-"`
-		ChildRelations  []*Relation `yaml:"-"`
-	}{
-		Name:            c.Name,
-		Type:            c.Type,
-		Nullable:        c.Nullable,
-		Default:         nil,
-		Comment:         c.Comment,
-		ParentRelations: c.ParentRelations,
-		ChildRelations:  c.ChildRelations,
-	})
-}
-
-// UnmarshalYAML ...
-func (c *Column) UnmarshalYAML(data []byte) error {
-	s := struct {
-		Name            string      `yaml:"name"`
-		Type            string      `yaml:"type"`
-		Nullable        bool        `yaml:"nullable"`
-		Default         *string     `yaml:"default"`
-		Comment         string      `yaml:"comment"`
-		ParentRelations []*Relation `yaml:"-"`
-		ChildRelations  []*Relation `yaml:"-"`
-	}{}
-	err := yaml.Unmarshal(data, &s)
-	if err != nil {
-		return err
-	}
-	c.Name = s.Name
-	c.Type = s.Type
-	c.Nullable = s.Nullable
-	if s.Default != nil {
-		c.Default.Valid = true
-		c.Default.String = *s.Default
-	} else {
-		c.Default.Valid = false
-		c.Default.String = ""
-	}
-	c.Comment = s.Comment
-	return nil
 }
 
 // FindTableByName find table by table name
@@ -336,31 +139,46 @@ func (s *Schema) Sort() error {
 
 // Repair column relations
 func (s *Schema) Repair() error {
+	for _, t := range s.Tables {
+		if len(t.Columns) == 0 {
+			t.Columns = nil
+		}
+		if len(t.Indexes) == 0 {
+			t.Indexes = nil
+		}
+		if len(t.Constraints) == 0 {
+			t.Constraints = nil
+		}
+		if len(t.Triggers) == 0 {
+			t.Triggers = nil
+		}
+	}
+
 	for _, r := range s.Relations {
 		t, err := s.FindTableByName(r.Table.Name)
 		if err != nil {
 			return errors.Wrap(err, "failed to repair relation")
 		}
-		for _, rc := range r.Columns {
+		for i, rc := range r.Columns {
 			c, err := t.FindColumnByName(rc.Name)
 			if err != nil {
 				return errors.Wrap(err, "failed to repair relation")
 			}
 			c.ParentRelations = append(c.ParentRelations, r)
-			rc = c
+			r.Columns[i] = c
 		}
 		r.Table = t
 		pt, err := s.FindTableByName(r.ParentTable.Name)
 		if err != nil {
 			return errors.Wrap(err, "failed to repair relation")
 		}
-		for _, rc := range r.ParentColumns {
+		for i, rc := range r.ParentColumns {
 			pc, err := pt.FindColumnByName(rc.Name)
 			if err != nil {
 				return errors.Wrap(err, "failed to repair relation")
 			}
 			pc.ChildRelations = append(pc.ChildRelations, r)
-			rc = pc
+			r.ParentColumns[i] = pc
 		}
 		r.ParentTable = pt
 	}
