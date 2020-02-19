@@ -240,6 +240,43 @@ func (c *Column) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// UnmarshalJSON unmarshal JSON to schema.Column
+func (r *Relation) UnmarshalJSON(data []byte) error {
+	s := struct {
+		Table         string   `json:"table"`
+		Columns       []string `json:"columns"`
+		ParentTable   string   `json:"parent_table"`
+		ParentColumns []string `json:"parent_columns"`
+		Def           string   `json:"def"`
+		Virtual       bool     `json:"virtual"`
+	}{}
+	err := json.Unmarshal(data, &s)
+	if err != nil {
+		return err
+	}
+	r.Table = &Table{
+		Name: s.Table,
+	}
+	r.Columns = []*Column{}
+	for _, c := range s.Columns {
+		r.Columns = append(r.Columns, &Column{
+			Name: c,
+		})
+	}
+	r.ParentTable = &Table{
+		Name: s.ParentTable,
+	}
+	r.ParentColumns = []*Column{}
+	for _, c := range s.ParentColumns {
+		r.ParentColumns = append(r.ParentColumns, &Column{
+			Name: c,
+		})
+	}
+	r.Def = s.Def
+	r.Virtual = s.Virtual
+	return nil
+}
+
 // MarshalYAML return custom YAML byte
 func (c Column) MarshalYAML() ([]byte, error) {
 	if c.Default.Valid {
@@ -335,6 +372,43 @@ func (r Relation) MarshalYAML() ([]byte, error) {
 		Def:           r.Def,
 		Virtual:       r.Virtual,
 	})
+}
+
+// UnmarshalYAML unmarshal YAML to schema.Column
+func (r *Relation) UnmarshalYAML(data []byte) error {
+	s := struct {
+		Table         string   `yaml:"table"`
+		Columns       []string `yaml:"columns"`
+		ParentTable   string   `yaml:"parentTable"`
+		ParentColumns []string `yaml:"parentColumns"`
+		Def           string   `yaml:"def"`
+		Virtual       bool     `yaml:"virtual"`
+	}{}
+	err := yaml.Unmarshal(data, &s)
+	if err != nil {
+		return err
+	}
+	r.Table = &Table{
+		Name: s.Table,
+	}
+	r.Columns = []*Column{}
+	for _, c := range s.Columns {
+		r.Columns = append(r.Columns, &Column{
+			Name: c,
+		})
+	}
+	r.ParentTable = &Table{
+		Name: s.Table,
+	}
+	r.ParentColumns = []*Column{}
+	for _, c := range s.Columns {
+		r.ParentColumns = append(r.ParentColumns, &Column{
+			Name: c,
+		})
+	}
+	r.Def = s.Def
+	r.Virtual = s.Virtual
+	return nil
 }
 
 // FindTableByName find table by table name
