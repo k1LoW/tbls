@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.26.0](https://github.com/k1LoW/tbls/compare/v1.25.1...v1.26.0) (2020-02-20)
+
+* [BREAKING] Normalize `relations:` of tbls output [#165](https://github.com/k1LoW/tbls/pull/165) ([k1LoW](https://github.com/k1LoW))
+* Rename `schema.Relation.IsAdditional` -> `schema.Relation.Virtual` [#164](https://github.com/k1LoW/tbls/pull/164) ([k1LoW](https://github.com/k1LoW))
+* Add YAML output format [#163](https://github.com/k1LoW/tbls/pull/163) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.25.1](https://github.com/k1LoW/tbls/compare/v1.25.0...v1.25.1) (2020-02-17)
 
 * [MySQL]Fix constraints/indexes detection bug [#162](https://github.com/k1LoW/tbls/pull/162) ([k1LoW](https://github.com/k1LoW))
