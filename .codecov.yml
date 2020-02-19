@@ -7,3 +7,5 @@ coverage:
 ignore:
   - "drivers/bq"
   - "drivers/spanner"
+  - "schema/json.go"
+  - "schema/yaml.go"
