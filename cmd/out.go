@@ -30,6 +30,7 @@ import (
 	"github.com/k1LoW/tbls/output"
 	tbls_config "github.com/k1LoW/tbls/output/config"
 	"github.com/k1LoW/tbls/output/dot"
+	"github.com/k1LoW/tbls/output/gviz"
 	"github.com/k1LoW/tbls/output/json"
 	"github.com/k1LoW/tbls/output/md"
 	"github.com/k1LoW/tbls/output/plantuml"
@@ -101,6 +102,8 @@ var outCmd = &cobra.Command{
 			o = new(xlsx.Xlsx)
 		case "plantuml":
 			o = plantuml.NewPlantUML(c)
+		case "png", "svg", "jpg":
+			o = gviz.NewGviz(c, format)
 		case "config":
 			o = tbls_config.NewConfig(c)
 		default:
