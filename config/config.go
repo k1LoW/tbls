@@ -149,6 +149,16 @@ func (c *Config) Load(configPath string, options ...Option) error {
 		}
 	}
 
+	err = c.SetDefault()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// SetDefault set default setting
+func (c *Config) SetDefault() error {
 	if c.DocPath == "" {
 		c.DocPath = defaultDocPath
 	}

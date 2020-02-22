@@ -1,11 +1,11 @@
 dsn: ""
-docPath: ""
+docPath: dbdoc
 format:
   adjust: false
   sort: false
 er:
   skip: false
-  format: ""
+  format: png
   comment: false
 exclude: []
 lint:
