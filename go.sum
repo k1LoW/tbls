@@ -115,8 +115,8 @@ github.com/gobuffalo/packd v0.3.0 h1:eMwymTkA1uXsqxS0Tpoop3Lc0u3kTfiMBE6nKtQU4g4
 github.com/gobuffalo/packd v0.3.0/go.mod h1:zC7QkmNkYVGKPw4tHpBQ+ml7W/3tIebgeo1b36chA3Q=
 github.com/gobuffalo/packr/v2 v2.7.1 h1:n3CIW5T17T8v4GGK5sWXLVWJhCz7b5aNLSxW6gYim4o=
 github.com/gobuffalo/packr/v2 v2.7.1/go.mod h1:qYEvAazPaVxy7Y7KR0W8qYEE+RymX74kETFqjFoFlOc=
-github.com/goccy/go-graphviz v0.0.3 h1:bRPOgkoOIBRXW9/zPMA8YseuVfO6H6ZidMdvYIC9lLA=
-github.com/goccy/go-graphviz v0.0.3/go.mod h1:wXVsXxmyMQU6TN3zGRttjNn3h+iCAS7xQFC6TlNvLhk=
+github.com/goccy/go-graphviz v0.0.4 h1:QYYd3VKIuRYPRv3j1amEnpOdbscA8R4MRI7JelhaTSI=
+github.com/goccy/go-graphviz v0.0.4/go.mod h1:wXVsXxmyMQU6TN3zGRttjNn3h+iCAS7xQFC6TlNvLhk=
 github.com/goccy/go-yaml v1.3.2 h1:joykVKVARE+kQNoaj0ijjPY7lhgdovyU6etuYEl3hFU=
 github.com/goccy/go-yaml v1.3.2/go.mod h1:PsEEJ29nIFZL07P/c8dv4P6rQkVFFXafQee85U+ERHA=
 github.com/gogo/protobuf v1.1.1/go.mod h1:r8qH/GZQm5c6nD/R0oafs1akxWv10x8SbQlK7atdtwQ=
