@@ -119,7 +119,7 @@ func withDot(s *schema.Schema, c *config.Config, force bool) (e error) {
 
 	buf := &bytes.Buffer{}
 	dot := dot.NewDot(c)
-	g := graphviz.New()
+	gviz := graphviz.New()
 	err = dot.OutputSchema(buf, s)
 	if err != nil {
 		return errors.WithStack(err)
@@ -129,14 +129,14 @@ func withDot(s *schema.Schema, c *config.Config, force bool) (e error) {
 		return errors.WithStack(err)
 	}
 	defer func() {
-		if err := g.Close(); err != nil {
+		if err := gviz.Close(); err != nil {
 			e = errors.WithStack(err)
 		}
 		if err := graph.Close(); err != nil {
 			e = errors.WithStack(err)
 		}
 	}()
-	err = g.RenderFilename(graph, graphviz.Format(erFormat), filepath.Join(fullPath, erFileName))
+	err = gviz.RenderFilename(graph, graphviz.Format(erFormat), filepath.Join(fullPath, erFileName))
 	if err != nil {
 		return errors.WithStack(err)
 	}
@@ -156,7 +156,7 @@ func withDot(s *schema.Schema, c *config.Config, force bool) (e error) {
 			_ = graph.Close()
 			return errors.WithStack(err)
 		}
-		err = g.RenderFilename(graph, graphviz.Format(erFormat), filepath.Join(fullPath, erFileName))
+		err = gviz.RenderFilename(graph, graphviz.Format(erFormat), filepath.Join(fullPath, erFileName))
 		if err != nil {
 			_ = graph.Close()
 			return errors.WithStack(err)
