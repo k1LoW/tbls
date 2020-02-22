@@ -122,23 +122,23 @@ func withDot(s *schema.Schema, c *config.Config, force bool) (e error) {
 	g := graphviz.New()
 	err = dot.OutputSchema(buf, s)
 	if err != nil {
-		return err
+		return errors.WithStack(err)
 	}
 	graph, err := graphviz.ParseBytes(buf.Bytes())
 	if err != nil {
-		return err
+		return errors.WithStack(err)
 	}
 	defer func() {
 		if err := g.Close(); err != nil {
-			e = err
+			e = errors.WithStack(err)
 		}
 		if err := graph.Close(); err != nil {
-			e = err
+			e = errors.WithStack(err)
 		}
 	}()
 	err = g.RenderFilename(graph, graphviz.Format(erFormat), filepath.Join(fullPath, erFileName))
 	if err != nil {
-		return err
+		return errors.WithStack(err)
 	}
 
 	// tables
@@ -149,20 +149,20 @@ func withDot(s *schema.Schema, c *config.Config, force bool) (e error) {
 		buf := &bytes.Buffer{}
 		err = dot.OutputTable(buf, t)
 		if err != nil {
-			return err
+			return errors.WithStack(err)
 		}
 		graph, err := graphviz.ParseBytes(buf.Bytes())
 		if err != nil {
 			_ = graph.Close()
-			return err
+			return errors.WithStack(err)
 		}
 		err = g.RenderFilename(graph, graphviz.Format(erFormat), filepath.Join(fullPath, erFileName))
 		if err != nil {
 			_ = graph.Close()
-			return err
+			return errors.WithStack(err)
 		}
 		if err := graph.Close(); err != nil {
-			return err
+			return errors.WithStack(err)
 		}
 	}
 
