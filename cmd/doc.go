@@ -21,15 +21,13 @@
 package cmd
 
 import (
-	"bytes"
 	"fmt"
 	"os"
 	"path/filepath"
 
-	"github.com/goccy/go-graphviz"
 	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/datasource"
-	"github.com/k1LoW/tbls/output/dot"
+	"github.com/k1LoW/tbls/output/gviz"
 	"github.com/k1LoW/tbls/output/md"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/pkg/errors"
@@ -117,26 +115,12 @@ func withDot(s *schema.Schema, c *config.Config, force bool) (e error) {
 	erFileName := fmt.Sprintf("schema.%s", erFormat)
 	fmt.Printf("%s\n", filepath.Join(outputPath, erFileName))
 
-	buf := &bytes.Buffer{}
-	dot := dot.NewDot(c)
-	gviz := graphviz.New()
-	err = dot.OutputSchema(buf, s)
+	file, err := os.OpenFile(filepath.Join(fullPath, erFileName), os.O_WRONLY|os.O_CREATE, 0644)
 	if err != nil {
 		return errors.WithStack(err)
 	}
-	graph, err := graphviz.ParseBytes(buf.Bytes())
-	if err != nil {
-		return errors.WithStack(err)
-	}
-	defer func() {
-		if err := gviz.Close(); err != nil {
-			e = errors.WithStack(err)
-		}
-		if err := graph.Close(); err != nil {
-			e = errors.WithStack(err)
-		}
-	}()
-	err = gviz.RenderFilename(graph, graphviz.Format(erFormat), filepath.Join(fullPath, erFileName))
+	g := gviz.NewGviz(c, erFormat)
+	err = g.OutputSchema(file, s)
 	if err != nil {
 		return errors.WithStack(err)
 	}
@@ -146,22 +130,12 @@ func withDot(s *schema.Schema, c *config.Config, force bool) (e error) {
 		erFileName := fmt.Sprintf("%s.%s", t.Name, erFormat)
 		fmt.Printf("%s\n", filepath.Join(outputPath, erFileName))
 
-		buf := &bytes.Buffer{}
-		err = dot.OutputTable(buf, t)
+		file, err := os.OpenFile(filepath.Join(fullPath, erFileName), os.O_WRONLY|os.O_CREATE, 0644)
 		if err != nil {
 			return errors.WithStack(err)
 		}
-		graph, err := graphviz.ParseBytes(buf.Bytes())
+		err = g.OutputTable(file, t)
 		if err != nil {
-			_ = graph.Close()
-			return errors.WithStack(err)
-		}
-		err = gviz.RenderFilename(graph, graphviz.Format(erFormat), filepath.Join(fullPath, erFileName))
-		if err != nil {
-			_ = graph.Close()
-			return errors.WithStack(err)
-		}
-		if err := graph.Close(); err != nil {
 			return errors.WithStack(err)
 		}
 	}
