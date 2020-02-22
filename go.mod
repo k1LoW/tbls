@@ -7,7 +7,7 @@ require (
 	github.com/denisenkom/go-mssqldb v0.0.0-20191001013358-cfbb681360f0
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/gobuffalo/packr/v2 v2.7.1
-	github.com/goccy/go-graphviz v0.0.2
+	github.com/goccy/go-graphviz v0.0.3
 	github.com/goccy/go-yaml v1.3.1
 	github.com/golang/groupcache v0.0.0-20191027212112-611e8accdfc9 // indirect
 	github.com/google/go-cmp v0.3.1
