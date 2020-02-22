@@ -23,11 +23,10 @@ package cmd
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
 	"os"
-	"os/exec"
 	"path/filepath"
 
+	"github.com/goccy/go-graphviz"
 	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/datasource"
 	"github.com/k1LoW/tbls/output/dot"
@@ -82,13 +81,10 @@ var docCmd = &cobra.Command{
 		}
 
 		if !c.ER.Skip {
-			_, err = exec.Command("which", "dot").Output() // #nosec
-			if err == nil {
-				err := withDot(s, c, force)
-				if err != nil {
-					printError(err)
-					os.Exit(1)
-				}
+			err := withDot(s, c, force)
+			if err != nil {
+				printError(err)
+				os.Exit(1)
 			}
 		}
 
@@ -101,7 +97,7 @@ var docCmd = &cobra.Command{
 	},
 }
 
-func withDot(s *schema.Schema, c *config.Config, force bool) error {
+func withDot(s *schema.Schema, c *config.Config, force bool) (e error) {
 	erFormat := c.ER.Format
 	outputPath := c.DocPath
 	fullPath, err := filepath.Abs(outputPath)
@@ -118,34 +114,29 @@ func withDot(s *schema.Schema, c *config.Config, force bool) error {
 		return errors.WithStack(err)
 	}
 
-	dotFormatOption := fmt.Sprintf("-T%s", erFormat)
 	erFileName := fmt.Sprintf("schema.%s", erFormat)
-
 	fmt.Printf("%s\n", filepath.Join(outputPath, erFileName))
-	tmpfile, _ := ioutil.TempFile("", "tblstmp")
-	cmd := exec.Command("dot", dotFormatOption, "-o", filepath.Clean(filepath.Join(fullPath, erFileName)), tmpfile.Name()) // #nosec
-	var stderr bytes.Buffer
-	cmd.Stderr = &stderr
 
+	buf := &bytes.Buffer{}
 	dot := dot.NewDot(c)
-
-	err = dot.OutputSchema(tmpfile, s)
+	gviz := graphviz.New()
+	err = dot.OutputSchema(buf, s)
 	if err != nil {
-		_ = tmpfile.Close()
-		_ = os.Remove(tmpfile.Name())
-		return err
-	}
-	err = tmpfile.Close()
-	if err != nil {
-		_ = os.Remove(tmpfile.Name())
 		return errors.WithStack(err)
 	}
-	err = cmd.Run()
+	graph, err := graphviz.ParseBytes(buf.Bytes())
 	if err != nil {
-		_ = os.Remove(tmpfile.Name())
-		return errors.WithStack(errors.Wrap(err, stderr.String()))
+		return errors.WithStack(err)
 	}
-	err = os.Remove(tmpfile.Name())
+	defer func() {
+		if err := gviz.Close(); err != nil {
+			e = errors.WithStack(err)
+		}
+		if err := graph.Close(); err != nil {
+			e = errors.WithStack(err)
+		}
+	}()
+	err = gviz.RenderFilename(graph, graphviz.Format(erFormat), filepath.Join(fullPath, erFileName))
 	if err != nil {
 		return errors.WithStack(err)
 	}
@@ -153,31 +144,24 @@ func withDot(s *schema.Schema, c *config.Config, force bool) error {
 	// tables
 	for _, t := range s.Tables {
 		erFileName := fmt.Sprintf("%s.%s", t.Name, erFormat)
-
 		fmt.Printf("%s\n", filepath.Join(outputPath, erFileName))
-		tmpfile, _ := ioutil.TempFile("", "tblstmp")
-		c := exec.Command("dot", dotFormatOption, "-o", filepath.Join(fullPath, erFileName), tmpfile.Name()) // #nosec
-		var stderr bytes.Buffer
-		c.Stderr = &stderr
 
-		err = dot.OutputTable(tmpfile, t)
+		buf := &bytes.Buffer{}
+		err = dot.OutputTable(buf, t)
 		if err != nil {
-			_ = tmpfile.Close()
-			_ = os.Remove(tmpfile.Name())
-			return err
-		}
-		err = tmpfile.Close()
-		if err != nil {
-			_ = os.Remove(tmpfile.Name())
 			return errors.WithStack(err)
 		}
-		err = c.Run()
+		graph, err := graphviz.ParseBytes(buf.Bytes())
 		if err != nil {
-			_ = os.Remove(tmpfile.Name())
-			return errors.WithStack(errors.Wrap(err, stderr.String()))
+			_ = graph.Close()
+			return errors.WithStack(err)
 		}
-		err = os.Remove(tmpfile.Name())
+		err = gviz.RenderFilename(graph, graphviz.Format(erFormat), filepath.Join(fullPath, erFileName))
 		if err != nil {
+			_ = graph.Close()
+			return errors.WithStack(err)
+		}
+		if err := graph.Close(); err != nil {
 			return errors.WithStack(err)
 		}
 	}
