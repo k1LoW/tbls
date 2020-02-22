@@ -561,6 +561,12 @@ $ tbls out -t dot -o schema.dot
 $ tbls out -t plantuml -o schema.puml
 ```
 
+**Image (DOT,PNG,JPG):**
+
+``` console
+$ tbls out -t svg -o schema.svg
+```
+
 **JSON:**
 
 ``` console
