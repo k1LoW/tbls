@@ -86,10 +86,13 @@ func (c *Config) OutputSchema(wr io.Writer, s *schema.Schema) error {
 		}
 	}
 
+	if err := c.config.SetDefault(); err != nil {
+		return errors.WithStack(err)
+	}
+
 	d := yaml.NewEncoder(wr)
 	defer d.Close()
-	err := d.Encode(c.config)
-	if err != nil {
+	if err := d.Encode(c.config); err != nil {
 		return errors.WithStack(err)
 	}
 	return nil
