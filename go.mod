@@ -7,6 +7,7 @@ require (
 	github.com/denisenkom/go-mssqldb v0.0.0-20191001013358-cfbb681360f0
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/gobuffalo/packr/v2 v2.7.1
+	github.com/goccy/go-graphviz v0.0.2
 	github.com/goccy/go-yaml v1.3.1
 	github.com/golang/groupcache v0.0.0-20191027212112-611e8accdfc9 // indirect
 	github.com/google/go-cmp v0.3.1
@@ -17,7 +18,7 @@ require (
 	github.com/mattn/go-runewidth v0.0.6
 	github.com/mattn/go-sqlite3 v1.12.0
 	github.com/minio/minio v0.0.0-20200206025938-c2c5b09bb1bc
-	github.com/pkg/errors v0.8.1
+	github.com/pkg/errors v0.9.1
 	github.com/pmezard/go-difflib v1.0.0
 	github.com/rogpeppe/go-internal v1.5.0 // indirect
 	github.com/spf13/cobra v0.0.5
