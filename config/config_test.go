@@ -18,13 +18,21 @@ func TestLoadDefault(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	expected := ""
-	if config.DSN != expected {
-		t.Errorf("actual %v\nwant %v", config.DSN, expected)
+	want := ""
+	if config.DSN != want {
+		t.Errorf("actual %v\nwant %v", config.DSN, want)
 	}
-	expected2 := "dbdoc"
-	if config.DocPath != expected2 {
-		t.Errorf("actual %v\nwant %v", config.DocPath, expected2)
+	want2 := "dbdoc"
+	if config.DocPath != want2 {
+		t.Errorf("actual %v\nwant %v", config.DocPath, want2)
+	}
+	want3 := "png"
+	if config.ER.Format != want3 {
+		t.Errorf("actual %v\nwant %v", config.ER.Format, want3)
+	}
+	want4 := 1
+	if *config.ER.Distance != want4 {
+		t.Errorf("actual %v\nwant %v", config.ER.Distance, want4)
 	}
 }
 

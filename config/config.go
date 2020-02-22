@@ -19,8 +19,11 @@ import (
 const defaultConfigFilePath = ".tbls.yml"
 const defaultDocPath = "dbdoc"
 
-// DefaultERFormat is default ER diagram format
+// DefaultERFormat is the default ER diagram format
 const DefaultERFormat = "png"
+
+// DefaultDistance is the default distance between tables that display associations in the ER
+var DefaultDistance = 1
 
 // Config is tbls config
 type Config struct {
@@ -41,11 +44,12 @@ type Format struct {
 	Sort   bool `yaml:"sort"`
 }
 
-// ER is er diagram setting
+// ER is er setting
 type ER struct {
-	Skip    bool   `yaml:"skip"`
-	Format  string `yaml:"format"`
-	Comment bool   `yaml:"comment"`
+	Skip     bool   `yaml:"skip"`
+	Format   string `yaml:"format"`
+	Comment  bool   `yaml:"comment"`
+	Distance *int   `yaml:"distance"`
 }
 
 // AdditionalRelation is the struct for table relation from yaml
@@ -165,6 +169,10 @@ func (c *Config) SetDefault() error {
 
 	if c.ER.Format == "" {
 		c.ER.Format = DefaultERFormat
+	}
+
+	if c.ER.Distance == nil {
+		c.ER.Distance = &DefaultDistance
 	}
 
 	return nil
