@@ -377,7 +377,7 @@ format:
 
 ### ER diagram
 
-If you can use Graphviz `dot` command, `tbls doc` generate ER diagram images at the same time.
+`tbls doc` generate ER diagram images at the same time.
 
 ``` yaml
 # .tbls.yml
