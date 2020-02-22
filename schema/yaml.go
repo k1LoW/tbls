@@ -1,13 +1,6 @@
 package schema
 
-import (
-	"regexp"
-	"strings"
-
-	"github.com/goccy/go-yaml"
-)
-
-var defaultNullRe = regexp.MustCompile(`default:\s*null`)
+import "github.com/goccy/go-yaml"
 
 // MarshalYAML return custom YAML byte
 func (c Column) MarshalYAML() ([]byte, error) {
@@ -96,18 +89,12 @@ func (c *Column) UnmarshalYAML(data []byte) error {
 	c.Name = s.Name
 	c.Type = s.Type
 	c.Nullable = s.Nullable
-
-	sd := string(data)
-	switch {
-	case !strings.Contains(sd, "default:"):
-		c.Default.Valid = false
-		c.Default.String = ""
-	case defaultNullRe.MatchString(sd):
-		c.Default.Valid = false
-		c.Default.String = ""
-	default:
+	if s.Default != nil {
 		c.Default.Valid = true
 		c.Default.String = *s.Default
+	} else {
+		c.Default.Valid = false
+		c.Default.String = ""
 	}
 	c.Comment = s.Comment
 	return nil
