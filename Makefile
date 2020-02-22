@@ -15,7 +15,7 @@ BUILD_LDFLAGS = -X $(PKG).commit=$(COMMIT) -X $(PKG).date=$(DATE)
 
 default: test
 
-ci: depsdev build test testdoc test_too_many_tables test_json sec
+ci: depsdev build test testdoc test_too_many_tables test_json sec doc
 
 test:
 	usql pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -f testdata/pg.sql
