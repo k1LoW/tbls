@@ -19,8 +19,11 @@ import (
 const defaultConfigFilePath = ".tbls.yml"
 const defaultDocPath = "dbdoc"
 
-// DefaultERFormat is default ER diagram format
+// DefaultERFormat is the default ER diagram format
 const DefaultERFormat = "png"
+
+// DefaultDistance is the default distance between tables that display relations in the ER
+var DefaultDistance = 1
 
 // Config is tbls config
 type Config struct {
@@ -41,11 +44,12 @@ type Format struct {
 	Sort   bool `yaml:"sort"`
 }
 
-// ER is er diagram setting
+// ER is er setting
 type ER struct {
-	Skip    bool   `yaml:"skip"`
-	Format  string `yaml:"format"`
-	Comment bool   `yaml:"comment"`
+	Skip     bool   `yaml:"skip"`
+	Format   string `yaml:"format"`
+	Comment  bool   `yaml:"comment"`
+	Distance *int   `yaml:"distance"`
 }
 
 // AdditionalRelation is the struct for table relation from yaml
@@ -121,11 +125,20 @@ func ERFormat(erFormat string) Option {
 	}
 }
 
+// Distance return Option set Config.ER.Distance
+func Distance(distance int) Option {
+	return func(c *Config) error {
+		c.ER.Distance = &distance
+		return nil
+	}
+}
+
 // NewConfig return Config
 func NewConfig() (*Config, error) {
-	c := Config{
-		DSN:     "",
-		DocPath: "",
+	c := Config{}
+	err := c.setDefault()
+	if err != nil {
+		return nil, err
 	}
 	return &c, nil
 }
@@ -149,7 +162,7 @@ func (c *Config) Load(configPath string, options ...Option) error {
 		}
 	}
 
-	err = c.SetDefault()
+	err = c.setDefault()
 	if err != nil {
 		return err
 	}
@@ -157,14 +170,18 @@ func (c *Config) Load(configPath string, options ...Option) error {
 	return nil
 }
 
-// SetDefault set default setting
-func (c *Config) SetDefault() error {
+// set default setting
+func (c *Config) setDefault() error {
 	if c.DocPath == "" {
 		c.DocPath = defaultDocPath
 	}
 
 	if c.ER.Format == "" {
 		c.ER.Format = DefaultERFormat
+	}
+
+	if c.ER.Distance == nil {
+		c.ER.Distance = &DefaultDistance
 	}
 
 	return nil

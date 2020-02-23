@@ -48,10 +48,10 @@ func TestAnalyzeSchema(t *testing.T) {
 		if err != nil {
 			t.Errorf("%s", err)
 		}
-		expected := tt.schemaName
-		actual := schema.Name
-		if actual != expected {
-			t.Errorf("actual %v\nwant %v", actual, expected)
+		want := tt.schemaName
+		got := schema.Name
+		if got != want {
+			t.Errorf("got %v\nwant %v", got, want)
 		}
 	}
 }
@@ -62,10 +62,10 @@ func TestAnalyzeTables(t *testing.T) {
 		if err != nil {
 			t.Errorf("%s", err)
 		}
-		expected := tt.tableCount
-		actual := len(schema.Tables)
-		if actual != expected {
-			t.Errorf("actual %v\nwant %v", actual, expected)
+		want := tt.tableCount
+		got := len(schema.Tables)
+		if got != want {
+			t.Errorf("got %v\nwant %v", got, want)
 		}
 	}
 }
@@ -76,10 +76,10 @@ func TestAnalyzeRelations(t *testing.T) {
 		if err != nil {
 			t.Errorf("%s", err)
 		}
-		expected := tt.relationCount
-		actual := len(schema.Relations)
-		if actual != expected {
-			t.Errorf("actual %v\nwant %v", actual, expected)
+		want := tt.relationCount
+		got := len(schema.Relations)
+		if got != want {
+			t.Errorf("got %v\nwant %v", got, want)
 		}
 	}
 }

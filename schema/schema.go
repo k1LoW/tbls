@@ -184,3 +184,60 @@ func (s *Schema) Repair() error {
 	}
 	return nil
 }
+
+func (t *Table) CollectTablesAndRelations(distance int, root bool) ([]*Table, []*Relation, error) {
+	tables := []*Table{}
+	relations := []*Relation{}
+	tables = append(tables, t)
+	if distance == 0 {
+		return tables, relations, nil
+	}
+	distance = distance - 1
+	for _, c := range t.Columns {
+		for _, r := range c.ParentRelations {
+			relations = append(relations, r)
+			ts, rs, err := r.ParentTable.CollectTablesAndRelations(distance, false)
+			if err != nil {
+				return nil, nil, err
+			}
+			tables = append(tables, ts...)
+			relations = append(relations, rs...)
+		}
+		for _, r := range c.ChildRelations {
+			relations = append(relations, r)
+			ts, rs, err := r.Table.CollectTablesAndRelations(distance, false)
+			if err != nil {
+				return nil, nil, err
+			}
+			tables = append(tables, ts...)
+			relations = append(relations, rs...)
+		}
+	}
+
+	if !root {
+		return tables, relations, nil
+	}
+
+	uTables := []*Table{}
+	encounteredT := make(map[string]bool)
+	for _, t := range tables {
+		if !encounteredT[t.Name] {
+			encounteredT[t.Name] = true
+			uTables = append(uTables, t)
+		}
+	}
+
+	uRelations := []*Relation{}
+	encounteredR := make(map[*Relation]bool)
+	for _, r := range relations {
+		if !encounteredR[r] {
+			encounteredR[r] = true
+			if !encounteredT[r.ParentTable.Name] || !encounteredT[r.Table.Name] {
+				continue
+			}
+			uRelations = append(uRelations, r)
+		}
+	}
+
+	return uTables, uRelations, nil
+}

@@ -44,6 +44,7 @@ var (
 	format    string
 	outPath   string
 	tableName string
+	distance  int
 )
 
 // outCmd represents the doc command
@@ -150,6 +151,8 @@ func loadOutArgs(args []string) ([]config.Option, error) {
 	if sort {
 		options = append(options, config.Sort(sort))
 	}
+	options = append(options, config.Distance(distance))
+
 	if len(args) == 1 {
 		options = append(options, config.DSN(args[0]))
 	}
@@ -163,5 +166,6 @@ func init() {
 	outCmd.Flags().StringVarP(&format, "format", "t", "json", "output format")
 	outCmd.Flags().StringVarP(&outPath, "out", "o", "", "output file path")
 	outCmd.Flags().StringVar(&tableName, "table", "", "table name")
+	outCmd.Flags().IntVarP(&distance, "distance", "", config.DefaultDistance, "distance between tables that display associations in the ER")
 	outCmd.Flags().StringVarP(&additionalDataPath, "add", "a", "", "additional schema data path (deprecated, use `config`)")
 }
