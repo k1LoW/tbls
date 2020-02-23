@@ -391,6 +391,9 @@ er:
   # Add table/column comment to ER diagram
   # Default is false
   comment: true
+  # Distance between tables that display relations in the ER
+  # Default is 1
+  distance: 2
 ```
 
 ### Lint
@@ -564,7 +567,7 @@ $ tbls out -t plantuml -o schema.puml
 **Image (DOT,PNG,JPG):**
 
 ``` console
-$ tbls out -t svg -o schema.svg
+$ tbls out -t svg --table users --distance 2 -o users.svg
 ```
 
 **JSON:**
