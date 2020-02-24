@@ -1,5 +1,14 @@
 # Changelog
 
+## [v1.27.0](https://github.com/k1LoW/tbls/compare/v1.26.0...v1.27.0) (2020-02-24)
+
+* Add config.ER.distance [#171](https://github.com/k1LoW/tbls/pull/171) ([k1LoW](https://github.com/k1LoW))
+* Fix: `tbls out -t config` does not set default values [#170](https://github.com/k1LoW/tbls/pull/170) ([k1LoW](https://github.com/k1LoW))
+* Add output format (PNG, SVG, JPG) [#169](https://github.com/k1LoW/tbls/pull/169) ([k1LoW](https://github.com/k1LoW))
+* Use github.com/goccy/go-graphviz instead of dot command [#167](https://github.com/k1LoW/tbls/pull/167) ([k1LoW](https://github.com/k1LoW))
+* Bump up goccy/go-yaml version to v1.3.2 and remove workaround [#168](https://github.com/k1LoW/tbls/pull/168) ([k1LoW](https://github.com/k1LoW))
+* Change default shell to /bin/sh [#166](https://github.com/k1LoW/tbls/pull/166) ([kkznch](https://github.com/kkznch))
+
 ## [v1.26.0](https://github.com/k1LoW/tbls/compare/v1.25.1...v1.26.0) (2020-02-20)
 
 * [BREAKING] Normalize `relations:` of tbls output [#165](https://github.com/k1LoW/tbls/pull/165) ([k1LoW](https://github.com/k1LoW))

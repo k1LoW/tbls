@@ -27,7 +27,7 @@ builds:
     - -extldflags '-static'
   env:
     - CGO_ENABLED=1
-    - CC=/usr/local/bin/x86_64-linux-musl-cc
+    - CC=/usr/local/bin/x86_64-linux-musl-cc # brew install FiloSottile/musl-cross/musl-cross
   goos:
     - linux
   goarch:
@@ -42,7 +42,7 @@ builds:
     - -extldflags '-static'
   env:
     - CGO_ENABLED=1
-    - CC=x86_64-w64-mingw32-gcc
+    - CC=x86_64-w64-mingw32-gcc # brew install mingw-w64
   goos:
     - windows
   goarch:
@@ -91,7 +91,7 @@ brews:
 nfpms:
   -
     id: tbls-nfpms
-    name_template: "{{ .ProjectName }}_{{ .Version }}-1_{{ .Arch }}"
+    file_name_template: "{{ .ProjectName }}_{{ .Version }}-1_{{ .Arch }}"
     builds:
     - tbls-linux
     homepage: https://github.com/k1LoW/tbls
