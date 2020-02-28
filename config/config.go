@@ -31,6 +31,7 @@ type Config struct {
 	DocPath     string               `yaml:"docPath"`
 	Format      Format               `yaml:"format"`
 	ER          ER                   `yaml:"er"`
+	Include     []string             `yaml:"include"`
 	Exclude     []string             `yaml:"exclude"`
 	Lint        Lint                 `yaml:"lint"`
 	LintExclude []string             `yaml:"lintExclude"`
