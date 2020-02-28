@@ -146,7 +146,7 @@ func TestMergeAditionalData(t *testing.T) {
 	}
 }
 
-func TestExcludeTables(t *testing.T) {
+func TestFilterTables(t *testing.T) {
 	s := schema.Schema{
 		Name: "testschema",
 		Tables: []*schema.Table{
@@ -205,7 +205,7 @@ func TestExcludeTables(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	err = c.ExcludeTables(&s)
+	err = c.FilterTables(&s)
 	if err != nil {
 		t.Error(err)
 	}

@@ -242,7 +242,7 @@ func (c *Config) ModifySchema(s *schema.Schema) error {
 	if err != nil {
 		return err
 	}
-	err = c.ExcludeTables(s)
+	err = c.FilterTables(s)
 	if err != nil {
 		return err
 	}
@@ -268,8 +268,8 @@ func (c *Config) MergeAdditionalData(s *schema.Schema) error {
 	return nil
 }
 
-// ExcludeTables exclude tables from schema.Schema
-func (c *Config) ExcludeTables(s *schema.Schema) error {
+// FilterTables filter tables from schema.Schema
+func (c *Config) FilterTables(s *schema.Schema) error {
 	for _, e := range c.Exclude {
 		for _, r := range s.Relations {
 			if r.ParentTable.Name == e {
