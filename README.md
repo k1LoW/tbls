@@ -1,6 +1,6 @@
 <p align="center">
 <br>
-<img src="https://github.com/k1LoW/tbls/raw/master/logo.png" width="200" alt="tbls">
+<img src="https://github.com/k1LoW/tbls/raw/master/img/logo.png" width="200" alt="tbls">
 <br><br>
 </p>
 
@@ -115,7 +115,7 @@ View the document on GitHub.
 
 [Sample document](sample/postgres/README.md)
 
-![sample](sample/doc.png)
+![sample](img/doc.png)
 
 ### Diff database and document
 
@@ -454,7 +454,7 @@ lint:
 
 ### Filter tables
 
-![filter tables](filter-tables.png)
+![filter tables](img/filter-tables.png)
 
 `include:` and `exclude:` are used to filter target tables from `tbls *`.
 
