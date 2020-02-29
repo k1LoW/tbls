@@ -146,7 +146,7 @@ func TestMergeAditionalData(t *testing.T) {
 	}
 }
 
-func TestExcludeTables(t *testing.T) {
+func TestFilterTables(t *testing.T) {
 	s := schema.Schema{
 		Name: "testschema",
 		Tables: []*schema.Table{
@@ -183,7 +183,25 @@ func TestExcludeTables(t *testing.T) {
 				},
 			},
 			&schema.Table{
-				Name: "migrations",
+				Name:    "user_options",
+				Comment: "user_options comment",
+				Columns: []*schema.Column{
+					&schema.Column{
+						Name: "id",
+						Type: "serial",
+					},
+					&schema.Column{
+						Name: "user_id",
+						Type: "int",
+					},
+					&schema.Column{
+						Name: "email",
+						Type: "text",
+					},
+				},
+			},
+			&schema.Table{
+				Name: "schema_migrations",
 				Columns: []*schema.Column{
 					&schema.Column{
 						Name: "id",
@@ -205,7 +223,7 @@ func TestExcludeTables(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	err = c.ExcludeTables(&s)
+	err = c.FilterTables(&s)
 	if err != nil {
 		t.Error(err)
 	}

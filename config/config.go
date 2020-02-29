@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	"github.com/k1LoW/tbls/schema"
+	"github.com/minio/minio/pkg/wildcard"
 	"github.com/pkg/errors"
 	"gopkg.in/yaml.v2"
 )
@@ -31,6 +32,7 @@ type Config struct {
 	DocPath     string               `yaml:"docPath"`
 	Format      Format               `yaml:"format"`
 	ER          ER                   `yaml:"er"`
+	Include     []string             `yaml:"include"`
 	Exclude     []string             `yaml:"exclude"`
 	Lint        Lint                 `yaml:"lint"`
 	LintExclude []string             `yaml:"lintExclude"`
@@ -241,7 +243,7 @@ func (c *Config) ModifySchema(s *schema.Schema) error {
 	if err != nil {
 		return err
 	}
-	err = c.ExcludeTables(s)
+	err = c.FilterTables(s)
 	if err != nil {
 		return err
 	}
@@ -267,17 +269,21 @@ func (c *Config) MergeAdditionalData(s *schema.Schema) error {
 	return nil
 }
 
-// ExcludeTables exclude tables from schema.Schema
-func (c *Config) ExcludeTables(s *schema.Schema) error {
-	for _, e := range c.Exclude {
-		for _, r := range s.Relations {
-			if r.ParentTable.Name == e {
-				return errors.New(fmt.Sprintf("failed to exclude table '%s': '%s' is related by '%s'", e, e, r.Table.Name))
+// FilterTables filter tables from schema.Schema
+func (c *Config) FilterTables(s *schema.Schema) error {
+	for _, t := range s.Tables {
+		if len(c.Include) == 0 || contains(c.Include, t.Name) {
+			if contains(c.Exclude, t.Name) {
+				err := excludeTableFromSchema(t.Name, s)
+				if err != nil {
+					return errors.Wrap(errors.WithStack(err), fmt.Sprintf("failed to filter table '%s'", t.Name))
+				}
 			}
-		}
-		err := excludeTableFromSchema(e, s)
-		if err != nil {
-			return errors.Wrap(errors.WithStack(err), fmt.Sprintf("failed to exclude table '%s'", e))
+		} else {
+			err := excludeTableFromSchema(t.Name, s)
+			if err != nil {
+				return errors.Wrap(errors.WithStack(err), fmt.Sprintf("failed to filter table '%s'", t.Name))
+			}
 		}
 	}
 	return nil
@@ -429,4 +435,13 @@ func envMap() map[string]string {
 		m[k] = parts[1]
 	}
 	return m
+}
+
+func contains(s []string, e string) bool {
+	for _, v := range s {
+		if wildcard.MatchSimple(v, e) {
+			return true
+		}
+	}
+	return false
 }

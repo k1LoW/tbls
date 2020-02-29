@@ -5,7 +5,6 @@ import (
 	"sort"
 
 	"github.com/k1LoW/tbls/schema"
-	"github.com/minio/minio/pkg/wildcard"
 )
 
 // Lint is the struct for lint config
@@ -191,15 +190,6 @@ func (r ColumnCount) Check(s *schema.Schema, exclude []string) []RuleWarn {
 		}
 	}
 	return warns
-}
-
-func contains(s []string, e string) bool {
-	for _, v := range s {
-		if wildcard.MatchSimple(v, e) {
-			return true
-		}
-	}
-	return false
 }
 
 // RequireColumns checks if the table has specified columns

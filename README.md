@@ -1,6 +1,6 @@
 <p align="center">
 <br>
-<img src="https://github.com/k1LoW/tbls/raw/master/logo.png" width="200" alt="tbls">
+<img src="https://github.com/k1LoW/tbls/raw/master/img/logo.png" width="200" alt="tbls">
 <br><br>
 </p>
 
@@ -30,7 +30,7 @@ Key features of `tbls` are:
     - [Document path](#document-path)
     - [Table format](#table-format)
     - [ER diagram](#er-diagram)
-    - [Exclude tables](#exclude-tables)
+    - [Filter tables](#filter-tables)
     - [Lint](#lint)
     - [Comments](#comments)
     - [Relations](#relations)
@@ -115,7 +115,7 @@ View the document on GitHub.
 
 [Sample document](sample/postgres/README.md)
 
-![sample](sample/doc.png)
+![sample](img/doc.png)
 
 ### Diff database and document
 
@@ -452,14 +452,18 @@ lint:
       - comments.user_id
 ```
 
-### Exclude tables
+### Filter tables
 
-`exclude:` is used to exclude tables from `tbls *`.
+![filter tables](img/filter-tables.png)
+
+`include:` and `exclude:` are used to filter target tables from `tbls *`.
 
 ``` yaml
 # .tbls.yml
+inclute:
+  - some_prefix_*
 exclude:
-  - logs
+  - some_prefix_logs
   - CamelizeTable
 ```
 

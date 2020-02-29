@@ -1,6 +1,10 @@
 ---
+include:
+  - users
+  - posts
+  - schema_migrations
 exclude:
-  - migrations
+  - schema_*
 relations:
   -
     table: posts

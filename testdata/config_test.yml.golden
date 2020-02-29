@@ -8,6 +8,7 @@ er:
   format: png
   comment: false
   distance: 1
+include: []
 exclude: []
 lint:
   requireTableComment:
