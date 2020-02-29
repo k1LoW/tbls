@@ -183,7 +183,25 @@ func TestFilterTables(t *testing.T) {
 				},
 			},
 			&schema.Table{
-				Name: "migrations",
+				Name:    "user_options",
+				Comment: "user_options comment",
+				Columns: []*schema.Column{
+					&schema.Column{
+						Name: "id",
+						Type: "serial",
+					},
+					&schema.Column{
+						Name: "user_id",
+						Type: "int",
+					},
+					&schema.Column{
+						Name: "email",
+						Type: "text",
+					},
+				},
+			},
+			&schema.Table{
+				Name: "schema_migrations",
 				Columns: []*schema.Column{
 					&schema.Column{
 						Name: "id",
