@@ -30,7 +30,7 @@ Key features of `tbls` are:
     - [Document path](#document-path)
     - [Table format](#table-format)
     - [ER diagram](#er-diagram)
-    - [Exclude tables](#exclude-tables)
+    - [Filter tables](#filter-tables)
     - [Lint](#lint)
     - [Comments](#comments)
     - [Relations](#relations)
@@ -452,14 +452,18 @@ lint:
       - comments.user_id
 ```
 
-### Exclude tables
+### Filter tables
 
-`exclude:` is used to exclude tables from `tbls *`.
+![filter tables](filter-tables.png)
+
+`include:` and `exclude:` are used to filter target tables from `tbls *`.
 
 ``` yaml
 # .tbls.yml
+inclute:
+  - some_prefix_*
 exclude:
-  - logs
+  - some_prefix_logs
   - CamelizeTable
 ```
 
