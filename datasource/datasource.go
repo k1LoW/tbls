@@ -26,13 +26,13 @@ import (
 // Analyze database
 func Analyze(urlstr string) (*schema.Schema, error) {
 	if strings.Index(urlstr, "json://") == 0 {
-		return AnalizeJSON(urlstr)
+		return AnalyzeJSON(urlstr)
 	}
 	if strings.Index(urlstr, "bq://") == 0 || strings.Index(urlstr, "bigquery://") == 0 {
-		return AnalizeBigquery(urlstr)
+		return AnalyzeBigquery(urlstr)
 	}
 	if strings.Index(urlstr, "span://") == 0 || strings.Index(urlstr, "spanner://") == 0 {
-		return AnalizeSpanner(urlstr)
+		return AnalyzeSpanner(urlstr)
 	}
 	s := &schema.Schema{}
 	u, err := dburl.Parse(urlstr)
@@ -87,8 +87,8 @@ func Analyze(urlstr string) (*schema.Schema, error) {
 	return s, nil
 }
 
-// AnalizeJSON analyze `json://`
-func AnalizeJSON(urlstr string) (*schema.Schema, error) {
+// AnalyzeJSON analyze `json://`
+func AnalyzeJSON(urlstr string) (*schema.Schema, error) {
 	s := &schema.Schema{}
 	splitted := strings.Split(urlstr, "json://")
 	file, err := os.Open(splitted[1])
@@ -107,8 +107,8 @@ func AnalizeJSON(urlstr string) (*schema.Schema, error) {
 	return s, nil
 }
 
-// AnalizeBigquery analyze `bq://`
-func AnalizeBigquery(urlstr string) (*schema.Schema, error) {
+// AnalyzeBigquery analyze `bq://`
+func AnalyzeBigquery(urlstr string) (*schema.Schema, error) {
 	s := &schema.Schema{}
 	u, err := url.Parse(urlstr)
 	if err != nil {
@@ -150,8 +150,8 @@ func AnalizeBigquery(urlstr string) (*schema.Schema, error) {
 	return s, nil
 }
 
-// AnalizeSpanner analyze `spanner://`
-func AnalizeSpanner(urlstr string) (*schema.Schema, error) {
+// AnalyzeSpanner analyze `spanner://`
+func AnalyzeSpanner(urlstr string) (*schema.Schema, error) {
 	s := &schema.Schema{}
 	u, err := url.Parse(urlstr)
 	if err != nil {
