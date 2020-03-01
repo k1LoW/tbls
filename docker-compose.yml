@@ -34,3 +34,8 @@ services:
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=MSSQLServer-Passw0rd
+  dynamodb:
+    image: amazon/dynamodb-local
+    restart: always
+    ports:
+      - "18000:8000"
