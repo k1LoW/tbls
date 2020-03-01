@@ -4,6 +4,7 @@ require (
 	cloud.google.com/go v0.53.0 // indirect
 	cloud.google.com/go/bigquery v1.4.0
 	cloud.google.com/go/spanner v1.2.1
+	github.com/aws/aws-sdk-go v1.20.21
 	github.com/denisenkom/go-mssqldb v0.0.0-20200206145737-bbfc9a55622e
 	github.com/fatih/color v1.9.0 // indirect
 	github.com/go-sql-driver/mysql v1.5.0

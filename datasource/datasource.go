@@ -34,6 +34,9 @@ func Analyze(urlstr string) (*schema.Schema, error) {
 	if strings.Index(urlstr, "span://") == 0 || strings.Index(urlstr, "spanner://") == 0 {
 		return AnalizeSpanner(urlstr)
 	}
+	if strings.Index(urlstr, "dynamodb://") == 0 || strings.Index(urlstr, "dynamo://") == 0 {
+		return AnalyzeDynamodb(urlstr)
+	}
 	s := &schema.Schema{}
 	u, err := dburl.Parse(urlstr)
 	if err != nil {
@@ -191,6 +194,13 @@ func AnalizeSpanner(urlstr string) (*schema.Schema, error) {
 	if err != nil {
 		return s, err
 	}
+	return s, nil
+}
+
+// AnalizeDynamodb analyze `dynamodb://`
+func AnalyzeDynamodb(urlstr string) (*schema.Schema, error) {
+	s := &schema.Schema{}
+
 	return s, nil
 }
 
