@@ -460,7 +460,7 @@ lint:
 
 ``` yaml
 # .tbls.yml
-inclute:
+include:
   - some_prefix_*
 exclude:
   - some_prefix_logs
