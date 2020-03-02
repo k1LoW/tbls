@@ -17,7 +17,7 @@ import (
 type Xlsx struct{}
 
 // OutputSchema output Xlsx format for full relation.
-func (x *Xlsx) OutputSchema(wr io.Writer, s *schema.Schema) error {
+func (x *Xlsx) OutputSchema(wr io.Writer, s *schema.Schema) (e error) {
 	w, err := excl.Create()
 	if err != nil {
 		return err
@@ -34,7 +34,12 @@ func (x *Xlsx) OutputSchema(wr io.Writer, s *schema.Schema) error {
 	}
 	tf, _ := ioutil.TempFile("", "tbls.xlsx")
 	path := tf.Name()
-	defer tf.Close()
+	defer func() {
+		err := tf.Close()
+		if err != nil {
+			e = err
+		}
+	}()
 	err = w.Save(path)
 	if err != nil {
 		return err
@@ -51,7 +56,7 @@ func (x *Xlsx) OutputSchema(wr io.Writer, s *schema.Schema) error {
 }
 
 // OutputTable output Xlsx format for table.
-func (x *Xlsx) OutputTable(wr io.Writer, t *schema.Table) error {
+func (x *Xlsx) OutputTable(wr io.Writer, t *schema.Table) (e error) {
 	w, err := excl.Create()
 	if err != nil {
 		return err
@@ -62,7 +67,12 @@ func (x *Xlsx) OutputTable(wr io.Writer, t *schema.Table) error {
 	}
 	tf, _ := ioutil.TempFile("", "tbls.xlsx")
 	path := tf.Name()
-	defer tf.Close()
+	defer func() {
+		err := tf.Close()
+		if err != nil {
+			e = err
+		}
+	}()
 	err = w.Save(path)
 	if err != nil {
 		return err
@@ -103,14 +113,19 @@ func createSchemaSheet(w *excl.Workbook, s *schema.Schema) error {
 	return nil
 }
 
-func createTableSheet(w *excl.Workbook, t *schema.Table) error {
+func createTableSheet(w *excl.Workbook, t *schema.Table) (e error) {
 	sheetName := t.Name
 	if utf8.RuneCountInString(sheetName) > 31 { // MS Excel assumes a maximum length of 31 characters for sheet name
 		r := []rune(sheetName)
 		sheetName = string(r[0:31])
 	}
 	sheet, err := w.OpenSheet(sheetName)
-	defer sheet.Close()
+	defer func() {
+		err := sheet.Close()
+		if err != nil {
+			e = err
+		}
+	}()
 	if err != nil {
 		return errors.WithStack(err)
 	}

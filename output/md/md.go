@@ -71,7 +71,7 @@ func (m *Md) OutputTable(wr io.Writer, t *schema.Table) error {
 }
 
 // Output generate markdown files.
-func Output(s *schema.Schema, c *config.Config, force bool) error {
+func Output(s *schema.Schema, c *config.Config, force bool) (e error) {
 	docPath := c.DocPath
 
 	fullPath, err := filepath.Abs(docPath)
@@ -90,7 +90,12 @@ func Output(s *schema.Schema, c *config.Config, force bool) error {
 
 	// README.md
 	file, err := os.Create(filepath.Join(fullPath, "README.md"))
-	defer file.Close()
+	defer func() {
+		err := file.Close()
+		if err != nil {
+			e = err
+		}
+	}()
 	if err != nil {
 		return errors.WithStack(err)
 	}
