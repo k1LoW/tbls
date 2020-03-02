@@ -1,5 +1,6 @@
 tbls
 dist/
+dbdoc/
 coverage.txt
 *-packr.go
 testdb.sqlite3

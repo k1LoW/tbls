@@ -10,8 +10,12 @@ import (
 
 	"cloud.google.com/go/bigquery"
 	cloudspanner "cloud.google.com/go/spanner"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/k1LoW/tbls/drivers"
 	"github.com/k1LoW/tbls/drivers/bq"
+	"github.com/k1LoW/tbls/drivers/dynamo"
 	"github.com/k1LoW/tbls/drivers/mssql"
 	"github.com/k1LoW/tbls/drivers/mysql"
 	"github.com/k1LoW/tbls/drivers/postgres"
@@ -200,7 +204,46 @@ func AnalyzeSpanner(urlstr string) (*schema.Schema, error) {
 // AnalizeDynamodb analyze `dynamodb://`
 func AnalyzeDynamodb(urlstr string) (*schema.Schema, error) {
 	s := &schema.Schema{}
+	u, err := url.Parse(urlstr)
+	if err != nil {
+		return s, err
+	}
 
+	values := u.Query()
+	err = setEnvAWSCredentials(values)
+	if err != nil {
+		return s, err
+	}
+
+	region := u.Host
+
+	sess := session.Must(session.NewSessionWithOptions(session.Options{
+		SharedConfigState: session.SharedConfigEnable,
+	}))
+
+	config := aws.NewConfig().WithRegion(region)
+	if os.Getenv("AWS_ENDPOINT_URL") != "" {
+		config = config.WithEndpoint(os.Getenv("AWS_ENDPOINT_URL"))
+	}
+
+	client := dynamodb.New(sess, config)
+	ctx := context.Background()
+
+	driver, err := dynamo.NewDynamodb(ctx, client)
+	if err != nil {
+		return s, err
+	}
+	d, err := driver.Info()
+	if err != nil {
+		return s, err
+	}
+
+	s.Name = fmt.Sprintf("Amazon DynamoDB (%s)", region)
+	s.Driver = d
+	err = driver.Analyze(s)
+	if err != nil {
+		return s, err
+	}
 	return s, nil
 }
 
@@ -213,6 +256,15 @@ func setEnvGoogleApplicationCredentials(values url.Values) error {
 	for _, k := range keys {
 		if values.Get(k) != "" {
 			return os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", values.Get(k))
+		}
+	}
+	return nil
+}
+
+func setEnvAWSCredentials(values url.Values) error {
+	for k := range values {
+		if strings.HasPrefix(k, "aws_") {
+			return os.Setenv(strings.ToUpper(k), values.Get(k))
 		}
 	}
 	return nil

@@ -343,11 +343,16 @@ dsn: sqlserver://DbUser:SQLServer-DbPassw0rd@hostname:1433/testdb
 dsn: ms://DbUser:SQLServer-DbPassw0rd@localhost:1433/testdb
 ```
 
-**Dynamodb:**
+**Amazon DynamoDB:**
 
 ``` yaml
 # .tbls.yml
 dsn: dynamodb://us-west-2
+```
+
+``` yaml
+# .tbls.yml
+dsn: dynamo://ap-northeast-1?aws_access_key_id=XXXXXxxxxxxxXXXXXXX&aws_secret_access_key=XXXXXxxxxxxxXXXXXXX
 ```
 
 To set AWS credentials, you can use
