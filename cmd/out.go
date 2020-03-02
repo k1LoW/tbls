@@ -119,7 +119,13 @@ var outCmd = &cobra.Command{
 				printError(err)
 				os.Exit(1)
 			}
-			defer file.Close()
+			defer func() {
+				err := file.Close()
+				if err != nil {
+					printError(err)
+					os.Exit(1)
+				}
+			}()
 			wr = file
 		} else {
 			wr = os.Stdout
