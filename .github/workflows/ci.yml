@@ -36,6 +36,7 @@ jobs:
           sleep 20s
 
       - name: Run tests
+        uses: chrislennon/action-aws-cli@v1.1
         run: env PATH=`go env GOPATH`/bin:$PATH make ci
         env:
           GOPROXY: "https://proxy.golang.org"
