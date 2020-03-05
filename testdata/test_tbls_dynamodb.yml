@@ -1,0 +1,10 @@
+---
+relations:
+  -
+    table: Thread
+    columns:
+      - ForumName
+    parentTable: Forum
+    parentColumns:
+      - Name
+    def: Thread->Forum

@@ -343,6 +343,24 @@ dsn: sqlserver://DbUser:SQLServer-DbPassw0rd@hostname:1433/testdb
 dsn: ms://DbUser:SQLServer-DbPassw0rd@localhost:1433/testdb
 ```
 
+**Amazon DynamoDB:**
+
+``` yaml
+# .tbls.yml
+dsn: dynamodb://us-west-2
+```
+
+``` yaml
+# .tbls.yml
+dsn: dynamo://ap-northeast-1?aws_access_key_id=XXXXXxxxxxxxXXXXXXX&aws_secret_access_key=XXXXXxxxxxxxXXXXXXX
+```
+
+To set AWS credentials, you can use
+
+1. [Use default credential provider chain of AWS SDK for Go](https://docs.aws.amazon.com/sdk-for-go/v1/developer-guide/configuring-sdk.html#specifying-credentials)
+2. Add query to DSN
+    - `?aws_access_key_id=XXXXXxxxxxxxXXXXXXX&aws_secret_access_key=XXXXXxxxxxxxXXXXXXX`
+
 ### Document path
 
 `tbls doc` generates document in the directory specified by `docPath:`.

@@ -21,6 +21,9 @@ jobs:
           sudo apt install sqlite3
           sudo pip install codecov
 
+      - name: Install aws-cli
+        uses: chrislennon/action-aws-cli@v1.1
+
       - name: Check out source code
         uses: actions/checkout@v1
 
