@@ -11,12 +11,15 @@ import (
 	"github.com/k1LoW/tbls/schema"
 )
 
+var projectID = "bigquery-public-data"
 var ctx context.Context
-var s *schema.Schema
 var client *bigquery.Client
 
-func TestAnalyzeView(t *testing.T) {
+func TestAnalyze(t *testing.T) {
 	ctx, client := initClient(t)
+	s := &schema.Schema{
+		Name: projectID,
+	}
 	defer client.Close()
 	driver, err := NewBigquery(ctx, client, "crypto_bitcoin")
 	if err != nil {
@@ -26,8 +29,8 @@ func TestAnalyzeView(t *testing.T) {
 	if err != nil {
 		t.Errorf("%v", err)
 	}
-	view, _ := s.FindTableByName("inputs")
-	expected := view.Def
+	table, _ := s.FindTableByName("inputs")
+	expected := table.Def
 	if expected == "" {
 		t.Errorf("actual not empty string.")
 	}
@@ -40,10 +43,6 @@ func initClient(t *testing.T) (context.Context, *bigquery.Client) {
 	}
 	os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", cPath)
 	var err error
-	projectID := "bigquery-public-data"
-	s = &schema.Schema{
-		Name: projectID,
-	}
 	ctx = context.Background()
 	client, err = bigquery.NewClient(ctx, projectID)
 	if err != nil {
