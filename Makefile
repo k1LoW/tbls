@@ -21,7 +21,6 @@ default: test
 ci: depsdev build test testdoc test_too_many_tables test_json sec doc
 
 test:
-	aws dynamodb list-tables --endpoint-url=http://localhost:18000
 	usql pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -f testdata/pg.sql
 	usql my://root:mypass@localhost:33306/testdb -f testdata/my.sql
 	usql my://root:mypass@localhost:33308/testdb -f testdata/my.sql
