@@ -1,15 +1,15 @@
-# administrator.blogs
+# public.user_options
 
 ## Description
+
+User options table
 
 ## Columns
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | integer | nextval('administrator.blogs_id_seq'::regclass) | false |  |  |  |
 | user_id | integer |  | false |  | [public.users](public.users.md) |  |
-| name | text |  | false |  |  |  |
-| description | text |  | true |  |  |  |
+| show_email | boolean | false | false |  |  |  |
 | created | timestamp without time zone |  | false |  |  |  |
 | updated | timestamp without time zone |  | true |  |  |  |
 
@@ -17,18 +17,18 @@
 
 | Name | Type | Definition |
 | ---- | ---- | ---------- |
-| blogs_user_id_fk | FOREIGN KEY | FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE |
-| blogs_pkey | PRIMARY KEY | PRIMARY KEY (id) |
+| user_options_user_id_fk | FOREIGN KEY | FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE |
+| user_options_pkey | PRIMARY KEY | PRIMARY KEY (user_id) |
 
 ## Indexes
 
 | Name | Definition |
 | ---- | ---------- |
-| blogs_pkey | CREATE UNIQUE INDEX blogs_pkey ON administrator.blogs USING btree (id) |
+| user_options_pkey | CREATE UNIQUE INDEX user_options_pkey ON public.user_options USING btree (user_id) |
 
 ## Relations
 
-![er](administrator.blogs.png)
+![er](public.user_options.png)
 
 ---
 

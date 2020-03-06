@@ -12,7 +12,6 @@ import (
 )
 
 var reFK = regexp.MustCompile(`FOREIGN KEY \((.+)\) REFERENCES ([^\s]+)\s?\((.+)\)`)
-var defaultSchemaName = "public"
 
 // Postgres struct
 type Postgres struct {
@@ -30,6 +29,21 @@ func NewPostgres(db *sql.DB) *Postgres {
 
 // Analyze PostgreSQL database schema
 func (p *Postgres) Analyze(s *schema.Schema) error {
+	// current schema
+	var currentSchema string
+	schemaRows, err := p.db.Query(`SELECT current_schema()`)
+	defer schemaRows.Close()
+	if err != nil {
+		return errors.WithStack(err)
+	}
+	for schemaRows.Next() {
+		err := schemaRows.Scan(&currentSchema)
+		if err != nil {
+			return errors.WithStack(err)
+		}
+	}
+	s.Driver.Meta["current_schema"] = currentSchema
+
 	// tables
 	tableRows, err := p.db.Query(`
 SELECT DISTINCT cls.oid AS oid, cls.relname AS table_name, tbl.table_type AS table_type, tbl.table_schema AS table_schema
@@ -60,10 +74,7 @@ ORDER BY oid`, s.Name)
 			return errors.WithStack(err)
 		}
 
-		name := tableName
-		if tableSchema != defaultSchemaName {
-			name = fmt.Sprintf("%s.%s", tableSchema, tableName)
-		}
+		name := fmt.Sprintf("%s.%s", tableSchema, tableName)
 
 		table := &schema.Table{
 			Name: name,
@@ -314,6 +325,9 @@ ORDER BY ordinal_position
 			r.Columns = append(r.Columns, column)
 			column.ParentRelations = append(column.ParentRelations, r)
 		}
+		if !strings.Contains(strParentTable, ".") {
+			strParentTable = fmt.Sprintf("%s.%s", currentSchema, strParentTable)
+		}
 		parentTable, err := s.FindTableByName(strParentTable)
 		if err != nil {
 			return err
@@ -351,6 +365,7 @@ func (p *Postgres) Info() (*schema.Driver, error) {
 	d := &schema.Driver{
 		Name:            name,
 		DatabaseVersion: v,
+		Meta:            map[string]string{},
 	}
 	return d, nil
 }
