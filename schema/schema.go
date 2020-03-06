@@ -75,7 +75,7 @@ type Relation struct {
 type Driver struct {
 	Name            string            `json:"name"`
 	DatabaseVersion string            `json:"database_version" yaml:"databaseVersion"`
-	Meta            map[string]string `json:"-"`
+	Meta            map[string]string `json:"meta,omitempty"`
 }
 
 // Schema is the struct for database schema
@@ -86,17 +86,18 @@ type Schema struct {
 	Driver    *Driver     `json:"driver"`
 }
 
+func (s *Schema) FullTableName(name string) string {
+	if s.Driver != nil && (s.Driver.Name == "postgres" || s.Driver.Name == "redshift") && !strings.Contains(name, ".") {
+		return fmt.Sprintf("%s.%s", s.Driver.Meta["current_schema"], name)
+	}
+	return name
+}
+
 // FindTableByName find table by table name
 func (s *Schema) FindTableByName(name string) (*Table, error) {
 	for _, t := range s.Tables {
-		if t.Name == name {
+		if s.FullTableName(t.Name) == s.FullTableName(name) {
 			return t, nil
-		}
-		if s.Driver != nil && (s.Driver.Name == "postgres" || s.Driver.Name == "redshift") && !strings.Contains(name, ".") {
-			fullName := fmt.Sprintf("%s.%s", s.Driver.Meta["current_schema"], name)
-			if t.Name == fullName {
-				return t, nil
-			}
 		}
 	}
 	return nil, errors.WithStack(fmt.Errorf("not found table '%s'", name))
