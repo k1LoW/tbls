@@ -28,6 +28,7 @@ func (d *Dynamodb) Analyze(s *schema.Schema) error {
 
 	// tables
 	tables := []*schema.Table{}
+	tableType := "BASIC TABLE"
 	for {
 		list, err := d.client.ListTablesWithContext(d.ctx, input)
 		if err != nil {
@@ -44,6 +45,7 @@ func (d *Dynamodb) Analyze(s *schema.Schema) error {
 			}
 			table := &schema.Table{
 				Name:        *desc.Table.TableName,
+				Type:        tableType,
 				Columns:     listColumns(desc.Table),
 				Constraints: listConstraints(desc.Table),
 				Indexes:     listIndexes(desc.Table),
