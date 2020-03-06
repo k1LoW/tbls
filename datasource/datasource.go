@@ -82,11 +82,6 @@ func Analyze(urlstr string) (*schema.Schema, error) {
 	default:
 		return s, errors.WithStack(fmt.Errorf("unsupported driver '%s'", u.Driver))
 	}
-	d, err := driver.Info()
-	if err != nil {
-		return s, err
-	}
-	s.Driver = d
 	err = driver.Analyze(s)
 	if err != nil {
 		return s, err
@@ -145,11 +140,6 @@ func AnalyzeBigquery(urlstr string) (*schema.Schema, error) {
 	if err != nil {
 		return s, err
 	}
-	d, err := driver.Info()
-	if err != nil {
-		return s, err
-	}
-	s.Driver = d
 	err = driver.Analyze(s)
 	if err != nil {
 		return s, err
@@ -189,11 +179,6 @@ func AnalyzeSpanner(urlstr string) (*schema.Schema, error) {
 	if err != nil {
 		return s, err
 	}
-	d, err := driver.Info()
-	if err != nil {
-		return s, err
-	}
-	s.Driver = d
 	err = driver.Analyze(s)
 	if err != nil {
 		return s, err
@@ -233,13 +218,8 @@ func AnalyzeDynamodb(urlstr string) (*schema.Schema, error) {
 	if err != nil {
 		return s, err
 	}
-	d, err := driver.Info()
-	if err != nil {
-		return s, err
-	}
 
 	s.Name = fmt.Sprintf("Amazon DynamoDB (%s)", region)
-	s.Driver = d
 	err = driver.Analyze(s)
 	if err != nil {
 		return s, err

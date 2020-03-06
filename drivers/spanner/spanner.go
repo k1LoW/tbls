@@ -31,6 +31,12 @@ type interleave struct {
 }
 
 func (sp *Spanner) Analyze(s *schema.Schema) error {
+	d, err := sp.Info()
+	if err != nil {
+		return errors.WithStack(err)
+	}
+	s.Driver = d
+
 	// tables / constraints
 	tableStmt := spanner.Statement{SQL: `
 SELECT
@@ -295,7 +301,7 @@ GROUP BY c.TABLE_CATALOG, c.TABLE_SCHEMA, c.TABLE_NAME, c.INDEX_NAME, c.INDEX_TY
 			ParentTable:   pt,
 			ParentColumns: []*schema.Column{},
 			Def:           def,
-			Virtual:  false,
+			Virtual:       false,
 		}
 
 		for _, c := range t.Constraints {

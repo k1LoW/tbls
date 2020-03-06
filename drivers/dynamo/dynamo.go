@@ -7,6 +7,7 @@ import (
 
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/k1LoW/tbls/schema"
+	"github.com/pkg/errors"
 )
 
 var re = regexp.MustCompile(`(?s)\n\s*`)
@@ -24,6 +25,12 @@ func NewDynamodb(ctx context.Context, client *dynamodb.DynamoDB) (*Dynamodb, err
 }
 
 func (d *Dynamodb) Analyze(s *schema.Schema) error {
+	drv, err := d.Info()
+	if err != nil {
+		return errors.WithStack(err)
+	}
+	s.Driver = drv
+
 	input := &dynamodb.ListTablesInput{}
 
 	// tables

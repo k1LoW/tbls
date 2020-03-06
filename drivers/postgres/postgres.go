@@ -29,6 +29,12 @@ func NewPostgres(db *sql.DB) *Postgres {
 
 // Analyze PostgreSQL database schema
 func (p *Postgres) Analyze(s *schema.Schema) error {
+	d, err := p.Info()
+	if err != nil {
+		return errors.WithStack(err)
+	}
+	s.Driver = d
+
 	// current schema
 	var currentSchema string
 	schemaRows, err := p.db.Query(`SELECT current_schema()`)

@@ -41,6 +41,12 @@ type fk struct {
 
 // Analyze SQLite database schema
 func (l *Sqlite) Analyze(s *schema.Schema) error {
+	d, err := l.Info()
+	if err != nil {
+		return errors.WithStack(err)
+	}
+	s.Driver = d
+
 	// tables
 	tableRows, err := l.db.Query(`
 SELECT name, type, sql

@@ -26,6 +26,12 @@ func NewMysql(db *sql.DB) *Mysql {
 
 // Analyze MySQL database schema
 func (m *Mysql) Analyze(s *schema.Schema) error {
+	d, err := m.Info()
+	if err != nil {
+		return errors.WithStack(err)
+	}
+	s.Driver = d
+
 	// tables and comments
 	tableRows, err := m.db.Query(`
 SELECT table_name, table_type, table_comment FROM information_schema.tables WHERE table_schema = ?;`, s.Name)
