@@ -92,7 +92,7 @@ func (s *Schema) FindTableByName(name string) (*Table, error) {
 		if t.Name == name {
 			return t, nil
 		}
-		if s.Driver.Name == "postgres" && !strings.Contains(name, ".") {
+		if s.Driver != nil && (s.Driver.Name == "postgres" || s.Driver.Name == "redshift") && !strings.Contains(name, ".") {
 			fullName := fmt.Sprintf("%s.%s", s.Driver.Meta["current_schema"], name)
 			if t.Name == fullName {
 				return t, nil
