@@ -106,4 +106,9 @@ func loadLintArgs(args []string) ([]config.Option, error) {
 func init() {
 	rootCmd.AddCommand(lintCmd)
 	lintCmd.Flags().StringVarP(&configPath, "config", "c", "", "config file path")
+	err := lintCmd.MarkZshCompPositionalArgumentFile(2)
+	if err != nil {
+		_, _ = fmt.Fprintf(os.Stderr, "%s\n", err)
+		os.Exit(1)
+	}
 }
