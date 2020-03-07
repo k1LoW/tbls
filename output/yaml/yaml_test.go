@@ -136,6 +136,7 @@ func newTestSchema() *schema.Schema {
 		Driver: &schema.Driver{
 			Name:            "testdriver",
 			DatabaseVersion: "1.0.0",
+			Meta:            map[string]string{},
 		},
 	}
 	return s

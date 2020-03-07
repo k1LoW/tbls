@@ -75,7 +75,7 @@ type Relation struct {
 type Driver struct {
 	Name            string            `json:"name"`
 	DatabaseVersion string            `json:"database_version" yaml:"databaseVersion"`
-	Meta            map[string]string `json:"meta,omitempty"`
+	Meta            map[string]string `json:"meta"`
 }
 
 // Schema is the struct for database schema
