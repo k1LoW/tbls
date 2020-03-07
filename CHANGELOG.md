@@ -1,5 +1,12 @@
 # Changelog
 
+## [v1.28.0](https://github.com/k1LoW/tbls/compare/v1.27.0...v1.28.0) (2020-03-07)
+
+* Fix zsh completion [#176](https://github.com/k1LoW/tbls/pull/176) ([k1LoW](https://github.com/k1LoW))
+* [BREAKING][PostgreSQL][Amazon Redshift]Show `public.` schema [#175](https://github.com/k1LoW/tbls/pull/175) ([k1LoW](https://github.com/k1LoW))
+* Support Amazon DynamoDB [#174](https://github.com/k1LoW/tbls/pull/174) ([k1LoW](https://github.com/k1LoW))
+* Filter target tables using `include:` and `exclude:` / `include:` and `exclude:` support wildcard [#172](https://github.com/k1LoW/tbls/pull/172) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.27.0](https://github.com/k1LoW/tbls/compare/v1.26.0...v1.27.0) (2020-02-24)
 
 * Add config.ER.distance [#171](https://github.com/k1LoW/tbls/pull/171) ([k1LoW](https://github.com/k1LoW))
