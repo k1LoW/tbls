@@ -13,7 +13,7 @@ require (
 	github.com/gobuffalo/packd v1.0.0 // indirect
 	github.com/gobuffalo/packr/v2 v2.7.1
 	github.com/goccy/go-graphviz v0.0.4
-	github.com/goccy/go-yaml v1.4.1
+	github.com/goccy/go-yaml v1.4.2
 	github.com/google/go-cmp v0.4.0
 	github.com/labstack/gommon v0.3.0
 	github.com/lib/pq v1.3.0
@@ -36,7 +36,6 @@ require (
 	google.golang.org/api v0.17.0
 	google.golang.org/genproto v0.0.0-20200218151345-dad8c97a84f5 // indirect
 	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
-	gopkg.in/yaml.v3 v3.0.0-20200121175148-a6ecf24a6d71
 	honnef.co/go/tools v0.0.1-2020.1.3 // indirect
 )
 
