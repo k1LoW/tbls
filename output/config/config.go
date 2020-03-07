@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/goccy/go-yaml"
 	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/pkg/errors"
-	"gopkg.in/yaml.v2"
 )
 
 const noTableComment = "table comment required."
