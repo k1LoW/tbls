@@ -13,7 +13,7 @@ require (
 	github.com/gobuffalo/packd v1.0.0 // indirect
 	github.com/gobuffalo/packr/v2 v2.7.1
 	github.com/goccy/go-graphviz v0.0.4
-	github.com/goccy/go-yaml v1.3.2
+	github.com/goccy/go-yaml v1.4.1-0.20200307014633-8c52fafaa835
 	github.com/google/go-cmp v0.4.0
 	github.com/labstack/gommon v0.3.0
 	github.com/lib/pq v1.3.0
@@ -40,7 +40,5 @@ require (
 	gopkg.in/yaml.v3 v3.0.0-20200121175148-a6ecf24a6d71 // indirect
 	honnef.co/go/tools v0.0.1-2020.1.3 // indirect
 )
-
-replace github.com/goccy/go-yaml => github.com/k1LoW/go-yaml v1.4.1-0.20200307005032-38cc1a72b58f
 
 go 1.13
