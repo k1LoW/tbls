@@ -4,15 +4,15 @@
 
 | Name | Columns | Comment | Type |
 | ---- | ------- | ------- | ---- |
-| [users](users.md) | 6 | Users table | BASE TABLE |
-| [user_options](user_options.md) | 4 | User options table | BASE TABLE |
-| [posts](posts.md) | 8 | Posts table | BASE TABLE |
-| [comments](comments.md) | 6 | Comments<br>Multi-line<br>table<br>comment | BASE TABLE |
-| [comment_stars](comment_stars.md) | 6 |  | BASE TABLE |
-| [logs](logs.md) | 7 | audit log table | BASE TABLE |
-| [post_comments](post_comments.md) | 7 | post and comments View table | VIEW |
-| [CamelizeTable](CamelizeTable.md) | 2 |  | BASE TABLE |
-| [hyphen-table](hyphen-table.md) | 4 |  | BASE TABLE |
+| [public.users](public.users.md) | 6 | Users table | BASE TABLE |
+| [public.user_options](public.user_options.md) | 4 | User options table | BASE TABLE |
+| [public.posts](public.posts.md) | 8 | Posts table | BASE TABLE |
+| [public.comments](public.comments.md) | 6 | Comments<br>Multi-line<br>table<br>comment | BASE TABLE |
+| [public.comment_stars](public.comment_stars.md) | 6 |  | BASE TABLE |
+| [public.logs](public.logs.md) | 7 | audit log table | BASE TABLE |
+| [public.post_comments](public.post_comments.md) | 7 | post and comments View table | VIEW |
+| [public.CamelizeTable](public.CamelizeTable.md) | 2 |  | BASE TABLE |
+| [public.hyphen-table](public.hyphen-table.md) | 4 |  | BASE TABLE |
 | [administrator.blogs](administrator.blogs.md) | 6 |  | BASE TABLE |
 | [backup.blogs](backup.blogs.md) | 5 |  | BASE TABLE |
 

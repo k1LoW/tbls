@@ -35,6 +35,12 @@ func NewMssql(db *sql.DB) *Mssql {
 }
 
 func (m *Mssql) Analyze(s *schema.Schema) error {
+	d, err := m.Info()
+	if err != nil {
+		return errors.WithStack(err)
+	}
+	s.Driver = d
+
 	// tables
 	tableRows, err := m.db.Query(`
 SELECT schema_name(schema_id) AS table_schema, name, object_id, type

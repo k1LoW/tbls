@@ -48,3 +48,4 @@ relations:
 driver:
   name: testdriver
   databaseVersion: 1.0.0
+  meta: {}

@@ -68,6 +68,7 @@
   ],
   "driver": {
     "name": "testdriver",
-    "database_version": "1.0.0"
+    "database_version": "1.0.0",
+    "meta": {}
   }
 }

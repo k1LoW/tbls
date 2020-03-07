@@ -32,25 +32,26 @@ func (c *Config) OutputSchema(wr io.Writer, s *schema.Schema) error {
 	for _, table := range s.Tables {
 		tableExist := false
 		for i := range c.config.Comments {
-			if table.Name == c.config.Comments[i].Table {
-				tableExist = true
-				for _, column := range table.Columns {
-					if _, ok := c.config.Comments[i].ColumnComments[column.Name]; !ok {
-						if c.config.Lint.RequireColumnComment.IsEnabled() {
-							for _, w := range columnWarns {
-								if fmt.Sprintf("%s.%s", table.Name, column.Name) == w.Target {
-									if c.config.Comments[i].ColumnComments == nil {
-										c.config.Comments[i].ColumnComments = map[string]string{}
-									}
-									c.config.Comments[i].ColumnComments[column.Name] = noColumnComment
+			if s.FullTableName(table.Name) != s.FullTableName(c.config.Comments[i].Table) {
+				continue
+			}
+			tableExist = true
+			for _, column := range table.Columns {
+				if _, ok := c.config.Comments[i].ColumnComments[column.Name]; !ok {
+					if c.config.Lint.RequireColumnComment.IsEnabled() {
+						for _, w := range columnWarns {
+							if fmt.Sprintf("%s.%s", table.Name, column.Name) == w.Target {
+								if c.config.Comments[i].ColumnComments == nil {
+									c.config.Comments[i].ColumnComments = map[string]string{}
 								}
+								c.config.Comments[i].ColumnComments[column.Name] = noColumnComment
 							}
-						} else {
-							if c.config.Comments[i].ColumnComments == nil {
-								c.config.Comments[i].ColumnComments = map[string]string{}
-							}
-							c.config.Comments[i].ColumnComments[column.Name] = noColumnComment
 						}
+					} else {
+						if c.config.Comments[i].ColumnComments == nil {
+							c.config.Comments[i].ColumnComments = map[string]string{}
+						}
+						c.config.Comments[i].ColumnComments[column.Name] = noColumnComment
 					}
 				}
 			}

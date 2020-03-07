@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"sort"
+	"strings"
 
 	"github.com/pkg/errors"
 )
@@ -72,8 +73,9 @@ type Relation struct {
 
 // Driver is the struct for tbls driver information
 type Driver struct {
-	Name            string `json:"name"`
-	DatabaseVersion string `json:"database_version" yaml:"databaseVersion"`
+	Name            string            `json:"name"`
+	DatabaseVersion string            `json:"database_version" yaml:"databaseVersion"`
+	Meta            map[string]string `json:"meta"`
 }
 
 // Schema is the struct for database schema
@@ -84,10 +86,17 @@ type Schema struct {
 	Driver    *Driver     `json:"driver"`
 }
 
+func (s *Schema) FullTableName(name string) string {
+	if s.Driver != nil && (s.Driver.Name == "postgres" || s.Driver.Name == "redshift") && !strings.Contains(name, ".") {
+		return fmt.Sprintf("%s.%s", s.Driver.Meta["current_schema"], name)
+	}
+	return name
+}
+
 // FindTableByName find table by table name
 func (s *Schema) FindTableByName(name string) (*Table, error) {
 	for _, t := range s.Tables {
-		if t.Name == name {
+		if s.FullTableName(t.Name) == s.FullTableName(name) {
 			return t, nil
 		}
 	}

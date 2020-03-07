@@ -15,7 +15,7 @@ func TestDistance(t *testing.T) {
 	}
 	var ut *schema.Table
 	for _, t := range s.Tables {
-		if t.Name == "users" {
+		if t.Name == "public.users" {
 			ut = t
 			break
 		}
@@ -31,21 +31,21 @@ func TestDistance(t *testing.T) {
 	}
 
 	tables, relations, _ = ut.CollectTablesAndRelations(1, true)
-	want = 5
+	want = 7
 	if len(tables) != want {
 		t.Errorf("got %v\nwant %v", len(tables), want)
 	}
-	want = 4
+	want = 6
 	if len(relations) != want {
 		t.Errorf("got %v\nwant %v", len(relations), want)
 	}
 
 	tables, relations, _ = ut.CollectTablesAndRelations(2, true)
-	want = 5
+	want = 7
 	if len(tables) != want {
 		t.Errorf("got %v\nwant %v", len(tables), want)
 	}
-	want = 9
+	want = 11
 	if len(relations) != want {
 		t.Errorf("got %v\nwant %v", len(relations), want)
 	}

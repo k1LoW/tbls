@@ -7,6 +7,7 @@ import (
 
 	"cloud.google.com/go/bigquery"
 	"github.com/k1LoW/tbls/schema"
+	"github.com/pkg/errors"
 )
 
 // Bigquery struct
@@ -26,6 +27,12 @@ func NewBigquery(ctx context.Context, client *bigquery.Client, datasetID string)
 }
 
 func (b *Bigquery) Analyze(s *schema.Schema) error {
+	d, err := b.Info()
+	if err != nil {
+		return errors.WithStack(err)
+	}
+	s.Driver = d
+
 	bt := b.client.Dataset(b.datasetID).Tables(b.ctx)
 
 	// tables
