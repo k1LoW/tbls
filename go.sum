@@ -140,8 +140,8 @@ github.com/gobuffalo/packr/v2 v2.7.1 h1:n3CIW5T17T8v4GGK5sWXLVWJhCz7b5aNLSxW6gYi
 github.com/gobuffalo/packr/v2 v2.7.1/go.mod h1:qYEvAazPaVxy7Y7KR0W8qYEE+RymX74kETFqjFoFlOc=
 github.com/goccy/go-graphviz v0.0.4 h1:QYYd3VKIuRYPRv3j1amEnpOdbscA8R4MRI7JelhaTSI=
 github.com/goccy/go-graphviz v0.0.4/go.mod h1:wXVsXxmyMQU6TN3zGRttjNn3h+iCAS7xQFC6TlNvLhk=
-github.com/goccy/go-yaml v1.4.1-0.20200307014633-8c52fafaa835 h1:U1YANB0kNjqUk/GW8hGW8Tue5eezwo5ql+JB4c+lWiY=
-github.com/goccy/go-yaml v1.4.1-0.20200307014633-8c52fafaa835/go.mod h1:PsEEJ29nIFZL07P/c8dv4P6rQkVFFXafQee85U+ERHA=
+github.com/goccy/go-yaml v1.4.1 h1:o7LsEwCkF8hbQX2weuJtzOBjmfeDZAWCYxnbt9B/zCo=
+github.com/goccy/go-yaml v1.4.1/go.mod h1:PsEEJ29nIFZL07P/c8dv4P6rQkVFFXafQee85U+ERHA=
 github.com/gogo/protobuf v1.1.1/go.mod h1:r8qH/GZQm5c6nD/R0oafs1akxWv10x8SbQlK7atdtwQ=
 github.com/gogo/protobuf v1.2.1/go.mod h1:hp+jE20tsWTFYpLwKvXlhS1hjn+gTNwPg2I6zVXpSg4=
 github.com/golang-sql/civil v0.0.0-20190719163853-cb61b32ac6fe h1:lXe2qZdvpiX5WZkZR4hgp4KJVfY3nMkvmwbVkpv1rVY=
