@@ -11,10 +11,10 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/goccy/go-yaml"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/minio/minio/pkg/wildcard"
 	"github.com/pkg/errors"
-	"gopkg.in/yaml.v3"
 )
 
 const defaultConfigFilePath = ".tbls.yml"
