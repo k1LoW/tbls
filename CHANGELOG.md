@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.28.1](https://github.com/k1LoW/tbls/compare/v1.28.0...v1.28.1) (2020-03-08)
+
+* Use goccy/go-yaml for loading config, too [#177](https://github.com/k1LoW/tbls/pull/177) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.28.0](https://github.com/k1LoW/tbls/compare/v1.27.0...v1.28.0) (2020-03-07)
 
 * Fix zsh completion [#176](https://github.com/k1LoW/tbls/pull/176) ([k1LoW](https://github.com/k1LoW))
