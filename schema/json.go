@@ -26,12 +26,12 @@ func (s Schema) MarshalJSON() ([]byte, error) {
 // MarshalJSON return custom JSON byte
 func (d Driver) MarshalJSON() ([]byte, error) {
 	if d.Meta == nil {
-		d.Meta = map[string]string{}
+		d.Meta = &DriverMeta{}
 	}
 	return json.Marshal(&struct {
-		Name            string            `json:"name"`
-		DatabaseVersion string            `json:"database_version"`
-		Meta            map[string]string `json:"meta"`
+		Name            string      `json:"name"`
+		DatabaseVersion string      `json:"database_version"`
+		Meta            *DriverMeta `json:"meta"`
 	}{
 		Name:            d.Name,
 		DatabaseVersion: d.DatabaseVersion,

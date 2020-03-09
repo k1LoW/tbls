@@ -68,14 +68,18 @@ type Relation struct {
 	ParentTable   *Table    `json:"parent_table" yaml:"parentTable"`
 	ParentColumns []*Column `json:"parent_columns" yaml:"parentColumns"`
 	Def           string    `json:"def"`
-	Virtual       bool      `json:"virtual" yaml:"virtual"`
+	Virtual       bool      `json:"virtual"`
+}
+
+type DriverMeta struct {
+	CurrentSchema string `json:"current_schema,omitempty" yaml:"currentSchema,omitempty"`
 }
 
 // Driver is the struct for tbls driver information
 type Driver struct {
-	Name            string            `json:"name"`
-	DatabaseVersion string            `json:"database_version" yaml:"databaseVersion"`
-	Meta            map[string]string `json:"meta"`
+	Name            string      `json:"name"`
+	DatabaseVersion string      `json:"database_version" yaml:"databaseVersion"`
+	Meta            *DriverMeta `json:"meta"`
 }
 
 // Schema is the struct for database schema
@@ -88,7 +92,7 @@ type Schema struct {
 
 func (s *Schema) NormalizeTableName(name string) string {
 	if s.Driver != nil && (s.Driver.Name == "postgres" || s.Driver.Name == "redshift") && !strings.Contains(name, ".") {
-		return fmt.Sprintf("%s.%s", s.Driver.Meta["current_schema"], name)
+		return fmt.Sprintf("%s.%s", s.Driver.Meta.CurrentSchema, name)
 	}
 	return name
 }
