@@ -32,7 +32,7 @@ func (c *Config) OutputSchema(wr io.Writer, s *schema.Schema) error {
 	for _, table := range s.Tables {
 		tableExist := false
 		for i := range c.config.Comments {
-			if s.FullTableName(table.Name) != s.FullTableName(c.config.Comments[i].Table) {
+			if s.NormalizeTableName(table.Name) != s.NormalizeTableName(c.config.Comments[i].Table) {
 				continue
 			}
 			tableExist = true

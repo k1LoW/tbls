@@ -86,17 +86,24 @@ type Schema struct {
 	Driver    *Driver     `json:"driver"`
 }
 
-func (s *Schema) FullTableName(name string) string {
+func (s *Schema) NormalizeTableName(name string) string {
 	if s.Driver != nil && (s.Driver.Name == "postgres" || s.Driver.Name == "redshift") && !strings.Contains(name, ".") {
 		return fmt.Sprintf("%s.%s", s.Driver.Meta["current_schema"], name)
 	}
 	return name
 }
 
+func (s *Schema) NormalizeTableNames(names []string) []string {
+	for i, n := range names {
+		names[i] = s.NormalizeTableName(n)
+	}
+	return names
+}
+
 // FindTableByName find table by table name
 func (s *Schema) FindTableByName(name string) (*Table, error) {
 	for _, t := range s.Tables {
-		if s.FullTableName(t.Name) == s.FullTableName(name) {
+		if s.NormalizeTableName(t.Name) == s.NormalizeTableName(name) {
 			return t, nil
 		}
 	}
