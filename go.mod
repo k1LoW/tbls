@@ -39,4 +39,6 @@ require (
 	honnef.co/go/tools v0.0.1-2020.1.3 // indirect
 )
 
+replace github.com/goccy/go-yaml => github.com/k1LoW/go-yaml v1.4.2-0.20200309135326-f92ff9457879
+
 go 1.13

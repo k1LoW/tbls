@@ -48,7 +48,7 @@ func (p *Postgres) Analyze(s *schema.Schema) error {
 			return errors.WithStack(err)
 		}
 	}
-	s.Driver.Meta["current_schema"] = currentSchema
+	s.Driver.Meta.CurrentSchema = currentSchema
 
 	// tables
 	tableRows, err := p.db.Query(`
@@ -371,7 +371,7 @@ func (p *Postgres) Info() (*schema.Driver, error) {
 	d := &schema.Driver{
 		Name:            name,
 		DatabaseVersion: v,
-		Meta:            map[string]string{},
+		Meta:            &schema.DriverMeta{},
 	}
 	return d, nil
 }
