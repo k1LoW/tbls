@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.28.2](https://github.com/k1LoW/tbls/compare/v1.28.1...v1.28.2) (2020-03-09)
+
+* Support table name omitting current_schema [#178](https://github.com/k1LoW/tbls/pull/178) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.28.1](https://github.com/k1LoW/tbls/compare/v1.28.0...v1.28.1) (2020-03-08)
 
 * Use goccy/go-yaml for loading config, too [#177](https://github.com/k1LoW/tbls/pull/177) ([k1LoW](https://github.com/k1LoW))
