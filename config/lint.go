@@ -49,11 +49,12 @@ func (r RequireTableComment) Check(s *schema.Schema, exclude []string) []RuleWar
 	}
 	msg := "table comment required."
 
+	nt := s.NormalizeTableNames(r.Exclude)
 	for _, t := range s.Tables {
 		if contains(exclude, t.Name) {
 			continue
 		}
-		if contains(r.Exclude, t.Name) {
+		if contains(nt, t.Name) {
 			continue
 		}
 		if t.Comment == "" {
@@ -86,11 +87,12 @@ func (r RequireColumnComment) Check(s *schema.Schema, exclude []string) []RuleWa
 	}
 	msg := "column comment required."
 
+	nt := s.NormalizeTableNames(r.ExcludedTables)
 	for _, t := range s.Tables {
 		if contains(exclude, t.Name) {
 			continue
 		}
-		if contains(r.ExcludedTables, t.Name) {
+		if contains(nt, t.Name) {
 			continue
 		}
 		for _, c := range t.Columns {
@@ -128,12 +130,13 @@ func (r UnrelatedTable) Check(s *schema.Schema, exclude []string) []RuleWarn {
 	}
 	msgFmt := "unrelated (isolated) table exists. %s"
 
+	nt := s.NormalizeTableNames(r.Exclude)
 	ut := map[string]*schema.Table{}
 	for _, t := range s.Tables {
 		if contains(exclude, t.Name) {
 			continue
 		}
-		if contains(r.Exclude, t.Name) {
+		if contains(nt, t.Name) {
 			continue
 		}
 		ut[t.Name] = t
@@ -175,11 +178,12 @@ func (r ColumnCount) Check(s *schema.Schema, exclude []string) []RuleWarn {
 	}
 	msgFmt := "too many columns. [%d/%d]"
 
+	nt := s.NormalizeTableNames(r.Exclude)
 	for _, t := range s.Tables {
 		if contains(exclude, t.Name) {
 			continue
 		}
-		if contains(r.Exclude, t.Name) {
+		if contains(nt, t.Name) {
 			continue
 		}
 		if len(t.Columns) > r.Max {

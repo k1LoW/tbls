@@ -76,7 +76,7 @@ var lintCmd = &cobra.Command{
 			var v config.Rule
 			r := l.Field(i)
 			v = r.Interface().(config.Rule)
-			ruleWarns = append(ruleWarns, v.Check(s, c.LintExclude)...)
+			ruleWarns = append(ruleWarns, v.Check(s, s.NormalizeTableNames(c.LintExclude))...)
 		}
 		if len(ruleWarns) > 0 {
 			for _, warn := range ruleWarns {
