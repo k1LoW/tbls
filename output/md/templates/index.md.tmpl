@@ -1,12 +1,12 @@
 # {{ .Schema.Name }}
 
-## Tables
+## {{ "Tables" | lookup }}
 {{ range $t := .Tables }}
 |{{ range $d := $t }} {{ $d | nl2br }} |{{ end }}
 {{- end -}}
 {{- if .er }}
 
-## Relations
+## {{ "Relations" | lookup }}
 
 ![er](schema.{{ .erFormat }})
 {{- end }}

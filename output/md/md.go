@@ -42,7 +42,7 @@ func (m *Md) OutputSchema(wr io.Writer, s *schema.Schema) error {
 		return errors.WithStack(err)
 	}
 	tmpl := template.Must(template.New("index").Funcs(output.Funcs(m.config)).Parse(ts))
-	templateData := makeSchemaTemplateData(s, m.config.Format.Adjust)
+	templateData := m.makeSchemaTemplateData(s, m.config.Format.Adjust)
 	templateData["er"] = m.er
 	templateData["erFormat"] = m.config.ER.Format
 	err = tmpl.Execute(wr, templateData)
@@ -59,7 +59,7 @@ func (m *Md) OutputTable(wr io.Writer, t *schema.Table) error {
 		return errors.WithStack(err)
 	}
 	tmpl := template.Must(template.New(t.Name).Funcs(output.Funcs(m.config)).Parse(ts))
-	templateData := makeTableTemplateData(t, m.config.Format.Adjust)
+	templateData := m.makeTableTemplateData(t, m.config.Format.Adjust)
 	templateData["er"] = m.er
 	templateData["erFormat"] = m.config.ER.Format
 
@@ -249,9 +249,14 @@ func outputExists(s *schema.Schema, path string) bool {
 	return false
 }
 
-func makeSchemaTemplateData(s *schema.Schema, adjust bool) map[string]interface{} {
+func (m *Md) makeSchemaTemplateData(s *schema.Schema, adjust bool) map[string]interface{} {
 	tablesData := [][]string{
-		[]string{"Name", "Columns", "Comment", "Type"},
+		[]string{
+			m.config.Dict.Lookup("Name"),
+			m.config.Dict.Lookup("Columns"),
+			m.config.Dict.Lookup("Comment"),
+			m.config.Dict.Lookup("Type"),
+		},
 		[]string{"----", "-------", "-------", "----"},
 	}
 	for _, t := range s.Tables {
@@ -277,10 +282,18 @@ func makeSchemaTemplateData(s *schema.Schema, adjust bool) map[string]interface{
 	}
 }
 
-func makeTableTemplateData(t *schema.Table, adjust bool) map[string]interface{} {
+func (m *Md) makeTableTemplateData(t *schema.Table, adjust bool) map[string]interface{} {
 	// Columns
 	columnsData := [][]string{
-		[]string{"Name", "Type", "Default", "Nullable", "Children", "Parents", "Comment"},
+		[]string{
+			m.config.Dict.Lookup("Name"),
+			m.config.Dict.Lookup("Type"),
+			m.config.Dict.Lookup("Default"),
+			m.config.Dict.Lookup("Nullable"),
+			m.config.Dict.Lookup("Children"),
+			m.config.Dict.Lookup("Parents"),
+			m.config.Dict.Lookup("Comment"),
+		},
 		[]string{"----", "----", "-------", "--------", "--------", "-------", "-------"},
 	}
 	for _, c := range t.Columns {
@@ -316,7 +329,11 @@ func makeTableTemplateData(t *schema.Table, adjust bool) map[string]interface{} 
 
 	// Constraints
 	constraintsData := [][]string{
-		[]string{"Name", "Type", "Definition"},
+		[]string{
+			m.config.Dict.Lookup("Name"),
+			m.config.Dict.Lookup("Type"),
+			m.config.Dict.Lookup("Definition"),
+		},
 		[]string{"----", "----", "----------"},
 	}
 	for _, c := range t.Constraints {
@@ -330,7 +347,10 @@ func makeTableTemplateData(t *schema.Table, adjust bool) map[string]interface{} 
 
 	// Indexes
 	indexesData := [][]string{
-		[]string{"Name", "Definition"},
+		[]string{
+			m.config.Dict.Lookup("Name"),
+			m.config.Dict.Lookup("Definition"),
+		},
 		[]string{"----", "----------"},
 	}
 	for _, i := range t.Indexes {
@@ -343,7 +363,10 @@ func makeTableTemplateData(t *schema.Table, adjust bool) map[string]interface{} 
 
 	// Triggers
 	triggersData := [][]string{
-		[]string{"Name", "Definition"},
+		[]string{
+			m.config.Dict.Lookup("Name"),
+			m.config.Dict.Lookup("Definition"),
+		},
 		[]string{"----", "----------"},
 	}
 	for _, i := range t.Triggers {

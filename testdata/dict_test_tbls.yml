@@ -1,0 +1,18 @@
+---
+format:
+  adjust: true
+dict:
+  Tables: テーブル一覧
+  Description: 概要
+  Columns: カラム一覧
+  Indexes: INDEX
+  Constraints: 制約
+  Triggers: トリガー
+  Relations: 関係
+  Name: ""
+  Comment: コメント
+  Type: タイプ
+  Default: デフォルト値
+  Children: 子テーブル
+  Parents: 親テーブル
+  Definition: 定義
