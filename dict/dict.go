@@ -36,6 +36,12 @@ func (d *Dict) Merge(in map[string]string) {
 	}
 }
 
+func (d *Dict) MergeIfNotPresent(in map[string]string) {
+	for k, v := range in {
+		_, _ = d.s.LoadOrStore(k, v)
+	}
+}
+
 func (d *Dict) Dump() map[string]string {
 	dpd := make(map[string]string)
 	d.s.Range(func(k, v interface{}) bool {
