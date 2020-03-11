@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	"github.com/goccy/go-yaml"
+	"github.com/k1LoW/tbls/dict"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/minio/minio/pkg/wildcard"
 	"github.com/pkg/errors"
@@ -38,6 +39,7 @@ type Config struct {
 	LintExclude []string             `yaml:"lintExclude"`
 	Relations   []AdditionalRelation `yaml:"relations"`
 	Comments    []AdditionalComment  `yaml:"comments"`
+	Dict        dict.Dict            `yaml:"dict"`
 }
 
 // Format is document format setting

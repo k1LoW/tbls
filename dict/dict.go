@@ -1,6 +1,11 @@
 package dict
 
-import "sync"
+import (
+	"encoding/json"
+	"sync"
+
+	"github.com/goccy/go-yaml"
+)
 
 type Dict struct {
 	s sync.Map
@@ -49,4 +54,36 @@ func (d *Dict) Dump() map[string]string {
 		return true
 	})
 	return dpd
+}
+
+func (d *Dict) MarchalJSON() ([]byte, error) {
+	return json.Marshal(d.Dump())
+}
+
+func (d *Dict) UnmarshalJSON(data []byte) error {
+	m := map[string]string{}
+	err := json.Unmarshal(data, &m)
+	if err != nil {
+		return err
+	}
+	for k, v := range m {
+		d.s.Store(k, v)
+	}
+	return nil
+}
+
+func (d *Dict) MarchalYAML() ([]byte, error) {
+	return yaml.Marshal(d.Dump())
+}
+
+func (d *Dict) UnmarshalYAML(data []byte) error {
+	m := map[string]string{}
+	err := yaml.Unmarshal(data, &m)
+	if err != nil {
+		return err
+	}
+	for k, v := range m {
+		d.s.Store(k, v)
+	}
+	return nil
 }
