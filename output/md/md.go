@@ -12,6 +12,7 @@ import (
 
 	"github.com/gobuffalo/packr/v2"
 	"github.com/k1LoW/tbls/config"
+	"github.com/k1LoW/tbls/output"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/mattn/go-runewidth"
 	"github.com/pkg/errors"
@@ -40,7 +41,7 @@ func (m *Md) OutputSchema(wr io.Writer, s *schema.Schema) error {
 	if err != nil {
 		return errors.WithStack(err)
 	}
-	tmpl := template.Must(template.New("index").Funcs(funcMap()).Parse(ts))
+	tmpl := template.Must(template.New("index").Funcs(output.Funcs(m.config)).Parse(ts))
 	templateData := makeSchemaTemplateData(s, m.config.Format.Adjust)
 	templateData["er"] = m.er
 	templateData["erFormat"] = m.config.ER.Format
@@ -57,7 +58,7 @@ func (m *Md) OutputTable(wr io.Writer, t *schema.Table) error {
 	if err != nil {
 		return errors.WithStack(err)
 	}
-	tmpl := template.Must(template.New(t.Name).Funcs(funcMap()).Parse(ts))
+	tmpl := template.Must(template.New(t.Name).Funcs(output.Funcs(m.config)).Parse(ts))
 	templateData := makeTableTemplateData(t, m.config.Format.Adjust)
 	templateData["er"] = m.er
 	templateData["erFormat"] = m.config.ER.Format
@@ -246,19 +247,6 @@ func outputExists(s *schema.Schema, path string) bool {
 		}
 	}
 	return false
-}
-
-func funcMap() map[string]interface{} {
-	return template.FuncMap{
-		"nl2br": func(text string) string {
-			r := strings.NewReplacer("\r\n", "<br>", "\n", "<br>", "\r", "<br>")
-			return r.Replace(text)
-		},
-		"nl2mdnl": func(text string) string {
-			r := strings.NewReplacer("\r\n", "  \n", "\n", "  \n", "\r", "  \n")
-			return r.Replace(text)
-		},
-	}
 }
 
 func makeSchemaTemplateData(s *schema.Schema, adjust bool) map[string]interface{} {

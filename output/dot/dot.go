@@ -2,23 +2,14 @@ package dot
 
 import (
 	"io"
-	"strings"
 	"text/template"
 
 	"github.com/gobuffalo/packr/v2"
 	"github.com/k1LoW/tbls/config"
+	"github.com/k1LoW/tbls/output"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/pkg/errors"
 )
-
-var templateFuncs = map[string]interface{}{
-	"nl2br": func(text string) string {
-		return strings.Replace(strings.Replace(strings.Replace(text, "\r\n", "<br />", -1), "\n", "<br />", -1), "\r", "<br />", -1)
-	},
-	"nl2space": func(text string) string {
-		return strings.Replace(strings.Replace(strings.Replace(text, "\r\n", " ", -1), "\n", " ", -1), "\r", " ", -1)
-	},
-}
 
 // Dot struct
 type Dot struct {
@@ -40,7 +31,7 @@ func (d *Dot) OutputSchema(wr io.Writer, s *schema.Schema) error {
 	if err != nil {
 		return errors.WithStack(err)
 	}
-	tmpl := template.Must(template.New(s.Name).Funcs(templateFuncs).Parse(ts))
+	tmpl := template.Must(template.New(s.Name).Funcs(output.Funcs(d.config)).Parse(ts))
 	err = tmpl.Execute(wr, map[string]interface{}{
 		"Schema":      s,
 		"showComment": d.config.ER.Comment,
@@ -63,7 +54,7 @@ func (d *Dot) OutputTable(wr io.Writer, t *schema.Table) error {
 	if err != nil {
 		return errors.WithStack(err)
 	}
-	tmpl := template.Must(template.New(t.Name).Funcs(templateFuncs).Parse(ts))
+	tmpl := template.Must(template.New(t.Name).Funcs(output.Funcs(d.config)).Parse(ts))
 	err = tmpl.Execute(wr, map[string]interface{}{
 		"Table":       tables[0],
 		"Tables":      tables[1:],
