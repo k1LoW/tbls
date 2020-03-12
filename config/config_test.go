@@ -18,21 +18,18 @@ func TestLoadDefault(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := ""
-	if config.DSN != want {
+
+	if want := ""; config.DSN != want {
 		t.Errorf("got %v\nwant %v", config.DSN, want)
 	}
-	want2 := "dbdoc"
-	if config.DocPath != want2 {
-		t.Errorf("got %v\nwant %v", config.DocPath, want2)
+	if want := "dbdoc"; config.DocPath != want {
+		t.Errorf("got %v\nwant %v", config.DocPath, want)
 	}
-	want3 := "png"
-	if config.ER.Format != want3 {
-		t.Errorf("got %v\nwant %v", config.ER.Format, want3)
+	if want := "png"; config.ER.Format != want {
+		t.Errorf("got %v\nwant %v", config.ER.Format, want)
 	}
-	want4 := 1
-	if *config.ER.Distance != want4 {
-		t.Errorf("got %v\nwant %v", config.ER.Distance, want4)
+	if want := 1; *config.ER.Distance != want {
+		t.Errorf("got %v\nwant %v", config.ER.Distance, want)
 	}
 }
 
@@ -136,17 +133,13 @@ func TestMergeAditionalData(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	want := 1
-	got := len(s.Relations)
-	if got != want {
-		t.Errorf("got %v\nwant %v", got, want)
+	if want := 1; len(s.Relations) != want {
+		t.Errorf("got %v\nwant %v", len(s.Relations), want)
 	}
 	posts, _ := s.FindTableByName("posts")
 	title, _ := posts.FindColumnByName("title")
-	want2 := "post title"
-	got2 := title.Comment
-	if got2 != want2 {
-		t.Errorf("got %v\nwant %v", got2, want2)
+	if want := "post title"; title.Comment != want {
+		t.Errorf("got %v\nwant %v", title.Comment, want)
 	}
 }
 
@@ -231,10 +224,8 @@ func TestFilterTables(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	want := 2
-	got := len(s.Tables)
-	if got != want {
-		t.Errorf("got %v\nwant %v", got, want)
+	if want := 2; len(s.Tables) != want {
+		t.Errorf("got %v\nwant %v", len(s.Tables), want)
 	}
 }
 
@@ -301,22 +292,20 @@ func TestModifySchema(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	want := 1
-	got := len(s.Relations)
-	if got != want {
-		t.Errorf("got %v\nwant %v", got, want)
+
+	if want := 1; len(s.Relations) != want {
+		t.Errorf("got %v\nwant %v", len(s.Relations), want)
 	}
 	posts, _ := s.FindTableByName("posts")
 	title, _ := posts.FindColumnByName("title")
-	want2 := "post title"
-	got2 := title.Comment
-	if got2 != want2 {
-		t.Errorf("got %v\nwant %v", got2, want2)
+	if want := "post title"; title.Comment != want {
+		t.Errorf("got %v\nwant %v", title.Comment, want)
 	}
-	want3 := 2
-	got3 := len(s.Tables)
-	if got3 != want3 {
-		t.Errorf("got %v\nwant %v", got, want)
+	if want := 2; len(s.Tables) != want {
+		t.Errorf("got %v\nwant %v", len(s.Tables), want)
+	}
+	if want := "mydatabase"; s.Name != want {
+		t.Errorf("got %v\nwant %v", s.Name, want)
 	}
 }
 

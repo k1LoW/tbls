@@ -25,6 +25,7 @@ Key features of `tbls` are:
     - [Lint a database](#lint-a-database)
     - [Continuous Integration](#continuous-integration)
   - [Configuration](#configration)
+    - [Name](#name)
     - [DSN](#dsn)
       - [Support Database](#support-database)
     - [Document path](#document-path)
@@ -224,9 +225,18 @@ script:
 
 ## Configuration
 
+### Name
+
+`name:` is used to specify the database name of the document.
+
+``` yaml
+# .tbls.yml
+name: mydatabase
+```
+
 ### DSN
 
-`DSN:` (Data Source Name) is used to connect to database.
+`dsn:` (Data Source Name) is used to connect to database.
 
 ``` yaml
 # .tbls.yml
