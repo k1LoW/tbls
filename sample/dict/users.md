@@ -25,7 +25,7 @@ CREATE TABLE `users` (
 
 ## カラム一覧
 
-|          | タイプ          | デフォルト値              | Nullable | 子テーブル                                                                                                       | 親テーブル      | コメント                 |
+| 名前       | タイプ          | デフォルト値              | Nullable | 子テーブル                                                                                                       | 親テーブル      | コメント                 |
 | -------- | ------------ | ------------------- | -------- | ----------------------------------------------------------------------------------------------------------- | ---------- | -------------------- |
 | id       | int(11)      |                     | false    | [comment_stars](comment_stars.md) [comments](comments.md) [posts](posts.md) [user_options](user_options.md) |            |                      |
 | username | varchar(50)  |                     | false    |                                                                                                             |            |                      |
@@ -34,23 +34,23 @@ CREATE TABLE `users` (
 | created  | timestamp    | CURRENT_TIMESTAMP   | false    |                                                                                                             |            |                      |
 | updated  | timestamp    | 0000-00-00 00:00:00 | false    |                                                                                                             |            |                      |
 
-## 制約
+## 制約一覧
 
-|          | タイプ         | 定義                             |
+| 名前       | タイプ         | 定義                             |
 | -------- | ----------- | ------------------------------ |
 | email    | UNIQUE      | UNIQUE KEY email (email)       |
 | PRIMARY  | PRIMARY KEY | PRIMARY KEY (id)               |
 | username | UNIQUE      | UNIQUE KEY username (username) |
 
-## INDEX
+## INDEX一覧
 
-|          | 定義                                         |
+| 名前       | 定義                                         |
 | -------- | ------------------------------------------ |
 | PRIMARY  | PRIMARY KEY (id) USING BTREE               |
 | email    | UNIQUE KEY email (email) USING BTREE       |
 | username | UNIQUE KEY username (username) USING BTREE |
 
-## 関係
+## ER図
 
 ![er](users.png)
 

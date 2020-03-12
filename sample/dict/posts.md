@@ -27,7 +27,7 @@ CREATE TABLE `posts` (
 
 ## カラム一覧
 
-|           | タイプ                              | デフォルト値       | Nullable | 子テーブル                   | 親テーブル             | コメント                 |
+| 名前        | タイプ                              | デフォルト値       | Nullable | 子テーブル                   | 親テーブル             | コメント                 |
 | --------- | -------------------------------- | ------------ | -------- | ----------------------- | ----------------- | -------------------- |
 | id        | bigint(20)                       |              | false    | [comments](comments.md) |                   |                      |
 | user_id   | int(11)                          |              | false    |                         | [users](users.md) |                      |
@@ -37,17 +37,17 @@ CREATE TABLE `posts` (
 | created   | datetime                         |              | false    |                         |                   |                      |
 | updated   | datetime                         |              | true     |                         |                   |                      |
 
-## 制約
+## 制約一覧
 
-|                  | タイプ         | 定義                                          |
+| 名前               | タイプ         | 定義                                          |
 | ---------------- | ----------- | ------------------------------------------- |
 | posts_user_id_fk | FOREIGN KEY | FOREIGN KEY (user_id) REFERENCES users (id) |
 | PRIMARY          | PRIMARY KEY | PRIMARY KEY (id)                            |
 | user_id          | UNIQUE      | UNIQUE KEY user_id (user_id, title)         |
 
-## INDEX
+## INDEX一覧
 
-|                   | 定義                                              |
+| 名前                | 定義                                              |
 | ----------------- | ----------------------------------------------- |
 | posts_user_id_idx | KEY posts_user_id_idx (id) USING BTREE          |
 | PRIMARY           | PRIMARY KEY (id) USING BTREE                    |
@@ -55,11 +55,11 @@ CREATE TABLE `posts` (
 
 ## トリガー
 
-|                      | 定義                                                                                                                  |
+| 名前                   | 定義                                                                                                                  |
 | -------------------- | ------------------------------------------------------------------------------------------------------------------- |
 | update_posts_updated | CREATE TRIGGER update_posts_updated BEFORE UPDATE ON posts<br>FOR EACH ROW<br>SET NEW.updated = CURRENT_TIMESTAMP() |
 
-## 関係
+## ER図
 
 ![er](posts.png)
 

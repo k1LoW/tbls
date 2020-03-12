@@ -2,7 +2,7 @@
 
 ## テーブル一覧
 
-|                                   | カラム一覧      | コメント                                       | タイプ        |
+| 名前                                | カラム一覧      | コメント                                       | タイプ        |
 | --------------------------------- | ---------- | ------------------------------------------ | ---------- |
 | [CamelizeTable](CamelizeTable.md) | 2          |                                            | BASE TABLE |
 | [comment_stars](comment_stars.md) | 6          |                                            | BASE TABLE |
@@ -14,7 +14,7 @@
 | [user_options](user_options.md)   | 4          | User options table                         | BASE TABLE |
 | [users](users.md)                 | 6          | Users table                                | BASE TABLE |
 
-## 関係
+## ER図
 
 ![er](schema.png)
 

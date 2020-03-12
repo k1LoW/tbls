@@ -22,7 +22,7 @@ CREATE TABLE `logs` (
 
 ## カラム一覧
 
-|                 | タイプ        | デフォルト値       | Nullable | 子テーブル      | 親テーブル      | コメント     |
+| 名前              | タイプ        | デフォルト値       | Nullable | 子テーブル      | 親テーブル      | コメント     |
 | --------------- | ---------- | ------------ | -------- | ---------- | ---------- | -------- |
 | id              | bigint(20) |              | false    |            |            |          |
 | user_id         | int(11)    |              | false    |            |            |          |
@@ -32,19 +32,19 @@ CREATE TABLE `logs` (
 | payload         | text       |              | true     |            |            |          |
 | created         | datetime   |              | false    |            |            |          |
 
-## 制約
+## 制約一覧
 
-|         | タイプ         | 定義               |
+| 名前      | タイプ         | 定義               |
 | ------- | ----------- | ---------------- |
 | PRIMARY | PRIMARY KEY | PRIMARY KEY (id) |
 
-## INDEX
+## INDEX一覧
 
-|         | 定義                           |
+| 名前      | 定義                           |
 | ------- | ---------------------------- |
 | PRIMARY | PRIMARY KEY (id) USING BTREE |
 
-## 関係
+## ER図
 
 ![er](logs.png)
 

@@ -31,7 +31,7 @@ CREATE TABLE `comments` (
 
 ## カラム一覧
 
-|         | タイプ        | デフォルト値       | Nullable | 子テーブル                             | 親テーブル             | コメント                                       |
+| 名前      | タイプ        | デフォルト値       | Nullable | 子テーブル                             | 親テーブル             | コメント                                       |
 | ------- | ---------- | ------------ | -------- | --------------------------------- | ----------------- | ------------------------------------------ |
 | id      | bigint(20) |              | false    |                                   |                   |                                            |
 | post_id | bigint(20) |              | false    | [comment_stars](comment_stars.md) | [posts](posts.md) |                                            |
@@ -40,25 +40,25 @@ CREATE TABLE `comments` (
 | created | datetime   |              | false    |                                   |                   |                                            |
 | updated | datetime   |              | true     |                                   |                   |                                            |
 
-## 制約
+## 制約一覧
 
-|                     | タイプ         | 定義                                          |
+| 名前                  | タイプ         | 定義                                          |
 | ------------------- | ----------- | ------------------------------------------- |
 | comments_post_id_fk | FOREIGN KEY | FOREIGN KEY (post_id) REFERENCES posts (id) |
 | comments_user_id_fk | FOREIGN KEY | FOREIGN KEY (user_id) REFERENCES users (id) |
 | post_id             | UNIQUE      | UNIQUE KEY post_id (post_id, user_id)       |
 | PRIMARY             | PRIMARY KEY | PRIMARY KEY (id)                            |
 
-## INDEX
+## INDEX一覧
 
-|                              | 定義                                                              |
+| 名前                           | 定義                                                              |
 | ---------------------------- | --------------------------------------------------------------- |
 | comments_post_id_user_id_idx | KEY comments_post_id_user_id_idx (post_id, user_id) USING BTREE |
 | comments_user_id_fk          | KEY comments_user_id_fk (user_id) USING BTREE                   |
 | PRIMARY                      | PRIMARY KEY (id) USING BTREE                                    |
 | post_id                      | UNIQUE KEY post_id (post_id, user_id) USING BTREE               |
 
-## 関係
+## ER図
 
 ![er](comments.png)
 

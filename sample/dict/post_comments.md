@@ -15,7 +15,7 @@ CREATE VIEW post_comments AS ((select `c`.`id` AS `id`,`p`.`title` AS `title`,`u
 
 ## カラム一覧
 
-|              | タイプ          | デフォルト値       | Nullable | 子テーブル      | 親テーブル      | コメント                                       |
+| 名前           | タイプ          | デフォルト値       | Nullable | 子テーブル      | 親テーブル      | コメント                                       |
 | ------------ | ------------ | ------------ | -------- | ---------- | ---------- | ------------------------------------------ |
 | id           | bigint(20)   | 0            | true     |            |            |                                            |
 | title        | varchar(255) |              | false    |            |            |                                            |
@@ -25,7 +25,7 @@ CREATE VIEW post_comments AS ((select `c`.`id` AS `id`,`p`.`title` AS `title`,`u
 | created      | datetime     |              | true     |            |            |                                            |
 | updated      | datetime     |              | true     |            |            |                                            |
 
-## 関係
+## ER図
 
 ![er](post_comments.png)
 

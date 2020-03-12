@@ -23,29 +23,29 @@ CREATE TABLE `user_options` (
 
 ## カラム一覧
 
-|            | タイプ        | デフォルト値              | Nullable | 子テーブル      | 親テーブル             | コメント     |
+| 名前         | タイプ        | デフォルト値              | Nullable | 子テーブル      | 親テーブル             | コメント     |
 | ---------- | ---------- | ------------------- | -------- | ---------- | ----------------- | -------- |
 | user_id    | int(11)    |                     | false    |            | [users](users.md) |          |
 | show_email | tinyint(1) | 0                   | false    |            |                   |          |
 | created    | timestamp  | CURRENT_TIMESTAMP   | false    |            |                   |          |
 | updated    | timestamp  | 0000-00-00 00:00:00 | false    |            |                   |          |
 
-## 制約
+## 制約一覧
 
-|                         | タイプ         | 定義                                          |
+| 名前                      | タイプ         | 定義                                          |
 | ----------------------- | ----------- | ------------------------------------------- |
 | PRIMARY                 | PRIMARY KEY | PRIMARY KEY (user_id)                       |
 | user_id                 | UNIQUE      | UNIQUE KEY user_id (user_id)                |
 | user_options_user_id_fk | FOREIGN KEY | FOREIGN KEY (user_id) REFERENCES users (id) |
 
-## INDEX
+## INDEX一覧
 
-|         | 定義                                       |
+| 名前      | 定義                                       |
 | ------- | ---------------------------------------- |
 | PRIMARY | PRIMARY KEY (user_id) USING BTREE        |
 | user_id | UNIQUE KEY user_id (user_id) USING BTREE |
 
-## 関係
+## ER図
 
 ![er](user_options.png)
 

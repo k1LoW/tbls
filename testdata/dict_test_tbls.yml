@@ -5,11 +5,11 @@ dict:
   Tables: テーブル一覧
   Description: 概要
   Columns: カラム一覧
-  Indexes: INDEX
-  Constraints: 制約
+  Indexes: INDEX一覧
+  Constraints: 制約一覧
   Triggers: トリガー
-  Relations: 関係
-  Name: ""
+  Relations: ER図
+  Name: 名前
   Comment: コメント
   Type: タイプ
   Default: デフォルト値
