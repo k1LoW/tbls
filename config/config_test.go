@@ -20,19 +20,19 @@ func TestLoadDefault(t *testing.T) {
 	}
 	want := ""
 	if config.DSN != want {
-		t.Errorf("actual %v\nwant %v", config.DSN, want)
+		t.Errorf("got %v\nwant %v", config.DSN, want)
 	}
 	want2 := "dbdoc"
 	if config.DocPath != want2 {
-		t.Errorf("actual %v\nwant %v", config.DocPath, want2)
+		t.Errorf("got %v\nwant %v", config.DocPath, want2)
 	}
 	want3 := "png"
 	if config.ER.Format != want3 {
-		t.Errorf("actual %v\nwant %v", config.ER.Format, want3)
+		t.Errorf("got %v\nwant %v", config.ER.Format, want3)
 	}
 	want4 := 1
 	if *config.ER.Distance != want4 {
-		t.Errorf("actual %v\nwant %v", config.ER.Distance, want4)
+		t.Errorf("got %v\nwant %v", config.ER.Distance, want4)
 	}
 }
 
@@ -48,19 +48,19 @@ func TestLoadConfigFile(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	expected := "pg://root:pgpass@localhost:55432/testdb?sslmode=disable"
-	if config.DSN != expected {
-		t.Errorf("actual %v\nwant %v", config.DSN, expected)
+	want := "pg://root:pgpass@localhost:55432/testdb?sslmode=disable"
+	if config.DSN != want {
+		t.Errorf("got %v\nwant %v", config.DSN, want)
 	}
-	expected2 := "sample/pg"
-	if config.DocPath != expected2 {
-		t.Errorf("actual %v\nwant %v", config.DocPath, expected2)
+	want2 := "sample/pg"
+	if config.DocPath != want2 {
+		t.Errorf("got %v\nwant %v", config.DocPath, want2)
 	}
 }
 
 var tests = []struct {
-	value    string
-	expected string
+	value string
+	want  string
 }{
 	{"${TBLS_ONE}/${TBLS_TWO}", "one/two"},
 	{"${TBLS_ONE}/${TBLS_TWO}/${TBLS_NONE}", "one/two/"},
@@ -72,12 +72,12 @@ func TestParseWithEnvirion(t *testing.T) {
 	_ = os.Setenv("TBLS_ONE", "one")
 	_ = os.Setenv("TBLS_TWO", "two")
 	for _, tt := range tests {
-		actual, err := parseWithEnviron(tt.value)
+		got, err := parseWithEnviron(tt.value)
 		if err != nil {
 			t.Fatal(err)
 		}
-		if actual != tt.expected {
-			t.Errorf("actual %v\nwant %v", actual, tt.expected)
+		if got != tt.want {
+			t.Errorf("got %v\nwant %v", got, tt.want)
 		}
 	}
 }
@@ -132,17 +132,17 @@ func TestMergeAditionalData(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	expected := 1
-	actual := len(s.Relations)
-	if actual != expected {
-		t.Errorf("actual %v\nwant %v", actual, expected)
+	want := 1
+	got := len(s.Relations)
+	if got != want {
+		t.Errorf("got %v\nwant %v", got, want)
 	}
 	posts, _ := s.FindTableByName("posts")
 	title, _ := posts.FindColumnByName("title")
-	expected2 := "post title"
-	actual2 := title.Comment
-	if actual2 != expected2 {
-		t.Errorf("actual %v\nwant %v", actual2, expected2)
+	want2 := "post title"
+	got2 := title.Comment
+	if got2 != want2 {
+		t.Errorf("got %v\nwant %v", got2, want2)
 	}
 }
 
@@ -227,10 +227,10 @@ func TestFilterTables(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	expected := 2
-	actual := len(s.Tables)
-	if actual != expected {
-		t.Errorf("actual %v\nwant %v", actual, expected)
+	want := 2
+	got := len(s.Tables)
+	if got != want {
+		t.Errorf("got %v\nwant %v", got, want)
 	}
 }
 
@@ -297,22 +297,27 @@ func TestModifySchema(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	expected := 1
-	actual := len(s.Relations)
-	if actual != expected {
-		t.Errorf("actual %v\nwant %v", actual, expected)
+	want := 1
+	got := len(s.Relations)
+	if got != want {
+		t.Errorf("got %v\nwant %v", got, want)
 	}
 	posts, _ := s.FindTableByName("posts")
 	title, _ := posts.FindColumnByName("title")
-	expected2 := "post title"
-	actual2 := title.Comment
-	if actual2 != expected2 {
-		t.Errorf("actual %v\nwant %v", actual2, expected2)
+	want2 := "post title"
+	got2 := title.Comment
+	if got2 != want2 {
+		t.Errorf("got %v\nwant %v", got2, want2)
 	}
-	expected3 := 2
-	actual3 := len(s.Tables)
-	if actual3 != expected3 {
-		t.Errorf("actual %v\nwant %v", actual, expected)
+	want3 := 2
+	got3 := len(s.Tables)
+	if got3 != want3 {
+		t.Errorf("got %v\nwant %v", got3, want3)
+	}
+	want4 := "mydatabase"
+	got4 := s.Name
+	if got4 != want4 {
+		t.Errorf("got %v\nwant %v", got4, want4)
 	}
 }
 
