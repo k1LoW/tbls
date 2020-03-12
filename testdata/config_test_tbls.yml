@@ -1,4 +1,5 @@
 ---
+name: mydatabase
 include:
   - users
   - posts
