@@ -243,7 +243,7 @@ name: mydatabase
 dsn: my://dbuser:dbpass@hostname:3306/dbname
 ```
 
-`DSN:` can expand environment variables.
+`dsn:` can expand environment variables.
 
 ``` yaml
 # .tbls.yml
@@ -577,7 +577,7 @@ relations:
 
 ### Dictionary
 
-`dict:`is used to replace title/table header of database document
+`dict:` is used to replace title/table header of database document
 
 ``` yaml
 # .tbls.yml
