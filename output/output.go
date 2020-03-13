@@ -5,7 +5,7 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/k1LoW/tbls/config"
+	"github.com/k1LoW/tbls/dict"
 	"github.com/k1LoW/tbls/schema"
 )
 
@@ -15,7 +15,7 @@ type Output interface {
 	OutputTable(wr io.Writer, s *schema.Table) error
 }
 
-func Funcs(c *config.Config) map[string]interface{} {
+func Funcs(d *dict.Dict) map[string]interface{} {
 	return template.FuncMap{
 		"nl2br": func(text string) string {
 			r := strings.NewReplacer("\r\n", "<br>", "\n", "<br>", "\r", "<br>")
@@ -34,7 +34,7 @@ func Funcs(c *config.Config) map[string]interface{} {
 			return r.Replace(text)
 		},
 		"lookup": func(text string) string {
-			return c.Dict.Lookup(text)
+			return d.Lookup(text)
 		},
 	}
 }

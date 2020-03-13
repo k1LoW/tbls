@@ -41,7 +41,7 @@ func (m *Md) OutputSchema(wr io.Writer, s *schema.Schema) error {
 	if err != nil {
 		return errors.WithStack(err)
 	}
-	tmpl := template.Must(template.New("index").Funcs(output.Funcs(m.config)).Parse(ts))
+	tmpl := template.Must(template.New("index").Funcs(output.Funcs(&m.config.Dict)).Parse(ts))
 	templateData := m.makeSchemaTemplateData(s, m.config.Format.Adjust)
 	templateData["er"] = m.er
 	templateData["erFormat"] = m.config.ER.Format
@@ -58,7 +58,7 @@ func (m *Md) OutputTable(wr io.Writer, t *schema.Table) error {
 	if err != nil {
 		return errors.WithStack(err)
 	}
-	tmpl := template.Must(template.New(t.Name).Funcs(output.Funcs(m.config)).Parse(ts))
+	tmpl := template.Must(template.New(t.Name).Funcs(output.Funcs(&m.config.Dict)).Parse(ts))
 	templateData := m.makeTableTemplateData(t, m.config.Format.Adjust)
 	templateData["er"] = m.er
 	templateData["erFormat"] = m.config.ER.Format
