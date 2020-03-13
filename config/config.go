@@ -298,7 +298,7 @@ func (c *Config) FilterTables(s *schema.Schema) error {
 }
 
 func (c *Config) mergeDictFromSchema(s *schema.Schema) {
-	if s.Driver != nil && s.Driver.Meta != nil {
+	if s.Driver != nil && s.Driver.Meta != nil && s.Driver.Meta.Dict != nil {
 		c.MergedDict.Merge(s.Driver.Meta.Dict.Dump())
 	}
 	c.MergedDict.Merge(c.Dict.Dump())
