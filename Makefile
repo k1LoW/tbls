@@ -18,9 +18,9 @@ BUILD_LDFLAGS = -X $(PKG).commit=$(COMMIT) -X $(PKG).date=$(DATE)
 
 default: test
 
-ci: depsdev build test testdoc test_too_many_tables test_json sec doc
+ci: depsdev build db test testdoc test_too_many_tables test_json sec doc
 
-test:
+db:
 	usql pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -f testdata/pg.sql
 	usql my://root:mypass@localhost:33306/testdb -f testdata/my.sql
 	usql my://root:mypass@localhost:33308/testdb -f testdata/my.sql
@@ -28,8 +28,10 @@ test:
 	usql ms://SA:MSSQLServer-Passw0rd@localhost:11433/master -c "IF NOT EXISTS (SELECT * FROM sys.databases WHERE NAME = 'testdb') CREATE DATABASE testdb;"
 	usql ms://SA:MSSQLServer-Passw0rd@localhost:11433/testdb -f testdata/mssql.sql
 	./testdata/dynamodb.sh > /dev/null 2>&1
+
+test:
 	go test ./... -v -coverprofile=coverage.txt -covermode=count
-	make testdoc
+	$(MAKE) testdoc
 
 doc: build
 	./tbls doc pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -c testdata/test_tbls_postgres.yml -f sample/postgres
@@ -41,6 +43,7 @@ doc: build
 	./tbls doc pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -c testdata/test_tbls_postgres.yml -j -f sample/adjust
 	./tbls doc my://root:mypass@localhost:33306/testdb -c testdata/test_tbls.yml -t svg -f sample/svg
 	./tbls doc my://root:mypass@localhost:33306/testdb -c testdata/exclude_test_tbls.yml -f sample/exclude
+	./tbls doc my://root:mypass@localhost:33306/testdb -c testdata/dict_test_tbls.yml -f sample/dict
 
 testdoc:
 	./tbls diff pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -c testdata/test_tbls.yml sample/postgres
@@ -52,6 +55,7 @@ testdoc:
 	./tbls diff pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -c testdata/test_tbls.yml -j sample/adjust
 	./tbls diff my://root:mypass@localhost:33306/testdb -c testdata/test_tbls.yml -t svg sample/svg
 	./tbls diff my://root:mypass@localhost:33306/testdb -c testdata/exclude_test_tbls.yml sample/exclude
+	./tbls diff my://root:mypass@localhost:33306/testdb -c testdata/dict_test_tbls.yml sample/dict
 
 test_too_many_tables:
 	usql pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -f testdata/createdb_too_many.sql

@@ -1,6 +1,6 @@
 # {{ .Table.Name }}
 
-## Description
+## {{ "Description" | lookup }}
 {{- if ne .Table.Comment "" }}
 
 {{ .Table.Comment | nl2mdnl }}
@@ -8,7 +8,7 @@
 {{- if .Table.Def }}
 
 <details>
-<summary><strong>Table Definition</strong></summary>
+<summary><strong>{{ "Table Definition" | lookup }}</strong></summary>
 
 ```sql
 {{ .Table.Def }}
@@ -17,34 +17,34 @@
 </details>
 {{- end }}
 
-## Columns
+## {{ "Columns" | lookup }}
 {{ range $l := .Columns }}
 |{{ range $d := $l }} {{ $d | nl2br }} |{{ end }}
 {{- end }}
 
 {{ $len := len .Constraints }}{{ if ne $len 2 -}}
-## Constraints
+## {{ "Constraints" | lookup }}
 {{ range $l := .Constraints }}
 |{{ range $d := $l }} {{ $d | nl2br }} |{{ end }}
 {{- end }}
 
 {{ end -}}
 {{ $len := len .Indexes -}}{{ if ne $len 2 -}}
-## Indexes
+## {{ "Indexes" | lookup }}
 {{ range $l := .Indexes }}
 |{{ range $d := $l }} {{ $d | nl2br }} |{{ end }}
 {{- end }}
 
 {{ end -}}
 {{ $len := len .Triggers -}}{{ if ne $len 2 -}}
-## Triggers
+## {{ "Triggers" | lookup }}
 {{ range $l := .Triggers }}
 |{{ range $d := $l }} {{ $d | nl2br }} |{{ end }}
 {{- end }}
 
 {{ end -}}
 {{- if .er -}}
-## Relations
+## {{ "Relations" | lookup }}
 
 ![er]({{ .Table.Name }}.{{ .erFormat }})
 

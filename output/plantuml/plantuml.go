@@ -8,18 +8,10 @@ import (
 
 	"github.com/gobuffalo/packr/v2"
 	"github.com/k1LoW/tbls/config"
+	"github.com/k1LoW/tbls/output"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/pkg/errors"
 )
-
-var templateFuncs = map[string]interface{}{
-	"escape_nl": func(text string) string {
-		return strings.Replace(strings.Replace(strings.Replace(text, "\r\n", "\\n", -1), "\n", "\\n", -1), "\r", "\\n", -1)
-	},
-	"nl2space": func(text string) string {
-		return strings.Replace(strings.Replace(strings.Replace(text, "\r\n", " ", -1), "\n", " ", -1), "\r", " ", -1)
-	},
-}
 
 // PlantUML struct
 type PlantUML struct {
@@ -48,7 +40,7 @@ func (p *PlantUML) OutputSchema(wr io.Writer, s *schema.Schema) error {
 	if err != nil {
 		return errors.WithStack(err)
 	}
-	tmpl := template.Must(template.New(s.Name).Funcs(templateFuncs).Parse(ts))
+	tmpl := template.Must(template.New(s.Name).Funcs(output.Funcs(&p.config.MergedDict)).Parse(ts))
 	err = tmpl.Execute(wr, map[string]interface{}{
 		"Schema":      s,
 		"showComment": p.config.ER.Comment,
@@ -76,7 +68,7 @@ func (p *PlantUML) OutputTable(wr io.Writer, t *schema.Table) error {
 	if err != nil {
 		return errors.WithStack(err)
 	}
-	tmpl := template.Must(template.New(t.Name).Funcs(templateFuncs).Parse(ts))
+	tmpl := template.Must(template.New(t.Name).Funcs(output.Funcs(&p.config.MergedDict)).Parse(ts))
 	err = tmpl.Execute(wr, map[string]interface{}{
 		"Table":       tables[0],
 		"Tables":      tables[1:],

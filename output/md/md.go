@@ -12,6 +12,7 @@ import (
 
 	"github.com/gobuffalo/packr/v2"
 	"github.com/k1LoW/tbls/config"
+	"github.com/k1LoW/tbls/output"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/mattn/go-runewidth"
 	"github.com/pkg/errors"
@@ -40,8 +41,8 @@ func (m *Md) OutputSchema(wr io.Writer, s *schema.Schema) error {
 	if err != nil {
 		return errors.WithStack(err)
 	}
-	tmpl := template.Must(template.New("index").Funcs(funcMap()).Parse(ts))
-	templateData := makeSchemaTemplateData(s, m.config.Format.Adjust)
+	tmpl := template.Must(template.New("index").Funcs(output.Funcs(&m.config.MergedDict)).Parse(ts))
+	templateData := m.makeSchemaTemplateData(s, m.config.Format.Adjust)
 	templateData["er"] = m.er
 	templateData["erFormat"] = m.config.ER.Format
 	err = tmpl.Execute(wr, templateData)
@@ -57,8 +58,8 @@ func (m *Md) OutputTable(wr io.Writer, t *schema.Table) error {
 	if err != nil {
 		return errors.WithStack(err)
 	}
-	tmpl := template.Must(template.New(t.Name).Funcs(funcMap()).Parse(ts))
-	templateData := makeTableTemplateData(t, m.config.Format.Adjust)
+	tmpl := template.Must(template.New(t.Name).Funcs(output.Funcs(&m.config.MergedDict)).Parse(ts))
+	templateData := m.makeTableTemplateData(t, m.config.Format.Adjust)
 	templateData["er"] = m.er
 	templateData["erFormat"] = m.config.ER.Format
 
@@ -248,22 +249,14 @@ func outputExists(s *schema.Schema, path string) bool {
 	return false
 }
 
-func funcMap() map[string]interface{} {
-	return template.FuncMap{
-		"nl2br": func(text string) string {
-			r := strings.NewReplacer("\r\n", "<br>", "\n", "<br>", "\r", "<br>")
-			return r.Replace(text)
-		},
-		"nl2mdnl": func(text string) string {
-			r := strings.NewReplacer("\r\n", "  \n", "\n", "  \n", "\r", "  \n")
-			return r.Replace(text)
-		},
-	}
-}
-
-func makeSchemaTemplateData(s *schema.Schema, adjust bool) map[string]interface{} {
+func (m *Md) makeSchemaTemplateData(s *schema.Schema, adjust bool) map[string]interface{} {
 	tablesData := [][]string{
-		[]string{"Name", "Columns", "Comment", "Type"},
+		[]string{
+			m.config.Dict.Lookup("Name"),
+			m.config.Dict.Lookup("Columns"),
+			m.config.Dict.Lookup("Comment"),
+			m.config.Dict.Lookup("Type"),
+		},
 		[]string{"----", "-------", "-------", "----"},
 	}
 	for _, t := range s.Tables {
@@ -289,10 +282,18 @@ func makeSchemaTemplateData(s *schema.Schema, adjust bool) map[string]interface{
 	}
 }
 
-func makeTableTemplateData(t *schema.Table, adjust bool) map[string]interface{} {
+func (m *Md) makeTableTemplateData(t *schema.Table, adjust bool) map[string]interface{} {
 	// Columns
 	columnsData := [][]string{
-		[]string{"Name", "Type", "Default", "Nullable", "Children", "Parents", "Comment"},
+		[]string{
+			m.config.Dict.Lookup("Name"),
+			m.config.Dict.Lookup("Type"),
+			m.config.Dict.Lookup("Default"),
+			m.config.Dict.Lookup("Nullable"),
+			m.config.Dict.Lookup("Children"),
+			m.config.Dict.Lookup("Parents"),
+			m.config.Dict.Lookup("Comment"),
+		},
 		[]string{"----", "----", "-------", "--------", "--------", "-------", "-------"},
 	}
 	for _, c := range t.Columns {
@@ -328,7 +329,11 @@ func makeTableTemplateData(t *schema.Table, adjust bool) map[string]interface{} 
 
 	// Constraints
 	constraintsData := [][]string{
-		[]string{"Name", "Type", "Definition"},
+		[]string{
+			m.config.Dict.Lookup("Name"),
+			m.config.Dict.Lookup("Type"),
+			m.config.Dict.Lookup("Definition"),
+		},
 		[]string{"----", "----", "----------"},
 	}
 	for _, c := range t.Constraints {
@@ -342,7 +347,10 @@ func makeTableTemplateData(t *schema.Table, adjust bool) map[string]interface{} 
 
 	// Indexes
 	indexesData := [][]string{
-		[]string{"Name", "Definition"},
+		[]string{
+			m.config.Dict.Lookup("Name"),
+			m.config.Dict.Lookup("Definition"),
+		},
 		[]string{"----", "----------"},
 	}
 	for _, i := range t.Indexes {
@@ -355,7 +363,10 @@ func makeTableTemplateData(t *schema.Table, adjust bool) map[string]interface{} 
 
 	// Triggers
 	triggersData := [][]string{
-		[]string{"Name", "Definition"},
+		[]string{
+			m.config.Dict.Lookup("Name"),
+			m.config.Dict.Lookup("Definition"),
+		},
 		[]string{"----", "----------"},
 	}
 	for _, i := range t.Triggers {

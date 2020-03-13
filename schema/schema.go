@@ -6,6 +6,7 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/k1LoW/tbls/dict"
 	"github.com/pkg/errors"
 )
 
@@ -72,7 +73,8 @@ type Relation struct {
 }
 
 type DriverMeta struct {
-	CurrentSchema string `json:"current_schema,omitempty" yaml:"currentSchema,omitempty"`
+	CurrentSchema string     `json:"current_schema,omitempty" yaml:"currentSchema,omitempty"`
+	Dict          *dict.Dict `json:"dict,omitempty"`
 }
 
 // Driver is the struct for tbls driver information

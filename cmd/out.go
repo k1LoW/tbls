@@ -100,7 +100,7 @@ var outCmd = &cobra.Command{
 		case "md":
 			o = md.NewMd(c, false)
 		case "xlsx":
-			o = new(xlsx.Xlsx)
+			o = xlsx.NewXlsx(c)
 		case "plantuml":
 			o = plantuml.NewPlantUML(c)
 		case "png", "svg", "jpg":

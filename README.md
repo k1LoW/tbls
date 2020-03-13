@@ -35,6 +35,7 @@ Key features of `tbls` are:
     - [Lint](#lint)
     - [Comments](#comments)
     - [Relations](#relations)
+    - [Dictionary](#dictionary)
   - [Output formats](#output-formats)
   - [Command arguments](#command-arguments)
   - [Environment variables](#environment-variables)
@@ -573,6 +574,30 @@ relations:
 ```
 
 ![img](sample/mysql/logs.png)
+
+### Dictionary
+
+`dict:`is used to replace title/table header of database document
+
+``` yaml
+# .tbls.yml
+---
+dict:
+  Tables: テーブル一覧
+  Description: 概要
+  Columns: カラム一覧
+  Indexes: INDEX一覧
+  Constraints: 制約一覧
+  Triggers: トリガー
+  Relations: ER図
+  Name: 名前
+  Comment: コメント
+  Type: タイプ
+  Default: デフォルト値
+  Children: 子テーブル
+  Parents: 親テーブル
+  Definition: 定義
+```
 
 ## Output formats
 
