@@ -2,13 +2,13 @@
 
 ## Description
 
-## Columns
+## Attributes
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
 | Id | N |  | false |  |  |  |
 
-## Constraints
+## Primary Key
 
 | Name | Type | Definition |
 | ---- | ---- | ---------- |
