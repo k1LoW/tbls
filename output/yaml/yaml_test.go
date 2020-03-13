@@ -10,6 +10,8 @@ import (
 
 	"github.com/goccy/go-yaml"
 	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
+	"github.com/k1LoW/tbls/dict"
 	"github.com/k1LoW/tbls/schema"
 )
 
@@ -48,7 +50,9 @@ func TestEncodeAndDecode(t *testing.T) {
 	_ = removeColumnRelations(s1)
 	_ = removeColumnRelations(s2)
 
-	if diff := cmp.Diff(s1, s2); diff != "" {
+	opt := cmpopts.IgnoreUnexported(dict.NewDict())
+
+	if diff := cmp.Diff(s1, s2, opt); diff != "" {
 		t.Errorf("schemas not equal\n%v", diff)
 	}
 }

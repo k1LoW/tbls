@@ -31,7 +31,7 @@ func (d *Dot) OutputSchema(wr io.Writer, s *schema.Schema) error {
 	if err != nil {
 		return errors.WithStack(err)
 	}
-	tmpl := template.Must(template.New(s.Name).Funcs(output.Funcs(&d.config.Dict)).Parse(ts))
+	tmpl := template.Must(template.New(s.Name).Funcs(output.Funcs(&d.config.MergedDict)).Parse(ts))
 	err = tmpl.Execute(wr, map[string]interface{}{
 		"Schema":      s,
 		"showComment": d.config.ER.Comment,
@@ -54,7 +54,7 @@ func (d *Dot) OutputTable(wr io.Writer, t *schema.Table) error {
 	if err != nil {
 		return errors.WithStack(err)
 	}
-	tmpl := template.Must(template.New(t.Name).Funcs(output.Funcs(&d.config.Dict)).Parse(ts))
+	tmpl := template.Must(template.New(t.Name).Funcs(output.Funcs(&d.config.MergedDict)).Parse(ts))
 	err = tmpl.Execute(wr, map[string]interface{}{
 		"Table":       tables[0],
 		"Tables":      tables[1:],

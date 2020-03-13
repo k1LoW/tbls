@@ -8,7 +8,7 @@ import (
 )
 
 type Dict struct {
-	s sync.Map
+	s sync.Map `json:"-" yaml:"-"`
 }
 
 // NewDict return Dict

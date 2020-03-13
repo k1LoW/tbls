@@ -41,6 +41,7 @@ type Config struct {
 	Relations   []AdditionalRelation `yaml:"relations"`
 	Comments    []AdditionalComment  `yaml:"comments"`
 	Dict        dict.Dict            `yaml:"dict"`
+	MergedDict  dict.Dict            `yaml:"-"`
 }
 
 // Format is document format setting
@@ -259,10 +260,11 @@ func (c *Config) ModifySchema(s *schema.Schema) error {
 			return err
 		}
 	}
+	c.mergeDictFromSchema(s)
 	return nil
 }
 
-// MergeAdditionalData merge additional* to schema.Schema
+// MergeAdditionalData merge relations: comments: to schema.Schema
 func (c *Config) MergeAdditionalData(s *schema.Schema) error {
 	err := mergeAdditionalRelations(s, c.Relations)
 	if err != nil {
@@ -293,6 +295,13 @@ func (c *Config) FilterTables(s *schema.Schema) error {
 		}
 	}
 	return nil
+}
+
+func (c *Config) mergeDictFromSchema(s *schema.Schema) {
+	if s.Driver != nil && s.Driver.Meta != nil {
+		c.MergedDict.Merge(s.Driver.Meta.Dict.Dump())
+	}
+	c.MergedDict.Merge(c.Dict.Dump())
 }
 
 func excludeTableFromSchema(name string, s *schema.Schema) error {
