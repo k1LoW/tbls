@@ -141,8 +141,8 @@ func listIndexes(td *dynamodb.TableDescription) []*schema.Index {
 }
 
 func (d *Dynamodb) Info() (*schema.Driver, error) {
-	di := dict.NewDict()
-	di.Merge(map[string]string{
+	dct := dict.NewDict()
+	dct.Merge(map[string]string{
 		"Column":      "Attribute",
 		"Columns":     "Attributes",
 		"Constraints": "Primary Key",
@@ -153,7 +153,7 @@ func (d *Dynamodb) Info() (*schema.Driver, error) {
 		Name:            "dynamodb",
 		DatabaseVersion: "",
 		Meta: &schema.DriverMeta{
-			Dict: &di,
+			Dict: &dct,
 		},
 	}
 	return driver, nil
