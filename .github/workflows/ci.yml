@@ -18,7 +18,8 @@ jobs:
 
       - name: Install packages
         run: |
-          sudo apt install sqlite3
+          sudo apt-get update
+          sudo apt-get install sqlite3
           sudo pip install codecov
 
       - name: Install aws-cli
