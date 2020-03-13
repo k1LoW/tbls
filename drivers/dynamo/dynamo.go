@@ -6,6 +6,7 @@ import (
 	"regexp"
 
 	"github.com/aws/aws-sdk-go/service/dynamodb"
+	"github.com/k1LoW/tbls/dict"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/pkg/errors"
 )
@@ -140,9 +141,20 @@ func listIndexes(td *dynamodb.TableDescription) []*schema.Index {
 }
 
 func (d *Dynamodb) Info() (*schema.Driver, error) {
+	dct := dict.NewDict()
+	dct.Merge(map[string]string{
+		"Column":      "Attribute",
+		"Columns":     "Attributes",
+		"Constraints": "Primary Key",
+		"Indexes":     "Secondary Indexes",
+	})
+
 	driver := &schema.Driver{
 		Name:            "dynamodb",
 		DatabaseVersion: "",
+		Meta: &schema.DriverMeta{
+			Dict: &dct,
+		},
 	}
 	return driver, nil
 }

@@ -2,13 +2,13 @@
 
 ## Description
 
-## Columns
+## Attributes
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
 | Name | S |  | false | [Thread](Thread.md) |  |  |
 
-## Constraints
+## Primary Key
 
 | Name | Type | Definition |
 | ---- | ---- | ---------- |

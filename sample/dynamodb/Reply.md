@@ -2,7 +2,7 @@
 
 ## Description
 
-## Columns
+## Attributes
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
@@ -10,13 +10,13 @@
 | ReplyDateTime | S |  | false |  |  |  |
 | PostedBy | S |  | false |  |  |  |
 
-## Constraints
+## Primary Key
 
 | Name | Type | Definition |
 | ---- | ---- | ---------- |
 | Primary Key | Partition key and sort key | [{ AttributeName: "Id", KeyType: "HASH" } { AttributeName: "ReplyDateTime", KeyType: "RANGE" }] |
 
-## Indexes
+## Secondary Indexes
 
 | Name | Definition |
 | ---- | ---------- |

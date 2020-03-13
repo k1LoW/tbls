@@ -2,14 +2,14 @@
 
 ## Description
 
-## Columns
+## Attributes
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
 | ForumName | S |  | false |  | [Forum](Forum.md) |  |
 | Subject | S |  | false |  |  |  |
 
-## Constraints
+## Primary Key
 
 | Name | Type | Definition |
 | ---- | ---- | ---------- |
