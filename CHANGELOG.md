@@ -1,5 +1,12 @@
 # Changelog
 
+## [v1.29.0](https://github.com/k1LoW/tbls/compare/v1.28.2...v1.29.0) (2020-03-14)
+
+* Set dict for DynamoDB [#183](https://github.com/k1LoW/tbls/pull/183) ([k1LoW](https://github.com/k1LoW))
+* Add `dict:` for replacement title/table header of database document [#182](https://github.com/k1LoW/tbls/pull/182) ([k1LoW](https://github.com/k1LoW))
+* Add `name:` for specifing database name of document [#180](https://github.com/k1LoW/tbls/pull/180) ([k1LoW](https://github.com/k1LoW))
+* Fix schema.Driver.Meta [#179](https://github.com/k1LoW/tbls/pull/179) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.28.2](https://github.com/k1LoW/tbls/compare/v1.28.1...v1.28.2) (2020-03-09)
 
 * Support table name omitting current_schema [#178](https://github.com/k1LoW/tbls/pull/178) ([k1LoW](https://github.com/k1LoW))
