@@ -1,5 +1,6 @@
 DROP TRIGGER IF EXISTS update_users_updated ON users;
 DROP TRIGGER IF EXISTS update_posts_updated ON posts;
+DROP TABLE IF EXISTS backup.blog_options;
 DROP TABLE IF EXISTS backup.blogs;
 DROP TABLE IF EXISTS administrator.blogs;
 DROP VIEW IF EXISTS post_comments;
@@ -154,6 +155,8 @@ CREATE TRIGGER update_users_updated
 
 CREATE SCHEMA backup;
 
+ALTER ROLE postgres in DATABASE testdb SET search_path TO "$user",public,backup;
+
 CREATE TABLE backup.blogs (
   id serial PRIMARY KEY,
   user_id int NOT NULL,
@@ -161,3 +164,12 @@ CREATE TABLE backup.blogs (
   created timestamp NOT NULL,
   updated timestamp
 );
+
+CREATE TABLE backup.blog_options (
+  id serial PRIMARY KEY,
+  blog_id int NOT NULL,
+  label text,
+  updated timestamp,
+  CONSTRAINT blog_options_blog_id_fk FOREIGN KEY(blog_id) REFERENCES blogs(id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE
+);
+
