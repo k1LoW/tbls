@@ -6,7 +6,7 @@
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | integer | nextval('backup.blogs_id_seq'::regclass) | false |  |  |  |
+| id | integer | nextval('blogs_id_seq'::regclass) | false |  |  |  |
 | user_id | integer |  | false |  |  |  |
 | dump | text |  | false |  |  |  |
 | created | timestamp without time zone |  | false |  |  |  |
