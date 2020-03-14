@@ -597,6 +597,7 @@ dict:
   Children: 子テーブル
   Parents: 親テーブル
   Definition: 定義
+  Table Definition: テーブル定義
 ```
 
 ## Output formats
