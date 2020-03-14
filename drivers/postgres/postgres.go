@@ -50,6 +50,23 @@ func (p *Postgres) Analyze(s *schema.Schema) error {
 	}
 	s.Driver.Meta.CurrentSchema = currentSchema
 
+	// search_path
+	var searchPaths string
+	pathRows, err := p.db.Query(`SHOW search_path`)
+	defer pathRows.Close()
+	if err != nil {
+		return errors.WithStack(err)
+	}
+	for pathRows.Next() {
+		err := pathRows.Scan(&searchPaths)
+		if err != nil {
+			return errors.WithStack(err)
+		}
+	}
+	s.Driver.Meta.SearchPaths = strings.Split(searchPaths, ", ")
+
+	fullTableNames := []string{}
+
 	// tables
 	tableRows, err := p.db.Query(`
 SELECT DISTINCT cls.oid AS oid, cls.relname AS table_name, tbl.table_type AS table_type, tbl.table_schema AS table_schema
@@ -81,6 +98,8 @@ ORDER BY oid`, s.Name)
 		}
 
 		name := fmt.Sprintf("%s.%s", tableSchema, tableName)
+
+		fullTableNames = append(fullTableNames, name)
 
 		table := &schema.Table{
 			Name: name,
@@ -331,9 +350,12 @@ ORDER BY ordinal_position
 			r.Columns = append(r.Columns, column)
 			column.ParentRelations = append(column.ParentRelations, r)
 		}
-		if !strings.Contains(strParentTable, ".") {
-			strParentTable = fmt.Sprintf("%s.%s", currentSchema, strParentTable)
+
+		dn, err := detectFullTableName(strParentTable, s.Driver.Meta.SearchPaths, fullTableNames)
+		if err != nil {
+			return err
 		}
+		strParentTable = dn
 		parentTable, err := s.FindTableByName(strParentTable)
 		if err != nil {
 			return err
@@ -451,6 +473,27 @@ AND c.relname = $1
 AND n.nspname = $2
 GROUP BY c.relname, n.nspname, i.relname, i.oid, x.indexrelid
 ORDER BY x.indexrelid`
+}
+
+func detectFullTableName(name string, searchPaths, fullTableNames []string) (string, error) {
+	if strings.Contains(name, ".") {
+		return name, nil
+	}
+	fns := []string{}
+	for _, n := range fullTableNames {
+		if strings.HasSuffix(n, name) {
+			for _, p := range searchPaths {
+				// TODO: Support $user
+				if n == fmt.Sprintf("%s.%s", p, name) {
+					fns = append(fns, n)
+				}
+			}
+		}
+	}
+	if len(fns) != 1 {
+		return "", errors.Errorf("can not detect table name: %s", name)
+	}
+	return fns[0], nil
 }
 
 func colkeyToInts(colkey string) []int {
