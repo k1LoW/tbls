@@ -170,6 +170,6 @@ CREATE TABLE backup.blog_options (
   blog_id int NOT NULL,
   label text,
   updated timestamp,
-  CONSTRAINT blog_options_blog_id_fk FOREIGN KEY(blog_id) REFERENCES blogs(id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE
+  CONSTRAINT blog_options_blog_id_fk FOREIGN KEY(blog_id) REFERENCES backup.blogs(id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE
 );
 
