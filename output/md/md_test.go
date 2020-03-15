@@ -25,7 +25,7 @@ var tests = []struct {
 func TestOutput(t *testing.T) {
 	for _, tt := range tests {
 		s := newTestSchema()
-		c, err := config.NewConfig()
+		c, err := config.New()
 		if err != nil {
 			t.Error(err)
 		}
@@ -63,7 +63,7 @@ func TestOutput(t *testing.T) {
 func TestDiff(t *testing.T) {
 	for _, tt := range tests {
 		s := newTestSchema()
-		c, err := config.NewConfig()
+		c, err := config.New()
 		if err != nil {
 			t.Error(err)
 		}

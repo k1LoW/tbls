@@ -10,7 +10,7 @@ import (
 
 func TestLoadDefault(t *testing.T) {
 	configFilepath := filepath.Join(testdataDir(), "empty.yml")
-	config, err := NewConfig()
+	config, err := New()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -37,7 +37,7 @@ func TestLoadConfigFile(t *testing.T) {
 	_ = os.Setenv("TBLS_TEST_PG_PASS", "pgpass")
 	_ = os.Setenv("TBLS_TEST_PG_DOC_PATH", "sample/pg")
 	configFilepath := filepath.Join(testdataDir(), "config_test_tbls_2.yml")
-	config, err := NewConfig()
+	config, err := New()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -121,7 +121,7 @@ func TestMergeAditionalData(t *testing.T) {
 			},
 		},
 	}
-	c, err := NewConfig()
+	c, err := New()
 	if err != nil {
 		t.Error(err)
 	}
@@ -212,7 +212,7 @@ func TestFilterTables(t *testing.T) {
 			},
 		},
 	}
-	c, err := NewConfig()
+	c, err := New()
 	if err != nil {
 		t.Error(err)
 	}
@@ -280,7 +280,7 @@ func TestModifySchema(t *testing.T) {
 			},
 		},
 	}
-	c, err := NewConfig()
+	c, err := New()
 	if err != nil {
 		t.Error(err)
 	}

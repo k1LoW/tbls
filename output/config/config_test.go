@@ -13,11 +13,11 @@ import (
 
 func TestOutputSchema(t *testing.T) {
 	s := newTestSchema()
-	c, err := config.NewConfig()
+	c, err := config.New()
 	if err != nil {
 		t.Error(err)
 	}
-	o := NewConfig(c)
+	o := New(c)
 	buf := &bytes.Buffer{}
 	err = o.OutputSchema(buf, s)
 	if err != nil {

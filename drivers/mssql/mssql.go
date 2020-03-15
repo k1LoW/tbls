@@ -27,8 +27,8 @@ type relationLink struct {
 	parentColumns []string
 }
 
-// NewMssql ...
-func NewMssql(db *sql.DB) *Mssql {
+// New ...
+func New(db *sql.DB) *Mssql {
 	return &Mssql{
 		db: db,
 	}

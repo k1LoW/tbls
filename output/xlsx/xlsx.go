@@ -19,8 +19,8 @@ type Xlsx struct {
 	config *config.Config
 }
 
-// NewXlsx return Xlsx
-func NewXlsx(c *config.Config) *Xlsx {
+// New return Xlsx
+func New(c *config.Config) *Xlsx {
 	return &Xlsx{
 		config: c,
 	}

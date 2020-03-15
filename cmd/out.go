@@ -53,7 +53,7 @@ var outCmd = &cobra.Command{
 	Short: "analyzes a database and output",
 	Long:  `'tbls out' analyzes a database and output.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		c, err := config.NewConfig()
+		c, err := config.New()
 		if err != nil {
 			printError(err)
 			os.Exit(1)
@@ -96,17 +96,17 @@ var outCmd = &cobra.Command{
 		case "yaml":
 			o = new(yaml.YAML)
 		case "dot":
-			o = dot.NewDot(c)
+			o = dot.New(c)
 		case "md":
-			o = md.NewMd(c, false)
+			o = md.New(c, false)
 		case "xlsx":
-			o = xlsx.NewXlsx(c)
+			o = xlsx.New(c)
 		case "plantuml":
-			o = plantuml.NewPlantUML(c)
+			o = plantuml.New(c)
 		case "png", "svg", "jpg":
-			o = gviz.NewGviz(c, format)
+			o = gviz.New(c, format)
 		case "config":
-			o = tbls_config.NewConfig(c)
+			o = tbls_config.New(c)
 		default:
 			printError(fmt.Errorf("unsupported format '%s'", format))
 			os.Exit(1)

@@ -43,7 +43,7 @@ var docCmd = &cobra.Command{
 	Short: "document a database",
 	Long:  `'tbls doc' analyzes a database and generate document in GitHub Friendly Markdown format.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		c, err := config.NewConfig()
+		c, err := config.New()
 		if err != nil {
 			printError(err)
 			os.Exit(1)
@@ -119,7 +119,7 @@ func withDot(s *schema.Schema, c *config.Config, force bool) (e error) {
 	if err != nil {
 		return errors.WithStack(err)
 	}
-	g := gviz.NewGviz(c, erFormat)
+	g := gviz.New(c, erFormat)
 	err = g.OutputSchema(file, s)
 	if err != nil {
 		return errors.WithStack(err)

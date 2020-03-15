@@ -37,7 +37,7 @@ var diffCmd = &cobra.Command{
 	Short: "diff database and document",
 	Long:  `'tbls diff' shows the difference between database schema and generated document.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		c, err := config.NewConfig()
+		c, err := config.New()
 		if err != nil {
 			printError(err)
 			os.Exit(1)

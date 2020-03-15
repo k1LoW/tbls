@@ -14,7 +14,7 @@ import (
 func TestOutputSchema(t *testing.T) {
 	format := "svg"
 	s := newTestSchema()
-	c, err := config.NewConfig()
+	c, err := config.New()
 	if err != nil {
 		t.Error(err)
 	}
@@ -26,7 +26,7 @@ func TestOutputSchema(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	o := NewGviz(c, format)
+	o := New(c, format)
 	buf := &bytes.Buffer{}
 	err = o.OutputSchema(buf, s)
 	if err != nil {
@@ -42,7 +42,7 @@ func TestOutputSchema(t *testing.T) {
 func TestOutputTable(t *testing.T) {
 	format := "svg"
 	s := newTestSchema()
-	c, err := config.NewConfig()
+	c, err := config.New()
 	if err != nil {
 		t.Error(err)
 	}
@@ -56,7 +56,7 @@ func TestOutputTable(t *testing.T) {
 	}
 	ta := s.Tables[0]
 
-	o := NewGviz(c, format)
+	o := New(c, format)
 	buf := &bytes.Buffer{}
 	_ = o.OutputTable(buf, ta)
 	expected, _ := ioutil.ReadFile(filepath.Join(testdataDir(), "svg_test_a.svg.golden"))

@@ -50,7 +50,7 @@ func TestEncodeAndDecode(t *testing.T) {
 	_ = removeColumnRelations(s1)
 	_ = removeColumnRelations(s2)
 
-	opt := cmpopts.IgnoreUnexported(dict.NewDict())
+	opt := cmpopts.IgnoreUnexported(dict.New())
 
 	if diff := cmp.Diff(s1, s2, opt); diff != "" {
 		t.Errorf("schemas not equal\n%v", diff)

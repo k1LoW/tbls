@@ -22,8 +22,8 @@ type Sqlite struct {
 	db *sql.DB
 }
 
-// NewSqlite return new Sqlite
-func NewSqlite(db *sql.DB) *Sqlite {
+// New return new Sqlite
+func New(db *sql.DB) *Sqlite {
 	return &Sqlite{
 		db: db,
 	}

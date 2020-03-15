@@ -18,8 +18,8 @@ type Config struct {
 	config *config.Config
 }
 
-// NewConfig return Config
-func NewConfig(c *config.Config) *Config {
+// New return Config
+func New(c *config.Config) *Config {
 	return &Config{
 		config: c,
 	}

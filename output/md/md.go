@@ -26,8 +26,8 @@ type Md struct {
 	box    *packr.Box
 }
 
-// NewMd return Md
-func NewMd(c *config.Config, er bool) *Md {
+// New return Md
+func New(c *config.Config, er bool) *Md {
 	return &Md{
 		config: c,
 		er:     er,
@@ -105,7 +105,7 @@ func Output(s *schema.Schema, c *config.Config, force bool) (e error) {
 		er = true
 	}
 
-	md := NewMd(c, er)
+	md := New(c, er)
 
 	err = md.OutputSchema(file, s)
 	if err != nil {
@@ -126,7 +126,7 @@ func Output(s *schema.Schema, c *config.Config, force bool) (e error) {
 			er = true
 		}
 
-		md := NewMd(c, er)
+		md := New(c, er)
 
 		err = md.OutputTable(file, t)
 		if err != nil {
@@ -163,7 +163,7 @@ func Diff(s *schema.Schema, c *config.Config) (string, error) {
 		er = true
 	}
 
-	md := NewMd(c, er)
+	md := New(c, er)
 
 	err = md.OutputSchema(a, s)
 	if err != nil {
@@ -204,7 +204,7 @@ func Diff(s *schema.Schema, c *config.Config) (string, error) {
 			er = true
 		}
 
-		md := NewMd(c, er)
+		md := New(c, er)
 
 		err := md.OutputTable(a, t)
 		if err != nil {

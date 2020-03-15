@@ -19,8 +19,8 @@ type Postgres struct {
 	rsMode bool
 }
 
-// NewPostgres return new Postgres
-func NewPostgres(db *sql.DB) *Postgres {
+// New return new Postgres
+func New(db *sql.DB) *Postgres {
 	return &Postgres{
 		db:     db,
 		rsMode: false,

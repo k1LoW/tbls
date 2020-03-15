@@ -20,7 +20,7 @@ func TestAnalyze(t *testing.T) {
 	s := &schema.Schema{
 		Name: fmt.Sprintf("Amazon DynamoDB (%s)", region),
 	}
-	driver, err := NewDynamodb(ctx, client)
+	driver, err := New(ctx, client)
 	if err != nil {
 		t.Errorf("%v", err)
 	}
