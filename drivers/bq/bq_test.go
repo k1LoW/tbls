@@ -21,7 +21,7 @@ func TestAnalyze(t *testing.T) {
 		Name: projectID,
 	}
 	defer client.Close()
-	driver, err := NewBigquery(ctx, client, "crypto_bitcoin")
+	driver, err := New(ctx, client, "crypto_bitcoin")
 	if err != nil {
 		t.Errorf("%v", err)
 	}

@@ -11,8 +11,8 @@ type Dict struct {
 	s sync.Map `json:"-" yaml:"-"`
 }
 
-// NewDict return Dict
-func NewDict() Dict {
+// New return Dict
+func New() Dict {
 	return Dict{}
 }
 

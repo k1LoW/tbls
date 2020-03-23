@@ -17,8 +17,8 @@ type Dot struct {
 	box    *packr.Box
 }
 
-// NewDot return Dot
-func NewDot(c *config.Config) *Dot {
+// New return Dot
+func New(c *config.Config) *Dot {
 	return &Dot{
 		config: c,
 		box:    packr.New("dot", "./templates"),

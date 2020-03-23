@@ -18,12 +18,12 @@ type Gviz struct {
 	dot    *dot.Dot
 }
 
-// NewGviz return Gviz
-func NewGviz(c *config.Config, format string) *Gviz {
+// New return Gviz
+func New(c *config.Config, format string) *Gviz {
 	return &Gviz{
 		config: c,
 		format: format,
-		dot:    dot.NewDot(c),
+		dot:    dot.New(c),
 	}
 }
 

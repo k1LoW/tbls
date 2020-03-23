@@ -21,6 +21,10 @@ func Funcs(d *dict.Dict) map[string]interface{} {
 			r := strings.NewReplacer("\r\n", "<br>", "\n", "<br>", "\r", "<br>")
 			return r.Replace(text)
 		},
+		"nl2br_slash": func(text string) string {
+			r := strings.NewReplacer("\r\n", "<br />", "\n", "<br />", "\r", "<br />")
+			return r.Replace(text)
+		},
 		"nl2mdnl": func(text string) string {
 			r := strings.NewReplacer("\r\n", "  \n", "\n", "  \n", "\r", "  \n")
 			return r.Replace(text)

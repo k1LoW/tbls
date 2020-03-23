@@ -42,6 +42,7 @@ jobs:
       - name: Run tests
         run: env PATH=`go env GOPATH`/bin:$PATH make ci
         env:
+          DEBUG: "true"
           GOPROXY: "https://proxy.golang.org"
 
       - name: Run BigQuery integration

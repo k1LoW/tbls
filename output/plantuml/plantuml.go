@@ -19,8 +19,8 @@ type PlantUML struct {
 	box    *packr.Box
 }
 
-// NewPlantUML return PlantUML
-func NewPlantUML(c *config.Config) *PlantUML {
+// New return PlantUML
+func New(c *config.Config) *PlantUML {
 	return &PlantUML{
 		config: c,
 		box:    packr.New("plantuml", "./templates"),

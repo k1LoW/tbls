@@ -19,7 +19,7 @@ var client *spanner.Client
 func TestAnalyze(t *testing.T) {
 	ctx, client := initClient(t)
 	defer client.Close()
-	driver, err := NewSpanner(ctx, client)
+	driver, err := New(ctx, client)
 	if err != nil {
 		t.Errorf("%v", err)
 	}

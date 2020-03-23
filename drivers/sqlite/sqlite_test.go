@@ -31,7 +31,7 @@ func TestMain(m *testing.M) {
 }
 
 func TestAnalyzeView(t *testing.T) {
-	driver := NewSqlite(db)
+	driver := New(db)
 	err := driver.Analyze(s)
 	if err != nil {
 		t.Errorf("%v", err)
@@ -44,7 +44,7 @@ func TestAnalyzeView(t *testing.T) {
 }
 
 func TestInfo(t *testing.T) {
-	driver := NewSqlite(db)
+	driver := New(db)
 	d, err := driver.Info()
 	if err != nil {
 		t.Errorf("%v", err)

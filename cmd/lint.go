@@ -38,7 +38,7 @@ var lintCmd = &cobra.Command{
 	Short: "check database document",
 	Long:  `'tbls lint' check database document.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		c, err := config.NewConfig()
+		c, err := config.New()
 		if err != nil {
 			printError(err)
 			os.Exit(1)

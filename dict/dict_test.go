@@ -18,7 +18,7 @@ func TestDelete(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		a := NewDict()
+		a := New()
 		for k, v := range tt.in {
 			a.Store(k, v)
 		}
@@ -54,8 +54,8 @@ func TestMerge(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		a := NewDict()
-		b := NewDict()
+		a := New()
+		b := New()
 		for k, v := range tt.ain {
 			a.Store(k, v)
 		}
@@ -99,8 +99,8 @@ func TestMergeIfNotPresent(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		a := NewDict()
-		b := NewDict()
+		a := New()
+		b := New()
 		for k, v := range tt.ain {
 			a.Store(k, v)
 		}

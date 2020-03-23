@@ -17,8 +17,8 @@ type Mysql struct {
 	db *sql.DB
 }
 
-// NewMysql return new Mysql
-func NewMysql(db *sql.DB) *Mysql {
+// New return new Mysql
+func New(db *sql.DB) *Mysql {
 	return &Mysql{
 		db: db,
 	}

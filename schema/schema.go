@@ -74,6 +74,7 @@ type Relation struct {
 
 type DriverMeta struct {
 	CurrentSchema string     `json:"current_schema,omitempty" yaml:"currentSchema,omitempty"`
+	SearchPaths   []string   `json:"search_paths,omitempty" yaml:"searchPaths,omitempty"`
 	Dict          *dict.Dict `json:"dict,omitempty"`
 }
 

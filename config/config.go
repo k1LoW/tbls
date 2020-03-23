@@ -139,8 +139,8 @@ func Distance(distance int) Option {
 	}
 }
 
-// NewConfig return Config
-func NewConfig() (*Config, error) {
+// New return Config
+func New() (*Config, error) {
 	c := Config{}
 	err := c.setDefault()
 	if err != nil {

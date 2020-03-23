@@ -16,8 +16,8 @@ type Spanner struct {
 	client *spanner.Client
 }
 
-// NewSpanner return new Spanner
-func NewSpanner(ctx context.Context, client *spanner.Client) (*Spanner, error) {
+// New return new Spanner
+func New(ctx context.Context, client *spanner.Client) (*Spanner, error) {
 	return &Spanner{
 		ctx:    ctx,
 		client: client,

@@ -17,8 +17,8 @@ type Bigquery struct {
 	datasetID string
 }
 
-// NewBigquery return new Bigquery
-func NewBigquery(ctx context.Context, client *bigquery.Client, datasetID string) (*Bigquery, error) {
+// New return new Bigquery
+func New(ctx context.Context, client *bigquery.Client, datasetID string) (*Bigquery, error) {
 	return &Bigquery{
 		ctx:       ctx,
 		client:    client,

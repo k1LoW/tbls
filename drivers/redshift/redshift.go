@@ -10,9 +10,9 @@ type Redshift struct {
 	postgres.Postgres
 }
 
-// NewRedshift return new Redshift
-func NewRedshift(db *sql.DB) *Redshift {
-	p := postgres.NewPostgres(db)
+// New return new Redshift
+func New(db *sql.DB) *Redshift {
+	p := postgres.New(db)
 	p.EnableRsMode()
 	return &Redshift{*p}
 }

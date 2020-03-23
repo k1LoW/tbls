@@ -18,7 +18,7 @@ type Dynamodb struct {
 	client *dynamodb.DynamoDB
 }
 
-func NewDynamodb(ctx context.Context, client *dynamodb.DynamoDB) (*Dynamodb, error) {
+func New(ctx context.Context, client *dynamodb.DynamoDB) (*Dynamodb, error) {
 	return &Dynamodb{
 		ctx:    ctx,
 		client: client,
@@ -141,7 +141,7 @@ func listIndexes(td *dynamodb.TableDescription) []*schema.Index {
 }
 
 func (d *Dynamodb) Info() (*schema.Driver, error) {
-	dct := dict.NewDict()
+	dct := dict.New()
 	dct.Merge(map[string]string{
 		"Column":      "Attribute",
 		"Columns":     "Attributes",

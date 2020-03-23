@@ -66,19 +66,19 @@ func Analyze(urlstr string) (*schema.Schema, error) {
 	case "postgres":
 		s.Name = splitted[1]
 		if u.Scheme == "rs" || u.Scheme == "redshift" {
-			driver = redshift.NewRedshift(db)
+			driver = redshift.New(db)
 		} else {
-			driver = postgres.NewPostgres(db)
+			driver = postgres.New(db)
 		}
 	case "mysql":
 		s.Name = splitted[1]
-		driver = mysql.NewMysql(db)
+		driver = mysql.New(db)
 	case "sqlite3":
 		s.Name = splitted[len(splitted)-1]
-		driver = sqlite.NewSqlite(db)
+		driver = sqlite.New(db)
 	case "mssql":
 		s.Name = splitted[1]
-		driver = mssql.NewMssql(db)
+		driver = mssql.New(db)
 	default:
 		return s, errors.WithStack(fmt.Errorf("unsupported driver '%s'", u.Driver))
 	}
@@ -136,7 +136,7 @@ func AnalyzeBigquery(urlstr string) (*schema.Schema, error) {
 	defer client.Close()
 
 	s.Name = fmt.Sprintf("%s:%s", projectID, datasetID)
-	driver, err := bq.NewBigquery(ctx, client, datasetID)
+	driver, err := bq.New(ctx, client, datasetID)
 	if err != nil {
 		return s, err
 	}
@@ -175,7 +175,7 @@ func AnalyzeSpanner(urlstr string) (*schema.Schema, error) {
 	defer client.Close()
 	s.Name = db
 
-	driver, err := spanner.NewSpanner(ctx, client)
+	driver, err := spanner.New(ctx, client)
 	if err != nil {
 		return s, err
 	}
@@ -214,7 +214,7 @@ func AnalyzeDynamodb(urlstr string) (*schema.Schema, error) {
 	client := dynamodb.New(sess, config)
 	ctx := context.Background()
 
-	driver, err := dynamo.NewDynamodb(ctx, client)
+	driver, err := dynamo.New(ctx, client)
 	if err != nil {
 		return s, err
 	}
