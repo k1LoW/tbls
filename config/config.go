@@ -18,8 +18,9 @@ import (
 	"github.com/pkg/errors"
 )
 
-const defaultConfigFilePath = ".tbls.yml"
 const defaultDocPath = "dbdoc"
+
+var defaultConfigFilePaths = []string{".tbls.yml", "tbls.yml"}
 
 // DefaultERFormat is the default ER diagram format
 const DefaultERFormat = "png"
@@ -42,6 +43,7 @@ type Config struct {
 	Comments    []AdditionalComment  `yaml:"comments"`
 	Dict        dict.Dict            `yaml:"dict"`
 	MergedDict  dict.Dict            `yaml:"-"`
+	root        string
 }
 
 // Format is document format setting
@@ -209,9 +211,13 @@ func (c *Config) LoadEnviron() error {
 // LoadConfigFile load config file
 func (c *Config) LoadConfigFile(path string) error {
 	if path == "" {
-		path = defaultConfigFilePath
-		if _, err := os.Lstat(path); err != nil {
-			return nil
+		for _, p := range defaultConfigFilePaths {
+			if _, err := os.Lstat(filepath.Join(c.root, p)); err == nil {
+				if path != "" {
+					return fmt.Errorf("duplicate config file [%s, %s]", path, p)
+				}
+				path = p
+			}
 		}
 	}
 

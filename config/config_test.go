@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"testing"
@@ -56,6 +57,17 @@ func TestLoadConfigFile(t *testing.T) {
 
 	if want := "INDEX"; config.Dict.Lookup("Indexes") != want {
 		t.Errorf("got %v\nwant %v", config.Dict.Lookup("Indexes"), want)
+	}
+}
+
+func TestDuplicateConfigFile(t *testing.T) {
+	config := &Config{
+		root: filepath.Join(testdataDir(), "config"),
+	}
+	got := config.LoadConfigFile("")
+	want := "duplicate config file [.tbls.yml, tbls.yml]"
+	if fmt.Sprintf("%v", got) != want {
+		t.Errorf("got %v\nwant %v", got, want)
 	}
 }
 
