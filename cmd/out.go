@@ -160,7 +160,7 @@ func loadOutArgs(args []string) ([]config.Option, error) {
 	options = append(options, config.Distance(distance))
 
 	if len(args) == 1 {
-		options = append(options, config.DSN(args[0]))
+		options = append(options, config.DSNURL(args[0]))
 	}
 	return options, nil
 }
