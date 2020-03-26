@@ -220,6 +220,9 @@ func (c *Config) LoadConfigFile(path string) error {
 			}
 		}
 	}
+	if path == "" {
+		return nil
+	}
 
 	fullPath, err := filepath.Abs(path)
 	if err != nil {
