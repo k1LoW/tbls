@@ -84,7 +84,7 @@ $ docker pull k1low/tbls:latest
 
 ### Document a database
 
-Add `.tbls.yml` file to your repository.
+Add `.tbls.yml` ( or `tbls.yml` ) file to your repository.
 
 ``` yaml
 # .tbls.yml
