@@ -21,7 +21,9 @@ func (d *DSN) UnmarshalYAML(data []byte) error {
 	case string:
 		d.URL = raw
 	case interface{}:
-		yaml.Unmarshal(data, d)
+		if err := yaml.Unmarshal(data, d); err != nil {
+			return err
+		}
 	}
 	return nil
 }
