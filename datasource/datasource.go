@@ -4,9 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"net/url"
 	"os"
 	"strings"
+	"time"
 
 	"cloud.google.com/go/bigquery"
 	cloudspanner "cloud.google.com/go/spanner"
@@ -31,6 +33,9 @@ import (
 // Analyze database
 func Analyze(dsn config.DSN) (*schema.Schema, error) {
 	urlstr := dsn.URL
+	if strings.Index(urlstr, "https://") == 0 || strings.Index(urlstr, "http://") == 0 {
+		return AnalyzeHTTPResource(dsn)
+	}
 	if strings.Index(urlstr, "json://") == 0 {
 		return AnalyzeJSON(urlstr)
 	}
@@ -87,6 +92,35 @@ func Analyze(dsn config.DSN) (*schema.Schema, error) {
 	err = driver.Analyze(s)
 	if err != nil {
 		return s, err
+	}
+	return s, nil
+}
+
+// AnalyzeHTTPResource analyze `https://` or `http://`
+func AnalyzeHTTPResource(dsn config.DSN) (*schema.Schema, error) {
+	s := &schema.Schema{}
+	req, err := http.NewRequest("GET", dsn.URL, nil)
+	if err != nil {
+		return s, errors.WithStack(err)
+	}
+	for k, v := range dsn.Headers {
+		req.Header.Add(k, v)
+	}
+	client := &http.Client{Timeout: time.Duration(10) * time.Second}
+	resp, err := client.Do(req)
+	if err != nil {
+		return s, errors.WithStack(err)
+	}
+	defer resp.Body.Close()
+
+	dec := json.NewDecoder(resp.Body)
+	err = dec.Decode(s)
+	if err != nil {
+		return s, errors.WithStack(err)
+	}
+	err = s.Repair()
+	if err != nil {
+		return s, errors.WithStack(err)
 	}
 	return s, nil
 }

@@ -47,8 +47,8 @@ type Config struct {
 }
 
 type DSN struct {
-	URL     string   `yaml:"url"`
-	Headers []string `yaml:"headers"`
+	URL     string            `yaml:"url"`
+	Headers map[string]string `yaml:"headers"`
 }
 
 // Format is document format setting
