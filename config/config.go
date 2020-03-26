@@ -212,7 +212,7 @@ func (c *Config) LoadEnviron() error {
 func (c *Config) LoadConfigFile(path string) error {
 	if path == "" {
 		for _, p := range defaultConfigFilePaths {
-			if _, err := os.Lstat(filepath.Join(c.root, p)); err == nil {
+			if f, err := os.Stat(filepath.Join(c.root, p)); err == nil && !f.IsDir() {
 				if path != "" {
 					return fmt.Errorf("duplicate config file [%s, %s]", path, p)
 				}
