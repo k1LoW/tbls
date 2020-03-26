@@ -13,6 +13,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
+	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/drivers"
 	"github.com/k1LoW/tbls/drivers/bq"
 	"github.com/k1LoW/tbls/drivers/dynamo"
@@ -28,7 +29,8 @@ import (
 )
 
 // Analyze database
-func Analyze(urlstr string) (*schema.Schema, error) {
+func Analyze(dsn config.DSN) (*schema.Schema, error) {
+	urlstr := dsn.URL
 	if strings.Index(urlstr, "json://") == 0 {
 		return AnalyzeJSON(urlstr)
 	}
