@@ -374,6 +374,8 @@ To set AWS credentials, you can use
 
 **JSON:**
 
+The JSON file output by the `tbls out -t json` command can be read as a datasource.
+
 ``` yaml
 ---
 # .tbls.yml
