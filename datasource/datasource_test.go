@@ -7,19 +7,21 @@ import (
 
 	_ "github.com/denisenkom/go-mssqldb"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/k1LoW/tbls/config"
 	_ "github.com/lib/pq"
 )
 
 var tests = []struct {
-	dsn           string
+	dsn           config.DSN
 	schemaName    string
 	tableCount    int
 	relationCount int
 }{
-	{"my://root:mypass@localhost:33306/testdb", "testdb", 9, 6},
-	{"pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable", "testdb", 12, 9},
-	{"json://../testdata/testdb.json", "testdb", 11, 12},
-	{"ms://SA:MSSQLServer-Passw0rd@localhost:11433/testdb", "testdb", 9, 6},
+	{config.DSN{URL: "my://root:mypass@localhost:33306/testdb"}, "testdb", 9, 6},
+	{config.DSN{URL: "pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable"}, "testdb", 12, 9},
+	{config.DSN{URL: "json://../testdata/testdb.json"}, "testdb", 11, 12},
+	{config.DSN{URL: "https://raw.githubusercontent.com/k1LoW/tbls/master/testdata/testdb.json"}, "testdb", 11, 12},
+	{config.DSN{URL: "ms://SA:MSSQLServer-Passw0rd@localhost:11433/testdb"}, "testdb", 9, 6},
 }
 
 func TestMain(m *testing.M) {
@@ -27,12 +29,12 @@ func TestMain(m *testing.M) {
 	if _, err := os.Lstat(cPath); err == nil {
 		os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", cPath)
 		bqTest := struct {
-			dsn           string
+			dsn           config.DSN
 			schemaName    string
 			tableCount    int
 			relationCount int
 		}{
-			"bq://bigquery-public-data/bitcoin_blockchain", "bigquery-public-data:bitcoin_blockchain", 2, 0,
+			config.DSN{URL: "bq://bigquery-public-data/bitcoin_blockchain"}, "bigquery-public-data:bitcoin_blockchain", 2, 0,
 		}
 		tests = append(tests, bqTest)
 	}

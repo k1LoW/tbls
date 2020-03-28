@@ -97,11 +97,11 @@ func loadDiffArgs(args []string) ([]config.Option, error) {
 	}
 	options = append(options, config.ERFormat(erFormat))
 	if len(args) == 2 {
-		options = append(options, config.DSN(args[0]))
+		options = append(options, config.DSNURL(args[0]))
 		options = append(options, config.DocPath(args[1]))
 	}
 	if len(args) == 1 {
-		options = append(options, config.DSN(args[0]))
+		options = append(options, config.DSNURL(args[0]))
 	}
 	return options, nil
 }

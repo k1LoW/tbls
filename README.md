@@ -12,7 +12,7 @@ Key features of `tbls` are:
 
 - **Document a database automatically in [GFM](https://github.github.com/gfm/) format. Output database schema [in many formats](#output-formats).**
 - **Single binary = CI-Friendly.**
-- **[Support many databases](#support-database).**
+- **[Support many databases](#support-datasource).**
 - **Work as linter for database**
 
 ### Table of Contents
@@ -27,7 +27,7 @@ Key features of `tbls` are:
   - [Configuration](#configration)
     - [Name](#name)
     - [DSN](#dsn)
-      - [Support Database](#support-database)
+      - [Support Datasource](#support-datasource)
     - [Document path](#document-path)
     - [Table format](#table-format)
     - [ER diagram](#er-diagram)
@@ -84,7 +84,7 @@ $ docker pull k1low/tbls:latest
 
 ### Document a database
 
-Add `.tbls.yml` file to your repository.
+Add `.tbls.yml` ( or `tbls.yml` ) file to your repository.
 
 ``` yaml
 # .tbls.yml
@@ -250,9 +250,9 @@ dsn: my://dbuser:dbpass@hostname:3306/dbname
 dsn: my://${MYSQL_USER}:${MYSQL_PASSWORD}@hostname:3306/${MYSQL_DATABASE}
 ```
 
-#### Support Database
+#### Support Datasource
 
-tbls support following databases.
+tbls support following databases/datasources.
 
 **PostgreSQL:**
 
@@ -371,6 +371,33 @@ To set AWS credentials, you can use
 1. [Use default credential provider chain of AWS SDK for Go](https://docs.aws.amazon.com/sdk-for-go/v1/developer-guide/configuring-sdk.html#specifying-credentials)
 2. Add query to DSN
     - `?aws_access_key_id=XXXXXxxxxxxxXXXXXXX&aws_secret_access_key=XXXXXxxxxxxxXXXXXXX`
+
+**JSON:**
+
+The JSON file output by the `tbls out -t json` command can be read as a datasource.
+
+``` yaml
+---
+# .tbls.yml
+dsn: json://path/to/testdb.json
+```
+
+**HTTP:**
+
+``` yaml
+---
+# .tbls.yml
+dsn: https://hostname/path/to/testdb.json
+```
+
+``` yaml
+---
+# .tbls.yml
+dsn:
+  url: https://hostname/path/to/testdb.json
+  headers:
+    Authorization: token GITHUB_OAUTH_TOKEN
+```
 
 ### Document path
 

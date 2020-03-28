@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.29.2](https://github.com/k1LoW/tbls/compare/v1.29.1...v1.29.2) (2020-03-17)
+
+* Fix syntax error (<br> -> <br />) in dot file [#185](https://github.com/k1LoW/tbls/pull/185) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.29.1](https://github.com/k1LoW/tbls/compare/v1.29.0...v1.29.1) (2020-03-15)
 
 * [PostgreSQL]Detect full table name using search_path and information_schema [#184](https://github.com/k1LoW/tbls/pull/184) ([k1LoW](https://github.com/k1LoW))

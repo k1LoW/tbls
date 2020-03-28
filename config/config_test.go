@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"testing"
@@ -19,8 +20,8 @@ func TestLoadDefault(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if want := ""; config.DSN != want {
-		t.Errorf("got %v\nwant %v", config.DSN, want)
+	if want := ""; config.DSN.URL != want {
+		t.Errorf("got %v\nwant %v", config.DSN.URL, want)
 	}
 	if want := "dbdoc"; config.DocPath != want {
 		t.Errorf("got %v\nwant %v", config.DocPath, want)
@@ -46,8 +47,8 @@ func TestLoadConfigFile(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if want := "pg://root:pgpass@localhost:55432/testdb?sslmode=disable"; config.DSN != want {
-		t.Errorf("got %v\nwant %v", config.DSN, want)
+	if want := "pg://root:pgpass@localhost:55432/testdb?sslmode=disable"; config.DSN.URL != want {
+		t.Errorf("got %v\nwant %v", config.DSN.URL, want)
 	}
 
 	if want := "sample/pg"; config.DocPath != want {
@@ -56,6 +57,17 @@ func TestLoadConfigFile(t *testing.T) {
 
 	if want := "INDEX"; config.Dict.Lookup("Indexes") != want {
 		t.Errorf("got %v\nwant %v", config.Dict.Lookup("Indexes"), want)
+	}
+}
+
+func TestDuplicateConfigFile(t *testing.T) {
+	config := &Config{
+		root: filepath.Join(testdataDir(), "config"),
+	}
+	got := config.LoadConfigFile("")
+	want := "duplicate config file [.tbls.yml, tbls.yml]"
+	if fmt.Sprintf("%v", got) != want {
+		t.Errorf("got %v\nwant %v", got, want)
 	}
 }
 

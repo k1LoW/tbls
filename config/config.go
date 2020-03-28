@@ -18,8 +18,9 @@ import (
 	"github.com/pkg/errors"
 )
 
-const defaultConfigFilePath = ".tbls.yml"
 const defaultDocPath = "dbdoc"
+
+var defaultConfigFilePaths = []string{".tbls.yml", "tbls.yml"}
 
 // DefaultERFormat is the default ER diagram format
 const DefaultERFormat = "png"
@@ -30,7 +31,7 @@ var DefaultDistance = 1
 // Config is tbls config
 type Config struct {
 	Name        string               `yaml:"name"`
-	DSN         string               `yaml:"dsn"`
+	DSN         DSN                  `yaml:"dsn"`
 	DocPath     string               `yaml:"docPath"`
 	Format      Format               `yaml:"format"`
 	ER          ER                   `yaml:"er"`
@@ -42,6 +43,12 @@ type Config struct {
 	Comments    []AdditionalComment  `yaml:"comments"`
 	Dict        dict.Dict            `yaml:"dict"`
 	MergedDict  dict.Dict            `yaml:"-"`
+	root        string
+}
+
+type DSN struct {
+	URL     string            `yaml:"url"`
+	Headers map[string]string `yaml:"headers"`
 }
 
 // Format is document format setting
@@ -77,10 +84,10 @@ type AdditionalComment struct {
 // Option function change Config
 type Option func(*Config) error
 
-// DSN return Option set Config.DSN
-func DSN(dsn string) Option {
+// DSNURL return Option set Config.DSN.URL
+func DSNURL(dsn string) Option {
 	return func(c *Config) error {
-		c.DSN = dsn
+		c.DSN.URL = dsn
 		return nil
 	}
 }
@@ -197,7 +204,7 @@ func (c *Config) setDefault() error {
 func (c *Config) LoadEnviron() error {
 	dsn := os.Getenv("TBLS_DSN")
 	if dsn != "" {
-		c.DSN = dsn
+		c.DSN.URL = dsn
 	}
 	docPath := os.Getenv("TBLS_DOC_PATH")
 	if docPath != "" {
@@ -209,10 +216,17 @@ func (c *Config) LoadEnviron() error {
 // LoadConfigFile load config file
 func (c *Config) LoadConfigFile(path string) error {
 	if path == "" {
-		path = defaultConfigFilePath
-		if _, err := os.Lstat(path); err != nil {
-			return nil
+		for _, p := range defaultConfigFilePaths {
+			if f, err := os.Stat(filepath.Join(c.root, p)); err == nil && !f.IsDir() {
+				if path != "" {
+					return fmt.Errorf("duplicate config file [%s, %s]", path, p)
+				}
+				path = p
+			}
 		}
+	}
+	if path == "" {
+		return nil
 	}
 
 	fullPath, err := filepath.Abs(path)
@@ -230,7 +244,7 @@ func (c *Config) LoadConfigFile(path string) error {
 		return errors.Wrap(errors.WithStack(err), "failed to load config file")
 	}
 
-	c.DSN, err = parseWithEnviron(c.DSN)
+	c.DSN.URL, err = parseWithEnviron(c.DSN.URL)
 	if err != nil {
 		return errors.Wrap(errors.WithStack(err), "failed to load config file")
 	}
@@ -347,9 +361,9 @@ func excludeTableFromSchema(name string, s *schema.Schema) error {
 
 // MaskedDSN return DSN mask password
 func (c *Config) MaskedDSN() (string, error) {
-	u, err := url.Parse(c.DSN)
+	u, err := url.Parse(c.DSN.URL)
 	if err != nil {
-		return c.DSN, errors.WithStack(err)
+		return c.DSN.URL, errors.WithStack(err)
 	}
 	tmp := "-----tbls-----"
 	u.User = url.UserPassword(u.User.Username(), tmp)

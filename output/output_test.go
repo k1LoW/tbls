@@ -3,12 +3,13 @@ package output
 import (
 	"testing"
 
+	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/datasource"
 	"github.com/k1LoW/tbls/schema"
 )
 
 func TestDistance(t *testing.T) {
-	dsn := "json://../testdata/testdb.json"
+	dsn := config.DSN{URL: "json://../testdata/testdb.json"}
 	s, err := datasource.Analyze(dsn)
 	if err != nil {
 		t.Errorf("%s", err)
