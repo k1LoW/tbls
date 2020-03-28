@@ -3,14 +3,15 @@ name: build
 on: push
 
 jobs:
-  job-test:
+  linux-test:
     name: Test
-    runs-on: ubuntu-latest
     strategy:
       matrix:
+        platform: [ubuntu-latest]
         go_version: [1.13, 1.14]
+    runs-on: ${{ matrix.platform }}
     steps:
-      - name: Set up Go ${{ matrix.go_version }}
+      - name: Set up Go ${{ matrix.go_version }} on ${{ matrix.platform }}
         uses: actions/setup-go@v1
         with:
           go-version: ${{ matrix.go_version }}
@@ -26,7 +27,7 @@ jobs:
         uses: chrislennon/action-aws-cli@v1.1
 
       - name: Check out source code
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
 
       - name: Decrypt secrets
         run: gpg --quiet --batch --yes --decrypt --passphrase="$GCP_CLIENT_SECRETS_PASSPHRASE" --output $GITHUB_WORKSPACE/client_secrets.json $GITHUB_WORKSPACE/client_secrets.json.gpg
@@ -55,3 +56,42 @@ jobs:
         run: codecov
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+  windows-test:
+    name: Test
+    strategy:
+      matrix:
+        platform: [windows-latest]
+        go_version: [1.14]
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - name: Set up Go ${{ matrix.go_version }} on ${{ matrix.platform }}
+        uses: actions/setup-go@v1
+        with:
+          go-version: ${{ matrix.go_version }}
+        id: go
+
+      - name: Install packages
+        run: |
+          choco install sqlite
+
+      - name: Install aws-cli
+        uses: chrislennon/action-aws-cli@v1.1
+
+      - name: Use LF
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+
+      - name: Check out source code
+        uses: actions/checkout@v2
+
+      - name: Run tests
+        run: |
+          go env GOPATH
+          export PATH=/c/Users/runneradmin/go/bin:$PATH
+          echo $PATH
+          make ci_windows
+        shell: bash
+        env:
+          DEBUG: "true"
+          GOPROXY: "https://proxy.golang.org"
