@@ -16,5 +16,7 @@ labels: bug
 
 - `tbls version`
 - Database version
+- OS ( `Ubuntu bionic`, `macOS Calalina`, `WSL2`, etc )
+- Shell ( `bash`, `zsh`, `poworshell`, etc )
 - Stacktrace or error message from tbls ( If you can, set `DEBUG=1`)
 - Config ( .tbls.yml )
