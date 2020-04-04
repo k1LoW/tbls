@@ -8,7 +8,7 @@ Data is exported using https://github.com/blockchain-etl/bitcoin-etl
 
 ## Columns
 
-| Name | Type | Default | Nullable | Children | Parents | Comment |
+| Name | Type | Default | Nullable | Children | Parents | Description |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
 | hash | STRING |  | false | [inputs](inputs.md) [outputs](outputs.md) |  | The hash of this transaction |
 | size | INTEGER |  | true |  |  | The size of this transaction in bytes |

@@ -2,7 +2,7 @@
 
 ## Tables
 
-| Name | Columns | Comment | Type |
+| Name | Columns | Description | Type |
 | ---- | ------- | ------- | ---- |
 | [blocks](blocks.md) | 13 | All blocks.<br>Data is exported using https://github.com/blockchain-etl/bitcoin-etl | TABLE |
 | [inputs](inputs.md) | 14 | Inputs from all transactions.<br>Data is exported using https://github.com/blockchain-etl/bitcoin-etl | VIEW |

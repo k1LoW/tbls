@@ -55,8 +55,8 @@ func TestLoadConfigFile(t *testing.T) {
 		t.Errorf("got %v\nwant %v", config.DocPath, want)
 	}
 
-	if want := "INDEX"; config.Dict.Lookup("Indexes") != want {
-		t.Errorf("got %v\nwant %v", config.Dict.Lookup("Indexes"), want)
+	if want := "INDEX"; config.MergedDict.Lookup("Indexes") != want {
+		t.Errorf("got %v\nwant %v", config.MergedDict.Lookup("Indexes"), want)
 	}
 }
 

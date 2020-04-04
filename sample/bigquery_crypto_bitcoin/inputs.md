@@ -32,7 +32,7 @@ FROM `bigquery-public-data.crypto_bitcoin.transactions` as transactions,
 
 ## Columns
 
-| Name | Type | Default | Nullable | Children | Parents | Comment |
+| Name | Type | Default | Nullable | Children | Parents | Description |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
 | transaction_hash | STRING |  | true |  | [transactions](transactions.md) |  |
 | block_hash | STRING |  | true |  | [blocks](blocks.md) |  |

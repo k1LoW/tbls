@@ -99,23 +99,23 @@ func (x *Xlsx) OutputTable(wr io.Writer, t *schema.Table) (e error) {
 }
 
 func (x *Xlsx) createSchemaSheet(w *excl.Workbook, s *schema.Schema) error {
-	sheetName := fmt.Sprintf("%s %s", x.config.Dict.Lookup("Tables of"), s.Name)
-	if utf8.RuneCountInString(x.config.Dict.Lookup(sheetName)) > 31 { // MS Excel assumes a maximum length of 31 characters for sheet name
+	sheetName := fmt.Sprintf("%s %s", x.config.MergedDict.Lookup("Tables of"), s.Name)
+	if utf8.RuneCountInString(x.config.MergedDict.Lookup(sheetName)) > 31 { // MS Excel assumes a maximum length of 31 characters for sheet name
 		sheetName = "Tables"
 	}
-	sheet, err := w.OpenSheet(x.config.Dict.Lookup(sheetName))
+	sheet, err := w.OpenSheet(x.config.MergedDict.Lookup(sheetName))
 	defer sheet.Close()
 	if err != nil {
 		return errors.WithStack(err)
 	}
 	setString(sheet, 1, 1, s.Name).SetFont(excl.Font{Bold: true})
 
-	setString(sheet, 3, 1, x.config.Dict.Lookup("Tables")).SetFont(excl.Font{Bold: true})
+	setString(sheet, 3, 1, x.config.MergedDict.Lookup("Tables")).SetFont(excl.Font{Bold: true})
 	setHeader(sheet, 4, []string{
-		x.config.Dict.Lookup("Name"),
-		x.config.Dict.Lookup("Columns"),
-		x.config.Dict.Lookup("Comment"),
-		x.config.Dict.Lookup("Type"),
+		x.config.MergedDict.Lookup("Name"),
+		x.config.MergedDict.Lookup("Columns"),
+		x.config.MergedDict.Lookup("Comment"),
+		x.config.MergedDict.Lookup("Type"),
 	})
 	n := 5
 	for i, t := range s.Tables {
@@ -148,15 +148,15 @@ func (x *Xlsx) createTableSheet(w *excl.Workbook, t *schema.Table) (e error) {
 	setString(sheet, 1, 1, t.Name).SetFont(excl.Font{Bold: true})
 	setString(sheet, 2, 1, t.Comment)
 
-	setString(sheet, 4, 1, x.config.Dict.Lookup("Columns")).SetFont(excl.Font{Bold: true})
+	setString(sheet, 4, 1, x.config.MergedDict.Lookup("Columns")).SetFont(excl.Font{Bold: true})
 	setHeader(sheet, 5, []string{
-		x.config.Dict.Lookup("Name"),
-		x.config.Dict.Lookup("Type"),
-		x.config.Dict.Lookup("Default"),
-		x.config.Dict.Lookup("Nullable"),
-		x.config.Dict.Lookup("Children"),
-		x.config.Dict.Lookup("Parents"),
-		x.config.Dict.Lookup("Comment"),
+		x.config.MergedDict.Lookup("Name"),
+		x.config.MergedDict.Lookup("Type"),
+		x.config.MergedDict.Lookup("Default"),
+		x.config.MergedDict.Lookup("Nullable"),
+		x.config.MergedDict.Lookup("Children"),
+		x.config.MergedDict.Lookup("Parents"),
+		x.config.MergedDict.Lookup("Comment"),
 	})
 	r := 6
 	for i, c := range t.Columns {
@@ -180,12 +180,12 @@ func (x *Xlsx) createTableSheet(w *excl.Workbook, t *schema.Table) (e error) {
 
 	if len(t.Constraints) > 0 {
 		r++
-		setString(sheet, r, 1, x.config.Dict.Lookup("Constraints")).SetFont(excl.Font{Bold: true})
+		setString(sheet, r, 1, x.config.MergedDict.Lookup("Constraints")).SetFont(excl.Font{Bold: true})
 		r++
 		setHeader(sheet, r, []string{
-			x.config.Dict.Lookup("Name"),
-			x.config.Dict.Lookup("Type"),
-			x.config.Dict.Lookup("Definition"),
+			x.config.MergedDict.Lookup("Name"),
+			x.config.MergedDict.Lookup("Type"),
+			x.config.MergedDict.Lookup("Definition"),
 		})
 		r++
 		for i, c := range t.Constraints {
@@ -198,11 +198,11 @@ func (x *Xlsx) createTableSheet(w *excl.Workbook, t *schema.Table) (e error) {
 
 	if len(t.Indexes) > 0 {
 		r++
-		setString(sheet, r, 1, x.config.Dict.Lookup("Indexes")).SetFont(excl.Font{Bold: true})
+		setString(sheet, r, 1, x.config.MergedDict.Lookup("Indexes")).SetFont(excl.Font{Bold: true})
 		r++
 		setHeader(sheet, r, []string{
-			x.config.Dict.Lookup("Name"),
-			x.config.Dict.Lookup("Definition"),
+			x.config.MergedDict.Lookup("Name"),
+			x.config.MergedDict.Lookup("Definition"),
 		})
 		r++
 		for i, idx := range t.Indexes {
@@ -214,11 +214,11 @@ func (x *Xlsx) createTableSheet(w *excl.Workbook, t *schema.Table) (e error) {
 
 	if len(t.Triggers) > 0 {
 		r++
-		setString(sheet, r, 1, x.config.Dict.Lookup("Triggers")).SetFont(excl.Font{Bold: true})
+		setString(sheet, r, 1, x.config.MergedDict.Lookup("Triggers")).SetFont(excl.Font{Bold: true})
 		r++
 		setHeader(sheet, r, []string{
-			x.config.Dict.Lookup("Name"),
-			x.config.Dict.Lookup("Definition"),
+			x.config.MergedDict.Lookup("Name"),
+			x.config.MergedDict.Lookup("Definition"),
 		})
 		r++
 		for i, trg := range t.Triggers {

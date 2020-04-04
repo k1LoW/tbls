@@ -2,7 +2,7 @@
 
 ## Tables
 
-| Name | Columns | Comment | Type |
+| Name | Columns | Description | Type |
 | ---- | ------- | ------- | ---- |
 | [age_specific_fertility_rates](age_specific_fertility_rates.md) | 13 |  | TABLE |
 | [birth_death_growth_rates](birth_death_growth_rates.md) | 8 |  | TABLE |
