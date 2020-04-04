@@ -252,6 +252,8 @@ func (c *Config) LoadConfigFile(path string) error {
 	if err != nil {
 		return errors.Wrap(errors.WithStack(err), "failed to load config file")
 	}
+
+	c.MergedDict.Merge(c.Dict.Dump())
 	return nil
 }
 
@@ -315,7 +317,6 @@ func (c *Config) mergeDictFromSchema(s *schema.Schema) {
 	if s.Driver != nil && s.Driver.Meta != nil && s.Driver.Meta.Dict != nil {
 		c.MergedDict.Merge(s.Driver.Meta.Dict.Dump())
 	}
-	c.MergedDict.Merge(c.Dict.Dump())
 }
 
 func excludeTableFromSchema(name string, s *schema.Schema) error {

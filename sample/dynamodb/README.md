@@ -2,7 +2,7 @@
 
 ## Tables
 
-| Name | Columns | Comment | Type |
+| Name | Attributes | Comment | Type |
 | ---- | ------- | ------- | ---- |
 | [Forum](Forum.md) | 1 |  | BASIC TABLE |
 | [ProductCatalog](ProductCatalog.md) | 1 |  | BASIC TABLE |

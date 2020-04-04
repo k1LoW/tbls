@@ -252,10 +252,10 @@ func outputExists(s *schema.Schema, path string) bool {
 func (m *Md) makeSchemaTemplateData(s *schema.Schema, adjust bool) map[string]interface{} {
 	tablesData := [][]string{
 		[]string{
-			m.config.Dict.Lookup("Name"),
-			m.config.Dict.Lookup("Columns"),
-			m.config.Dict.Lookup("Comment"),
-			m.config.Dict.Lookup("Type"),
+			m.config.MergedDict.Lookup("Name"),
+			m.config.MergedDict.Lookup("Columns"),
+			m.config.MergedDict.Lookup("Comment"),
+			m.config.MergedDict.Lookup("Type"),
 		},
 		[]string{"----", "-------", "-------", "----"},
 	}
@@ -286,13 +286,13 @@ func (m *Md) makeTableTemplateData(t *schema.Table, adjust bool) map[string]inte
 	// Columns
 	columnsData := [][]string{
 		[]string{
-			m.config.Dict.Lookup("Name"),
-			m.config.Dict.Lookup("Type"),
-			m.config.Dict.Lookup("Default"),
-			m.config.Dict.Lookup("Nullable"),
-			m.config.Dict.Lookup("Children"),
-			m.config.Dict.Lookup("Parents"),
-			m.config.Dict.Lookup("Comment"),
+			m.config.MergedDict.Lookup("Name"),
+			m.config.MergedDict.Lookup("Type"),
+			m.config.MergedDict.Lookup("Default"),
+			m.config.MergedDict.Lookup("Nullable"),
+			m.config.MergedDict.Lookup("Children"),
+			m.config.MergedDict.Lookup("Parents"),
+			m.config.MergedDict.Lookup("Comment"),
 		},
 		[]string{"----", "----", "-------", "--------", "--------", "-------", "-------"},
 	}
@@ -330,9 +330,9 @@ func (m *Md) makeTableTemplateData(t *schema.Table, adjust bool) map[string]inte
 	// Constraints
 	constraintsData := [][]string{
 		[]string{
-			m.config.Dict.Lookup("Name"),
-			m.config.Dict.Lookup("Type"),
-			m.config.Dict.Lookup("Definition"),
+			m.config.MergedDict.Lookup("Name"),
+			m.config.MergedDict.Lookup("Type"),
+			m.config.MergedDict.Lookup("Definition"),
 		},
 		[]string{"----", "----", "----------"},
 	}
@@ -348,8 +348,8 @@ func (m *Md) makeTableTemplateData(t *schema.Table, adjust bool) map[string]inte
 	// Indexes
 	indexesData := [][]string{
 		[]string{
-			m.config.Dict.Lookup("Name"),
-			m.config.Dict.Lookup("Definition"),
+			m.config.MergedDict.Lookup("Name"),
+			m.config.MergedDict.Lookup("Definition"),
 		},
 		[]string{"----", "----------"},
 	}
@@ -364,8 +364,8 @@ func (m *Md) makeTableTemplateData(t *schema.Table, adjust bool) map[string]inte
 	// Triggers
 	triggersData := [][]string{
 		[]string{
-			m.config.Dict.Lookup("Name"),
-			m.config.Dict.Lookup("Definition"),
+			m.config.MergedDict.Lookup("Name"),
+			m.config.MergedDict.Lookup("Definition"),
 		},
 		[]string{"----", "----------"},
 	}
