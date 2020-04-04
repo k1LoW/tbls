@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"cloud.google.com/go/bigquery"
+	"github.com/k1LoW/tbls/dict"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/pkg/errors"
 )
@@ -87,9 +88,17 @@ func listColumns(s bigquery.Schema, prefix string) []*schema.Column {
 }
 
 func (b *Bigquery) Info() (*schema.Driver, error) {
+	dct := dict.New()
+	dct.Merge(map[string]string{
+		"Comment": "Description",
+	})
+
 	d := &schema.Driver{
 		Name:            "bigquery",
 		DatabaseVersion: "",
+		Meta: &schema.DriverMeta{
+			Dict: &dct,
+		},
 	}
 	return d, nil
 }
