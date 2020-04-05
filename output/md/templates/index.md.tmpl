@@ -1,5 +1,10 @@
 # {{ .Schema.Name }}
 
+{{- if ne .Schema.Desc "" }}## {{ "Description" | lookup }}
+
+{{ .Schema.Desc | nl2mdnl }}
+{{- end }}
+
 ## {{ "Tables" | lookup }}
 {{ range $t := .Tables }}
 |{{ range $d := $t }} {{ $d | nl2br }} |{{ end }}

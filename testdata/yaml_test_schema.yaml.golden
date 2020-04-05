@@ -1,4 +1,5 @@
 name: testschema
+desc: ""
 tables:
 - name: a
   type: BASE TABLE

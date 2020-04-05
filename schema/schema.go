@@ -88,6 +88,7 @@ type Driver struct {
 // Schema is the struct for database schema
 type Schema struct {
 	Name      string      `json:"name"`
+	Desc      string      `json:"desc"`
 	Tables    []*Table    `json:"tables"`
 	Relations []*Relation `json:"relations"`
 	Driver    *Driver     `json:"driver"`
