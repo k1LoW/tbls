@@ -1,5 +1,13 @@
 # Changelog
 
+## [v1.29.3](https://github.com/k1LoW/tbls/compare/v1.29.2...v1.29.3) (2020-04-05)
+
+* Fix os.OpenFile mode and permission [#191](https://github.com/k1LoW/tbls/pull/191) ([k1LoW](https://github.com/k1LoW))
+* Set dict for BigQuery [#190](https://github.com/k1LoW/tbls/pull/190) ([k1LoW](https://github.com/k1LoW))
+* Add testing platform ( GitBash on Windows ) [#189](https://github.com/k1LoW/tbls/pull/189) ([k1LoW](https://github.com/k1LoW))
+* Support `https://` `http://` [#187](https://github.com/k1LoW/tbls/pull/187) ([k1LoW](https://github.com/k1LoW))
+* Add default config file name `tbls.yml` [#186](https://github.com/k1LoW/tbls/pull/186) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.29.2](https://github.com/k1LoW/tbls/compare/v1.29.1...v1.29.2) (2020-03-17)
 
 * Fix syntax error (<br> -> <br />) in dot file [#185](https://github.com/k1LoW/tbls/pull/185) ([k1LoW](https://github.com/k1LoW))
