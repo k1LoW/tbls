@@ -114,7 +114,7 @@ var outCmd = &cobra.Command{
 
 		var wr io.Writer
 		if outPath != "" {
-			file, err := os.OpenFile(outPath, os.O_WRONLY|os.O_CREATE, 0666) // #nosec
+			file, err := os.OpenFile(outPath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644) // #nosec
 			if err != nil {
 				printError(err)
 				os.Exit(1)

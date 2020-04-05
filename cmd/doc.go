@@ -115,7 +115,7 @@ func withDot(s *schema.Schema, c *config.Config, force bool) (e error) {
 	erFileName := fmt.Sprintf("schema.%s", erFormat)
 	fmt.Printf("%s\n", filepath.Join(outputPath, erFileName))
 
-	file, err := os.OpenFile(filepath.Join(fullPath, erFileName), os.O_WRONLY|os.O_CREATE, 0644) // #nosec
+	file, err := os.OpenFile(filepath.Join(fullPath, erFileName), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644) // #nosec
 	if err != nil {
 		return errors.WithStack(err)
 	}
@@ -130,7 +130,7 @@ func withDot(s *schema.Schema, c *config.Config, force bool) (e error) {
 		erFileName := fmt.Sprintf("%s.%s", t.Name, erFormat)
 		fmt.Printf("%s\n", filepath.Join(outputPath, erFileName))
 
-		file, err := os.OpenFile(filepath.Join(fullPath, erFileName), os.O_WRONLY|os.O_CREATE, 0644) // #nosec
+		file, err := os.OpenFile(filepath.Join(fullPath, erFileName), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644) // #nosec
 		if err != nil {
 			return errors.WithStack(err)
 		}
