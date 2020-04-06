@@ -26,6 +26,7 @@ Key features of `tbls` are:
     - [Continuous Integration](#continuous-integration)
   - [Configuration](#configration)
     - [Name](#name)
+    - [Description](#description)
     - [DSN](#dsn)
       - [Support Datasource](#support-datasource)
     - [Document path](#document-path)
@@ -232,6 +233,15 @@ script:
 ``` yaml
 # .tbls.yml
 name: mydatabase
+```
+
+### Description
+
+`desc:` is used to specify the database description.
+
+``` yaml
+# .tbls.yml
+desc: This is My Database
 ```
 
 ### DSN
