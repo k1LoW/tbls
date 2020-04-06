@@ -246,7 +246,7 @@ WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
 				col                string
 				cols               []string
 			)
-			row, err := l.db.Query(fmt.Sprintf("PRAGMA index_info(%s)", indexName))
+			row, err := l.db.Query(fmt.Sprintf("PRAGMA index_info(`%s`)", indexName))
 			if err != nil {
 				return errors.WithStack(err)
 			}
