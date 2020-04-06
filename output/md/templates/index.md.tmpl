@@ -1,6 +1,7 @@
 # {{ .Schema.Name }}
+{{- if ne .Schema.Desc "" }}
 
-{{- if ne .Schema.Desc "" }}## {{ "Description" | lookup }}
+## {{ "Description" | lookup }}
 
 {{ .Schema.Desc | nl2mdnl }}
 {{- end }}

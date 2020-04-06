@@ -1,4 +1,5 @@
 ---
+desc: Sample database document.
 lint:
   requireColumnComment:
     enabled: true

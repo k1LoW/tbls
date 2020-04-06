@@ -1,4 +1,5 @@
 name: ""
+desc: ""
 dsn: ""
 docPath: dbdoc
 format:
