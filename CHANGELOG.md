@@ -1,5 +1,10 @@
 # Changelog
 
+## [v1.30.0](https://github.com/k1LoW/tbls/compare/v1.29.3...v1.30.0) (2020-04-06)
+
+* Fix #188 'near "." Syntax Error' [#193](https://github.com/k1LoW/tbls/pull/193) ([BoringDude](https://github.com/BoringDude))
+* [BREAKING]Add schema description [#192](https://github.com/k1LoW/tbls/pull/192) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.29.3](https://github.com/k1LoW/tbls/compare/v1.29.2...v1.29.3) (2020-04-05)
 
 * Fix os.OpenFile mode and permission [#191](https://github.com/k1LoW/tbls/pull/191) ([k1LoW](https://github.com/k1LoW))
