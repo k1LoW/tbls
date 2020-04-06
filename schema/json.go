@@ -12,11 +12,13 @@ func (s Schema) MarshalJSON() ([]byte, error) {
 	}
 	return json.Marshal(&struct {
 		Name      string      `json:"name"`
+		Desc      string      `json:"desc"`
 		Tables    []*Table    `json:"tables"`
 		Relations []*Relation `json:"relations"`
 		Driver    *Driver     `json:"driver"`
 	}{
 		Name:      s.Name,
+		Desc:      s.Desc,
 		Tables:    s.Tables,
 		Relations: s.Relations,
 		Driver:    s.Driver,
