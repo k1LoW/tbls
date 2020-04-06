@@ -31,6 +31,7 @@ var DefaultDistance = 1
 // Config is tbls config
 type Config struct {
 	Name        string               `yaml:"name"`
+	Desc        string               `yaml:"desc"`
 	DSN         DSN                  `yaml:"dsn"`
 	DocPath     string               `yaml:"docPath"`
 	Format      Format               `yaml:"format"`
@@ -261,6 +262,9 @@ func (c *Config) LoadConfigFile(path string) error {
 func (c *Config) ModifySchema(s *schema.Schema) error {
 	if c.Name != "" {
 		s.Name = c.Name
+	}
+	if c.Desc != "" {
+		s.Desc = c.Desc
 	}
 	err := c.MergeAdditionalData(s)
 	if err != nil {

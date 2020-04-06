@@ -34,7 +34,14 @@ func (b *Bigquery) Analyze(s *schema.Schema) error {
 	}
 	s.Driver = d
 
-	bt := b.client.Dataset(b.datasetID).Tables(b.ctx)
+	ds := b.client.Dataset(b.datasetID)
+	meta, err := ds.Metadata(b.ctx)
+	if err != nil {
+		return err
+	}
+	s.Desc = meta.Description
+
+	bt := ds.Tables(b.ctx)
 
 	// tables
 	tables := []*schema.Table{}

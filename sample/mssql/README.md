@@ -1,5 +1,9 @@
 # testdb
 
+## Description
+
+Sample database document.
+
 ## Tables
 
 | Name | Columns | Comment | Type |

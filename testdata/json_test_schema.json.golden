@@ -1,5 +1,6 @@
 {
   "name": "testschema",
+  "desc": "",
   "tables": [
     {
       "name": "a",

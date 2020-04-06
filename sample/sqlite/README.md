@@ -1,5 +1,9 @@
 # testdb.sqlite3
 
+## Description
+
+Sample database document.
+
 ## Tables
 
 | Name | Columns | Comment | Type |
