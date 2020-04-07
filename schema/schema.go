@@ -21,6 +21,15 @@ type Label struct {
 
 type Labels []*Label
 
+func (labels Labels) Merge(name string) Labels {
+	for _, l := range labels {
+		if l.Name == name {
+			return labels
+		}
+	}
+	return append(labels, &Label{Name: name, Virtual: true})
+}
+
 // Index is the struct for database index
 type Index struct {
 	Name    string   `json:"name"`

@@ -32,6 +32,7 @@ var DefaultDistance = 1
 type Config struct {
 	Name        string               `yaml:"name"`
 	Desc        string               `yaml:"desc"`
+	Labels      []string             `yaml:"labels"`
 	DSN         DSN                  `yaml:"dsn"`
 	DocPath     string               `yaml:"docPath"`
 	Format      Format               `yaml:"format"`
@@ -80,6 +81,7 @@ type AdditionalComment struct {
 	Table          string            `yaml:"table"`
 	TableComment   string            `yaml:"tableComment"`
 	ColumnComments map[string]string `yaml:"columnComments"`
+	Labels         []string          `yaml:"labels"`
 }
 
 // Option function change Config
@@ -266,6 +268,11 @@ func (c *Config) ModifySchema(s *schema.Schema) error {
 	if c.Desc != "" {
 		s.Desc = c.Desc
 	}
+	if len(c.Labels) > 0 {
+		for _, l := range c.Labels {
+			s.Labels = s.Labels.Merge(l)
+		}
+	}
 	err := c.MergeAdditionalData(s)
 	if err != nil {
 		return err
@@ -424,6 +431,11 @@ func mergeAdditionalComments(s *schema.Schema, comments []AdditionalComment) err
 		}
 		if c.TableComment != "" {
 			table.Comment = c.TableComment
+		}
+		if len(c.Labels) > 0 {
+			for _, l := range c.Labels {
+				table.Labels = table.Labels.Merge(l)
+			}
 		}
 		for c, comment := range c.ColumnComments {
 			column, err := table.FindColumnByName(c)

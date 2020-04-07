@@ -27,6 +27,7 @@ Key features of `tbls` are:
   - [Configuration](#configration)
     - [Name](#name)
     - [Description](#description)
+    - [Labels](#labels)
     - [DSN](#dsn)
       - [Support Datasource](#support-datasource)
     - [Document path](#document-path)
@@ -242,6 +243,31 @@ name: mydatabase
 ``` yaml
 # .tbls.yml
 desc: This is My Database
+```
+
+### Labels
+
+`labels:` is used to label the database or tables.
+
+**label database:**
+
+``` yaml
+# .tbls.yml
+labels:
+  - cmdb
+  - analytics
+```
+
+**label tables:**
+
+``` yaml
+# .tbls.yml
+comments:
+  -
+    table: users
+    labels:
+      - user
+      - privacy data
 ```
 
 ### DSN

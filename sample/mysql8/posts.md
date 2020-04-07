@@ -25,6 +25,10 @@ CREATE TABLE `posts` (
 
 </details>
 
+## Labels
+
+`green` `red` `blue`
+
 ## Columns
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
