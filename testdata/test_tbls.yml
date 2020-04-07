@@ -1,5 +1,8 @@
 ---
 desc: Sample database document.
+labels:
+  - sample
+  - tbls
 lint:
   requireColumnComment:
     enabled: true
@@ -45,6 +48,10 @@ comments:
     table: posts
     columnComments:
       body: post body
+    labels:
+      - green
+      - red
+      - blue
   -
     table: logs
     tableComment: audit log table

@@ -268,6 +268,11 @@ func (c *Config) ModifySchema(s *schema.Schema) error {
 	if c.Desc != "" {
 		s.Desc = c.Desc
 	}
+	if len(c.Labels) > 0 {
+		for _, l := range c.Labels {
+			s.Labels = s.Labels.Merge(l)
+		}
+	}
 	err := c.MergeAdditionalData(s)
 	if err != nil {
 		return err
@@ -426,6 +431,11 @@ func mergeAdditionalComments(s *schema.Schema, comments []AdditionalComment) err
 		}
 		if c.TableComment != "" {
 			table.Comment = c.TableComment
+		}
+		if len(c.Labels) > 0 {
+			for _, l := range c.Labels {
+				table.Labels = table.Labels.Merge(l)
+			}
 		}
 		for c, comment := range c.ColumnComments {
 			column, err := table.FindColumnByName(c)
