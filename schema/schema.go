@@ -14,6 +14,13 @@ const (
 	TypeFK = "FOREIGN KEY"
 )
 
+type Label struct {
+	Name    string
+	Virtual bool
+}
+
+type Labels []*Label
+
 // Index is the struct for database index
 type Index struct {
 	Name    string   `json:"name"`
@@ -60,6 +67,7 @@ type Table struct {
 	Constraints []*Constraint `json:"constraints"`
 	Triggers    []*Trigger    `json:"triggers"`
 	Def         string        `json:"def"`
+	Labels      Labels        `json:"labels,omitempty"`
 }
 
 // Relation is the struct for table relation
@@ -92,6 +100,7 @@ type Schema struct {
 	Tables    []*Table    `json:"tables"`
 	Relations []*Relation `json:"relations"`
 	Driver    *Driver     `json:"driver"`
+	Labels    Labels      `json:"labels,omitempty"`
 }
 
 func (s *Schema) NormalizeTableName(name string) string {
