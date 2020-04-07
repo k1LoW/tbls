@@ -1,5 +1,9 @@
 # bigquery-public-data:crypto_bitcoin
 
+## Labels
+
+`crytpo:crypto_currency`
+
 ## Tables
 
 | Name | Columns | Description | Type |

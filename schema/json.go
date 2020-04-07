@@ -16,12 +16,14 @@ func (s Schema) MarshalJSON() ([]byte, error) {
 		Tables    []*Table    `json:"tables"`
 		Relations []*Relation `json:"relations"`
 		Driver    *Driver     `json:"driver"`
+		Labels    Labels      `json:"labels,omitempty"`
 	}{
 		Name:      s.Name,
 		Desc:      s.Desc,
 		Tables:    s.Tables,
 		Relations: s.Relations,
 		Driver:    s.Driver,
+		Labels:    s.Labels,
 	})
 }
 
@@ -65,6 +67,7 @@ func (t Table) MarshalJSON() ([]byte, error) {
 		Constraints []*Constraint `json:"constraints"`
 		Triggers    []*Trigger    `json:"triggers"`
 		Def         string        `json:"def"`
+		Labels      Labels        `json:"labels,omitempty"`
 	}{
 		Name:        t.Name,
 		Type:        t.Type,
@@ -74,6 +77,7 @@ func (t Table) MarshalJSON() ([]byte, error) {
 		Constraints: t.Constraints,
 		Triggers:    t.Triggers,
 		Def:         t.Def,
+		Labels:      t.Labels,
 	})
 }
 

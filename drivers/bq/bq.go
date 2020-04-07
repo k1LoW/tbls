@@ -35,11 +35,14 @@ func (b *Bigquery) Analyze(s *schema.Schema) error {
 	s.Driver = d
 
 	ds := b.client.Dataset(b.datasetID)
-	meta, err := ds.Metadata(b.ctx)
+	m, err := ds.Metadata(b.ctx)
 	if err != nil {
 		return err
 	}
-	s.Desc = meta.Description
+	s.Desc = m.Description
+	for k, v := range m.Labels {
+		s.Labels = append(s.Labels, &schema.Label{Name: fmt.Sprintf("%s:%s", k, v), Virtual: false})
+	}
 
 	bt := ds.Tables(b.ctx)
 
@@ -57,6 +60,10 @@ func (b *Bigquery) Analyze(s *schema.Schema) error {
 		if err != nil {
 			return err
 		}
+		labels := schema.Labels{}
+		for k, v := range m.Labels {
+			labels = append(labels, &schema.Label{Name: fmt.Sprintf("%s:%s", k, v), Virtual: false})
+		}
 
 		splitted := strings.Split(m.FullID, fmt.Sprintf("%s.", b.datasetID))
 
@@ -66,6 +73,7 @@ func (b *Bigquery) Analyze(s *schema.Schema) error {
 			Type:    string(m.Type),
 			Def:     m.ViewQuery,
 			Columns: listColumns(m.Schema, ""),
+			Labels:  labels,
 		}
 
 		tables = append(tables, table)
