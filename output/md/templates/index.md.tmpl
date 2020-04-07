@@ -5,6 +5,13 @@
 
 {{ .Schema.Desc | nl2mdnl }}
 {{- end }}
+{{- if ne (len .Schema.Labels) 0 }}
+
+## {{ "Labels" | lookup }}
+
+{{ .Schema.Labels | label_join }}
+
+{{- end }}
 
 ## {{ "Tables" | lookup }}
 {{ range $t := .Tables }}

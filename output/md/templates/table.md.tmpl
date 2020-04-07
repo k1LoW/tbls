@@ -16,6 +16,13 @@
 
 </details>
 {{- end }}
+{{- if ne (len .Table.Labels) 0 }}
+
+## {{ "Labels" | lookup }}
+
+{{ .Table.Labels | label_join }}
+
+{{- end }}
 
 ## {{ "Columns" | lookup }}
 {{ range $l := .Columns }}

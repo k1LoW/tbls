@@ -1,6 +1,7 @@
 package output
 
 import (
+	"fmt"
 	"io"
 	"strings"
 	"text/template"
@@ -39,6 +40,13 @@ func Funcs(d *dict.Dict) map[string]interface{} {
 		},
 		"lookup": func(text string) string {
 			return d.Lookup(text)
+		},
+		"label_join": func(labels schema.Labels) string {
+			m := []string{}
+			for _, l := range labels {
+				m = append(m, l.Name)
+			}
+			return fmt.Sprintf("`%s`", strings.Join(m, "` `"))
 		},
 	}
 }
