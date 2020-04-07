@@ -32,6 +32,7 @@ var DefaultDistance = 1
 type Config struct {
 	Name        string               `yaml:"name"`
 	Desc        string               `yaml:"desc"`
+	Labels      []string             `yaml:"labels"`
 	DSN         DSN                  `yaml:"dsn"`
 	DocPath     string               `yaml:"docPath"`
 	Format      Format               `yaml:"format"`
@@ -80,6 +81,7 @@ type AdditionalComment struct {
 	Table          string            `yaml:"table"`
 	TableComment   string            `yaml:"tableComment"`
 	ColumnComments map[string]string `yaml:"columnComments"`
+	Labels         []string          `yaml:"labels"`
 }
 
 // Option function change Config

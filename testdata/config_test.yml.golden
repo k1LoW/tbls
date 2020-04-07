@@ -1,5 +1,6 @@
 name: ""
 desc: ""
+labels: []
 dsn: ""
 docPath: dbdoc
 format:
@@ -43,9 +44,11 @@ comments:
   columnComments:
     a: column comment required.
     a2: column comment required.
+  labels: []
 - table: b
   tableComment: column comment required.
   columnComments:
     b: column comment required.
     b2: column comment required.
+  labels: []
 dict: {}
