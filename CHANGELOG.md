@@ -1,5 +1,10 @@
 # Changelog
 
+## [v1.31.0](https://github.com/k1LoW/tbls/compare/v1.30.0...v1.31.0) (2020-04-07)
+
+* Add labels: and comments.labels: [#195](https://github.com/k1LoW/tbls/pull/195) ([k1LoW](https://github.com/k1LoW))
+* [BigQuery]Add labels section [#194](https://github.com/k1LoW/tbls/pull/194) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.30.0](https://github.com/k1LoW/tbls/compare/v1.29.3...v1.30.0) (2020-04-06)
 
 * Fix #188 'near "." Syntax Error' [#193](https://github.com/k1LoW/tbls/pull/193) ([BoringDude](https://github.com/BoringDude))
