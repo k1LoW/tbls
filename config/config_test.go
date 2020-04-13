@@ -174,6 +174,20 @@ func TestFilterTables(t *testing.T) {
 				},
 			},
 			&schema.Table{
+				Name:    "categories",
+				Comment: "categories comment",
+				Columns: []*schema.Column{
+					&schema.Column{
+						Name: "id",
+						Type: "serial",
+					},
+					&schema.Column{
+						Name: "name",
+						Type: "text",
+					},
+				},
+			},
+			&schema.Table{
 				Name:    "posts",
 				Comment: "posts comment",
 				Columns: []*schema.Column{
@@ -183,6 +197,10 @@ func TestFilterTables(t *testing.T) {
 					},
 					&schema.Column{
 						Name: "user_id",
+						Type: "int",
+					},
+					&schema.Column{
+						Name: "category_id",
 						Type: "int",
 					},
 					&schema.Column{
@@ -224,6 +242,32 @@ func TestFilterTables(t *testing.T) {
 			},
 		},
 	}
+	usersTable, err := s.FindTableByName("users")
+	if err != nil {
+		t.Error(err)
+	}
+	categoriesTable, err := s.FindTableByName("categories")
+	if err != nil {
+		t.Error(err)
+	}
+	postsTable, err := s.FindTableByName("posts")
+	if err != nil {
+		t.Error(err)
+	}
+	userOptionsTable, err := s.FindTableByName("user_options")
+	if err != nil {
+		t.Error(err)
+	}
+	s.Relations = []*schema.Relation{
+		&schema.Relation{
+			Table:       userOptionsTable,
+			ParentTable: usersTable,
+		},
+		&schema.Relation{
+			Table:       postsTable,
+			ParentTable: categoriesTable,
+		},
+	}
 	c, err := New()
 	if err != nil {
 		t.Error(err)
@@ -238,6 +282,9 @@ func TestFilterTables(t *testing.T) {
 	}
 	if want := 2; len(s.Tables) != want {
 		t.Errorf("got %v\nwant %v", len(s.Tables), want)
+	}
+	if want := 0; len(s.Relations) != want {
+		t.Errorf("got %v\nwant %v", len(s.Relations), want)
 	}
 }
 
