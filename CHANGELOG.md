@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.31.1](https://github.com/k1LoW/tbls/compare/v1.31.0...v1.31.1) (2020-04-14)
+
+* Fixed an error in Graphviz when the parent table of Relation is an exclude target. [#196](https://github.com/k1LoW/tbls/pull/196) ([yoskhdia](https://github.com/yoskhdia))
+
 ## [v1.31.0](https://github.com/k1LoW/tbls/compare/v1.30.0...v1.31.0) (2020-04-07)
 
 * Add labels: and comments.labels: [#195](https://github.com/k1LoW/tbls/pull/195) ([k1LoW](https://github.com/k1LoW))
