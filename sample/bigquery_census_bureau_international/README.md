@@ -12,6 +12,10 @@ Terms of use: This dataset is publicly available for anyone to use under the fol
   
 See the GCP Marketplace listing for more details and sample queries: https://console.cloud.google.com/marketplace/details/united-states-census-bureau/international-census-data
 
+## Labels
+
+`freebqcovid:freebqcovid`
+
 ## Tables
 
 | Name | Columns | Description | Type |

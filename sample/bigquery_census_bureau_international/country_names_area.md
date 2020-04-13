@@ -2,6 +2,10 @@
 
 ## Description
 
+## Labels
+
+`freebqcovid:`
+
 ## Columns
 
 | Name | Type | Default | Nullable | Children | Parents | Description |
