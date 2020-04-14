@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.31.2](https://github.com/k1LoW/tbls/compare/v1.31.1...v1.31.2) (2020-04-14)
+
+* fix (MSSQLDriver) : Set size of nvarchar/varchar/varbinary columns.  Filter sysname columns from list. [#197](https://github.com/k1LoW/tbls/pull/197) ([jafin](https://github.com/jafin))
+
 ## [v1.31.1](https://github.com/k1LoW/tbls/compare/v1.31.0...v1.31.1) (2020-04-14)
 
 * Fixed an error in Graphviz when the parent table of Relation is an exclude target. [#196](https://github.com/k1LoW/tbls/pull/196) ([yoskhdia](https://github.com/yoskhdia))
