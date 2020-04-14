@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"regexp"
+	"strconv"
 	"strings"
 
 	"github.com/k1LoW/tbls/schema"
@@ -109,6 +110,7 @@ SELECT
 FROM sys.columns AS c
 LEFT JOIN sys.types AS t ON c.system_type_id = t.system_type_id
 WHERE c.object_id = $1
+and t.name != 'sysname'
 ORDER BY c.column_id
 `, tableOid)
 		defer columnRows.Close()
@@ -132,7 +134,7 @@ ORDER BY c.column_id
 			}
 			column := &schema.Column{
 				Name:     columnName,
-				Type:     convertColmunType(dataType, maxLength),
+				Type:     convertColumnType(dataType, maxLength),
 				Nullable: isNullable,
 				Default:  columnDefault,
 			}
@@ -456,10 +458,27 @@ func convertTableType(t string) string {
 	}
 }
 
-func convertColmunType(t string, maxLength int) string {
+func convertColumnType(t string, maxLength int) string {
 	switch t {
 	case "varchar":
-		return fmt.Sprintf("varchar(%d)", maxLength)
+		var len string = strconv.Itoa(maxLength)
+		if maxLength == -1 {
+			len = "MAX"
+		}
+		return fmt.Sprintf("varchar(%s)", len)
+	case "nvarchar":
+		//nvarchar length is 2 byte, return character length
+		var len string = strconv.Itoa(maxLength/2)
+		if maxLength == -1 {
+			len = "MAX"
+		}
+		return fmt.Sprintf("nvarchar(%s)", len)
+	case "varbinary":
+		var len string = strconv.Itoa(maxLength)
+		if maxLength == -1 {
+			len = "MAX"
+		}
+		return fmt.Sprintf("varbinary(%s)", len)
 	default:
 		return t
 	}
