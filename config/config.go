@@ -377,6 +377,10 @@ func (c *Config) MaskedDSN() (string, error) {
 	if err != nil {
 		return c.DSN.URL, errors.WithStack(err)
 	}
+	_, pset := u.User.Password()
+	if !pset {
+		return c.DSN.URL, nil
+	}
 	tmp := "-----tbls-----"
 	u.User = url.UserPassword(u.User.Username(), tmp)
 	return strings.Replace(u.String(), tmp, "*****", 1), nil

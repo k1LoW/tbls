@@ -368,6 +368,41 @@ func TestModifySchema(t *testing.T) {
 	}
 }
 
+func TestMaskedDSN(t *testing.T) {
+	tests := []struct {
+		url  string
+		want string
+	}{
+		{
+			"pg://root:pgpass@localhost:5432/testdb?sslmode=disable",
+			"pg://root:*****@localhost:5432/testdb?sslmode=disable",
+		},
+		{
+			"pg://root@localhost:5432/testdb?sslmode=disable",
+			"pg://root@localhost:5432/testdb?sslmode=disable",
+		},
+		{
+			"pg://localhost:5432/testdb?sslmode=disable",
+			"pg://localhost:5432/testdb?sslmode=disable",
+		},
+	}
+
+	for _, tt := range tests {
+		config, err := New()
+		if err != nil {
+			t.Fatal(err)
+		}
+		config.DSN.URL = tt.url
+		got, err := config.MaskedDSN()
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tt.want {
+			t.Errorf("got %v\nwant %v", got, tt.want)
+		}
+	}
+}
+
 func testdataDir() string {
 	wd, _ := os.Getwd()
 	dir, _ := filepath.Abs(filepath.Join(filepath.Dir(wd), "testdata"))
