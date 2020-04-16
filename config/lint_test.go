@@ -232,6 +232,58 @@ func TestRequireForeignKeyIndex(t *testing.T) {
 	}
 }
 
+func TestLabelStyleBigQuery(t *testing.T) {
+	tests := []struct {
+		enabled     bool
+		lintExclude []string
+		want        int
+	}{
+		{true, []string{}, 2},
+		{false, []string{}, 0},
+		{true, []string{"table_a"}, 1},
+	}
+	for i, tt := range tests {
+		r := LabelStyleBigQuery{
+			Enabled: tt.enabled,
+		}
+		s := newTestSchema()
+		warns := r.Check(s, tt.lintExclude)
+		if len(warns) != tt.want {
+			t.Errorf("TestLabelStyleBigQuery(%d): got %v\nwant %v", i, len(warns), tt.want)
+		}
+	}
+}
+
+func TestCheckLabelStyleBigQuery(t *testing.T) {
+	tests := []struct {
+		label string
+		want  bool
+	}{
+		{"env:prod", true},
+		{"env:", true},
+		{"e:p", true},
+		{"env", false},
+		{":prod", false},
+		{"Env:prod", false},
+		{"0nv:prod", false},
+		{"env:0rod", true},
+		{"-nv:prod", false},
+		{"env:-rod", true},
+		{"(nv:prod", false},
+		{"en v:prod", false},
+		{"env:pr od", false},
+		{"env:テスト", true},
+		{"e変数:テスト", true},
+	}
+
+	for _, tt := range tests {
+		got := checkLabelStyleBigQuery(tt.label)
+		if got != tt.want {
+			t.Errorf("%v got %v want %v", tt.label, got, tt.want)
+		}
+	}
+}
+
 func newTestSchema() *schema.Schema {
 	ca := &schema.Column{
 		Name:     "column_a1",
@@ -247,7 +299,10 @@ func newTestSchema() *schema.Schema {
 	}
 
 	ta := &schema.Table{
-		Name:    "table_a",
+		Name: "table_a",
+		Labels: schema.Labels{
+			&schema.Label{Name: "bq-invalid", Virtual: false},
+		},
 		Type:    "BASE TABLE",
 		Comment: "", // empty comment
 		Columns: []*schema.Column{
@@ -350,6 +405,9 @@ func newTestSchema() *schema.Schema {
 
 	s := &schema.Schema{
 		Name: "testschema",
+		Labels: schema.Labels{
+			&schema.Label{Name: "bq-invalid", Virtual: false},
+		},
 		Tables: []*schema.Table{
 			ta,
 			tb,

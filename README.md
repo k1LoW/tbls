@@ -542,6 +542,11 @@ lint:
     enabled: true
     exclude:
       - comments.user_id
+  # checks if labels are in BigQuery style
+  labelStyleBigQuery
+    enabled: true
+    exclude:
+      - schema_migrations
 ```
 
 ### Filter tables

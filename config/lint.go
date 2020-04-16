@@ -2,7 +2,9 @@ package config
 
 import (
 	"fmt"
+	"regexp"
 	"sort"
+	"strings"
 
 	"github.com/k1LoW/tbls/schema"
 )
@@ -16,6 +18,7 @@ type Lint struct {
 	RequireColumns         RequireColumns         `yaml:"requireColumns"`
 	DuplicateRelations     DuplicateRelations     `yaml:"duplicateRelations"`
 	RequireForeignKeyIndex RequireForeignKeyIndex `yaml:"requireForeignKeyIndex"`
+	LabelStyleBigQuery     LabelStyleBigQuery     `yaml:"labelStyleBigQuery"`
 }
 
 // RuleWarn is struct of Rule error
@@ -350,4 +353,79 @@ func (r RequireForeignKeyIndex) Check(s *schema.Schema, exclude []string) []Rule
 	}
 
 	return warns
+}
+
+// LabelStyleBigQuery checks if labels are in BigQuery style
+type LabelStyleBigQuery struct {
+	Enabled bool     `yaml:"enabled"`
+	Exclude []string `yaml:"exclude"`
+}
+
+// IsEnabled return Rule is enabled or not
+func (r LabelStyleBigQuery) IsEnabled() bool {
+	return r.Enabled
+}
+
+// Check if the foreign key columns have an index
+func (r LabelStyleBigQuery) Check(s *schema.Schema, exclude []string) []RuleWarn {
+	warns := []RuleWarn{}
+	if !r.IsEnabled() {
+		return warns
+	}
+	msgFmtSchema := "required to be in BigQuery `key:value` style. [label `%s` in database `%s`]"
+	msgFmt := "required to be in BigQuery `key:value` style. [label `%s` in table `%s`]"
+
+	for _, l := range s.Labels {
+		if !checkLabelStyleBigQuery(l.Name) {
+			target := fmt.Sprintf("%s.Labels.%s", s.Name, l.Name)
+			warns = append(warns, RuleWarn{
+				Target:  target,
+				Message: fmt.Sprintf(msgFmtSchema, l.Name, s.Name),
+			})
+		}
+	}
+
+	nt := s.NormalizeTableNames(r.Exclude)
+	for _, t := range s.Tables {
+		if contains(exclude, t.Name) {
+			continue
+		}
+		if contains(nt, t.Name) {
+			continue
+		}
+		for _, l := range t.Labels {
+			target := fmt.Sprintf("%s.Labels.%s", t.Name, l.Name)
+			warns = append(warns, RuleWarn{
+				Target:  target,
+				Message: fmt.Sprintf(msgFmt, l, t.Name),
+			})
+		}
+	}
+
+	return warns
+}
+
+var labelStyleBigQueryKeyRe = regexp.MustCompile(`^[^A-Z0-9 !"#$%&'()*+,-./:;<=>?@\[\\\]^_\{|}~` + "`" + `][^A-Z !"#$%&'()*+,./:;<=>?@\[\\\]^\{|}~` + "`" + `]*$`)
+var labelStyleBigQueryValueRe = regexp.MustCompile(`^[^A-Z !"#$%&'()*+,./:;<=>?@\[\\\]^\{|}~` + "`" + `]*$`)
+
+func checkLabelStyleBigQuery(label string) bool {
+	if strings.Count(label, ":") != 1 {
+		return false
+	}
+	kv := strings.Split(label, ":")
+	k := kv[0]
+	v := kv[1]
+	if len(k) == 0 || len(k) > 63 {
+		return false
+	}
+	if len(v) > 63 {
+		return false
+	}
+	if !labelStyleBigQueryKeyRe.MatchString(k) {
+		return false
+	}
+	if !labelStyleBigQueryValueRe.MatchString(v) {
+		return false
+	}
+	return true
 }
