@@ -355,7 +355,7 @@ func (r RequireForeignKeyIndex) Check(s *schema.Schema, exclude []string) []Rule
 	return warns
 }
 
-// LabelStyleBigQuery checks if labels are in BigQuery style
+// LabelStyleBigQuery checks if labels are in BigQuery style ( https://cloud.google.com/resource-manager/docs/creating-managing-labels#requirements )
 type LabelStyleBigQuery struct {
 	Enabled bool     `yaml:"enabled"`
 	Exclude []string `yaml:"exclude"`
@@ -366,7 +366,7 @@ func (r LabelStyleBigQuery) IsEnabled() bool {
 	return r.Enabled
 }
 
-// Check if the foreign key columns have an index
+// Check if labels are in BigQuery style
 func (r LabelStyleBigQuery) Check(s *schema.Schema, exclude []string) []RuleWarn {
 	warns := []RuleWarn{}
 	if !r.IsEnabled() {
