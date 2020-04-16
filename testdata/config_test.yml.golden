@@ -36,6 +36,9 @@ lint:
   requireForeignKeyIndex:
     enabled: false
     exclude: []
+  labelStyleBigQuery:
+    enabled: false
+    exclude: []
 lintExclude: []
 relations: []
 comments:

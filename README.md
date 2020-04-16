@@ -542,6 +542,11 @@ lint:
     enabled: true
     exclude:
       - comments.user_id
+  # checks if labels are in BigQuery style ( https://cloud.google.com/resource-manager/docs/creating-managing-labels#requirements )
+  labelStyleBigQuery
+    enabled: true
+    exclude:
+      - schema_migrations
 ```
 
 ### Filter tables
