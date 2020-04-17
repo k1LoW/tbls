@@ -1,5 +1,10 @@
 # Changelog
 
+## [v1.32.0](https://github.com/k1LoW/tbls/compare/v1.31.2...v1.32.0) (2020-04-17)
+
+* Add lint rule `labelStyleBigQuery` [#199](https://github.com/k1LoW/tbls/pull/199) ([k1LoW](https://github.com/k1LoW))
+* Fix Config.MaskedDSN output [#198](https://github.com/k1LoW/tbls/pull/198) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.31.2](https://github.com/k1LoW/tbls/compare/v1.31.1...v1.31.2) (2020-04-14)
 
 * fix (MSSQLDriver) : Set size of nvarchar/varchar/varbinary columns.  Filter sysname columns from list. [#197](https://github.com/k1LoW/tbls/pull/197) ([jafin](https://github.com/jafin))
