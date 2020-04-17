@@ -72,8 +72,8 @@ func (r RequireTableComment) Check(s *schema.Schema, exclude []string) []RuleWar
 
 // RequireColumnComment checks column comment
 type RequireColumnComment struct {
-	Enabled        bool     `yaml:"enabled"`
-	Exclude        []string `yaml:"exclude"`
+	Enabled       bool     `yaml:"enabled"`
+	Exclude       []string `yaml:"exclude"`
 	ExcludeTables []string `yaml:"excludeTables"`
 }
 
@@ -394,11 +394,13 @@ func (r LabelStyleBigQuery) Check(s *schema.Schema, exclude []string) []RuleWarn
 			continue
 		}
 		for _, l := range t.Labels {
-			target := fmt.Sprintf("%s.Labels.%s", t.Name, l.Name)
-			warns = append(warns, RuleWarn{
-				Target:  target,
-				Message: fmt.Sprintf(msgFmt, l, t.Name),
-			})
+			if !checkLabelStyleBigQuery(l.Name) {
+				target := fmt.Sprintf("%s.Labels.%s", t.Name, l.Name)
+				warns = append(warns, RuleWarn{
+					Target:  target,
+					Message: fmt.Sprintf(msgFmt, l.Name, t.Name),
+				})
+			}
 		}
 	}
 
