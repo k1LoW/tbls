@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.32.1](https://github.com/k1LoW/tbls/compare/v1.32.0...v1.32.1) (2020-04-17)
+
+* [BREAKING]Fix `excludedTables:` -> `excludeTables:` [#200](https://github.com/k1LoW/tbls/pull/200) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.32.0](https://github.com/k1LoW/tbls/compare/v1.31.2...v1.32.0) (2020-04-17)
 
 * Add lint rule `labelStyleBigQuery` [#199](https://github.com/k1LoW/tbls/pull/199) ([k1LoW](https://github.com/k1LoW))
