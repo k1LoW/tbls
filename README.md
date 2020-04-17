@@ -507,7 +507,7 @@ lint:
       - created_at
       - updated_at
     # exclude tables from warnings
-    excludedTables:
+    excludeTables:
       - logs
       - comment_stars
   # find a table that has no relation
@@ -543,7 +543,7 @@ lint:
     exclude:
       - comments.user_id
   # checks if labels are in BigQuery style ( https://cloud.google.com/resource-manager/docs/creating-managing-labels#requirements )
-  labelStyleBigQuery
+  labelStyleBigQuery:
     enabled: true
     exclude:
       - schema_migrations

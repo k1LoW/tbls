@@ -74,7 +74,7 @@ func (r RequireTableComment) Check(s *schema.Schema, exclude []string) []RuleWar
 type RequireColumnComment struct {
 	Enabled        bool     `yaml:"enabled"`
 	Exclude        []string `yaml:"exclude"`
-	ExcludedTables []string `yaml:"excludedTables"`
+	ExcludeTables []string `yaml:"excludeTables"`
 }
 
 // IsEnabled return Rule is enabled or not
@@ -90,7 +90,7 @@ func (r RequireColumnComment) Check(s *schema.Schema, exclude []string) []RuleWa
 	}
 	msg := "column comment required."
 
-	nt := s.NormalizeTableNames(r.ExcludedTables)
+	nt := s.NormalizeTableNames(r.ExcludeTables)
 	for _, t := range s.Tables {
 		if contains(exclude, t.Name) {
 			continue
@@ -227,11 +227,11 @@ func (r RequireColumns) Check(s *schema.Schema, exclude []string) []RuleWarn {
 			continue
 		}
 		for _, cc := range r.Columns {
-			excluded := false
+			exclude := false
 			if contains(cc.Exclude, t.Name) {
-				excluded = true
+				exclude = true
 			}
-			if excluded {
+			if exclude {
 				continue
 			}
 			exists := false
