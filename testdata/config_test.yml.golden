@@ -20,7 +20,7 @@ lint:
   requireColumnComment:
     enabled: false
     exclude: []
-    excludedTables: []
+    excludeTables: []
   unrelatedTable:
     enabled: false
     exclude: []

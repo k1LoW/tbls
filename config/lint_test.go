@@ -57,7 +57,7 @@ func TestRequireColumnComment(t *testing.T) {
 		r := RequireColumnComment{
 			Enabled:        tt.enabled,
 			Exclude:        tt.exclude,
-			ExcludedTables: tt.excludeTables,
+			ExcludeTables: tt.excludeTables,
 		}
 		s := newTestSchema()
 		warns := r.Check(s, tt.lintExclude)
