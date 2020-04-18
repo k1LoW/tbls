@@ -23,10 +23,10 @@ func TestSchema_FindTableByName(t *testing.T) {
 		},
 	}
 	table, _ := schema.FindTableByName("b")
-	expected := "table b"
-	actual := table.Comment
-	if actual != expected {
-		t.Errorf("actual %v\nwant %v", actual, expected)
+	want := "table b"
+	got := table.Comment
+	if got != want {
+		t.Errorf("got %v\nwant %v", got, want)
 	}
 }
 
@@ -45,10 +45,54 @@ func TestTable_FindColumnByName(t *testing.T) {
 		},
 	}
 	column, _ := table.FindColumnByName("b")
-	expected := "column b"
-	actual := column.Comment
-	if actual != expected {
-		t.Errorf("actual %v\nwant %v", actual, expected)
+	want := "column b"
+	got := column.Comment
+	if got != want {
+		t.Errorf("got %v\nwant %v", got, want)
+	}
+}
+
+func TestTable_FindConstrainsByColumnName(t *testing.T) {
+	table := Table{
+		Name: "testtable",
+		Columns: []*Column{
+			&Column{
+				Name:    "a",
+				Comment: "column a",
+			},
+			&Column{
+				Name:    "b",
+				Comment: "column b",
+			},
+		},
+	}
+	table.Constraints = []*Constraint{
+		&Constraint{
+			Name:             "PRIMARY",
+			Type:             "PRIMARY KEY",
+			Def:              "PRIMARY KEY(a)",
+			ReferenceTable:   nil,
+			Table:            &table.Name,
+			Columns:          []string{"a"},
+			ReferenceColumns: []string{},
+		},
+		&Constraint{
+			Name:             "UNIQUE",
+			Type:             "UNIQUE",
+			Def:              "UNIQUE KEY a (b)",
+			ReferenceTable:   nil,
+			Table:            &table.Name,
+			Columns:          []string{"b"},
+			ReferenceColumns: []string{},
+		},
+	}
+
+	got := table.FindConstrainsByColumnName("a")
+	if want := 1; len(got) != want {
+		t.Errorf("got %v\nwant %v", len(got), want)
+	}
+	if want := "PRIMARY"; got[0].Name != want {
+		t.Errorf("got %v\nwant %v", got[0].Name, want)
 	}
 }
 
@@ -77,59 +121,59 @@ func TestSchema_Sort(t *testing.T) {
 		},
 	}
 	_ = schema.Sort()
-	expected := "a"
-	actual := schema.Tables[0].Name
-	if actual != expected {
-		t.Errorf("actual %v\nwant %v", actual, expected)
+	want := "a"
+	got := schema.Tables[0].Name
+	if got != want {
+		t.Errorf("got %v\nwant %v", got, want)
 	}
-	expected2 := "a"
-	actual2 := schema.Tables[0].Columns[0].Name
-	if actual2 != expected2 {
-		t.Errorf("actual %v\nwant %v", actual2, expected2)
+	want2 := "a"
+	got2 := schema.Tables[0].Columns[0].Name
+	if got2 != want2 {
+		t.Errorf("got %v\nwant %v", got2, want2)
 	}
 }
 
 func TestRepair(t *testing.T) {
-	actual := &Schema{}
+	got := &Schema{}
 	file, err := os.Open(filepath.Join(testdataDir(), "json_test_schema.json.golden"))
 	if err != nil {
 		t.Error(err)
 	}
 	dec := json.NewDecoder(file)
-	err = dec.Decode(actual)
+	err = dec.Decode(got)
 	if err != nil {
 		t.Error(err)
 	}
-	expected := newTestSchema()
-	err = actual.Repair()
+	want := newTestSchema()
+	err = got.Repair()
 	if err != nil {
 		t.Error(err)
 	}
 
-	for i, tt := range actual.Tables {
-		compareStrings(t, actual.Tables[i].Name, expected.Tables[i].Name)
+	for i, tt := range got.Tables {
+		compareStrings(t, got.Tables[i].Name, want.Tables[i].Name)
 		for j := range tt.Columns {
-			compareStrings(t, actual.Tables[i].Columns[j].Name, expected.Tables[i].Columns[j].Name)
-			for k := range actual.Tables[i].Columns[j].ParentRelations {
-				compareStrings(t, actual.Tables[i].Columns[j].ParentRelations[k].Table.Name, expected.Tables[i].Columns[j].ParentRelations[k].Table.Name)
-				compareStrings(t, actual.Tables[i].Columns[j].ParentRelations[k].ParentTable.Name, expected.Tables[i].Columns[j].ParentRelations[k].ParentTable.Name)
+			compareStrings(t, got.Tables[i].Columns[j].Name, want.Tables[i].Columns[j].Name)
+			for k := range got.Tables[i].Columns[j].ParentRelations {
+				compareStrings(t, got.Tables[i].Columns[j].ParentRelations[k].Table.Name, want.Tables[i].Columns[j].ParentRelations[k].Table.Name)
+				compareStrings(t, got.Tables[i].Columns[j].ParentRelations[k].ParentTable.Name, want.Tables[i].Columns[j].ParentRelations[k].ParentTable.Name)
 			}
-			for k := range actual.Tables[i].Columns[j].ChildRelations {
-				compareStrings(t, actual.Tables[i].Columns[j].ChildRelations[k].Table.Name, expected.Tables[i].Columns[j].ChildRelations[k].Table.Name)
-				compareStrings(t, actual.Tables[i].Columns[j].ChildRelations[k].ParentTable.Name, expected.Tables[i].Columns[j].ChildRelations[k].ParentTable.Name)
+			for k := range got.Tables[i].Columns[j].ChildRelations {
+				compareStrings(t, got.Tables[i].Columns[j].ChildRelations[k].Table.Name, want.Tables[i].Columns[j].ChildRelations[k].Table.Name)
+				compareStrings(t, got.Tables[i].Columns[j].ChildRelations[k].ParentTable.Name, want.Tables[i].Columns[j].ChildRelations[k].ParentTable.Name)
 			}
 		}
 	}
 
-	if len(actual.Relations) != len(expected.Relations) {
-		t.Errorf("actual %#v\nwant %#v", actual.Relations, expected.Relations)
+	if len(got.Relations) != len(want.Relations) {
+		t.Errorf("got %#v\nwant %#v", got.Relations, want.Relations)
 	}
 }
 
-func compareStrings(tb testing.TB, actual, expected string) {
+func compareStrings(tb testing.TB, got, want string) {
 	tb.Helper()
-	if actual != expected {
-		tb.Errorf("actual %#v\nwant %#v", actual, expected)
+	if got != want {
+		tb.Errorf("got %#v\nwant %#v", got, want)
 	}
 }
 
@@ -171,6 +215,7 @@ func newTestSchema() *Schema {
 			},
 		},
 	}
+
 	tb := &Table{
 		Name:    "b",
 		Type:    "BASE TABLE",

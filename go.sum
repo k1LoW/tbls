@@ -151,6 +151,8 @@ github.com/gobuffalo/packd v1.0.0 h1:6ERZvJHfe24rfFmA9OaoKBdC7+c9sydrytMg8SdFGBM
 github.com/gobuffalo/packd v1.0.0/go.mod h1:6VTc4htmJRFB7u1m/4LeMTWjFoYrUiBkU9Fdec9hrhI=
 github.com/gobuffalo/packr/v2 v2.8.0 h1:IULGd15bQL59ijXLxEvA5wlMxsmx/ZkQv9T282zNVIY=
 github.com/gobuffalo/packr/v2 v2.8.0/go.mod h1:PDk2k3vGevNE3SwVyVRgQCCXETC9SaONCNSXT1Q8M1g=
+github.com/gocarina/gocsv v0.0.0-20200330101823-46266ca37bd3 h1:B7k6N+JlLM/u1xrIkpifUfE7GRJsZIYHoHbiAa5cSP4=
+github.com/gocarina/gocsv v0.0.0-20200330101823-46266ca37bd3/go.mod h1:5YoVOkjYAQumqlV356Hj3xeYh4BdZuLE0/nRkf2NKkI=
 github.com/goccy/go-graphviz v0.0.4 h1:QYYd3VKIuRYPRv3j1amEnpOdbscA8R4MRI7JelhaTSI=
 github.com/goccy/go-graphviz v0.0.4/go.mod h1:wXVsXxmyMQU6TN3zGRttjNn3h+iCAS7xQFC6TlNvLhk=
 github.com/goccy/go-yaml v1.4.3 h1:+1jK1ost1TBEfWjciIMU8rciBq0poxurgS7XvLgQInM=

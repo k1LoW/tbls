@@ -1,0 +1,5 @@
+dbms,table_schema,table_name,column_name,ordinal_position,data_type,character_maximum_length,constraint_type,referenced_table_schema,referenced_table_name,referenced_column_name
+mysql,testschema,a,a,1,,,,,,
+mysql,testschema,a,a2,2,,,,,,
+mysql,testschema,b,b,1,,,FOREIGN KEY,testschema,a,a
+mysql,testschema,b,b2,2,,,,,,
