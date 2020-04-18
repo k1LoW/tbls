@@ -30,9 +30,9 @@ func TestAnalyze(t *testing.T) {
 		t.Errorf("%v", err)
 	}
 	table, _ := s.FindTableByName("inputs")
-	expected := table.Def
-	if expected == "" {
-		t.Errorf("actual not empty string.")
+	want := table.Def
+	if want == "" {
+		t.Errorf("got not empty string.")
 	}
 }
 

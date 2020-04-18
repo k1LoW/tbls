@@ -28,9 +28,9 @@ func TestAnalyze(t *testing.T) {
 		t.Errorf("%v", err)
 	}
 	table, _ := s.FindTableByName("posts")
-	expected := len(table.Constraints)
-	if expected != 2 {
-		t.Errorf("got: %#v\nwant: %#v", 2, expected)
+	want := len(table.Constraints)
+	if want != 2 {
+		t.Errorf("got: %#v\nwant: %#v", 2, want)
 	}
 }
 

@@ -13,8 +13,8 @@ import (
 
 var tests = []struct {
 	name         string
-	actualFile   string
-	expectedFile string
+	gotFile   string
+	wantFile string
 	adjust       bool
 }{
 	{"README.md", "README.md", "md_test_README.md.golden", false},
@@ -46,16 +46,16 @@ func TestOutput(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-		expected, err := ioutil.ReadFile(filepath.Join(testdataDir(), tt.expectedFile))
+		want, err := ioutil.ReadFile(filepath.Join(testdataDir(), tt.wantFile))
 		if err != nil {
 			t.Error(err)
 		}
-		actual, err := ioutil.ReadFile(filepath.Join(tempDir, tt.actualFile))
+		got, err := ioutil.ReadFile(filepath.Join(tempDir, tt.gotFile))
 		if err != nil {
 			log.Fatal(err)
 		}
-		if string(actual) != string(expected) {
-			t.Errorf("actual %v\nwant %v", string(actual), string(expected))
+		if string(got) != string(want) {
+			t.Errorf("got %v\nwant %v", string(got), string(want))
 		}
 	}
 }
@@ -84,13 +84,13 @@ func TestDiff(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-		expected := ""
-		actual, err := Diff(s, c)
+		want := ""
+		got, err := Diff(s, c)
 		if err != nil {
 			t.Error(err)
 		}
-		if actual != expected {
-			t.Errorf("actual %v\nwant %v", actual, expected)
+		if got != want {
+			t.Errorf("got %v\nwant %v", got, want)
 		}
 	}
 }

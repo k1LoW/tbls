@@ -32,9 +32,9 @@ func TestAnalyzeView(t *testing.T) {
 		t.Errorf("%v", err)
 	}
 	view, _ := s.FindTableByName("post_comments")
-	expected := view.Def
-	if expected == "" {
-		t.Errorf("actual not empty string.")
+	want := view.Def
+	if want == "" {
+		t.Errorf("got not empty string.")
 	}
 }
 
@@ -45,9 +45,9 @@ func TestInfo(t *testing.T) {
 		t.Errorf("%v", err)
 	}
 	if d.Name != "mysql" {
-		t.Errorf("actual %v\nwant %v", d.Name, "mysql")
+		t.Errorf("got %v\nwant %v", d.Name, "mysql")
 	}
 	if d.DatabaseVersion == "" {
-		t.Errorf("actual not empty string.")
+		t.Errorf("got not empty string.")
 	}
 }

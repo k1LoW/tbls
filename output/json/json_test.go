@@ -23,10 +23,10 @@ func TestOutputSchema(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	expected, _ := ioutil.ReadFile(filepath.Join(testdataDir(), "json_test_schema.json.golden"))
-	actual := buf.String()
-	if actual != string(expected) {
-		t.Errorf("actual %v\nwant %v", actual, string(expected))
+	want, _ := ioutil.ReadFile(filepath.Join(testdataDir(), "json_test_schema.json.golden"))
+	got := buf.String()
+	if got != string(want) {
+		t.Errorf("got %v\nwant %v", got, string(want))
 	}
 }
 

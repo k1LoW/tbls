@@ -23,13 +23,13 @@ func TestOutputSchema(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	expected, err := ioutil.ReadFile(filepath.Join(testdataDir(), "config_test.yml.golden"))
+	want, err := ioutil.ReadFile(filepath.Join(testdataDir(), "config_test.yml.golden"))
 	if err != nil {
 		t.Error(err)
 	}
-	actual := buf.String()
-	if actual != string(expected) {
-		t.Errorf("actual\n%v\nwant\n%v", actual, string(expected))
+	got := buf.String()
+	if got != string(want) {
+		t.Errorf("got\n%v\nwant\n%v", got, string(want))
 	}
 }
 

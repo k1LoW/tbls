@@ -37,9 +37,9 @@ func TestAnalyzeView(t *testing.T) {
 		t.Errorf("%v", err)
 	}
 	view, _ := s.FindTableByName("post_comments")
-	expected := view.Def
-	if expected == "" {
-		t.Errorf("actual not empty string.")
+	want := view.Def
+	if want == "" {
+		t.Errorf("got not empty string.")
 	}
 }
 
@@ -50,10 +50,10 @@ func TestInfo(t *testing.T) {
 		t.Errorf("%v", err)
 	}
 	if d.Name != "sqlite" {
-		t.Errorf("actual %v\nwant %v", d.Name, "sqlite")
+		t.Errorf("got %v\nwant %v", d.Name, "sqlite")
 	}
 	if d.DatabaseVersion == "" {
-		t.Errorf("actual not empty string.")
+		t.Errorf("got not empty string.")
 	}
 }
 
@@ -92,7 +92,7 @@ func TestParseCheckConstraints(t *testing.T) {
       nl != 'ln')
 );`
 	tableName := "check_constraints"
-	expected := []*schema.Constraint{
+	want := []*schema.Constraint{
 		&schema.Constraint{
 			Name:    "-",
 			Type:    "CHECK",
@@ -129,9 +129,9 @@ func TestParseCheckConstraints(t *testing.T) {
 			Columns: []string{"nl"},
 		},
 	}
-	actual := parseCheckConstraints(table, sql)
-	if !reflect.DeepEqual(actual, expected) {
-		t.Errorf("got: %#v\nwant: %#v", actual, expected)
+	got := parseCheckConstraints(table, sql)
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("got: %#v\nwant: %#v", got, want)
 	}
 }
 

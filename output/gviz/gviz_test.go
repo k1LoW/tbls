@@ -32,10 +32,10 @@ func TestOutputSchema(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	expected, _ := ioutil.ReadFile(filepath.Join(testdataDir(), "svg_test_schema.svg.golden"))
-	actual := buf.String()
-	if actual != string(expected) {
-		t.Errorf("actual %v\nwant %v", actual, string(expected))
+	want, _ := ioutil.ReadFile(filepath.Join(testdataDir(), "svg_test_schema.svg.golden"))
+	got := buf.String()
+	if got != string(want) {
+		t.Errorf("got %v\nwant %v", got, string(want))
 	}
 }
 
@@ -59,10 +59,10 @@ func TestOutputTable(t *testing.T) {
 	o := New(c, format)
 	buf := &bytes.Buffer{}
 	_ = o.OutputTable(buf, ta)
-	expected, _ := ioutil.ReadFile(filepath.Join(testdataDir(), "svg_test_a.svg.golden"))
-	actual := buf.String()
-	if actual != string(expected) {
-		t.Errorf("actual %v\nwant %v", actual, string(expected))
+	want, _ := ioutil.ReadFile(filepath.Join(testdataDir(), "svg_test_a.svg.golden"))
+	got := buf.String()
+	if got != string(want) {
+		t.Errorf("got %v\nwant %v", got, string(want))
 	}
 }
 

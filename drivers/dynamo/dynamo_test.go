@@ -32,9 +32,9 @@ func TestAnalyze(t *testing.T) {
 	if err != nil {
 		t.Errorf("%v", err)
 	}
-	expected := table.Name
-	if expected == "" {
-		t.Errorf("actual not empty string.")
+	want := table.Name
+	if want == "" {
+		t.Errorf("got not empty string.")
 	}
 }
 

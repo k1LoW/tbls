@@ -31,10 +31,10 @@ func TestOutputSchema(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	expected, _ := ioutil.ReadFile(filepath.Join(testdataDir(), "plantuml_test_schema.puml.golden"))
-	actual := buf.String()
-	if actual != string(expected) {
-		t.Errorf("actual %v\nwant %v", actual, string(expected))
+	want, _ := ioutil.ReadFile(filepath.Join(testdataDir(), "plantuml_test_schema.puml.golden"))
+	got := buf.String()
+	if got != string(want) {
+		t.Errorf("got %v\nwant %v", got, string(want))
 	}
 }
 
@@ -57,10 +57,10 @@ func TestOutputTable(t *testing.T) {
 	o := New(c)
 	buf := &bytes.Buffer{}
 	_ = o.OutputTable(buf, ta)
-	expected, _ := ioutil.ReadFile(filepath.Join(testdataDir(), "plantuml_test_a.puml.golden"))
-	actual := buf.String()
-	if actual != string(expected) {
-		t.Errorf("actual %v\nwant %v", actual, string(expected))
+	want, _ := ioutil.ReadFile(filepath.Join(testdataDir(), "plantuml_test_a.puml.golden"))
+	got := buf.String()
+	if got != string(want) {
+		t.Errorf("got %v\nwant %v", got, string(want))
 	}
 }
 
