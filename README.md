@@ -720,6 +720,12 @@ $ tbls out -t yaml -o schema.yaml
 $ tbls out -t xlsx -o schema.xlsx
 ```
 
+**CSV for [Cacoo's Database Schema Importer](https://support.cacoo.com/hc/en-us/articles/360045672494):**
+
+``` console
+$ tbls out -t cacoo -o schema.csv
+```
+
 **.tbls.yml:**
 
 ``` console

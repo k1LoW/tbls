@@ -146,6 +146,18 @@ func (t *Table) FindColumnByName(name string) (*Column, error) {
 	return nil, errors.WithStack(fmt.Errorf("not found column '%s.%s'", t.Name, name))
 }
 
+func (t *Table) FindConstrainsByColumnName(name string) []*Constraint {
+	cts := []*Constraint{}
+	for _, ct := range t.Constraints {
+		for _, ctc := range ct.Columns {
+			if ctc == name {
+				cts = append(cts, ct)
+			}
+		}
+	}
+	return cts
+}
+
 // Sort schema tables, columns, relations, and constrains
 func (s *Schema) Sort() error {
 	for _, t := range s.Tables {
