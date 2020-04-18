@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.33.0](https://github.com/k1LoW/tbls/compare/v1.32.2...v1.33.0) (2020-04-19)
+
+* Add output format (CSV for Cacoo's Database Schema Importer) [#202](https://github.com/k1LoW/tbls/pull/202) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.32.2](https://github.com/k1LoW/tbls/compare/v1.32.1...v1.32.2) (2020-04-17)
 
 * Fix lint labelStyleBigQuery [#201](https://github.com/k1LoW/tbls/pull/201) ([k1LoW](https://github.com/k1LoW))
