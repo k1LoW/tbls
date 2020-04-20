@@ -1,6 +1,8 @@
 package schema
 
-import "encoding/json"
+import (
+	"encoding/json"
+)
 
 // MarshalJSON return custom JSON byte
 func (s Schema) MarshalJSON() ([]byte, error) {
