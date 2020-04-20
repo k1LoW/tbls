@@ -56,7 +56,7 @@ func (d *Dict) Dump() map[string]string {
 	return dpd
 }
 
-func (d *Dict) MarchalJSON() ([]byte, error) {
+func (d *Dict) MarshalJSON() ([]byte, error) {
 	return json.Marshal(d.Dump())
 }
 
