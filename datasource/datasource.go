@@ -161,24 +161,8 @@ func AnalyzeJSONString(str string) (*schema.Schema, error) {
 // AnalyzeBigquery analyze `bq://`
 func AnalyzeBigquery(urlstr string) (*schema.Schema, error) {
 	s := &schema.Schema{}
-	u, err := url.Parse(urlstr)
-	if err != nil {
-		return s, err
-	}
-
-	values := u.Query()
-	err = setEnvGoogleApplicationCredentials(values)
-	if err != nil {
-		return s, err
-	}
-
-	splitted := strings.Split(u.Path, "/")
-
-	projectID := u.Host
-	datasetID := splitted[1]
-
 	ctx := context.Background()
-	client, err := bigquery.NewClient(ctx, projectID)
+	client, projectID, datasetID, err := NewBigqueryClient(ctx, urlstr)
 	if err != nil {
 		return s, err
 	}
@@ -194,6 +178,27 @@ func AnalyzeBigquery(urlstr string) (*schema.Schema, error) {
 		return s, err
 	}
 	return s, nil
+}
+
+// NewBigqueryClient returns new bigquery.Client
+func NewBigqueryClient(ctx context.Context, urlstr string) (*bigquery.Client, string, string, error) {
+	u, err := url.Parse(urlstr)
+	if err != nil {
+		return nil, "", "", err
+	}
+	values := u.Query()
+	err = setEnvGoogleApplicationCredentials(values)
+	if err != nil {
+		return nil, "", "", err
+	}
+
+	splitted := strings.Split(u.Path, "/")
+
+	projectID := u.Host
+	datasetID := splitted[1]
+
+	client, err := bigquery.NewClient(ctx, projectID)
+	return client, projectID, datasetID, err
 }
 
 // AnalyzeSpanner analyze `spanner://`
