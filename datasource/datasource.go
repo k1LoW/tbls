@@ -1,6 +1,7 @@
 package datasource
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -134,12 +135,24 @@ func AnalyzeJSON(urlstr string) (*schema.Schema, error) {
 		return s, errors.WithStack(err)
 	}
 	dec := json.NewDecoder(file)
-	err = dec.Decode(s)
-	if err != nil {
+	if err := dec.Decode(s); err != nil {
 		return s, errors.WithStack(err)
 	}
-	err = s.Repair()
-	if err != nil {
+	if err := s.Repair(); err != nil {
+		return s, errors.WithStack(err)
+	}
+	return s, nil
+}
+
+// AnalyzeJSONString analyze JSON string
+func AnalyzeJSONString(str string) (*schema.Schema, error) {
+	s := &schema.Schema{}
+	buf := bytes.NewBufferString(str)
+	dec := json.NewDecoder(buf)
+	if err := dec.Decode(s); err != nil {
+		return s, errors.WithStack(err)
+	}
+	if err := s.Repair(); err != nil {
 		return s, errors.WithStack(err)
 	}
 	return s, nil
