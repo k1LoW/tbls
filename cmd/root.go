@@ -137,7 +137,7 @@ var rootCmd = &cobra.Command{
 			envs = append(envs, fmt.Sprintf("TBLS_SCHEMA=%s", buf.String()))
 		}
 
-		c := exec.Command(path, args...)
+		c := exec.Command(path, args...) // #nosec
 		c.Env = envs
 		c.Stdout = os.Stdout
 		c.Stdin = os.Stdin
