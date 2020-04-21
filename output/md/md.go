@@ -157,7 +157,7 @@ func Diff(s *schema.Schema, c *config.Config) (string, error) {
 	}
 
 	// README.md
-	a := new(bytes.Buffer)
+	b := new(bytes.Buffer)
 	er := false
 	if _, err := os.Lstat(filepath.Join(fullPath, fmt.Sprintf("schema.%s", c.ER.Format))); err == nil {
 		er = true
@@ -165,26 +165,28 @@ func Diff(s *schema.Schema, c *config.Config) (string, error) {
 
 	md := New(c, er)
 
-	err = md.OutputSchema(a, s)
+	err = md.OutputSchema(b, s)
 	if err != nil {
 		return "", errors.WithStack(err)
 	}
 
 	targetPath := filepath.Join(fullPath, "README.md")
-	b, err := ioutil.ReadFile(filepath.Clean(targetPath))
+	a, err := ioutil.ReadFile(filepath.Clean(targetPath))
 	if err != nil {
-		b = []byte{}
+		a = []byte{}
 	}
 
-	from, err := c.MaskedDSN()
+	mdsn, err := c.MaskedDSN()
 	if err != nil {
 		return "", errors.WithStack(err)
 	}
-	to := filepath.Join(docPath, "README.md")
+	to := fmt.Sprintf("`tbls doc %s`", mdsn)
+
+	from := filepath.Join(docPath, "README.md")
 
 	d := difflib.UnifiedDiff{
-		A:        difflib.SplitLines(a.String()),
-		B:        difflib.SplitLines(string(b)),
+		A:        difflib.SplitLines(string(a)),
+		B:        difflib.SplitLines(b.String()),
 		FromFile: from,
 		ToFile:   to,
 		Context:  3,
@@ -198,7 +200,7 @@ func Diff(s *schema.Schema, c *config.Config) (string, error) {
 
 	// tables
 	for _, t := range s.Tables {
-		a := new(bytes.Buffer)
+		b := new(bytes.Buffer)
 		er := false
 		if _, err := os.Lstat(filepath.Join(fullPath, fmt.Sprintf("%s.%s", t.Name, c.ER.Format))); err == nil {
 			er = true
@@ -206,21 +208,21 @@ func Diff(s *schema.Schema, c *config.Config) (string, error) {
 
 		md := New(c, er)
 
-		err := md.OutputTable(a, t)
+		err := md.OutputTable(b, t)
 		if err != nil {
 			return "", errors.WithStack(err)
 		}
 		targetPath := filepath.Join(fullPath, fmt.Sprintf("%s.md", t.Name))
-		b, err := ioutil.ReadFile(filepath.Clean(targetPath))
+		a, err := ioutil.ReadFile(filepath.Clean(targetPath))
 		if err != nil {
-			b = []byte{}
+			a = []byte{}
 		}
 
-		to := filepath.Join(docPath, fmt.Sprintf("%s.md", t.Name))
+		from := filepath.Join(docPath, fmt.Sprintf("%s.md", t.Name))
 
 		d := difflib.UnifiedDiff{
-			A:        difflib.SplitLines(a.String()),
-			B:        difflib.SplitLines(string(b)),
+			A:        difflib.SplitLines(string(a)),
+			B:        difflib.SplitLines(b.String()),
 			FromFile: from,
 			ToFile:   to,
 			Context:  3,
