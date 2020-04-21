@@ -21,10 +21,16 @@
 package cmd
 
 import (
+	"bytes"
 	"fmt"
 	"os"
+	"os/exec"
 	"strconv"
+	"strings"
 
+	"github.com/k1LoW/tbls/config"
+	"github.com/k1LoW/tbls/datasource"
+	"github.com/k1LoW/tbls/output/json"
 	"github.com/spf13/cobra"
 )
 
@@ -46,15 +52,103 @@ var additionalDataPath string
 // erFormat is a option that ER diagram file format
 var erFormat string
 
+const rootUsageTemplate = `Usage:
+  tbls [command]{{if gt (len .Aliases) 0}}
+
+Aliases:
+  {{.NameAndAliases}}{{end}}{{if .HasExample}}
+
+Examples:
+{{.Example}}{{end}}{{if .HasAvailableSubCommands}}
+
+Available Commands:{{range .Commands}}{{if (or .IsAvailableCommand (eq .Name "help"))}}
+  {{rpad .Name .NamePadding }} {{.Short}}{{end}}{{end}}{{end}}{{if .HasAvailableLocalFlags}}
+
+Flags:
+{{.LocalFlags.FlagUsages | trimTrailingWhitespaces}}{{end}}{{if .HasAvailableInheritedFlags}}
+
+Global Flags:
+{{.InheritedFlags.FlagUsages | trimTrailingWhitespaces}}{{end}}{{if .HasHelpSubCommands}}
+
+Additional help topics:{{range .Commands}}{{if .IsAdditionalHelpTopicCommand}}
+  {{rpad .CommandPath .CommandPathPadding}} {{.Short}}{{end}}{{end}}{{end}}{{if .HasAvailableSubCommands}}
+
+Use "{{.CommandPath}} [command] --help" for more information about a command.{{end}}
+`
+
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "tbls",
-	Short: "tbls is a CI-Friendly tool for document a database, written in Go.",
-	Long:  `tbls is a CI-Friendly tool for document a database, written in Go.`,
+	Use:                "tbls",
+	Short:              "tbls is a CI-Friendly tool for document a database, written in Go.",
+	Long:               `tbls is a CI-Friendly tool for document a database, written in Go.`,
+	SilenceErrors:      true,
+	SilenceUsage:       true,
+	Args:               cobra.ArbitraryArgs,
+	DisableFlagParsing: true,
+	Run: func(cmd *cobra.Command, args []string) {
+		if len(args) == 0 {
+			cmd.Println(cmd.UsageString())
+			return
+		}
+		envs := os.Environ()
+		subCommand := args[0]
+		path, err := exec.LookPath(cmd.Use + "-" + subCommand)
+		if err != nil {
+			if strings.HasPrefix(subCommand, "-") {
+				cmd.Printf("Error: unknown flag: '%s'\n", subCommand)
+				cmd.HelpFunc()(cmd, args)
+				return
+			}
+			cmd.Println(`Error: unknown command "` + subCommand + `" for "tbls"`)
+			cmd.Println("Run 'tbls --help' for usage.")
+			return
+		}
+
+		configPath, args := parseConfigPath(args[1:])
+		cfg, err := config.New()
+		if err != nil {
+			printError(err)
+			os.Exit(1)
+		}
+		err = cfg.Load(configPath)
+		if err != nil {
+			printError(err)
+			os.Exit(1)
+		}
+
+		if cfg.DSN.URL != "" {
+			s, err := datasource.Analyze(cfg.DSN)
+			if err != nil {
+				printError(err)
+				os.Exit(1)
+			}
+			if err := cfg.ModifySchema(s); err != nil {
+				printError(err)
+				os.Exit(1)
+			}
+
+			envs = append(envs, fmt.Sprintf("TBLS_DSN=%s", cfg.DSN.URL))
+			o := json.New(true)
+			buf := new(bytes.Buffer)
+			if err := o.OutputSchema(buf, s); err != nil {
+				printError(err)
+				os.Exit(1)
+			}
+			envs = append(envs, fmt.Sprintf("TBLS_SCHEMA=%s", buf.String()))
+		}
+
+		c := exec.Command(path, args...) // #nosec
+		c.Env = envs
+		c.Stdout = os.Stdout
+		c.Stdin = os.Stdin
+		c.Stderr = os.Stderr
+		if err := c.Run(); err != nil {
+			printError(err)
+			os.Exit(1)
+		}
+	},
 }
 
-// Execute adds all child commands to the root command and sets flags appropriately.
-// This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
 		printError(err)
@@ -62,7 +156,32 @@ func Execute() {
 	}
 }
 
-func init() {}
+func init() {
+	rootCmd.SetUsageTemplate(rootUsageTemplate)
+}
+
+func parseConfigPath(args []string) (string, []string) {
+	var (
+		configPath string
+		skipNext   bool
+	)
+	remains := []string{}
+	for i, a := range args {
+		switch {
+		case a == "-c", a == "--config":
+			configPath = args[i+1]
+			skipNext = true
+		case strings.HasPrefix(a, "-c="), strings.HasPrefix(a, "--config="):
+			splited := strings.Split(a, "=")
+			configPath = splited[1]
+		case skipNext:
+			skipNext = false
+		default:
+			remains = append(remains, a)
+		}
+	}
+	return configPath, remains
+}
 
 func printError(err error) {
 	env := os.Getenv("DEBUG")

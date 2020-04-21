@@ -1,0 +1,14 @@
+#!/bin/bash
+
+set -e
+
+echo "---------------"
+if [ -p /dev/stdin ] ; then
+    stdin=$(cat -)
+fi
+echo "STDIN=$stdin"
+echo "---------------"
+echo "TBLS_SCHEMA=$TBLS_SCHEMA"
+echo "---------------"
+echo "TBLS_DSN=$TBLS_DSN"
+echo "---------------"

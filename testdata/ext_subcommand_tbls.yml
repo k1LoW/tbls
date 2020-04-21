@@ -1,0 +1,2 @@
+---
+dsn: pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable

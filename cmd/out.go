@@ -93,7 +93,7 @@ var outCmd = &cobra.Command{
 
 		switch format {
 		case "json":
-			o = new(json.JSON)
+			o = json.New(false)
 		case "yaml":
 			o = new(yaml.YAML)
 		case "dot":
