@@ -21,6 +21,7 @@
 package cmd
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 	"os/exec"
@@ -89,6 +90,7 @@ var rootCmd = &cobra.Command{
 			cmd.Println(cmd.UsageString())
 			return
 		}
+		envs := os.Environ()
 		subCommand := args[0]
 		path, err := exec.LookPath(cmd.Use + "-" + subCommand)
 		if err != nil {
@@ -101,61 +103,45 @@ var rootCmd = &cobra.Command{
 			cmd.Println("Run 'tbls --help' for usage.")
 			return
 		}
-		configPath, args := parseConfigPath(args[1:])
 
+		configPath, args := parseConfigPath(args[1:])
 		cfg, err := config.New()
 		if err != nil {
 			printError(err)
 			os.Exit(1)
 		}
-
 		err = cfg.Load(configPath)
 		if err != nil {
 			printError(err)
 			os.Exit(1)
 		}
 
-		if cfg.DSN.URL == "" {
-			c := exec.Command(path, args...)
-			c.Stdout = os.Stdout
-			c.Stdin = os.Stdin
-			c.Stderr = os.Stderr
-			if err := c.Run(); err != nil {
+		if cfg.DSN.URL != "" {
+			s, err := datasource.Analyze(cfg.DSN)
+			if err != nil {
 				printError(err)
 				os.Exit(1)
 			}
-			return
-		}
+			if err := cfg.ModifySchema(s); err != nil {
+				printError(err)
+				os.Exit(1)
+			}
 
-		s, err := datasource.Analyze(cfg.DSN)
-		if err != nil {
-			printError(err)
-			os.Exit(1)
-		}
-		if err := cfg.ModifySchema(s); err != nil {
-			printError(err)
-			os.Exit(1)
+			envs = append(envs, fmt.Sprintf("TBLS_DSN=%s", cfg.DSN.URL))
+			o := json.New(true)
+			buf := new(bytes.Buffer)
+			if err := o.OutputSchema(buf, s); err != nil {
+				printError(err)
+				os.Exit(1)
+			}
+			envs = append(envs, fmt.Sprintf("TBLS_SCHEMA=%s", buf.String()))
 		}
 
 		c := exec.Command(path, args...)
-		stdin, err := c.StdinPipe()
-		if err != nil {
-			printError(err)
-			os.Exit(1)
-		}
+		c.Env = envs
 		c.Stdout = os.Stdout
+		c.Stdin = os.Stdin
 		c.Stderr = os.Stderr
-
-		o := new(json.JSON)
-		if err := o.OutputSchema(stdin, s); err != nil {
-			printError(err)
-			os.Exit(1)
-		}
-		if err := stdin.Close(); err != nil {
-			printError(err)
-			os.Exit(1)
-		}
-
 		if err := c.Run(); err != nil {
 			printError(err)
 			os.Exit(1)
