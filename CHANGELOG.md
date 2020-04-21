@@ -1,5 +1,10 @@
 # Changelog
 
+## [v1.35.0](https://github.com/k1LoW/tbls/compare/v1.34.1...v1.35.0) (2020-04-22)
+
+* [BREAKING]Fix `tbls diff` output [#207](https://github.com/k1LoW/tbls/pull/207) ([k1LoW](https://github.com/k1LoW))
+* Add datasource.NewBigqueryClient [#206](https://github.com/k1LoW/tbls/pull/206) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.34.1](https://github.com/k1LoW/tbls/compare/v1.34.0...v1.34.1) (2020-04-21)
 
 * Add datasource.AnalyzeJSONString for external subcommand [#205](https://github.com/k1LoW/tbls/pull/205) ([k1LoW](https://github.com/k1LoW))
