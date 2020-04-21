@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.34.1](https://github.com/k1LoW/tbls/compare/v1.34.0...v1.34.1) (2020-04-21)
+
+* Add datasource.AnalyzeJSONString for external subcommand [#205](https://github.com/k1LoW/tbls/pull/205) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.34.0](https://github.com/k1LoW/tbls/compare/v1.33.0...v1.34.0) (2020-04-21)
 
 * Support external subcommand like `git-*` [#204](https://github.com/k1LoW/tbls/pull/204) ([k1LoW](https://github.com/k1LoW))
