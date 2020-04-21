@@ -180,7 +180,7 @@ func Diff(s *schema.Schema, c *config.Config) (string, error) {
 	if err != nil {
 		return "", errors.WithStack(err)
 	}
-	to := fmt.Sprintf("`tbls doc %s`", mdsn)
+	to := fmt.Sprintf("tbls doc %s", mdsn)
 
 	from := filepath.Join(docPath, "README.md")
 
@@ -194,7 +194,7 @@ func Diff(s *schema.Schema, c *config.Config) (string, error) {
 
 	text, _ := difflib.GetUnifiedDiffString(d)
 	if text != "" {
-		diff += fmt.Sprintf("diff %s %s\n", from, to)
+		diff += fmt.Sprintf("diff %s '%s'\n", from, to)
 		diff += text
 	}
 
@@ -230,7 +230,7 @@ func Diff(s *schema.Schema, c *config.Config) (string, error) {
 
 		text, _ := difflib.GetUnifiedDiffString(d)
 		if text != "" {
-			diff += fmt.Sprintf("diff %s %s\n", from, to)
+			diff += fmt.Sprintf("diff %s '%s'\n", from, to)
 			diff += text
 		}
 	}
