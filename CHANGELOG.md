@@ -1,5 +1,10 @@
 # Changelog
 
+## [v1.34.0](https://github.com/k1LoW/tbls/compare/v1.33.0...v1.34.0) (2020-04-21)
+
+* Support external subcommand like `git-*` [#204](https://github.com/k1LoW/tbls/pull/204) ([k1LoW](https://github.com/k1LoW))
+* Fix typo [#203](https://github.com/k1LoW/tbls/pull/203) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.33.0](https://github.com/k1LoW/tbls/compare/v1.32.2...v1.33.0) (2020-04-19)
 
 * Add output format (CSV for Cacoo's Database Schema Importer) [#202](https://github.com/k1LoW/tbls/pull/202) ([k1LoW](https://github.com/k1LoW))
