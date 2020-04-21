@@ -1,6 +1,7 @@
 package datasource
 
 import (
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -86,7 +87,27 @@ func TestAnalyzeRelations(t *testing.T) {
 	}
 }
 
+func TestAnalyzeJSONString(t *testing.T) {
+	b, err := ioutil.ReadFile(filepath.Join(testdataDir(), "testdb.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	s, err := AnalyzeJSONString(string(b))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if want := "testdb"; s.Name != want {
+		t.Errorf("got %v want %v", s.Name, want)
+	}
+}
+
 func credentialPath() string {
 	wd, _ := os.Getwd()
 	return filepath.Join(filepath.Dir(wd), "client_secrets.json")
+}
+
+func testdataDir() string {
+	wd, _ := os.Getwd()
+	dir, _ := filepath.Abs(filepath.Join(filepath.Dir(wd), "testdata"))
+	return dir
 }
