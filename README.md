@@ -60,6 +60,22 @@ $ docker run --rm -v $PWD:/work k1low/tbls doc postgres://dbuser:dbpass@hostname
 
 ## Install
 
+**deb:**
+
+Use [dpkg-i-from-url](https://github.com/k1LoW/dpkg-i-from-url)
+
+``` console
+$ export TBLS_VERSION=X.X.X
+$ curl -L https://git.io/dpkg-i-from-url | bash -s -- https://github.com/k1LoW/tbls/releases/download/v$TBLS_VERSION/tbls_$TBLS_VERSION-1_amd64.deb
+```
+
+**RPM:**
+
+``` console
+$ export TBLS_VERSION=X.X.X
+$ yum install https://github.com/k1LoW/tbls/releases/download/v$TBLS_VERSION/tbls_$TBLS_VERSION-1_amd64.rpm
+```
+
 **homebrew tap:**
 
 ```console
