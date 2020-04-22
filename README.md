@@ -346,6 +346,8 @@ To set `GOOGLE_APPLICATION_CREDENTIALS` environment variable, you can use
     - `?credentials=/path/to/client_secrets.json`
     - `?creds=/path/to/client_secrets.json`
 
+Required permissions: `bigquery.datasets.get` `bigquery.tables.get` `bigquery.tables.list`
+
 **Cloud Spanner:**
 
 ``` yaml
