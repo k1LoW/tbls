@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"regexp"
-	"strconv"
 	"strings"
 
 	"github.com/k1LoW/tbls/schema"
@@ -494,32 +493,6 @@ func detectFullTableName(name string, searchPaths, fullTableNames []string) (str
 		return "", errors.Errorf("can not detect table name: %s", name)
 	}
 	return fns[0], nil
-}
-
-func colkeyToInts(colkey string) []int {
-	ints := []int{}
-	if colkey == "" {
-		return ints
-	}
-	strs := strings.Split(strings.Trim(colkey, "{}"), ",")
-	for _, s := range strs {
-		i, _ := strconv.Atoi(s)
-		ints = append(ints, i)
-	}
-	return ints
-}
-
-func indkeyToInts(indkey string) []int {
-	ints := []int{}
-	if indkey == "" {
-		return ints
-	}
-	strs := strings.Split(indkey, " ")
-	for _, s := range strs {
-		i, _ := strconv.Atoi(s)
-		ints = append(ints, i)
-	}
-	return ints
 }
 
 func convertColmunType(t string, udtName string, characterMaximumLength sql.NullInt64) string {
