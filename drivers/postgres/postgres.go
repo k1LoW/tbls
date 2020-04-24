@@ -75,6 +75,7 @@ SELECT
     CASE 
         WHEN cls.relkind IN ('r', 'p') THEN 'BASE TABLE'
         WHEN cls.relkind = 'v' THEN 'VIEW'
+        WHEN cls.relkind = 'm' THEN 'MATERIALIZED VIEW'
         WHEN cls.relkind = 'f' THEN 'FOREIGN TABLE'
     END AS table_type,
     ns.nspname AS table_schema,
@@ -83,7 +84,7 @@ FROM pg_class cls
 INNER JOIN pg_namespace ns ON cls.relnamespace = ns.oid
 LEFT JOIN pg_description descr ON cls.oid = descr.objoid AND descr.objsubid = 0
 WHERE ns.nspname NOT IN ('pg_catalog', 'information_schema')
-AND cls.relkind IN ('r', 'p', 'v', 'f')
+AND cls.relkind IN ('r', 'p', 'v', 'f', 'm')
 ORDER BY oid`)
 	defer tableRows.Close()
 	if err != nil {
@@ -116,8 +117,8 @@ ORDER BY oid`)
 			Comment: tableComment.String,
 		}
 
-		// view definition
-		if tableType == "VIEW" {
+		// (materialized) view definition
+		if tableType == "VIEW" || tableType == "MATERIALIZED VIEW" {
 			viewDefRows, err := p.db.Query(`SELECT pg_get_viewdef($1::oid);`, tableOid)
 			defer viewDefRows.Close()
 			if err != nil {
@@ -129,7 +130,7 @@ ORDER BY oid`)
 				if err != nil {
 					return errors.WithStack(err)
 				}
-				table.Def = fmt.Sprintf("CREATE VIEW %s AS (\n%s\n)", tableName, strings.TrimRight(tableDef.String, ";"))
+				table.Def = fmt.Sprintf("CREATE %s %s AS (\n%s\n)", tableType, tableName, strings.TrimRight(tableDef.String, ";"))
 			}
 		}
 
