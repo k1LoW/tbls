@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"database/sql"
+	"github.com/lib/pq"
 	"fmt"
 	"regexp"
 	"strings"
@@ -143,14 +144,14 @@ ORDER BY oid`)
 
 		for constraintRows.Next() {
 			var (
-				constraintName                string
-				constraintDef                 string
-				constraintType                string
-				constraintReferenceTable      sql.NullString
-				constraintColumnName          sql.NullString
-				constraintReferenceColumnName sql.NullString
+				constraintName                 string
+				constraintDef                  string
+				constraintType                 string
+				constraintReferenceTable       sql.NullString
+				constraintColumnNames          []string
+				constraintReferenceColumnNames []string
 			)
-			err = constraintRows.Scan(&constraintName, &constraintDef, &constraintType, &constraintReferenceTable, &constraintColumnName, &constraintReferenceColumnName)
+			err = constraintRows.Scan(&constraintName, &constraintDef, &constraintType, &constraintReferenceTable, pq.Array(&constraintColumnNames), pq.Array(&constraintReferenceColumnNames))
 			if err != nil {
 				return errors.WithStack(err)
 			}
@@ -160,9 +161,9 @@ ORDER BY oid`)
 				Type:             convertConstraintType(constraintType),
 				Def:              constraintDef,
 				Table:            &table.Name,
-				Columns:          strings.Split(constraintColumnName.String, ", "),
+				Columns:          constraintColumnNames,
 				ReferenceTable:   &rt,
-				ReferenceColumns: strings.Split(constraintReferenceColumnName.String, ", "),
+				ReferenceColumns: constraintReferenceColumnNames,
 			}
 			if constraintType == "f" {
 				relation := &schema.Relation{
@@ -269,11 +270,11 @@ ORDER BY attr.attnum;
 		indexes := []*schema.Index{}
 		for indexRows.Next() {
 			var (
-				indexName       string
-				indexDef        string
-				indexColumnName sql.NullString
+				indexName        string
+				indexDef         string
+				indexColumnNames []string
 			)
-			err = indexRows.Scan(&indexName, &indexDef, &indexColumnName)
+			err = indexRows.Scan(&indexName, &indexDef, pq.Array(&indexColumnNames))
 			if err != nil {
 				return errors.WithStack(err)
 			}
@@ -281,7 +282,7 @@ ORDER BY attr.attnum;
 				Name:    indexName,
 				Def:     indexDef,
 				Table:   &table.Name,
-				Columns: strings.Split(indexColumnName.String, ", "),
+				Columns: indexColumnNames,
 			}
 
 			indexes = append(indexes, index)
@@ -300,7 +301,7 @@ ORDER BY attr.attnum;
 		for _, c := range strings.Split(result[0][1], ", ") {
 			strColumns = append(strColumns, strings.Trim(c, `"`))
 		}
-		strParentTable := strings.Trim(result[0][2], `"`)
+		strParentTable := strings.ReplaceAll(strings.Trim(result[0][2], `"`), `".`, `.`)
 		strParentColumns := []string{}
 		for _, c := range strings.Split(result[0][3], ", ") {
 			strParentColumns = append(strParentColumns, strings.Trim(c, `"`))
@@ -370,7 +371,7 @@ func (p *Postgres) queryForConstraints() string {
 	if p.rsMode {
 		return `
 SELECT
-  conname, pg_get_constraintdef(oid) AS def, contype, NULL, NULL, NULL
+  conname, pg_get_constraintdef(oid), contype, NULL, NULL, NULL
 FROM pg_constraint
 WHERE conrelid = $1::oid
 ORDER BY conname`
@@ -383,8 +384,8 @@ SELECT
   END AS def,
   cons.contype AS type,
   fcls.relname,
-  ARRAY_TO_STRING(ARRAY_AGG(attr.attname), ', '),
-  ARRAY_TO_STRING(ARRAY_AGG(fattr.attname), ', ')
+  ARRAY_REMOVE(ARRAY_AGG(attr.attname), NULL),
+  ARRAY_REMOVE(ARRAY_AGG(fattr.attname), NULL)
 FROM pg_constraint AS cons
 LEFT JOIN pg_trigger trig ON trig.tgconstraint = cons.oid AND NOT trig.tgisinternal
 LEFT JOIN pg_class AS fcls ON cons.confrelid = fcls.oid
@@ -414,7 +415,7 @@ ORDER BY idx.indexrelid`
 SELECT
   cls.relname AS indexname,
   pg_get_indexdef(idx.indexrelid) AS indexdef,
-  ARRAY_TO_STRING(ARRAY_AGG(attr.attname), ', ')
+  ARRAY_REMOVE(ARRAY_AGG(attr.attname), NULL)
 FROM pg_index idx
 INNER JOIN pg_class cls ON idx.indexrelid = cls.oid
 INNER JOIN pg_attribute attr on idx.indexrelid = attr.attrelid
