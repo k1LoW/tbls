@@ -102,7 +102,7 @@ CREATE TABLE logs (
 );
 
 CREATE VIEW post_comments AS (
-  SELECT c.id, p.title, u2.username AS post_user, c.comment, u2.username AS comment_user, c.created, c.updated
+  SELECT c.id, p.title, u.username AS post_user, c.comment, u2.username AS comment_user, c.created, c.updated
   FROM posts AS p
   LEFT JOIN comments AS c on p.id = c.post_id
   LEFT JOIN users AS u on u.id = p.user_id
