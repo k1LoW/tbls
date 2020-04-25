@@ -1,57 +1,17 @@
 name: ""
-desc: ""
-labels: []
 dsn: ""
 docPath: dbdoc
-format:
-  adjust: false
-  sort: false
 er:
-  skip: false
   format: png
-  comment: false
   distance: 1
-include: []
-exclude: []
-lint:
-  requireTableComment:
-    enabled: false
-    exclude: []
-  requireColumnComment:
-    enabled: false
-    exclude: []
-    excludeTables: []
-  unrelatedTable:
-    enabled: false
-    exclude: []
-  columnCount:
-    enabled: false
-    max: 0
-    exclude: []
-  requireColumns:
-    enabled: false
-    columns: []
-  duplicateRelations:
-    enabled: false
-  requireForeignKeyIndex:
-    enabled: false
-    exclude: []
-  labelStyleBigQuery:
-    enabled: false
-    exclude: []
-lintExclude: []
-relations: []
 comments:
 - table: a
   tableComment: column comment required.
   columnComments:
     a: column comment required.
     a2: column comment required.
-  labels: []
 - table: b
   tableComment: column comment required.
   columnComments:
     b: column comment required.
     b2: column comment required.
-  labels: []
-dict: {}
