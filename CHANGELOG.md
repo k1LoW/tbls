@@ -1,5 +1,10 @@
 # Changelog
 
+## [v1.36.0](https://github.com/k1LoW/tbls/compare/v1.35.0...v1.36.0) (2020-04-25)
+
+* [PostgreSQL]Fix the logic of extracting table/column name from definition of FK [#215](https://github.com/k1LoW/tbls/pull/215) ([k1LoW](https://github.com/k1LoW))
+* Postgres: support materialized views [#214](https://github.com/k1LoW/tbls/pull/214) ([mjpieters](https://github.com/mjpieters))
+
 ## [v1.35.0](https://github.com/k1LoW/tbls/compare/v1.34.1...v1.35.0) (2020-04-22)
 
 * [BREAKING]Fix `tbls diff` output [#207](https://github.com/k1LoW/tbls/pull/207) ([k1LoW](https://github.com/k1LoW))
