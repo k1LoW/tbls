@@ -15,6 +15,7 @@ Sample PostgreSQL database document.
 | [public.comment_stars](public.comment_stars.md) | 6 |  | BASE TABLE |
 | [public.logs](public.logs.md) | 7 | audit log table | BASE TABLE |
 | [public.post_comments](public.post_comments.md) | 7 | post and comments View table | VIEW |
+| [public.post_comment_stars](public.post_comment_stars.md) | 5 |  | MATERIALIZED VIEW |
 | [public.CamelizeTable](public.CamelizeTable.md) | 2 |  | BASE TABLE |
 | [public.hyphen-table](public.hyphen-table.md) | 4 |  | BASE TABLE |
 | [administrator.blogs](administrator.blogs.md) | 6 |  | BASE TABLE |

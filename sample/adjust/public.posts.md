@@ -13,7 +13,7 @@ Posts table
 | title     | varchar(255)                |                                   | false    |                                                                     |                                 |                      |
 | body      | text                        |                                   | false    |                                                                     |                                 | post body            |
 | post_type | post_types                  |                                   | false    |                                                                     |                                 | public/private/draft |
-| labels    | array                       |                                   | true     |                                                                     |                                 |                      |
+| labels    | varchar(50)[]               |                                   | true     |                                                                     |                                 |                      |
 | created   | timestamp without time zone |                                   | false    |                                                                     |                                 |                      |
 | updated   | timestamp without time zone |                                   | true     |                                                                     |                                 |                      |
 

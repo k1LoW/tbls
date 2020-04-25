@@ -4,6 +4,7 @@ DROP TABLE IF EXISTS backup.blog_options;
 DROP TABLE IF EXISTS backup.blogs;
 DROP TABLE IF EXISTS administrator.blogs;
 DROP VIEW IF EXISTS post_comments;
+DROP MATERIALIZED VIEW IF EXISTS post_comment_stars;
 DROP TABLE IF EXISTS "hyphen-table";
 DROP TABLE IF EXISTS "CamelizeTable";
 DROP TABLE IF EXISTS logs;
@@ -102,11 +103,20 @@ CREATE TABLE logs (
 );
 
 CREATE VIEW post_comments AS (
-  SELECT c.id, p.title, u2.username AS post_user, c.comment, u2.username AS comment_user, c.created, c.updated
+  SELECT c.id, p.title, u.username AS post_user, c.comment, u2.username AS comment_user, c.created, c.updated
   FROM posts AS p
   LEFT JOIN comments AS c on p.id = c.post_id
   LEFT JOIN users AS u on u.id = p.user_id
   LEFT JOIN users AS u2 on u2.id = c.user_id
+);
+
+CREATE MATERIALIZED VIEW post_comment_stars AS (
+  SELECT 
+    cs.id, cu.username AS comment_user, csu.username AS comment_star_user, cs.created, cs.updated
+  FROM comments AS c
+  LEFT JOIN comment_stars cs on cs.comment_post_id = c.id AND cs.comment_user_id = c.user_id
+  LEFT JOIN users AS cu on cu.id = cs.comment_user_id
+  LEFT JOIN users AS csu on csu.id = cs.user_id
 );
 
 CREATE TABLE "CamelizeTable" (
