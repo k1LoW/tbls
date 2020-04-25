@@ -192,9 +192,11 @@ CREATE SCHEMA time;
 CREATE TABLE time.bar (
   id int PRIMARY KEY
 );
+
 CREATE TABLE time."hyphenated-table" (
   id int PRIMARY KEY
 );
+
 CREATE TABLE time.referencing (
   id int PRIMARY KEY,
   bar_id int NOT NULL,
