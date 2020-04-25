@@ -300,12 +300,12 @@ ORDER BY attr.attnum;
 		result := reFK.FindAllStringSubmatch(r.Def, -1)
 		strColumns := []string{}
 		for _, c := range strings.Split(result[0][1], ", ") {
-			strColumns = append(strColumns, strings.Trim(c, `"`))
+			strColumns = append(strColumns, strings.ReplaceAll(c, `"`, ""))
 		}
-		strParentTable := strings.ReplaceAll(strings.Trim(result[0][2], `"`), `".`, `.`)
+		strParentTable := strings.ReplaceAll(result[0][2], `"`, "")
 		strParentColumns := []string{}
 		for _, c := range strings.Split(result[0][3], ", ") {
-			strParentColumns = append(strParentColumns, strings.Trim(c, `"`))
+			strParentColumns = append(strParentColumns, strings.ReplaceAll(c, `"`, ""))
 		}
 		for _, c := range strColumns {
 			column, err := r.Table.FindColumnByName(c)
