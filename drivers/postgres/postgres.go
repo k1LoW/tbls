@@ -217,7 +217,7 @@ SELECT
     pg_get_expr(def.adbin, def.adrelid) AS column_default,
     NOT (attr.attnotnull OR tp.typtype = 'd' AND tp.typnotnull) AS is_nullable,
     CASE
-        WHEN attr.atttypid::regtype = ANY(ARRAY['character varying'::regtype, 'character varying[]'::regtype]) THEN
+        WHEN 'character varying'::regtype = ANY(ARRAY[attr.atttypid, tp.typelem]) THEN
             REPLACE(format_type(attr.atttypid, attr.atttypmod), 'character varying', 'varchar')
         ELSE format_type(attr.atttypid, attr.atttypmod)
     END AS data_type,
