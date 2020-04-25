@@ -21,6 +21,9 @@ Sample PostgreSQL database document.
 | [administrator.blogs](administrator.blogs.md) | 6 |  | BASE TABLE |
 | [backup.blogs](backup.blogs.md) | 5 |  | BASE TABLE |
 | [backup.blog_options](backup.blog_options.md) | 4 |  | BASE TABLE |
+| [time.bar](time.bar.md) | 1 |  | BASE TABLE |
+| [time.hyphenated-table](time.hyphenated-table.md) | 1 |  | BASE TABLE |
+| [time.referencing](time.referencing.md) | 3 |  | BASE TABLE |
 
 ## Relations
 

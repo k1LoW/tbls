@@ -2,12 +2,12 @@ package postgres
 
 import (
 	"database/sql"
-	"github.com/lib/pq"
 	"fmt"
 	"regexp"
 	"strings"
 
 	"github.com/k1LoW/tbls/schema"
+	"github.com/lib/pq"
 	"github.com/pkg/errors"
 )
 
@@ -112,8 +112,8 @@ ORDER BY oid`)
 		fullTableNames = append(fullTableNames, name)
 
 		table := &schema.Table{
-			Name: name,
-			Type: tableType,
+			Name:    name,
+			Type:    tableType,
 			Comment: tableComment.String,
 		}
 
@@ -240,11 +240,11 @@ ORDER BY attr.attnum;
 		columns := []*schema.Column{}
 		for columnRows.Next() {
 			var (
-				columnName             string
-				columnDefault          sql.NullString
-				isNullable             bool
-				dataType               string
-				columnComment          sql.NullString
+				columnName    string
+				columnDefault sql.NullString
+				isNullable    bool
+				dataType      string
+				columnComment sql.NullString
 			)
 			err = columnRows.Scan(&columnName, &columnDefault, &isNullable, &dataType, &columnComment)
 			if err != nil {
@@ -300,12 +300,12 @@ ORDER BY attr.attnum;
 		result := reFK.FindAllStringSubmatch(r.Def, -1)
 		strColumns := []string{}
 		for _, c := range strings.Split(result[0][1], ", ") {
-			strColumns = append(strColumns, strings.Trim(c, `"`))
+			strColumns = append(strColumns, strings.ReplaceAll(c, `"`, ""))
 		}
-		strParentTable := strings.ReplaceAll(strings.Trim(result[0][2], `"`), `".`, `.`)
+		strParentTable := strings.ReplaceAll(result[0][2], `"`, "")
 		strParentColumns := []string{}
 		for _, c := range strings.Split(result[0][3], ", ") {
-			strParentColumns = append(strParentColumns, strings.Trim(c, `"`))
+			strParentColumns = append(strParentColumns, strings.ReplaceAll(c, `"`, ""))
 		}
 		for _, c := range strColumns {
 			column, err := r.Table.FindColumnByName(c)
