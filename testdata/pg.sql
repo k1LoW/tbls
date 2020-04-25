@@ -1,5 +1,8 @@
 DROP TRIGGER IF EXISTS update_users_updated ON users;
 DROP TRIGGER IF EXISTS update_posts_updated ON posts;
+DROP TABLE IF EXISTS time.referencing;
+DROP TABLE IF EXISTS time."hyphenated-table";
+DROP TABLE IF EXISTS time.bar;
 DROP TABLE IF EXISTS backup.blog_options;
 DROP TABLE IF EXISTS backup.blogs;
 DROP TABLE IF EXISTS administrator.blogs;
@@ -17,6 +20,7 @@ DROP TABLE IF EXISTS users;
 DROP FUNCTION IF EXISTS update_updated;
 DROP SCHEMA IF EXISTS administrator;
 DROP SCHEMA IF EXISTS backup;
+DROP SCHEMA IF EXISTS time;
 
 DROP EXTENSION IF EXISTS "uuid-ossp";
 CREATE EXTENSION "uuid-ossp";
@@ -183,3 +187,18 @@ CREATE TABLE backup.blog_options (
   CONSTRAINT blog_options_blog_id_fk FOREIGN KEY(blog_id) REFERENCES backup.blogs(id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE
 );
 
+CREATE SCHEMA time;
+
+CREATE TABLE time.bar (
+  id int PRIMARY KEY
+);
+CREATE TABLE time."hyphenated-table" (
+  id int PRIMARY KEY
+);
+CREATE TABLE time.referencing (
+  id int PRIMARY KEY,
+  bar_id int NOT NULL,
+  ht_id int NOT NULL,
+  CONSTRAINT referencing_bar_id FOREIGN KEY(bar_id) REFERENCES time.bar(id),
+  CONSTRAINT referencing_ht_id FOREIGN KEY(ht_id) REFERENCES time."hyphenated-table"(id)
+);
