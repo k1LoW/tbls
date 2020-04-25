@@ -31,40 +31,40 @@ var DefaultDistance = 1
 // Config is tbls config
 type Config struct {
 	Name        string               `yaml:"name"`
-	Desc        string               `yaml:"desc"`
-	Labels      []string             `yaml:"labels"`
+	Desc        string               `yaml:"desc,omitempty"`
+	Labels      []string             `yaml:"labels,omitempty"`
 	DSN         DSN                  `yaml:"dsn"`
 	DocPath     string               `yaml:"docPath"`
-	Format      Format               `yaml:"format"`
-	ER          ER                   `yaml:"er"`
-	Include     []string             `yaml:"include"`
-	Exclude     []string             `yaml:"exclude"`
-	Lint        Lint                 `yaml:"lint"`
-	LintExclude []string             `yaml:"lintExclude"`
-	Relations   []AdditionalRelation `yaml:"relations"`
-	Comments    []AdditionalComment  `yaml:"comments"`
-	Dict        dict.Dict            `yaml:"dict"`
+	Format      Format               `yaml:"format,omitempty"`
+	ER          ER                   `yaml:"er,omitempty"`
+	Include     []string             `yaml:"include,omitempty"`
+	Exclude     []string             `yaml:"exclude,omitempty"`
+	Lint        Lint                 `yaml:"lint,omitempty"`
+	LintExclude []string             `yaml:"lintExclude,omitempty"`
+	Relations   []AdditionalRelation `yaml:"relations,omitempty"`
+	Comments    []AdditionalComment  `yaml:"comments,omitempty"`
+	Dict        dict.Dict            `yaml:"dict,omitempty"`
 	MergedDict  dict.Dict            `yaml:"-"`
 	root        string
 }
 
 type DSN struct {
 	URL     string            `yaml:"url"`
-	Headers map[string]string `yaml:"headers"`
+	Headers map[string]string `yaml:"headers,omitempty"`
 }
 
 // Format is document format setting
 type Format struct {
-	Adjust bool `yaml:"adjust"`
-	Sort   bool `yaml:"sort"`
+	Adjust bool `yaml:"adjust,omitempty"`
+	Sort   bool `yaml:"sort,omitempty"`
 }
 
 // ER is er setting
 type ER struct {
-	Skip     bool   `yaml:"skip"`
-	Format   string `yaml:"format"`
-	Comment  bool   `yaml:"comment"`
-	Distance *int   `yaml:"distance"`
+	Skip     bool   `yaml:"skip,omitempty"`
+	Format   string `yaml:"format,omitempty"`
+	Comment  bool   `yaml:"comment,omitempty"`
+	Distance *int   `yaml:"distance,omitempty"`
 }
 
 // AdditionalRelation is the struct for table relation from yaml
@@ -73,15 +73,15 @@ type AdditionalRelation struct {
 	Columns       []string `yaml:"columns"`
 	ParentTable   string   `yaml:"parentTable"`
 	ParentColumns []string `yaml:"parentColumns"`
-	Def           string   `yaml:"def"`
+	Def           string   `yaml:"def,omitempty"`
 }
 
 // AdditionalComment is the struct for table relation from yaml
 type AdditionalComment struct {
 	Table          string            `yaml:"table"`
-	TableComment   string            `yaml:"tableComment"`
-	ColumnComments map[string]string `yaml:"columnComments"`
-	Labels         []string          `yaml:"labels"`
+	TableComment   string            `yaml:"tableComment,omitempty"`
+	ColumnComments map[string]string `yaml:"columnComments,omitempty"`
+	Labels         []string          `yaml:"labels,omitempty"`
 }
 
 // Option function change Config
