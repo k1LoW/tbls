@@ -112,6 +112,16 @@ func TestMergeAditionalData(t *testing.T) {
 						Type: "text",
 					},
 				},
+				Indexes: []*schema.Index{
+					&schema.Index{
+						Name: "user_index",
+					},
+				},
+				Constraints: []*schema.Constraint{
+					&schema.Constraint{
+						Name: "PRIMARY",
+					},
+				},
 			},
 			&schema.Table{
 				Name:    "posts",
@@ -128,6 +138,11 @@ func TestMergeAditionalData(t *testing.T) {
 					&schema.Column{
 						Name: "title",
 						Type: "text",
+					},
+				},
+				Triggers: []*schema.Trigger{
+					&schema.Trigger{
+						Name: "update_posts_title",
 					},
 				},
 			},
@@ -148,10 +163,35 @@ func TestMergeAditionalData(t *testing.T) {
 	if want := 1; len(s.Relations) != want {
 		t.Errorf("got %v\nwant %v", len(s.Relations), want)
 	}
+	users, _ := s.FindTableByName("users")
 	posts, _ := s.FindTableByName("posts")
 	title, _ := posts.FindColumnByName("title")
 	if want := "post title"; title.Comment != want {
 		t.Errorf("got %v\nwant %v", title.Comment, want)
+	}
+
+	index, err := users.FindIndexByName("user_index")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if want := "user index"; index.Comment != want {
+		t.Errorf("got %v want %v", index.Comment, want)
+	}
+
+	constraint, err := users.FindConstraintByName("PRIMARY")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if want := "PRIMARY(id)"; constraint.Comment != want {
+		t.Errorf("got %v want %v", constraint.Comment, want)
+	}
+
+	trigger, err := posts.FindTriggerByName("update_posts_title")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if want := "update posts title"; trigger.Comment != want {
+		t.Errorf("got %v want %v", trigger.Comment, want)
 	}
 }
 
@@ -305,6 +345,16 @@ func TestModifySchema(t *testing.T) {
 						Type: "text",
 					},
 				},
+				Indexes: []*schema.Index{
+					&schema.Index{
+						Name: "user_index",
+					},
+				},
+				Constraints: []*schema.Constraint{
+					&schema.Constraint{
+						Name: "PRIMARY",
+					},
+				},
 			},
 			&schema.Table{
 				Name:    "posts",
@@ -321,6 +371,11 @@ func TestModifySchema(t *testing.T) {
 					&schema.Column{
 						Name: "title",
 						Type: "text",
+					},
+				},
+				Triggers: []*schema.Trigger{
+					&schema.Trigger{
+						Name: "update_posts_title",
 					},
 				},
 			},

@@ -146,7 +146,37 @@ func (t *Table) FindColumnByName(name string) (*Column, error) {
 			return c, nil
 		}
 	}
-	return nil, errors.WithStack(fmt.Errorf("not found column '%s.%s'", t.Name, name))
+	return nil, errors.WithStack(fmt.Errorf("not found column '%s' on table '%s'", name, t.Name))
+}
+
+// FindIndexByName find index by index name
+func (t *Table) FindIndexByName(name string) (*Index, error) {
+	for _, i := range t.Indexes {
+		if i.Name == name {
+			return i, nil
+		}
+	}
+	return nil, errors.WithStack(fmt.Errorf("not found index '%s' on table '%s'", name, t.Name))
+}
+
+// FindConstraintByName find constraint by constraint name
+func (t *Table) FindConstraintByName(name string) (*Constraint, error) {
+	for _, c := range t.Constraints {
+		if c.Name == name {
+			return c, nil
+		}
+	}
+	return nil, errors.WithStack(fmt.Errorf("not found constraint '%s' on table '%s'", name, t.Name))
+}
+
+// FindTriggerByName find trigger by trigger name
+func (t *Table) FindTriggerByName(name string) (*Trigger, error) {
+	for _, trig := range t.Triggers {
+		if trig.Name == name {
+			return trig, nil
+		}
+	}
+	return nil, errors.WithStack(fmt.Errorf("not found trigger '%s' on table '%s'", name, t.Name))
 }
 
 func (t *Table) FindConstrainsByColumnName(name string) []*Constraint {

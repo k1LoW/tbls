@@ -17,6 +17,14 @@ relations:
     def: posts->users
 comments:
   -
+    table: users
+    indexComments:
+      user_index: user index
+    constraintComments:
+      PRIMARY: PRIMARY(id)
+  -
     table: posts
     columnComments:
       title: post title
+    triggerComments:
+      update_posts_title: update posts title

@@ -78,10 +78,13 @@ type AdditionalRelation struct {
 
 // AdditionalComment is the struct for table relation from yaml
 type AdditionalComment struct {
-	Table          string            `yaml:"table"`
-	TableComment   string            `yaml:"tableComment,omitempty"`
-	ColumnComments map[string]string `yaml:"columnComments,omitempty"`
-	Labels         []string          `yaml:"labels,omitempty"`
+	Table              string            `yaml:"table"`
+	TableComment       string            `yaml:"tableComment,omitempty"`
+	ColumnComments     map[string]string `yaml:"columnComments,omitempty"`
+	IndexComments      map[string]string `yaml:"indexComments,omitempty"`
+	ConstraintComments map[string]string `yaml:"constraintComments,omitempty"`
+	TriggerComments    map[string]string `yaml:"triggerComments,omitempty"`
+	Labels             []string          `yaml:"labels,omitempty"`
 }
 
 // Option function change Config
@@ -447,6 +450,27 @@ func mergeAdditionalComments(s *schema.Schema, comments []AdditionalComment) err
 				return errors.Wrap(err, "failed to add column comment")
 			}
 			column.Comment = comment
+		}
+		for i, comment := range c.IndexComments {
+			index, err := table.FindIndexByName(i)
+			if err != nil {
+				return errors.Wrap(err, "failed to add index comment")
+			}
+			index.Comment = comment
+		}
+		for c, comment := range c.ConstraintComments {
+			constraint, err := table.FindConstraintByName(c)
+			if err != nil {
+				return errors.Wrap(err, "failed to add constraint comment")
+			}
+			constraint.Comment = comment
+		}
+		for t, comment := range c.TriggerComments {
+			trigger, err := table.FindTriggerByName(t)
+			if err != nil {
+				return errors.Wrap(err, "failed to add trigger comment")
+			}
+			trigger.Comment = comment
 		}
 	}
 	return nil
