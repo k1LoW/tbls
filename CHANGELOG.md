@@ -1,5 +1,10 @@
 # Changelog
 
+## [v1.36.1](https://github.com/k1LoW/tbls/compare/v1.36.0...v1.36.1) (2020-04-25)
+
+* Add ",omitempty" to config.Config [#218](https://github.com/k1LoW/tbls/pull/218) ([k1LoW](https://github.com/k1LoW))
+* Correct test for varchar arrays [#217](https://github.com/k1LoW/tbls/pull/217) ([mjpieters](https://github.com/mjpieters))
+
 ## [v1.36.0](https://github.com/k1LoW/tbls/compare/v1.35.0...v1.36.0) (2020-04-25)
 
 * [PostgreSQL]Fix the logic of extracting table/column name from definition of FK [#215](https://github.com/k1LoW/tbls/pull/215) ([k1LoW](https://github.com/k1LoW))
