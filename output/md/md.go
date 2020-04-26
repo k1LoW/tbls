@@ -338,11 +338,24 @@ func (m *Md) makeTableTemplateData(t *schema.Table, adjust bool) map[string]inte
 		},
 		[]string{"----", "----", "----------"},
 	}
+	cComment := false
+	for _, c := range t.Constraints {
+		if c.Comment != "" {
+			cComment = true
+		}
+	}
+	if cComment {
+		constraintsData[0] = append(constraintsData[0], m.config.MergedDict.Lookup("Comment"))
+		constraintsData[1] = append(constraintsData[1], "-------")
+	}
 	for _, c := range t.Constraints {
 		data := []string{
 			c.Name,
 			c.Type,
 			c.Def,
+		}
+		if cComment {
+			data = append(data, c.Comment)
 		}
 		constraintsData = append(constraintsData, data)
 	}
@@ -355,10 +368,23 @@ func (m *Md) makeTableTemplateData(t *schema.Table, adjust bool) map[string]inte
 		},
 		[]string{"----", "----------"},
 	}
+	iComment := false
+	for _, i := range t.Indexes {
+		if i.Comment != "" {
+			iComment = true
+		}
+	}
+	if iComment {
+		indexesData[0] = append(indexesData[0], m.config.MergedDict.Lookup("Comment"))
+		indexesData[1] = append(indexesData[1], "-------")
+	}
 	for _, i := range t.Indexes {
 		data := []string{
 			i.Name,
 			i.Def,
+		}
+		if iComment {
+			data = append(data, i.Comment)
 		}
 		indexesData = append(indexesData, data)
 	}
@@ -371,10 +397,23 @@ func (m *Md) makeTableTemplateData(t *schema.Table, adjust bool) map[string]inte
 		},
 		[]string{"----", "----------"},
 	}
-	for _, i := range t.Triggers {
+	tComment := false
+	for _, t := range t.Triggers {
+		if t.Comment != "" {
+			tComment = true
+		}
+	}
+	if tComment {
+		triggersData[0] = append(triggersData[0], m.config.MergedDict.Lookup("Comment"))
+		triggersData[1] = append(triggersData[1], "-------")
+	}
+	for _, t := range t.Triggers {
 		data := []string{
-			i.Name,
-			i.Def,
+			t.Name,
+			t.Def,
+		}
+		if tComment {
+			data = append(data, t.Comment)
 		}
 		triggersData = append(triggersData, data)
 	}

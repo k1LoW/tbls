@@ -12,10 +12,10 @@ import (
 )
 
 var tests = []struct {
-	name         string
-	gotFile   string
+	name     string
+	gotFile  string
 	wantFile string
-	adjust       bool
+	adjust   bool
 }{
 	{"README.md", "README.md", "md_test_README.md.golden", false},
 	{"a.md", "a.md", "md_test_a.md.golden", false},
@@ -120,6 +120,26 @@ func newTestSchema() *schema.Schema {
 				Name:    "a2",
 				Comment: "column a2",
 			},
+		},
+	}
+	ta.Indexes = []*schema.Index{
+		&schema.Index{
+			Name:  "table_a_idx",
+			Table: &ta.Name,
+			Def:   "CREATE INDEX table_a_idx ON a USING btree (a)",
+		},
+	}
+	ta.Constraints = []*schema.Constraint{
+		&schema.Constraint{
+			Name:  "PRIMARY",
+			Table: &ta.Name,
+			Def:   "PRIMARY KEY (a)",
+		},
+	}
+	ta.Triggers = []*schema.Trigger{
+		&schema.Trigger{
+			Name: "update_a_a2",
+			Def:  "CREATE CONSTRAINT TRIGGER update_a_a2 AFTER INSERT OR UPDATE ON a",
 		},
 	}
 	tb := &schema.Table{
