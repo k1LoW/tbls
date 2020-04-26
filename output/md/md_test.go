@@ -124,9 +124,10 @@ func newTestSchema() *schema.Schema {
 	}
 	ta.Indexes = []*schema.Index{
 		&schema.Index{
-			Name:  "table_a_idx",
-			Table: &ta.Name,
-			Def:   "CREATE INDEX table_a_idx ON a USING btree (a)",
+			Name:    "PRIMARY KEY",
+			Def:     "PRIMARY KEY(a)",
+			Table:   &ta.Name,
+			Columns: []string{"a"},
 		},
 	}
 	ta.Constraints = []*schema.Constraint{

@@ -21,7 +21,7 @@ TABLE A
 
 | Name | Definition | Comment |
 | ---- | ---------- | ------- |
-| table_a_idx | CREATE INDEX table_a_idx ON a USING btree (a) | table a index |
+| PRIMARY KEY | PRIMARY KEY(a) | PRIMARY |
 
 ## Triggers
 

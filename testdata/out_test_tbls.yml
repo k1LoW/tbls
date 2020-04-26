@@ -6,7 +6,7 @@ comments:
     columnComments:
       a: COLUMN A
     indexComments:
-      table_a_idx: table a index
+      "PRIMARY KEY": PRIMARY
     constraintComments:
       PRIMARY: PRIMARY KEY
     triggerComments:
