@@ -55,8 +55,8 @@ func TestRequireColumnComment(t *testing.T) {
 
 	for i, tt := range tests {
 		r := RequireColumnComment{
-			Enabled:        tt.enabled,
-			Exclude:        tt.exclude,
+			Enabled:       tt.enabled,
+			Exclude:       tt.exclude,
 			ExcludeTables: tt.excludeTables,
 		}
 		s := newTestSchema()
@@ -400,6 +400,13 @@ func newTestSchema() *schema.Schema {
 			Table:          &ta.Name,
 			ReferenceTable: nil,
 			Columns:        []string{"column_a1"},
+		},
+	}
+
+	ta.Triggers = []*schema.Trigger{
+		&schema.Trigger{
+			Name: "update_table_a_column_a2",
+			Def:  "CREATE CONSTRAINT TRIGGER update_table_a_column_a2 AFTER INSERT OR UPDATE ON table_a",
 		},
 	}
 
