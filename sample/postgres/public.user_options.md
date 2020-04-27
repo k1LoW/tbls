@@ -15,16 +15,16 @@ User options table
 
 ## Constraints
 
-| Name | Type | Definition |
-| ---- | ---- | ---------- |
-| user_options_user_id_fk | FOREIGN KEY | FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE |
-| user_options_pkey | PRIMARY KEY | PRIMARY KEY (user_id) |
+| Name | Type | Definition | Comment |
+| ---- | ---- | ---------- | ------- |
+| user_options_user_id_fk | FOREIGN KEY | FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE | FK |
+| user_options_pkey | PRIMARY KEY | PRIMARY KEY (user_id) |  |
 
 ## Indexes
 
-| Name | Definition |
-| ---- | ---------- |
-| user_options_pkey | CREATE UNIQUE INDEX user_options_pkey ON public.user_options USING btree (user_id) |
+| Name | Definition | Comment |
+| ---- | ---------- | ------- |
+| user_options_pkey | CREATE UNIQUE INDEX user_options_pkey ON public.user_options USING btree (user_id) | PRIMARY KEY |
 
 ## Relations
 

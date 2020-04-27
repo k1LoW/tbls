@@ -60,6 +60,27 @@ func newTestSchema() *schema.Schema {
 			},
 		},
 	}
+	ta.Indexes = []*schema.Index{
+		&schema.Index{
+			Name:    "PRIMARY KEY",
+			Def:     "PRIMARY KEY(a)",
+			Table:   &ta.Name,
+			Columns: []string{"a"},
+		},
+	}
+	ta.Constraints = []*schema.Constraint{
+		&schema.Constraint{
+			Name:  "PRIMARY",
+			Table: &ta.Name,
+			Def:   "PRIMARY KEY (a)",
+		},
+	}
+	ta.Triggers = []*schema.Trigger{
+		&schema.Trigger{
+			Name: "update_a_a2",
+			Def:  "CREATE CONSTRAINT TRIGGER update_a_a2 AFTER INSERT OR UPDATE ON a",
+		},
+	}
 	tb := &schema.Table{
 		Name:    "b",
 		Comment: "table b",

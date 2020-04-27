@@ -36,9 +36,9 @@ Posts table
 
 ## Triggers
 
-| Name | Definition |
-| ---- | ---------- |
-| update_posts_updated | CREATE CONSTRAINT TRIGGER update_posts_updated AFTER INSERT OR UPDATE ON public.posts NOT DEFERRABLE INITIALLY IMMEDIATE FOR EACH ROW EXECUTE PROCEDURE update_updated() |
+| Name | Definition | Comment |
+| ---- | ---------- | ------- |
+| update_posts_updated | CREATE CONSTRAINT TRIGGER update_posts_updated AFTER INSERT OR UPDATE ON public.posts NOT DEFERRABLE INITIALLY IMMEDIATE FOR EACH ROW EXECUTE PROCEDURE update_updated() | Update updated when posts update |
 
 ## Relations
 
