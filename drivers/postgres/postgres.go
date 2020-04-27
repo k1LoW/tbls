@@ -80,9 +80,9 @@ SELECT
     END AS table_type,
     ns.nspname AS table_schema,
     descr.description AS table_comment
-FROM pg_class cls
-INNER JOIN pg_namespace ns ON cls.relnamespace = ns.oid
-LEFT JOIN pg_description descr ON cls.oid = descr.objoid AND descr.objsubid = 0
+FROM pg_class AS cls
+INNER JOIN pg_namespace AS ns ON cls.relnamespace = ns.oid
+LEFT JOIN pg_description AS descr ON cls.oid = descr.objoid AND descr.objsubid = 0
 WHERE ns.nspname NOT IN ('pg_catalog', 'information_schema')
 AND cls.relkind IN ('r', 'p', 'v', 'f', 'm')
 ORDER BY oid`)
@@ -221,11 +221,11 @@ SELECT
             REPLACE(format_type(attr.atttypid, attr.atttypmod), 'character varying', 'varchar')
         ELSE format_type(attr.atttypid, attr.atttypmod)
     END AS data_type,
-    descr.description as comment
-FROM pg_attribute attr
-INNER JOIN pg_type tp ON attr.atttypid = tp.oid
-LEFT JOIN pg_attrdef def ON attr.attrelid = def.adrelid AND attr.attnum = def.adnum
-LEFT JOIN pg_description descr ON attr.attrelid = descr.objoid AND attr.attnum = descr.objsubid
+    descr.description AS comment
+FROM pg_attribute AS attr
+INNER JOIN pg_type AS tp ON attr.atttypid = tp.oid
+LEFT JOIN pg_attrdef AS def ON attr.attrelid = def.adrelid AND attr.attnum = def.adnum
+LEFT JOIN pg_description AS descr ON attr.attrelid = descr.objoid AND attr.attnum = descr.objsubid
 WHERE
     attr.attnum > 0
 AND NOT attr.attisdropped
@@ -388,10 +388,10 @@ SELECT
   ARRAY_REMOVE(ARRAY_AGG(attr.attname), NULL),
   ARRAY_REMOVE(ARRAY_AGG(fattr.attname), NULL)
 FROM pg_constraint AS cons
-LEFT JOIN pg_trigger trig ON trig.tgconstraint = cons.oid AND NOT trig.tgisinternal
+LEFT JOIN pg_trigger AS trig ON trig.tgconstraint = cons.oid AND NOT trig.tgisinternal
 LEFT JOIN pg_class AS fcls ON cons.confrelid = fcls.oid
-LEFT JOIN pg_attribute attr ON attr.attrelid = cons.conrelid
-LEFT JOIN pg_attribute fattr ON fattr.attrelid = cons.confrelid
+LEFT JOIN pg_attribute AS attr ON attr.attrelid = cons.conrelid
+LEFT JOIN pg_attribute AS fattr ON fattr.attrelid = cons.confrelid
 WHERE
 	cons.conrelid = $1::oid
 AND (cons.conkey IS NULL OR attr.attnum = ANY(cons.conkey))
@@ -407,8 +407,8 @@ SELECT
   cls.relname AS indexname,
   pg_get_indexdef(idx.indexrelid) AS indexdef,
   NULL
-FROM pg_index idx
-INNER JOIN pg_class cls ON idx.indexrelid = cls.oid
+FROM pg_index AS idx
+INNER JOIN pg_class AS cls ON idx.indexrelid = cls.oid
 WHERE idx.indrelid = $1::oid
 ORDER BY idx.indexrelid`
 	}
@@ -417,9 +417,9 @@ SELECT
   cls.relname AS indexname,
   pg_get_indexdef(idx.indexrelid) AS indexdef,
   ARRAY_REMOVE(ARRAY_AGG(attr.attname), NULL)
-FROM pg_index idx
-INNER JOIN pg_class cls ON idx.indexrelid = cls.oid
-INNER JOIN pg_attribute attr on idx.indexrelid = attr.attrelid
+FROM pg_index AS idx
+INNER JOIN pg_class AS cls ON idx.indexrelid = cls.oid
+INNER JOIN pg_attribute AS attr ON idx.indexrelid = attr.attrelid
 WHERE idx.indrelid = $1::oid
 GROUP BY cls.relname, idx.indexrelid
 ORDER BY idx.indexrelid`
