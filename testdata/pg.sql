@@ -67,6 +67,10 @@ COMMENT ON COLUMN posts.post_type IS 'public/private/draft';
 
 CREATE INDEX posts_user_id_idx ON posts USING btree(user_id);
 
+COMMENT ON CONSTRAINT posts_user_id_fk ON posts IS 'posts -> users';
+
+COMMENT ON INDEX posts_user_id_idx IS 'posts.user_id index';
+
 CREATE TABLE comments (
   id bigserial NOT NULL,
   post_id bigint NOT NULL,
@@ -166,6 +170,8 @@ CREATE CONSTRAINT TRIGGER update_posts_updated
 CREATE TRIGGER update_users_updated
   AFTER INSERT OR UPDATE ON users FOR EACH ROW
   EXECUTE PROCEDURE update_updated();
+
+COMMENT ON TRIGGER update_users_updated ON users IS 'Update updated when users insert or update';
 
 CREATE SCHEMA backup;
 

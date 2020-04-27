@@ -72,7 +72,7 @@ func (p *Postgres) Analyze(s *schema.Schema) error {
 SELECT
     cls.oid AS oid,
     cls.relname AS table_name,
-    CASE 
+    CASE
         WHEN cls.relkind IN ('r', 'p') THEN 'BASE TABLE'
         WHEN cls.relkind = 'v' THEN 'VIEW'
         WHEN cls.relkind = 'm' THEN 'MATERIALIZED VIEW'
@@ -151,8 +151,9 @@ ORDER BY oid`)
 				constraintReferenceTable       sql.NullString
 				constraintColumnNames          []string
 				constraintReferenceColumnNames []string
+				constraintComment              sql.NullString
 			)
-			err = constraintRows.Scan(&constraintName, &constraintDef, &constraintType, &constraintReferenceTable, pq.Array(&constraintColumnNames), pq.Array(&constraintReferenceColumnNames))
+			err = constraintRows.Scan(&constraintName, &constraintDef, &constraintType, &constraintReferenceTable, pq.Array(&constraintColumnNames), pq.Array(&constraintReferenceColumnNames), &constraintComment)
 			if err != nil {
 				return errors.WithStack(err)
 			}
@@ -165,7 +166,9 @@ ORDER BY oid`)
 				Columns:          constraintColumnNames,
 				ReferenceTable:   &rt,
 				ReferenceColumns: constraintReferenceColumnNames,
+				Comment:          constraintComment.String,
 			}
+
 			if constraintType == "f" {
 				relation := &schema.Relation{
 					Table: table,
@@ -180,8 +183,9 @@ ORDER BY oid`)
 		// triggers
 		if !p.rsMode {
 			triggerRows, err := p.db.Query(`
-SELECT tgname, pg_get_triggerdef(oid)
-FROM pg_trigger
+SELECT tgname, pg_get_triggerdef(trig.oid), descr.description AS comment
+FROM pg_trigger AS trig
+LEFT JOIN pg_description AS descr ON trig.oid = descr.objoid
 WHERE tgisinternal = false
 AND tgrelid = $1::oid
 ORDER BY tgrelid
@@ -194,16 +198,18 @@ ORDER BY tgrelid
 			triggers := []*schema.Trigger{}
 			for triggerRows.Next() {
 				var (
-					triggerName string
-					triggerDef  string
+					triggerName    string
+					triggerDef     string
+					triggerComment sql.NullString
 				)
-				err = triggerRows.Scan(&triggerName, &triggerDef)
+				err = triggerRows.Scan(&triggerName, &triggerDef, &triggerComment)
 				if err != nil {
 					return errors.WithStack(err)
 				}
 				trigger := &schema.Trigger{
-					Name: triggerName,
-					Def:  triggerDef,
+					Name:    triggerName,
+					Def:     triggerDef,
+					Comment: triggerComment.String,
 				}
 				triggers = append(triggers, trigger)
 			}
@@ -274,8 +280,9 @@ ORDER BY attr.attnum;
 				indexName        string
 				indexDef         string
 				indexColumnNames []string
+				indexComment     sql.NullString
 			)
-			err = indexRows.Scan(&indexName, &indexDef, pq.Array(&indexColumnNames))
+			err = indexRows.Scan(&indexName, &indexDef, pq.Array(&indexColumnNames), &indexComment)
 			if err != nil {
 				return errors.WithStack(err)
 			}
@@ -284,6 +291,7 @@ ORDER BY attr.attnum;
 				Def:     indexDef,
 				Table:   &table.Name,
 				Columns: indexColumnNames,
+				Comment: indexComment.String,
 			}
 
 			indexes = append(indexes, index)
@@ -372,7 +380,7 @@ func (p *Postgres) queryForConstraints() string {
 	if p.rsMode {
 		return `
 SELECT
-  conname, pg_get_constraintdef(oid), contype, NULL, NULL, NULL
+  conname, pg_get_constraintdef(oid), contype, NULL, NULL, NULL, NULL
 FROM pg_constraint
 WHERE conrelid = $1::oid
 ORDER BY conname`
@@ -386,17 +394,19 @@ SELECT
   cons.contype AS type,
   fcls.relname,
   ARRAY_REMOVE(ARRAY_AGG(attr.attname), NULL),
-  ARRAY_REMOVE(ARRAY_AGG(fattr.attname), NULL)
+  ARRAY_REMOVE(ARRAY_AGG(fattr.attname), NULL),
+  descr.description AS comment
 FROM pg_constraint AS cons
 LEFT JOIN pg_trigger AS trig ON trig.tgconstraint = cons.oid AND NOT trig.tgisinternal
 LEFT JOIN pg_class AS fcls ON cons.confrelid = fcls.oid
 LEFT JOIN pg_attribute AS attr ON attr.attrelid = cons.conrelid
 LEFT JOIN pg_attribute AS fattr ON fattr.attrelid = cons.confrelid
+LEFT JOIN pg_description AS descr ON cons.oid = descr.objoid
 WHERE
 	cons.conrelid = $1::oid
 AND (cons.conkey IS NULL OR attr.attnum = ANY(cons.conkey))
 AND (cons.confkey IS NULL OR fattr.attnum = ANY(cons.confkey))
-GROUP BY cons.conindid, cons.conname, cons.contype, cons.oid, trig.oid, fcls.relname
+GROUP BY cons.conindid, cons.conname, cons.contype, cons.oid, trig.oid, fcls.relname, descr.description
 ORDER BY cons.conindid, cons.conname`
 }
 
@@ -406,6 +416,7 @@ func (p *Postgres) queryForIndexes() string {
 SELECT
   cls.relname AS indexname,
   pg_get_indexdef(idx.indexrelid) AS indexdef,
+  NULL,
   NULL
 FROM pg_index AS idx
 INNER JOIN pg_class AS cls ON idx.indexrelid = cls.oid
@@ -416,12 +427,14 @@ ORDER BY idx.indexrelid`
 SELECT
   cls.relname AS indexname,
   pg_get_indexdef(idx.indexrelid) AS indexdef,
-  ARRAY_REMOVE(ARRAY_AGG(attr.attname), NULL)
+  ARRAY_REMOVE(ARRAY_AGG(attr.attname), NULL),
+  descr.description AS comment
 FROM pg_index AS idx
 INNER JOIN pg_class AS cls ON idx.indexrelid = cls.oid
 INNER JOIN pg_attribute AS attr ON idx.indexrelid = attr.attrelid
+LEFT JOIN pg_description AS descr ON idx.indexrelid = descr.objoid
 WHERE idx.indrelid = $1::oid
-GROUP BY cls.relname, idx.indexrelid
+GROUP BY cls.relname, idx.indexrelid, descr.description
 ORDER BY idx.indexrelid`
 }
 
