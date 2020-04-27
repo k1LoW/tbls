@@ -151,8 +151,9 @@ ORDER BY oid`)
 				constraintReferenceTable       sql.NullString
 				constraintColumnNames          []string
 				constraintReferenceColumnNames []string
+				constraintComment              sql.NullString
 			)
-			err = constraintRows.Scan(&constraintName, &constraintDef, &constraintType, &constraintReferenceTable, pq.Array(&constraintColumnNames), pq.Array(&constraintReferenceColumnNames))
+			err = constraintRows.Scan(&constraintName, &constraintDef, &constraintType, &constraintReferenceTable, pq.Array(&constraintColumnNames), pq.Array(&constraintReferenceColumnNames), &constraintComment)
 			if err != nil {
 				return errors.WithStack(err)
 			}
@@ -165,7 +166,9 @@ ORDER BY oid`)
 				Columns:          constraintColumnNames,
 				ReferenceTable:   &rt,
 				ReferenceColumns: constraintReferenceColumnNames,
+				Comment:          constraintComment.String,
 			}
+
 			if constraintType == "f" {
 				relation := &schema.Relation{
 					Table: table,
@@ -375,7 +378,7 @@ func (p *Postgres) queryForConstraints() string {
 	if p.rsMode {
 		return `
 SELECT
-  conname, pg_get_constraintdef(oid), contype, NULL, NULL, NULL
+  conname, pg_get_constraintdef(oid), contype, NULL, NULL, NULL, NULL
 FROM pg_constraint
 WHERE conrelid = $1::oid
 ORDER BY conname`
@@ -389,17 +392,19 @@ SELECT
   cons.contype AS type,
   fcls.relname,
   ARRAY_REMOVE(ARRAY_AGG(attr.attname), NULL),
-  ARRAY_REMOVE(ARRAY_AGG(fattr.attname), NULL)
+  ARRAY_REMOVE(ARRAY_AGG(fattr.attname), NULL),
+  descr.description AS comment
 FROM pg_constraint AS cons
 LEFT JOIN pg_trigger AS trig ON trig.tgconstraint = cons.oid AND NOT trig.tgisinternal
 LEFT JOIN pg_class AS fcls ON cons.confrelid = fcls.oid
 LEFT JOIN pg_attribute AS attr ON attr.attrelid = cons.conrelid
 LEFT JOIN pg_attribute AS fattr ON fattr.attrelid = cons.confrelid
+LEFT JOIN pg_description AS descr ON cons.oid = descr.objoid
 WHERE
 	cons.conrelid = $1::oid
 AND (cons.conkey IS NULL OR attr.attnum = ANY(cons.conkey))
 AND (cons.confkey IS NULL OR fattr.attnum = ANY(cons.confkey))
-GROUP BY cons.conindid, cons.conname, cons.contype, cons.oid, trig.oid, fcls.relname
+GROUP BY cons.conindid, cons.conname, cons.contype, cons.oid, trig.oid, fcls.relname, descr.description
 ORDER BY cons.conindid, cons.conname`
 }
 
