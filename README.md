@@ -606,6 +606,10 @@ comments:
     # column comments
     columnComments:
       email: Email address as login id. ex. user@example.com
+    # labels for tables
+    labels:
+      - privary data
+      - backup:true
   -
     table: post_comments
     tableComment: post and comments View table
@@ -616,6 +620,17 @@ comments:
       comment_user: comments.users.username
       created: comments.created
       updated: comments.updated
+  -
+    table: posts
+    # index comments
+    indexComments:
+      posts_user_id_idx: user.id index
+    # constraints comments
+    constraintComments:
+      posts_id_pk: PRIMARY KEY
+    # triggers comments
+    triggerComments:
+      update_posts_updated: Update updated when posts update
 ```
 
 ### Relations
