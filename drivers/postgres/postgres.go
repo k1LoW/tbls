@@ -280,8 +280,9 @@ ORDER BY attr.attnum;
 				indexName        string
 				indexDef         string
 				indexColumnNames []string
+				indexComment     sql.NullString
 			)
-			err = indexRows.Scan(&indexName, &indexDef, pq.Array(&indexColumnNames))
+			err = indexRows.Scan(&indexName, &indexDef, pq.Array(&indexColumnNames), &indexComment)
 			if err != nil {
 				return errors.WithStack(err)
 			}
@@ -290,6 +291,7 @@ ORDER BY attr.attnum;
 				Def:     indexDef,
 				Table:   &table.Name,
 				Columns: indexColumnNames,
+				Comment: indexComment.String,
 			}
 
 			indexes = append(indexes, index)
@@ -414,6 +416,7 @@ func (p *Postgres) queryForIndexes() string {
 SELECT
   cls.relname AS indexname,
   pg_get_indexdef(idx.indexrelid) AS indexdef,
+  NULL,
   NULL
 FROM pg_index AS idx
 INNER JOIN pg_class AS cls ON idx.indexrelid = cls.oid
@@ -424,12 +427,14 @@ ORDER BY idx.indexrelid`
 SELECT
   cls.relname AS indexname,
   pg_get_indexdef(idx.indexrelid) AS indexdef,
-  ARRAY_REMOVE(ARRAY_AGG(attr.attname), NULL)
+  ARRAY_REMOVE(ARRAY_AGG(attr.attname), NULL),
+  descr.description AS comment
 FROM pg_index AS idx
 INNER JOIN pg_class AS cls ON idx.indexrelid = cls.oid
 INNER JOIN pg_attribute AS attr ON idx.indexrelid = attr.attrelid
+LEFT JOIN pg_description AS descr ON idx.indexrelid = descr.objoid
 WHERE idx.indrelid = $1::oid
-GROUP BY cls.relname, idx.indexrelid
+GROUP BY cls.relname, idx.indexrelid, descr.description
 ORDER BY idx.indexrelid`
 }
 

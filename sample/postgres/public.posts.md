@@ -28,11 +28,11 @@ Posts table
 
 ## Indexes
 
-| Name | Definition |
-| ---- | ---------- |
-| posts_id_pk | CREATE UNIQUE INDEX posts_id_pk ON public.posts USING btree (id) |
-| posts_user_id_title_key | CREATE UNIQUE INDEX posts_user_id_title_key ON public.posts USING btree (user_id, title) |
-| posts_user_id_idx | CREATE INDEX posts_user_id_idx ON public.posts USING btree (user_id) |
+| Name | Definition | Comment |
+| ---- | ---------- | ------- |
+| posts_id_pk | CREATE UNIQUE INDEX posts_id_pk ON public.posts USING btree (id) |  |
+| posts_user_id_title_key | CREATE UNIQUE INDEX posts_user_id_title_key ON public.posts USING btree (user_id, title) |  |
+| posts_user_id_idx | CREATE INDEX posts_user_id_idx ON public.posts USING btree (user_id) | posts.user_id index |
 
 ## Triggers
 
