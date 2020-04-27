@@ -72,7 +72,7 @@ func (p *Postgres) Analyze(s *schema.Schema) error {
 SELECT
     cls.oid AS oid,
     cls.relname AS table_name,
-    CASE 
+    CASE
         WHEN cls.relkind IN ('r', 'p') THEN 'BASE TABLE'
         WHEN cls.relkind = 'v' THEN 'VIEW'
         WHEN cls.relkind = 'm' THEN 'MATERIALIZED VIEW'
@@ -180,8 +180,9 @@ ORDER BY oid`)
 		// triggers
 		if !p.rsMode {
 			triggerRows, err := p.db.Query(`
-SELECT tgname, pg_get_triggerdef(oid)
-FROM pg_trigger
+SELECT tgname, pg_get_triggerdef(trig.oid), descr.description AS comment
+FROM pg_trigger AS trig
+LEFT JOIN pg_description AS descr ON trig.oid = descr.objoid
 WHERE tgisinternal = false
 AND tgrelid = $1::oid
 ORDER BY tgrelid
@@ -194,16 +195,18 @@ ORDER BY tgrelid
 			triggers := []*schema.Trigger{}
 			for triggerRows.Next() {
 				var (
-					triggerName string
-					triggerDef  string
+					triggerName    string
+					triggerDef     string
+					triggerComment sql.NullString
 				)
-				err = triggerRows.Scan(&triggerName, &triggerDef)
+				err = triggerRows.Scan(&triggerName, &triggerDef, &triggerComment)
 				if err != nil {
 					return errors.WithStack(err)
 				}
 				trigger := &schema.Trigger{
-					Name: triggerName,
-					Def:  triggerDef,
+					Name:    triggerName,
+					Def:     triggerDef,
+					Comment: triggerComment.String,
 				}
 				triggers = append(triggers, trigger)
 			}

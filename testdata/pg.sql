@@ -167,6 +167,8 @@ CREATE TRIGGER update_users_updated
   AFTER INSERT OR UPDATE ON users FOR EACH ROW
   EXECUTE PROCEDURE update_updated();
 
+COMMENT ON TRIGGER update_users_updated ON users IS 'Update updated when users insert or update';
+
 CREATE SCHEMA backup;
 
 ALTER ROLE postgres in DATABASE testdb SET search_path TO "$user",public,backup;
