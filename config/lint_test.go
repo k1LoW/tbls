@@ -67,6 +67,96 @@ func TestRequireColumnComment(t *testing.T) {
 	}
 }
 
+func TestRequireIndexComment(t *testing.T) {
+	tests := []struct {
+		enabled       bool
+		lintExclude   []string
+		exclude       []string
+		excludeTables []string
+		want          int
+	}{
+		{true, []string{}, []string{}, []string{}, 1},
+		{false, []string{}, []string{}, []string{}, 0},
+		{true, []string{"table_a"}, []string{}, []string{}, 0},
+		{true, []string{}, []string{"a2_idx"}, []string{}, 0},
+		{true, []string{}, []string{"table_a.a2_idx"}, []string{}, 0},
+		{true, []string{}, []string{}, []string{"table_a"}, 0},
+	}
+
+	for i, tt := range tests {
+		r := RequireIndexComment{
+			Enabled:       tt.enabled,
+			Exclude:       tt.exclude,
+			ExcludeTables: tt.excludeTables,
+		}
+		s := newTestSchema()
+		warns := r.Check(s, tt.lintExclude)
+		if len(warns) != tt.want {
+			t.Errorf("TestRequireIndexComment(%d): got %v\nwant %v", i, len(warns), tt.want)
+		}
+	}
+}
+
+func TestRequireConstraintComment(t *testing.T) {
+	tests := []struct {
+		enabled       bool
+		lintExclude   []string
+		exclude       []string
+		excludeTables []string
+		want          int
+	}{
+		{true, []string{}, []string{}, []string{}, 2},
+		{false, []string{}, []string{}, []string{}, 0},
+		{true, []string{"table_a"}, []string{}, []string{}, 0},
+		{true, []string{}, []string{"a1_b1_fk"}, []string{}, 1},
+		{true, []string{}, []string{"a1_unique"}, []string{}, 1},
+		{true, []string{}, []string{"table_a.a1_b1_fk"}, []string{}, 1},
+	}
+
+	for i, tt := range tests {
+		r := RequireConstraintComment{
+			Enabled:       tt.enabled,
+			Exclude:       tt.exclude,
+			ExcludeTables: tt.excludeTables,
+		}
+		s := newTestSchema()
+		warns := r.Check(s, tt.lintExclude)
+		if len(warns) != tt.want {
+			t.Errorf("TestRequireConstraintComment(%d): got %v\nwant %v", i, len(warns), tt.want)
+		}
+	}
+}
+
+func TestRequireTriggerComment(t *testing.T) {
+	tests := []struct {
+		enabled       bool
+		lintExclude   []string
+		exclude       []string
+		excludeTables []string
+		want          int
+	}{
+		{true, []string{}, []string{}, []string{}, 1},
+		{false, []string{}, []string{}, []string{}, 0},
+		{true, []string{"table_a"}, []string{}, []string{}, 0},
+		{true, []string{}, []string{"update_table_a_column_a2"}, []string{}, 0},
+		{true, []string{}, []string{"table_a.update_table_a_column_a2"}, []string{}, 0},
+		{true, []string{}, []string{}, []string{"table_a"}, 0},
+	}
+
+	for i, tt := range tests {
+		r := RequireTriggerComment{
+			Enabled:       tt.enabled,
+			Exclude:       tt.exclude,
+			ExcludeTables: tt.excludeTables,
+		}
+		s := newTestSchema()
+		warns := r.Check(s, tt.lintExclude)
+		if len(warns) != tt.want {
+			t.Errorf("TestRequireTriggerComment(%d): got %v\nwant %v", i, len(warns), tt.want)
+		}
+	}
+}
+
 func TestUnrelatedTable(t *testing.T) {
 	tests := []struct {
 		enabled     bool
@@ -404,6 +494,11 @@ func newTestSchema() *schema.Schema {
 	}
 
 	ta.Triggers = []*schema.Trigger{
+		&schema.Trigger{
+			Name:    "update_table_a_column_a1",
+			Def:     "CREATE CONSTRAINT TRIGGER update_table_a_column_a1 AFTER INSERT OR UPDATE ON table_a",
+			Comment: "Update column_a1 when update table",
+		},
 		&schema.Trigger{
 			Name: "update_table_a_column_a2",
 			Def:  "CREATE CONSTRAINT TRIGGER update_table_a_column_a2 AFTER INSERT OR UPDATE ON table_a",
