@@ -35,6 +35,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var cformat string
+
 // coverageCmd represents the coverage command
 var coverageCmd = &cobra.Command{
 	Use:   "coverage [DSN]",
@@ -81,7 +83,7 @@ var coverageCmd = &cobra.Command{
 			}
 		}
 
-		switch format {
+		switch cformat {
 		case "json":
 			encoder := json.NewEncoder(os.Stdout)
 			encoder.SetIndent("", "  ")
@@ -115,5 +117,5 @@ func loadCoverageArgs(args []string) ([]config.Option, error) {
 func init() {
 	rootCmd.AddCommand(coverageCmd)
 	coverageCmd.Flags().StringVarP(&configPath, "config", "c", "", "config file path")
-	coverageCmd.Flags().StringVarP(&format, "format", "t", "", "output format")
+	coverageCmd.Flags().StringVarP(&cformat, "format", "t", "", "output format")
 }
