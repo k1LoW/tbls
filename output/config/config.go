@@ -10,8 +10,8 @@ import (
 	"github.com/pkg/errors"
 )
 
-const noTableComment = "table comment required."
-const noColumnComment = "column comment required."
+const NoTableComment = "table comment required."
+const NoColumnComment = "column comment required."
 
 // Config struct for `tbls out`
 type Config struct {
@@ -44,14 +44,14 @@ func (c *Config) OutputSchema(wr io.Writer, s *schema.Schema) error {
 								if c.config.Comments[i].ColumnComments == nil {
 									c.config.Comments[i].ColumnComments = map[string]string{}
 								}
-								c.config.Comments[i].ColumnComments[column.Name] = noColumnComment
+								c.config.Comments[i].ColumnComments[column.Name] = NoColumnComment
 							}
 						}
 					} else {
 						if c.config.Comments[i].ColumnComments == nil {
 							c.config.Comments[i].ColumnComments = map[string]string{}
 						}
-						c.config.Comments[i].ColumnComments[column.Name] = noColumnComment
+						c.config.Comments[i].ColumnComments[column.Name] = NoColumnComment
 					}
 				}
 			}
@@ -65,22 +65,22 @@ func (c *Config) OutputSchema(wr io.Writer, s *schema.Schema) error {
 			if c.config.Lint.RequireTableComment.IsEnabled() {
 				for _, w := range tableWarns {
 					if table.Name == w.Target {
-						a.TableComment = noTableComment
+						a.TableComment = NoTableComment
 					}
 				}
 			} else {
-				a.TableComment = noColumnComment
+				a.TableComment = NoColumnComment
 			}
 
 			for _, column := range table.Columns {
 				if c.config.Lint.RequireColumnComment.IsEnabled() {
 					for _, w := range columnWarns {
 						if fmt.Sprintf("%s.%s", table.Name, column.Name) == w.Target {
-							a.ColumnComments[column.Name] = noColumnComment
+							a.ColumnComments[column.Name] = NoColumnComment
 						}
 					}
 				} else {
-					a.ColumnComments[column.Name] = noColumnComment
+					a.ColumnComments[column.Name] = NoColumnComment
 				}
 			}
 			c.config.Comments = append(c.config.Comments, a)
