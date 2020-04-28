@@ -11,14 +11,17 @@ import (
 
 // Lint is the struct for lint config
 type Lint struct {
-	RequireTableComment    RequireTableComment    `yaml:"requireTableComment"`
-	RequireColumnComment   RequireColumnComment   `yaml:"requireColumnComment"`
-	UnrelatedTable         UnrelatedTable         `yaml:"unrelatedTable"`
-	ColumnCount            ColumnCount            `yaml:"columnCount"`
-	RequireColumns         RequireColumns         `yaml:"requireColumns"`
-	DuplicateRelations     DuplicateRelations     `yaml:"duplicateRelations"`
-	RequireForeignKeyIndex RequireForeignKeyIndex `yaml:"requireForeignKeyIndex"`
-	LabelStyleBigQuery     LabelStyleBigQuery     `yaml:"labelStyleBigQuery"`
+	RequireTableComment      RequireTableComment      `yaml:"requireTableComment"`
+	RequireColumnComment     RequireColumnComment     `yaml:"requireColumnComment"`
+	RequireIndexComment      RequireIndexComment      `yaml:"requireIndexComment"`
+	RequireConstraintComment RequireConstraintComment `yaml:"requireConstraintComment"`
+	RequireTriggerComment    RequireTriggerComment    `yaml:"requireTriggerComment"`
+	UnrelatedTable           UnrelatedTable           `yaml:"unrelatedTable"`
+	ColumnCount              ColumnCount              `yaml:"columnCount"`
+	RequireColumns           RequireColumns           `yaml:"requireColumns"`
+	DuplicateRelations       DuplicateRelations       `yaml:"duplicateRelations"`
+	RequireForeignKeyIndex   RequireForeignKeyIndex   `yaml:"requireForeignKeyIndex"`
+	LabelStyleBigQuery       LabelStyleBigQuery       `yaml:"labelStyleBigQuery"`
 }
 
 // RuleWarn is struct of Rule error
@@ -104,6 +107,138 @@ func (r RequireColumnComment) Check(s *schema.Schema, exclude []string) []RuleWa
 				continue
 			}
 			if c.Comment == "" {
+				warns = append(warns, RuleWarn{
+					Target:  target,
+					Message: msg,
+				})
+			}
+		}
+	}
+	return warns
+}
+
+// RequireIndexComment checks index comment
+type RequireIndexComment struct {
+	Enabled       bool     `yaml:"enabled"`
+	Exclude       []string `yaml:"exclude"`
+	ExcludeTables []string `yaml:"excludeTables"`
+}
+
+// IsEnabled return Rule is enabled or not
+func (r RequireIndexComment) IsEnabled() bool {
+	return r.Enabled
+}
+
+// Check index comment
+func (r RequireIndexComment) Check(s *schema.Schema, exclude []string) []RuleWarn {
+	warns := []RuleWarn{}
+	if !r.IsEnabled() {
+		return warns
+	}
+	msg := "index comment required."
+
+	nt := s.NormalizeTableNames(r.ExcludeTables)
+	for _, t := range s.Tables {
+		if contains(exclude, t.Name) {
+			continue
+		}
+		if contains(nt, t.Name) {
+			continue
+		}
+		for _, i := range t.Indexes {
+			target := fmt.Sprintf("%s.%s", t.Name, i.Name)
+			if contains(r.Exclude, i.Name) || contains(r.Exclude, target) {
+				continue
+			}
+			if i.Comment == "" {
+				warns = append(warns, RuleWarn{
+					Target:  target,
+					Message: msg,
+				})
+			}
+		}
+	}
+	return warns
+}
+
+// RequireConstraintComment checks constraint comment
+type RequireConstraintComment struct {
+	Enabled       bool     `yaml:"enabled"`
+	Exclude       []string `yaml:"exclude"`
+	ExcludeTables []string `yaml:"excludeTables"`
+}
+
+// IsEnabled return Rule is enabled or not
+func (r RequireConstraintComment) IsEnabled() bool {
+	return r.Enabled
+}
+
+// Check constraint comment
+func (r RequireConstraintComment) Check(s *schema.Schema, exclude []string) []RuleWarn {
+	warns := []RuleWarn{}
+	if !r.IsEnabled() {
+		return warns
+	}
+	msg := "constraint comment required."
+
+	nt := s.NormalizeTableNames(r.ExcludeTables)
+	for _, t := range s.Tables {
+		if contains(exclude, t.Name) {
+			continue
+		}
+		if contains(nt, t.Name) {
+			continue
+		}
+		for _, c := range t.Constraints {
+			target := fmt.Sprintf("%s.%s", t.Name, c.Name)
+			if contains(r.Exclude, c.Name) || contains(r.Exclude, target) {
+				continue
+			}
+			if c.Comment == "" {
+				warns = append(warns, RuleWarn{
+					Target:  target,
+					Message: msg,
+				})
+			}
+		}
+	}
+	return warns
+}
+
+// RequireTriggerComment checks trigger comment
+type RequireTriggerComment struct {
+	Enabled       bool     `yaml:"enabled"`
+	Exclude       []string `yaml:"exclude"`
+	ExcludeTables []string `yaml:"excludeTables"`
+}
+
+// IsEnabled return Rule is enabled or not
+func (r RequireTriggerComment) IsEnabled() bool {
+	return r.Enabled
+}
+
+// Check trigger comment
+func (r RequireTriggerComment) Check(s *schema.Schema, exclude []string) []RuleWarn {
+	warns := []RuleWarn{}
+	if !r.IsEnabled() {
+		return warns
+	}
+	msg := "trigger comment required."
+
+	nt := s.NormalizeTableNames(r.ExcludeTables)
+	for _, t := range s.Tables {
+		if contains(exclude, t.Name) {
+			continue
+		}
+		if contains(nt, t.Name) {
+			continue
+		}
+		for _, trig := range t.Triggers {
+			target := fmt.Sprintf("%s.%s", t.Name, trig.Name)
+			if contains(r.Exclude, trig.Name) || contains(r.Exclude, target) {
+				continue
+			}
+			if trig.Comment == "" {
 				warns = append(warns, RuleWarn{
 					Target:  target,
 					Message: msg,
