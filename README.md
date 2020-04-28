@@ -23,6 +23,7 @@ Key features of `tbls` are:
     - [Document a database](#document-a-database)
     - [Diff database and document](#diff-database-and-document)
     - [Lint a database](#lint-a-database)
+    - [Measure document coverage](#measure-document-coverage)
     - [Continuous Integration](#continuous-integration)
   - [Configuration](#configration)
     - [Name](#name)
@@ -213,6 +214,32 @@ posts: too many columns. [12/10]
 comments: too many columns. [11/10]
 
 11 detected
+```
+
+### Measure document coverage
+
+`tbls coverage` measure and show document coverage ( description, comments ).
+
+``` console
+$ tbls coverage
+Table                       Coverage
+All tables                  16.1%
+ public.users               20%
+ public.user_options        37.5%
+ public.posts               35.3%
+ public.comments            14.3%
+ public.comment_stars       0%
+ public.logs                12.5%
+ public.post_comments       87.5%
+ public.post_comment_stars  0%
+ public.CamelizeTable       0%
+ public.hyphen-table        0%
+ administrator.blogs        0%
+ backup.blogs               0%
+ backup.blog_options        0%
+ time.bar                   0%
+ time.hyphenated-table      0%
+ time.referencing           0%
 ```
 
 ### Continuous Integration
