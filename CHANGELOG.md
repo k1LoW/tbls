@@ -1,5 +1,12 @@
 # Changelog
 
+## [v1.37.0](https://github.com/k1LoW/tbls/compare/v1.36.1...v1.37.0) (2020-04-28)
+
+* Add `tbls coverage` [#222](https://github.com/k1LoW/tbls/pull/222) ([k1LoW](https://github.com/k1LoW))
+* Add lint rule for comments ( index, constraint, trigger ) [#221](https://github.com/k1LoW/tbls/pull/221) ([k1LoW](https://github.com/k1LoW))
+* [PostgreSQL]Support comments ( index, constraint, trigger ) [#220](https://github.com/k1LoW/tbls/pull/220) ([k1LoW](https://github.com/k1LoW))
+* Support more comments ( index, constraint, trigger ) [#219](https://github.com/k1LoW/tbls/pull/219) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.36.1](https://github.com/k1LoW/tbls/compare/v1.36.0...v1.36.1) (2020-04-25)
 
 * Add ",omitempty" to config.Config [#218](https://github.com/k1LoW/tbls/pull/218) ([k1LoW](https://github.com/k1LoW))
