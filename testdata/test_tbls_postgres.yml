@@ -1,5 +1,7 @@
 ---
 desc: Sample PostgreSQL database document.
+exclude:
+  - user_access_logs
 lint:
   requireColumnComment:
     enabled: true

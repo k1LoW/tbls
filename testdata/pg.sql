@@ -15,6 +15,7 @@ DROP TABLE IF EXISTS comment_stars;
 DROP TABLE IF EXISTS comments;
 DROP TABLE IF EXISTS posts;
 DROP TYPE IF EXISTS post_types;
+DROP TABLE IF EXISTS user_access_logs;
 DROP TABLE IF EXISTS user_options;
 DROP TABLE IF EXISTS users;
 DROP FUNCTION IF EXISTS update_updated;
@@ -48,6 +49,13 @@ CREATE TABLE user_options (
   CONSTRAINT user_options_user_id_fk FOREIGN KEY(user_id) REFERENCES users(id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE
 );
 COMMENT ON TABLE user_options IS 'User options table';
+
+CREATE TABLE user_access_logs (
+  user_id int PRIMARY KEY,
+  ua text,
+  created timestamp NOT NULL,
+  CONSTRAINT user_access_log_user_id_fk FOREIGN KEY(user_id) REFERENCES users(id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE
+);
 
 CREATE TABLE posts (
   id bigserial NOT NULL,

@@ -309,9 +309,11 @@ func (c *Config) MergeAdditionalData(s *schema.Schema) error {
 
 // FilterTables filter tables from schema.Schema
 func (c *Config) FilterTables(s *schema.Schema) error {
+	ni := s.NormalizeTableNames(c.Include)
+	ne := s.NormalizeTableNames(c.Exclude)
 	for _, t := range s.Tables {
-		if len(c.Include) == 0 || contains(c.Include, t.Name) {
-			if contains(c.Exclude, t.Name) {
+		if len(c.Include) == 0 || contains(c.Include, t.Name) || contains(ni, t.Name) {
+			if contains(c.Exclude, t.Name) || contains(ne, t.Name) {
 				err := excludeTableFromSchema(t.Name, s)
 				if err != nil {
 					return errors.Wrap(errors.WithStack(err), fmt.Sprintf("failed to filter table '%s'", t.Name))
