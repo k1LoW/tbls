@@ -52,8 +52,9 @@ var additionalDataPath string
 // erFormat is a option that ER diagram file format
 var erFormat string
 
-const rootUsageTemplate = `Usage:
-  tbls [command]{{if gt (len .Aliases) 0}}
+const rootUsageTemplate = `Usage:{{if .Runnable}}{{if ne .UseLine "tbls [flags]" }}
+  {{.UseLine}}{{end}}{{end}}{{if .HasAvailableSubCommands}}
+  {{.CommandPath}} [command]{{end}}{{if gt (len .Aliases) 0}}
 
 Aliases:
   {{.NameAndAliases}}{{end}}{{if .HasExample}}
