@@ -346,7 +346,7 @@ func excludeTableFromSchema(name string, s *schema.Schema) error {
 			// ChildRelations
 			childRelations := []*schema.Relation{}
 			for _, r := range c.ChildRelations {
-				if r.Table.Name != name {
+				if r.Table.Name != name && r.ParentTable.Name != name {
 					childRelations = append(childRelations, r)
 				}
 			}
@@ -355,7 +355,7 @@ func excludeTableFromSchema(name string, s *schema.Schema) error {
 			// ParentRelations
 			parentRelations := []*schema.Relation{}
 			for _, r := range c.ParentRelations {
-				if r.Table.Name != name {
+				if r.Table.Name != name && r.ParentTable.Name != name {
 					parentRelations = append(parentRelations, r)
 				}
 			}
