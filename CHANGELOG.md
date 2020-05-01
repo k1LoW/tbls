@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.37.2](https://github.com/k1LoW/tbls/compare/v1.37.1...v1.37.2) (2020-05-01)
+
+* Remove relations of excluded tables [#226](https://github.com/k1LoW/tbls/pull/226) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.37.1](https://github.com/k1LoW/tbls/compare/v1.37.0...v1.37.1) (2020-04-30)
 
 * Fix FilterTables [#225](https://github.com/k1LoW/tbls/pull/225) ([k1LoW](https://github.com/k1LoW))
