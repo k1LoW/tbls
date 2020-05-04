@@ -79,7 +79,7 @@ tbls completion zsh > $fpath[1]/_tbls
 
 		switch sh {
 		case "bash":
-			if err := rootCmd.GenBashCompletion(o); err != nil {
+			if err := internal.GenBashCompletion(rootCmd, o); err != nil {
 				_, _ = fmt.Fprintf(os.Stderr, "%s\n", err)
 				os.Exit(1)
 			}
