@@ -1,6 +1,6 @@
 // ---------------------------------------------------------------
-// The original code is github.com/spf13/cobra/zsh_completion.go
-package cmd
+// The original code is github.com/spf13/cobra/zsh_completions.go
+package internal
 
 import (
 	"encoding/json"
@@ -14,7 +14,7 @@ import (
 	"github.com/spf13/pflag"
 )
 
-func genZshCompletion(cmd *cobra.Command, w io.Writer) error {
+func GenZshCompletion(cmd *cobra.Command, w io.Writer) error {
 	tmpl, err := template.New("Main").Funcs(zshCompFuncMap).Parse(zshCompletionText)
 	if err != nil {
 		return fmt.Errorf("error creating zsh completion template: %v", err)
