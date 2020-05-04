@@ -413,7 +413,7 @@ func writeCommands(buf *bytes.Buffer, cmd *cobra.Command) {
 		writeCmdAliases(buf, c)
 	}
 	if cmd == cmd.Root() {
-		buf.WriteString(fmt.Sprintf("    commands+=( `compgen -c | grep ^%s- | sort | uniq | sed -e 's/^%s-//'` )\n", cmd.Root().Name(), cmd.Root().Name()))
+		buf.WriteString(fmt.Sprintf("    commands+=( `compgen -c | grep ^%s- | sort -u | sed -e 's/^%s-//'` )\n", cmd.Root().Name(), cmd.Root().Name()))
 	}
 	buf.WriteString("\n")
 }
