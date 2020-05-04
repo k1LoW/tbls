@@ -54,7 +54,7 @@ function {{$cmdPath}} {
     commands=({{range .Commands}}{{if not .Hidden}}
       "{{.Name}}:{{.Short}}"{{end}}{{end}}
     )
-    subcommands=( ${(@f)"$(print -l ${^path}/*(-*N) | grep tbls- | xargs basename | sort | uniq | sed -e 's/^tbls-\(.*\)$/\1:tbls-\1/')"} ) 
+    subcommands=( ${(@f)"$(print -l ${^path}/tbls-*(-*N:t) | sort -u | sed -e 's/^tbls-\(.*\)$/\1:tbls-\1/')"} )
     commands+=($subcommands)    
     _describe "command" commands
     ;;
