@@ -23,7 +23,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/pmezard/go-difflib v1.0.0
 	github.com/spf13/cobra v1.0.0
-	github.com/spf13/pflag v1.0.5 // indirect
+	github.com/spf13/pflag v1.0.5
 	github.com/xo/dburl v0.0.0-20200124232849-e9ec94f52bc3
 	golang.org/x/crypto v0.0.0-20200414173820-0848c9571904 // indirect
 	golang.org/x/tools v0.0.0-20200417140056-c07e33ef3290 // indirect
