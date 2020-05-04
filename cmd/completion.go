@@ -83,7 +83,7 @@ tbls completion zsh > $fpath[1]/_tbls
 				os.Exit(1)
 			}
 		case "zsh":
-			if err := rootCmd.GenZshCompletion(o); err != nil {
+			if err := genZshCompletion(rootCmd, o); err != nil {
 				_, _ = fmt.Fprintf(os.Stderr, "%s\n", err)
 				os.Exit(1)
 			}
