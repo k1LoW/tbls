@@ -9,3 +9,4 @@ ignore:
   - "drivers/spanner"
   - "schema/json.go"
   - "schema/yaml.go"
+  - "internal/*"
