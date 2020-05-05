@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.37.3](https://github.com/k1LoW/tbls/compare/v1.37.2...v1.37.3) (2020-05-05)
+
+* Support completion of external subcommands (Bash) [#229](https://github.com/k1LoW/tbls/pull/229) ([k1LoW](https://github.com/k1LoW))
+* Fix basename issue and simplify code [#228](https://github.com/k1LoW/tbls/pull/228) ([syohex](https://github.com/syohex))
+* Support completion of external subcommands (Zsh) [#227](https://github.com/k1LoW/tbls/pull/227) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.37.2](https://github.com/k1LoW/tbls/compare/v1.37.1...v1.37.2) (2020-05-01)
 
 * Remove relations of excluded tables [#226](https://github.com/k1LoW/tbls/pull/226) ([k1LoW](https://github.com/k1LoW))
