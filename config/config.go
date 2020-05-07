@@ -45,7 +45,8 @@ type Config struct {
 	Comments    []AdditionalComment  `yaml:"comments,omitempty"`
 	Dict        dict.Dict            `yaml:"dict,omitempty"`
 	MergedDict  dict.Dict            `yaml:"-"`
-	root        string
+	Path        string               `yaml:"-"`
+	root        string               `yaml:"-"`
 }
 
 type DSN struct {
@@ -244,6 +245,7 @@ func (c *Config) LoadConfigFile(path string) error {
 	if err != nil {
 		return errors.Wrap(errors.WithStack(err), "failed to load config file")
 	}
+	c.Path = filepath.Clean(fullPath)
 
 	err = yaml.Unmarshal(buf, c)
 	if err != nil {
