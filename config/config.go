@@ -247,11 +247,15 @@ func (c *Config) LoadConfigFile(path string) error {
 	}
 	c.Path = filepath.Clean(fullPath)
 
-	err = yaml.Unmarshal(buf, c)
+	return c.LoadConfig(buf)
+}
+
+// LoadConfig load config from []byte
+func (c *Config) LoadConfig(in []byte) error {
+	err := yaml.Unmarshal(in, c)
 	if err != nil {
 		return errors.Wrap(errors.WithStack(err), "failed to load config file")
 	}
-
 	c.DSN.URL, err = parseWithEnviron(c.DSN.URL)
 	if err != nil {
 		return errors.Wrap(errors.WithStack(err), "failed to load config file")
