@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.37.4](https://github.com/k1LoW/tbls/compare/v1.37.3...v1.37.4) (2020-05-07)
+
+* Pass env `TBLS_CONFIG_PATH` to subcommands [#230](https://github.com/k1LoW/tbls/pull/230) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.37.3](https://github.com/k1LoW/tbls/compare/v1.37.2...v1.37.3) (2020-05-05)
 
 * Support completion of external subcommands (Bash) [#229](https://github.com/k1LoW/tbls/pull/229) ([k1LoW](https://github.com/k1LoW))
