@@ -1,10 +1,12 @@
 #!/bin/sh
-# Usege:
+
+# Usage:
 #
 #   source <(curl https://raw.githubusercontent.com/k1LoW/tbls/master/use)
 #
 # Reference:
 #   https://github.com/goreleaser/get
+
 TBLS_GOOS=linux
 TBLS_EXT=tar.gz
 TBLS_ARCH=amd64
