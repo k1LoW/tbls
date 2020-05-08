@@ -42,11 +42,13 @@ func (m *Mssql) Analyze(s *schema.Schema) error {
 	}
 	s.Driver = d
 
-	// tables
+	// tables and comments
 	tableRows, err := m.db.Query(`
-SELECT schema_name(schema_id) AS table_schema, name, object_id, type
-FROM sys.objects
-WHERE type IN ('U', 'V') ORDER BY object_id
+SELECT schema_name(schema_id) AS table_schema, o.name, o.object_id, o.type, cast(e.value as NVARCHAR) AS table_comment
+FROM sys.objects AS o
+LEFT JOIN sys.extended_properties AS e ON
+e.major_id = o.object_id AND e.name = 'MS_Description' AND e.minor_id = 0
+WHERE type IN ('U', 'V')  ORDER BY OBJECT_ID
 `)
 	defer tableRows.Close()
 	if err != nil {
@@ -58,12 +60,13 @@ WHERE type IN ('U', 'V') ORDER BY object_id
 
 	for tableRows.Next() {
 		var (
-			tableSchema string
-			tableName   string
-			tableOid    string
-			tableType   string
+			tableSchema  string
+			tableName    string
+			tableOid     string
+			tableType    string
+			tableComment sql.NullString
 		)
-		err := tableRows.Scan(&tableSchema, &tableName, &tableOid, &tableType)
+		err := tableRows.Scan(&tableSchema, &tableName, &tableOid, &tableType, &tableComment)
 		if err != nil {
 			return errors.WithStack(err)
 		}
@@ -75,8 +78,9 @@ WHERE type IN ('U', 'V') ORDER BY object_id
 		}
 
 		table := &schema.Table{
-			Name: name,
-			Type: tableType,
+			Name:    name,
+			Type:    tableType,
+			Comment: tableComment.String,
 		}
 
 		// view definition
@@ -98,7 +102,7 @@ SELECT definition FROM sys.sql_modules WHERE object_id = $1
 			}
 		}
 
-		// columns
+		// columns and comments
 		columnRows, err := m.db.Query(`
 SELECT
   c.name,
@@ -106,9 +110,12 @@ SELECT
   c.max_length,
   c.is_nullable,
   c.is_identity,
-  object_definition(c.default_object_id)
+  object_definition(c.default_object_id),
+  CAST(e.value AS VARCHAR) AS column_comment
 FROM sys.columns AS c
 LEFT JOIN sys.types AS t ON c.system_type_id = t.system_type_id
+LEFT JOIN sys.extended_properties e ON
+e.major_id = c.object_id AND e.name = 'MS_Description' AND e.minor_id = c.column_id
 WHERE c.object_id = $1
 and t.name != 'sysname'
 ORDER BY c.column_id
@@ -127,8 +134,9 @@ ORDER BY c.column_id
 				isNullable    bool
 				isIdentity    bool
 				columnDefault sql.NullString
+				columnComment sql.NullString
 			)
-			err = columnRows.Scan(&columnName, &dataType, &maxLength, &isNullable, &isIdentity, &columnDefault)
+			err = columnRows.Scan(&columnName, &dataType, &maxLength, &isNullable, &isIdentity, &columnDefault, &columnComment)
 			if err != nil {
 				return errors.WithStack(err)
 			}
@@ -137,6 +145,7 @@ ORDER BY c.column_id
 				Type:     convertColumnType(dataType, maxLength),
 				Nullable: isNullable,
 				Default:  columnDefault,
+				Comment:  columnComment.String,
 			}
 			columns = append(columns, column)
 		}
@@ -468,7 +477,7 @@ func convertColumnType(t string, maxLength int) string {
 		return fmt.Sprintf("varchar(%s)", len)
 	case "nvarchar":
 		//nvarchar length is 2 byte, return character length
-		var len string = strconv.Itoa(maxLength/2)
+		var len string = strconv.Itoa(maxLength / 2)
 		if maxLength == -1 {
 			len = "MAX"
 		}
