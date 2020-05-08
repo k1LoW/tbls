@@ -18,9 +18,9 @@ import (
 	"github.com/pkg/errors"
 )
 
-const defaultDocPath = "dbdoc"
+const DefaultDocPath = "dbdoc"
 
-var defaultConfigFilePaths = []string{".tbls.yml", "tbls.yml"}
+var DefaultConfigFilePaths = []string{".tbls.yml", "tbls.yml"}
 
 // DefaultERFormat is the default ER diagram format
 const DefaultERFormat = "png"
@@ -193,7 +193,7 @@ func (c *Config) Load(configPath string, options ...Option) error {
 // set default setting
 func (c *Config) setDefault() error {
 	if c.DocPath == "" {
-		c.DocPath = defaultDocPath
+		c.DocPath = DefaultDocPath
 	}
 
 	if c.ER.Format == "" {
@@ -223,7 +223,7 @@ func (c *Config) LoadEnviron() error {
 // LoadConfigFile load config file
 func (c *Config) LoadConfigFile(path string) error {
 	if path == "" {
-		for _, p := range defaultConfigFilePaths {
+		for _, p := range DefaultConfigFilePaths {
 			if f, err := os.Stat(filepath.Join(c.root, p)); err == nil && !f.IsDir() {
 				if path != "" {
 					return fmt.Errorf("duplicate config file [%s, %s]", path, p)
