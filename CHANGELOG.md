@@ -1,5 +1,10 @@
 # Changelog
 
+## [v1.37.5](https://github.com/k1LoW/tbls/compare/v1.37.4...v1.37.5) (2020-05-09)
+
+* make config.DefaultDocPath and config.DefaultConfigFilePaths public [#233](https://github.com/k1LoW/tbls/pull/233) ([k1LoW](https://github.com/k1LoW))
+* fix typo [#231](https://github.com/k1LoW/tbls/pull/231) ([dojineko](https://github.com/dojineko))
+
 ## [v1.37.4](https://github.com/k1LoW/tbls/compare/v1.37.3...v1.37.4) (2020-05-07)
 
 * Pass env `TBLS_CONFIG_PATH` to subcommands [#230](https://github.com/k1LoW/tbls/pull/230) ([k1LoW](https://github.com/k1LoW))
