@@ -4,6 +4,8 @@ ENTRYPOINT ["tbls"]
 WORKDIR /work
 VOLUME ["/work"]
 
+ARG DOCKER_TAG
+
 RUN apk add bash curl
 
 SHELL ["/bin/bash", "-c"]
