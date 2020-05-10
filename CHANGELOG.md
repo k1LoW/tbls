@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.38.1](https://github.com/k1LoW/tbls/compare/v1.38.0...v1.38.1) (2020-05-10)
+
+* Fix Dockerfile.hub.docker.com [#235](https://github.com/k1LoW/tbls/pull/235) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.38.0](https://github.com/k1LoW/tbls/compare/v1.37.5...v1.38.0) (2020-05-10)
 
 * Support MSSQL Description for Table/Columns. [#234](https://github.com/k1LoW/tbls/pull/234) ([paulKabira](https://github.com/paulKabira))
