@@ -2,14 +2,16 @@
 
 ## Description
 
+Users table
+
 ## Columns
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | int |  | false | [user_options](user_options.md) [posts](posts.md) [comments](comments.md) [comment_stars](comment_stars.md) [logs](logs.md) |  |  |
+| id | int |  | false | [posts](posts.md) [comments](comments.md) [comment_stars](comment_stars.md) [user_options](user_options.md) [logs](logs.md) |  |  |
 | username | varchar(50) |  | false |  |  |  |
 | password | varchar(50) |  | false |  |  |  |
-| email | varchar(355) |  | false |  |  |  |
+| email | varchar(355) |  | false |  |  | ex. user@example.com |
 | created | date |  | false |  |  |  |
 | updated | date |  | true |  |  |  |
 
