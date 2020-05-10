@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.38.0](https://github.com/k1LoW/tbls/compare/v1.37.5...v1.38.0) (2020-05-10)
+
+* Support MSSQL Description for Table/Columns. [#234](https://github.com/k1LoW/tbls/pull/234) ([paulKabira](https://github.com/paulKabira))
+
 ## [v1.37.5](https://github.com/k1LoW/tbls/compare/v1.37.4...v1.37.5) (2020-05-09)
 
 * make config.DefaultDocPath and config.DefaultConfigFilePaths public [#233](https://github.com/k1LoW/tbls/pull/233) ([k1LoW](https://github.com/k1LoW))
