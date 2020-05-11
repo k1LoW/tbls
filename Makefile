@@ -107,7 +107,7 @@ test_spanner:
 test_ext_subcommand: build
 	@echo hello | env PATH="./testdata/bin:${PATH}" ./tbls echo | grep 'STDIN=hello' > /dev/null
 	@env PATH="./testdata/bin:${PATH}" ./tbls echo -c ./testdata/ext_subcommand_tbls.yml | grep 'TBLS_DSN=pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable' > /dev/null
-	@env PATH="./testdata/bin:${PATH}" ./tbls echo -c ./testdata/ext_subcommand_tbls.yml | grep 'TBLS_SCHEMA={' > /dev/null
+	@env PATH="./testdata/bin:${PATH}" ./tbls echo -c ./testdata/ext_subcommand_tbls.yml | grep 'TBLS_SCHEMA=/' > /dev/null
 	@env PATH="./testdata/bin:${PATH}" ./tbls echo -c ./testdata/ext_subcommand_tbls.yml | grep 'TBLS_CONFIG_PATH=' | grep 'testdata/ext_subcommand_tbls.yml' > /dev/null
 	@env PATH="./testdata/bin:${PATH}" TBLS_DSN=pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable ./tbls echo | grep 'TBLS_DSN=pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable' > /dev/null
 	@echo hello | env PATH="./testdata/bin:${PATH}" ./tbls echo -c ./testdata/ext_subcommand_tbls.yml | grep 'STDIN=hello' > /dev/null
