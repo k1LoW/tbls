@@ -155,7 +155,7 @@ func AnalyzeJSONString(str string) (*schema.Schema, error) {
 func AnalyzeJSONStringOrFile(strOrPath string) (s *schema.Schema, err error) {
 	s = &schema.Schema{}
 	var buf io.Reader
-	if strOrPath[0:] == "{" {
+	if strings.HasPrefix(strOrPath, "{") {
 		buf = bytes.NewBufferString(strOrPath)
 	} else {
 		buf, err = os.Open(filepath.Clean(strOrPath))
