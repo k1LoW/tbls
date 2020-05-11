@@ -5,9 +5,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -144,10 +146,23 @@ func AnalyzeJSON(urlstr string) (*schema.Schema, error) {
 	return s, nil
 }
 
-// AnalyzeJSONString analyze JSON string
+// Deprecated
 func AnalyzeJSONString(str string) (*schema.Schema, error) {
-	s := &schema.Schema{}
-	buf := bytes.NewBufferString(str)
+	return AnalyzeJSONStringOrFile(str)
+}
+
+// AnalyzeJSONStringOrFile analyze JSON string or JSON file
+func AnalyzeJSONStringOrFile(strOrPath string) (s *schema.Schema, err error) {
+	s = &schema.Schema{}
+	var buf io.Reader
+	if strings.HasPrefix(strOrPath, "{") {
+		buf = bytes.NewBufferString(strOrPath)
+	} else {
+		buf, err = os.Open(filepath.Clean(strOrPath))
+		if err != nil {
+			return s, errors.WithStack(err)
+		}
+	}
 	dec := json.NewDecoder(buf)
 	if err := dec.Decode(s); err != nil {
 		return s, errors.WithStack(err)

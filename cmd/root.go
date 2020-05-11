@@ -21,8 +21,8 @@
 package cmd
 
 import (
-	"bytes"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"strconv"
@@ -131,12 +131,17 @@ var rootCmd = &cobra.Command{
 			envs = append(envs, fmt.Sprintf("TBLS_DSN=%s", cfg.DSN.URL))
 			envs = append(envs, fmt.Sprintf("TBLS_CONFIG_PATH=%s", cfg.Path))
 			o := json.New(true)
-			buf := new(bytes.Buffer)
-			if err := o.OutputSchema(buf, s); err != nil {
+			tmpfile, err := ioutil.TempFile("", "TBLS_SCHEMA")
+			if err != nil {
 				printError(err)
 				os.Exit(1)
 			}
-			envs = append(envs, fmt.Sprintf("TBLS_SCHEMA=%s", buf.String()))
+			defer os.Remove(tmpfile.Name())
+			if err := o.OutputSchema(tmpfile, s); err != nil {
+				printError(err)
+				os.Exit(1)
+			}
+			envs = append(envs, fmt.Sprintf("TBLS_SCHEMA=%s", tmpfile.Name()))
 		}
 
 		c := exec.Command(path, args...) // #nosec
