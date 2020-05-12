@@ -20,6 +20,24 @@ CREATE TABLE users (
   updated date
 );
 
+EXEC sys.sp_addextendedproperty  @name=N'MS_Description'
+                                ,@value=N'Users table'
+                                ,@level0type=N'SCHEMA'
+                                ,@level0name=N'dbo'
+                                ,@level1type=N'TABLE'
+                                ,@level1name=N'users'
+                                WITH RESULT SETS NONE;
+
+EXEC sys.sp_addextendedproperty  @name=N'MS_Description'
+                                ,@value=N'ex. user@example.com'
+                                ,@level0type=N'SCHEMA'
+                                ,@level0name=N'dbo'
+                                ,@level1type=N'TABLE'
+                                ,@level1name=N'users'
+                                ,@level2type=N'COLUMN'
+                                ,@level2name=N'email'
+                                WITH RESULT SETS NONE;
+
 CREATE TABLE user_options (
   user_id int PRIMARY KEY,
   show_email bit NOT NULL DEFAULT 0,
@@ -27,6 +45,14 @@ CREATE TABLE user_options (
   updated date,
   CONSTRAINT user_options_user_id_fk FOREIGN KEY(user_id) REFERENCES users(id) ON UPDATE NO ACTION ON DELETE CASCADE
 );
+
+EXEC sys.sp_addextendedproperty  @name=N'MS_Description'
+                                ,@value=N'User options table'
+                                ,@level0type=N'SCHEMA'
+                                ,@level0name=N'dbo'
+                                ,@level1type=N'TABLE'
+                                ,@level1name=N'user_options'
+                                WITH RESULT SETS NONE;
 
 CREATE TABLE posts (
   id int NOT NULL,

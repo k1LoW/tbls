@@ -8,3 +8,4 @@ testdb.sqlite3
 .go-version
 .tbls.yml
 *client_secrets.json*
+.DS_Store

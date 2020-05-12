@@ -4,12 +4,16 @@ ENTRYPOINT ["tbls"]
 WORKDIR /work
 VOLUME ["/work"]
 
+ARG DOCKER_TAG
+ENV TBLS_VERION=v$DOCKER_TAG
+
 RUN apk add bash curl
 
 SHELL ["/bin/bash", "-c"]
 
 RUN set -x \
-        && curl -L https://git.io/dpkg-i-from-url | bash -s -- https://github.com/k1LoW/tbls/releases/download/v$DOCKER_TAG/tbls_$v$DOCKER_TAG-1_amd64.deb
+        && source <(curl -sL https://git.io/use-tbls) \
+        && which tbls | xargs -I{} mv {} /usr/local/bin/tbls \
         && apk del bash curl
 
 SHELL ["/bin/sh", "-c"]
