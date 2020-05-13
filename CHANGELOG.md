@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.38.3](https://github.com/k1LoW/tbls/compare/v1.38.2...v1.38.3) (2020-05-13)
+
+* Fix MSSQL comments trimmed to 30 chars [#238](https://github.com/k1LoW/tbls/pull/238) ([paulKabira](https://github.com/paulKabira))
+
 ## [v1.38.2](https://github.com/k1LoW/tbls/compare/v1.38.1...v1.38.2) (2020-05-11)
 
 * [BREAKING]Set path of temporary generated schema.json (instead of JSON string) to TBLS_SCHEMA [#236](https://github.com/k1LoW/tbls/pull/236) ([k1LoW](https://github.com/k1LoW))
