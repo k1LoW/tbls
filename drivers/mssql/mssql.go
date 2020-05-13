@@ -44,7 +44,7 @@ func (m *Mssql) Analyze(s *schema.Schema) error {
 
 	// tables and comments
 	tableRows, err := m.db.Query(`
-SELECT schema_name(schema_id) AS table_schema, o.name, o.object_id, o.type, cast(e.value as NVARCHAR) AS table_comment
+SELECT schema_name(schema_id) AS table_schema, o.name, o.object_id, o.type, cast(e.value as NVARCHAR(MAX)) AS table_comment
 FROM sys.objects AS o
 LEFT JOIN sys.extended_properties AS e ON
 e.major_id = o.object_id AND e.name = 'MS_Description' AND e.minor_id = 0
@@ -111,10 +111,10 @@ SELECT
   c.is_nullable,
   c.is_identity,
   object_definition(c.default_object_id),
-  CAST(e.value AS VARCHAR) AS column_comment
+  CAST(e.value AS NVARCHAR(MAX)) AS column_comment
 FROM sys.columns AS c
 LEFT JOIN sys.types AS t ON c.system_type_id = t.system_type_id
-LEFT JOIN sys.extended_properties e ON
+LEFT JOIN sys.extended_properties AS e ON
 e.major_id = c.object_id AND e.name = 'MS_Description' AND e.minor_id = c.column_id
 WHERE c.object_id = $1
 and t.name != 'sysname'
