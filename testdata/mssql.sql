@@ -38,6 +38,16 @@ EXEC sys.sp_addextendedproperty  @name=N'MS_Description'
                                 ,@level2name=N'email'
                                 WITH RESULT SETS NONE;
 
+EXEC sys.sp_addextendedproperty  @name=N'MS_Description'
+                                ,@value=N'long long long long long long long long long long long long long long long long long long long long long description'
+                                ,@level0type=N'SCHEMA'
+                                ,@level0name=N'dbo'
+                                ,@level1type=N'TABLE'
+                                ,@level1name=N'users'
+                                ,@level2type=N'COLUMN'
+                                ,@level2name=N'password'
+                                WITH RESULT SETS NONE;
+
 CREATE TABLE user_options (
   user_id int PRIMARY KEY,
   show_email bit NOT NULL DEFAULT 0,
