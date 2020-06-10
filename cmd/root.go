@@ -96,12 +96,12 @@ var rootCmd = &cobra.Command{
 		path, err := exec.LookPath(cmd.Use + "-" + subCommand)
 		if err != nil {
 			if strings.HasPrefix(subCommand, "-") {
-				cmd.Printf("Error: unknown flag: '%s'\n", subCommand)
+				cmd.PrintErrf("Error: unknown flag: '%s'\n", subCommand)
 				cmd.HelpFunc()(cmd, args)
 				return
 			}
-			cmd.Println(`Error: unknown command "` + subCommand + `" for "tbls"`)
-			cmd.Println("Run 'tbls --help' for usage.")
+			cmd.PrintErrln(`Error: unknown command "` + subCommand + `" for "tbls"`)
+			cmd.PrintErrln("Run 'tbls --help' for usage.")
 			return
 		}
 
