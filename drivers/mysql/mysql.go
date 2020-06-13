@@ -11,6 +11,7 @@ import (
 )
 
 var reFK = regexp.MustCompile(`FOREIGN KEY \((.+)\) REFERENCES ([^\s]+)\s?\((.+)\)`)
+var reAI = regexp.MustCompile(`AUTO_INCREMENT=[\d]+`)
 
 // Mysql struct
 type Mysql struct {
@@ -75,7 +76,7 @@ SELECT table_name, table_type, table_comment FROM information_schema.tables WHER
 				if err != nil {
 					return errors.WithStack(err)
 				}
-				table.Def = tableDef
+				table.Def = reAI.ReplaceAllLiteralString(tableDef, "AUTO_INCREMENT=[Redacted by tbls]")
 			}
 		}
 
