@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.39.0](https://github.com/k1LoW/tbls/compare/v1.38.3...v1.39.0) (2020-06-15)
+
+* [BREAKING][MySQL]Redact AUTO_INCREMENT value of table option by default [#241](https://github.com/k1LoW/tbls/pull/241) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.38.3](https://github.com/k1LoW/tbls/compare/v1.38.2...v1.38.3) (2020-05-13)
 
 * Fix MSSQL comments trimmed to 30 chars [#238](https://github.com/k1LoW/tbls/pull/238) ([paulKabira](https://github.com/paulKabira))
