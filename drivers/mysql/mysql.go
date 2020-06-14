@@ -6,6 +6,7 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/k1LoW/tbls/drivers"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/pkg/errors"
 )
@@ -19,18 +20,18 @@ type Mysql struct {
 	showAutoIncrement bool
 }
 
-// Option is the type for change Config.
-type Option func(*Mysql) error
-
-func ShowAutoIcrrement() Option {
-	return func(m *Mysql) error {
-		m.showAutoIncrement = true
+func ShowAutoIcrrement() drivers.Option {
+	return func(d drivers.Driver) error {
+		switch d := d.(type) {
+		case *Mysql:
+			d.showAutoIncrement = true
+		}
 		return nil
 	}
 }
 
 // New return new Mysql
-func New(db *sql.DB, opts ...Option) (*Mysql, error) {
+func New(db *sql.DB, opts ...drivers.Option) (*Mysql, error) {
 	m := &Mysql{
 		db: db,
 	}
