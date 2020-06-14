@@ -15,14 +15,32 @@ var reAI = regexp.MustCompile(`AUTO_INCREMENT=[\d]+`)
 
 // Mysql struct
 type Mysql struct {
-	db *sql.DB
+	db                *sql.DB
+	showAutoIncrement bool
+}
+
+// Option is the type for change Config.
+type Option func(*Mysql) error
+
+func ShowAutoIcrrement() Option {
+	return func(m *Mysql) error {
+		m.showAutoIncrement = true
+		return nil
+	}
 }
 
 // New return new Mysql
-func New(db *sql.DB) *Mysql {
-	return &Mysql{
+func New(db *sql.DB, opts ...Option) (*Mysql, error) {
+	m := &Mysql{
 		db: db,
 	}
+	for _, opt := range opts {
+		err := opt(m)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return m, nil
 }
 
 // Analyze MySQL database schema
@@ -76,7 +94,11 @@ SELECT table_name, table_type, table_comment FROM information_schema.tables WHER
 				if err != nil {
 					return errors.WithStack(err)
 				}
-				table.Def = reAI.ReplaceAllLiteralString(tableDef, "AUTO_INCREMENT=[Redacted by tbls]")
+				if m.showAutoIncrement {
+					table.Def = tableDef
+				} else {
+					table.Def = reAI.ReplaceAllLiteralString(tableDef, "AUTO_INCREMENT=[Redacted by tbls]")
+				}
 			}
 		}
 

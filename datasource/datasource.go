@@ -66,7 +66,7 @@ func Analyze(dsn config.DSN) (*schema.Schema, error) {
 	if err != nil {
 		return s, errors.WithStack(err)
 	}
-	if err = db.Ping(); err != nil {
+	if err := db.Ping(); err != nil {
 		return s, errors.WithStack(err)
 	}
 
@@ -82,7 +82,10 @@ func Analyze(dsn config.DSN) (*schema.Schema, error) {
 		}
 	case "mysql":
 		s.Name = splitted[1]
-		driver = mysql.New(db)
+		driver, err = mysql.New(db)
+		if err != nil {
+			return s, err
+		}
 	case "sqlite3":
 		s.Name = splitted[len(splitted)-1]
 		driver = sqlite.New(db)
