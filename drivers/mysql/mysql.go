@@ -6,22 +6,42 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/k1LoW/tbls/drivers"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/pkg/errors"
 )
 
 var reFK = regexp.MustCompile(`FOREIGN KEY \((.+)\) REFERENCES ([^\s]+)\s?\((.+)\)`)
+var reAI = regexp.MustCompile(`AUTO_INCREMENT=[\d]+`)
 
 // Mysql struct
 type Mysql struct {
-	db *sql.DB
+	db                *sql.DB
+	showAutoIncrement bool
+}
+
+func ShowAutoIcrrement() drivers.Option {
+	return func(d drivers.Driver) error {
+		switch d := d.(type) {
+		case *Mysql:
+			d.showAutoIncrement = true
+		}
+		return nil
+	}
 }
 
 // New return new Mysql
-func New(db *sql.DB) *Mysql {
-	return &Mysql{
+func New(db *sql.DB, opts ...drivers.Option) (*Mysql, error) {
+	m := &Mysql{
 		db: db,
 	}
+	for _, opt := range opts {
+		err := opt(m)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return m, nil
 }
 
 // Analyze MySQL database schema
@@ -75,7 +95,11 @@ SELECT table_name, table_type, table_comment FROM information_schema.tables WHER
 				if err != nil {
 					return errors.WithStack(err)
 				}
-				table.Def = tableDef
+				if m.showAutoIncrement {
+					table.Def = tableDef
+				} else {
+					table.Def = reAI.ReplaceAllLiteralString(tableDef, "AUTO_INCREMENT=[Redacted by tbls]")
+				}
 			}
 		}
 

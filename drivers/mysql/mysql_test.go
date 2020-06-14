@@ -26,10 +26,14 @@ func TestMain(m *testing.M) {
 }
 
 func TestAnalyzeView(t *testing.T) {
-	driver := New(db)
-	err := driver.Analyze(s)
+	driver, err := New(db)
 	if err != nil {
-		t.Errorf("%v", err)
+		t.Fatal(err)
+	}
+
+	err = driver.Analyze(s)
+	if err != nil {
+		t.Fatal(err)
 	}
 	view, _ := s.FindTableByName("post_comments")
 	want := view.Def
@@ -39,10 +43,13 @@ func TestAnalyzeView(t *testing.T) {
 }
 
 func TestInfo(t *testing.T) {
-	driver := New(db)
+	driver, err := New(db)
+	if err != nil {
+		t.Fatal(err)
+	}
 	d, err := driver.Info()
 	if err != nil {
-		t.Errorf("%v", err)
+		t.Fatal(err)
 	}
 	if d.Name != "mysql" {
 		t.Errorf("got %v\nwant %v", d.Name, "mysql")

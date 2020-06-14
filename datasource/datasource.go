@@ -61,12 +61,25 @@ func Analyze(dsn config.DSN) (*schema.Schema, error) {
 		return s, errors.WithStack(fmt.Errorf("invalid DSN: parse %s -> %#v", urlstr, u))
 	}
 
+	opts := []drivers.Option{}
+	if u.Driver == "mysql" {
+		values := u.Query()
+		for k := range values {
+			if k == "show_auto_increment" {
+				opts = append(opts, mysql.ShowAutoIcrrement())
+				values.Del(k)
+			}
+		}
+		u.RawQuery = values.Encode()
+		urlstr = u.String()
+	}
+
 	db, err := dburl.Open(urlstr)
 	defer db.Close()
 	if err != nil {
 		return s, errors.WithStack(err)
 	}
-	if err = db.Ping(); err != nil {
+	if err := db.Ping(); err != nil {
 		return s, errors.WithStack(err)
 	}
 
@@ -82,7 +95,10 @@ func Analyze(dsn config.DSN) (*schema.Schema, error) {
 		}
 	case "mysql":
 		s.Name = splitted[1]
-		driver = mysql.New(db)
+		driver, err = mysql.New(db, opts...)
+		if err != nil {
+			return s, err
+		}
 	case "sqlite3":
 		s.Name = splitted[len(splitted)-1]
 		driver = sqlite.New(db)

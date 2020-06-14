@@ -16,7 +16,7 @@ CREATE TABLE users (
   email varchar (355) UNIQUE NOT NULL COMMENT 'ex. user@example.com',
   created timestamp NOT NULL,
   updated timestamp
-) COMMENT = 'Users table';
+) COMMENT = 'Users table' AUTO_INCREMENT = 100;
 
 CREATE TABLE user_options (
   user_id int PRIMARY KEY,
