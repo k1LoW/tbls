@@ -76,7 +76,7 @@ CREATE TABLE logs (
   comment_star_id bigint,
   payload text,
   created datetime NOT NULL
-);
+) COMMENT = 'Auditログ';
 
 CREATE VIEW post_comments AS (
   SELECT c.id, p.title, u2.username AS post_user, c.comment, u2.username AS comment_user, c.created, c.updated

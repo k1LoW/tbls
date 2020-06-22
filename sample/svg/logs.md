@@ -2,7 +2,7 @@
 
 ## Description
 
-audit log table
+Auditログ
 
 <details>
 <summary><strong>Table Definition</strong></summary>
@@ -17,7 +17,7 @@ CREATE TABLE `logs` (
   `payload` text,
   `created` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Auditログ'
 ```
 
 </details>

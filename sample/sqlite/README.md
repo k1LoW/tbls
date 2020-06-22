@@ -17,7 +17,7 @@ Sample database document.
 | [posts](posts.md) | 6 |  | table |
 | [comments](comments.md) | 6 |  | table |
 | [comment_stars](comment_stars.md) | 6 |  | table |
-| [logs](logs.md) | 7 | audit log table | table |
+| [logs](logs.md) | 7 |  | table |
 | [post_comments](post_comments.md) | 7 | post and comments View table | view |
 | [CamelizeTable](CamelizeTable.md) | 2 |  | table |
 | [hyphen-table](hyphen-table.md) | 3 |  | table |

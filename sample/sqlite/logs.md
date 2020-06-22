@@ -2,8 +2,6 @@
 
 ## Description
 
-audit log table
-
 <details>
 <summary><strong>Table Definition</strong></summary>
 

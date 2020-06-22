@@ -1,5 +1,7 @@
 ---
 desc: Sample database document.
+er:
+  comment: true
 labels:
   - sample
   - tbls
@@ -54,7 +56,6 @@ comments:
       - blue
   -
     table: logs
-    tableComment: audit log table
   -
     table: post_comments
     tableComment: post and comments View table

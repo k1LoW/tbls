@@ -2,8 +2,6 @@
 
 ## Description
 
-audit log table
-
 ## Columns
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
