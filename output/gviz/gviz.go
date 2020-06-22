@@ -14,15 +14,13 @@ import (
 // Gviz struct
 type Gviz struct {
 	config *config.Config
-	format string
 	dot    *dot.Dot
 }
 
 // New return Gviz
-func New(c *config.Config, format string) *Gviz {
+func New(c *config.Config) *Gviz {
 	return &Gviz{
 		config: c,
-		format: format,
 		dot:    dot.New(c),
 	}
 }
@@ -61,7 +59,7 @@ func (g *Gviz) render(wr io.Writer, b []byte) (e error) {
 			e = errors.WithStack(err)
 		}
 	}()
-	if err := gviz.Render(graph, graphviz.Format(g.format), wr); err != nil {
+	if err := gviz.Render(graph, graphviz.Format(g.config.ER.Format), wr); err != nil {
 		return errors.WithStack(err)
 	}
 	return nil

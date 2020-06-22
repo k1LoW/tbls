@@ -13,20 +13,23 @@ import (
 
 func TestOutputSchema(t *testing.T) {
 	format := "svg"
+	
 	s := newTestSchema()
 	c, err := config.New()
 	if err != nil {
-		t.Error(err)
+		t.Fatal(err)
 	}
-	err = c.LoadConfigFile(filepath.Join(testdataDir(), "out_test_tbls.yml"))
-	if err != nil {
-		t.Error(err)
+	option := config.ERFormat(format)
+	if err := c.LoadOption(option); err != nil {
+		t.Fatal(err)
+	}	
+	if err := c.LoadConfigFile(filepath.Join(testdataDir(), "out_test_tbls.yml")); err != nil {
+		t.Fatal(err)
 	}
-	err = c.MergeAdditionalData(s)
-	if err != nil {
-		t.Error(err)
+	if err := c.MergeAdditionalData(s); err != nil {
+		t.Fatal(err)
 	}
-	o := New(c, format)
+	o := New(c)
 	buf := &bytes.Buffer{}
 	err = o.OutputSchema(buf, s)
 	if err != nil {
@@ -46,17 +49,19 @@ func TestOutputTable(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	err = c.LoadConfigFile(filepath.Join(testdataDir(), "out_test_tbls.yml"))
-	if err != nil {
+	option := config.ERFormat(format)
+	if err := c.LoadOption(option); err != nil {
+		t.Fatal(err)
+	}	
+	if err := c.LoadConfigFile(filepath.Join(testdataDir(), "out_test_tbls.yml")); err != nil {
 		t.Error(err)
 	}
-	err = c.MergeAdditionalData(s)
-	if err != nil {
+	if err := c.MergeAdditionalData(s); err != nil {
 		t.Error(err)
 	}
 	ta := s.Tables[0]
 
-	o := New(c, format)
+	o := New(c)
 	buf := &bytes.Buffer{}
 	_ = o.OutputTable(buf, ta)
 	want, _ := ioutil.ReadFile(filepath.Join(testdataDir(), "svg_test_a.svg.golden"))

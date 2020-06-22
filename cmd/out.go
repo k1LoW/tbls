@@ -107,7 +107,8 @@ var outCmd = &cobra.Command{
 		case "cacoo":
 			o = cacoo.New(c)
 		case "png", "svg", "jpg":
-			o = gviz.New(c, format)
+			c.ER.Format = format
+			o = gviz.New(c)
 		case "config":
 			o = tbls_config.New(c)
 		default:

@@ -119,7 +119,7 @@ func withDot(s *schema.Schema, c *config.Config, force bool) (e error) {
 	if err != nil {
 		return errors.WithStack(err)
 	}
-	g := gviz.New(c, erFormat)
+	g := gviz.New(c)
 	err = g.OutputSchema(file, s)
 	if err != nil {
 		return errors.WithStack(err)

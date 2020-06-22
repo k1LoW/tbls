@@ -165,28 +165,32 @@ func New() (*Config, error) {
 
 // Load load config with all method
 func (c *Config) Load(configPath string, options ...Option) error {
-	err := c.LoadConfigFile(configPath)
-	if err != nil {
+	if err := c.LoadConfigFile(configPath); err != nil {
 		return err
 	}
 
-	err = c.LoadEnviron()
-	if err != nil {
+	if err := c.LoadEnviron(); err != nil {
 		return err
 	}
 
-	for _, option := range options {
-		err = option(c)
-		if err != nil {
+	if err := c.LoadOption(options...); err != nil {
+		return err
+	}
+
+	if err := c.setDefault(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// LoadOptions load options
+func (c *Config) LoadOption(options ...Option) error {
+  for _, option := range options {
+		if err := option(c); err != nil {
 			return err
 		}
 	}
-
-	err = c.setDefault()
-	if err != nil {
-		return err
-	}
-
 	return nil
 }
 
