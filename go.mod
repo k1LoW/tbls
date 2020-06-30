@@ -4,12 +4,13 @@ require (
 	cloud.google.com/go/bigquery v1.6.0
 	cloud.google.com/go/spanner v1.5.1
 	github.com/aws/aws-sdk-go v1.30.9
+	github.com/beta/freetype v0.0.1
 	github.com/denisenkom/go-mssqldb v0.0.0-20200206145737-bbfc9a55622e
 	github.com/fatih/color v1.9.0 // indirect
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/gobuffalo/packr/v2 v2.8.0
 	github.com/gocarina/gocsv v0.0.0-20200330101823-46266ca37bd3
-	github.com/goccy/go-graphviz v0.0.5
+	github.com/goccy/go-graphviz v0.0.6
 	github.com/goccy/go-yaml v1.4.3
 	github.com/google/go-cmp v0.4.0
 	github.com/karrick/godirwalk v1.15.6 // indirect
@@ -26,6 +27,7 @@ require (
 	github.com/spf13/pflag v1.0.5
 	github.com/xo/dburl v0.0.0-20200124232849-e9ec94f52bc3
 	golang.org/x/crypto v0.0.0-20200414173820-0848c9571904 // indirect
+	golang.org/x/image v0.0.0-20200119044424-58c23975cae1
 	golang.org/x/tools v0.0.0-20200417140056-c07e33ef3290 // indirect
 	google.golang.org/api v0.21.0
 	google.golang.org/genproto v0.0.0-20200417142217-fb6d0575620b // indirect
