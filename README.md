@@ -533,6 +533,10 @@ er:
   distance: 2
 ```
 
+#### Include font for png/jpg
+
+- M+ FONTS (M+ P Type-1 Light) ( [M+ FONT LISENCE](http://mplus-fonts.osdn.jp/about.html#license) )
+
 ### Lint
 
 `tbls lint` work as linter for database.
