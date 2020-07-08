@@ -1,7 +1,5 @@
 ---
 desc: Sample database document.
-er:
-  comment: true
 labels:
   - sample
   - tbls

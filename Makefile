@@ -47,6 +47,7 @@ doc: build doc_sqlite
 	./tbls doc my://root:mypass@localhost:33306/testdb -c testdata/test_tbls.yml -t svg -f sample/svg
 	./tbls doc my://root:mypass@localhost:33306/testdb -c testdata/exclude_test_tbls.yml -f sample/exclude
 	./tbls doc my://root:mypass@localhost:33306/testdb -c testdata/dict_test_tbls.yml -f sample/dict
+	./tbls doc my://root:mypass@localhost:33306/testdb -c testdata/font_test_tbls.yml -f sample/font
 
 doc_sqlite:
 	./tbls doc sq://$(PWD)/testdata/testdb.sqlite3 -c testdata/test_tbls.yml -f sample/sqlite
@@ -61,6 +62,7 @@ testdoc: testdoc_sqlite
 	./tbls diff my://root:mypass@localhost:33306/testdb -c testdata/test_tbls.yml -t svg sample/svg
 	./tbls diff my://root:mypass@localhost:33306/testdb -c testdata/exclude_test_tbls.yml sample/exclude
 	./tbls diff my://root:mypass@localhost:33306/testdb -c testdata/dict_test_tbls.yml sample/dict
+	./tbls diff my://root:mypass@localhost:33306/testdb -c testdata/font_test_tbls.yml sample/font
 
 testdoc_sqlite:
 	./tbls diff sq://$(PWD)/testdata/testdb.sqlite3 -c testdata/test_tbls.yml sample/sqlite

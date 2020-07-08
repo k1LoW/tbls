@@ -66,6 +66,7 @@ type ER struct {
 	Format   string `yaml:"format,omitempty"`
 	Comment  bool   `yaml:"comment,omitempty"`
 	Distance *int   `yaml:"distance,omitempty"`
+	Font     string `yaml:"font,omitempty"`
 }
 
 // AdditionalRelation is the struct for table relation from yaml
@@ -186,7 +187,7 @@ func (c *Config) Load(configPath string, options ...Option) error {
 
 // LoadOptions load options
 func (c *Config) LoadOption(options ...Option) error {
-  for _, option := range options {
+	for _, option := range options {
 		if err := option(c); err != nil {
 			return err
 		}
