@@ -38,7 +38,7 @@ CREATE TABLE `hyphen-table` (
 
 ## Relations
 
-![er](hyphen-table.png)
+![er](hyphen-table.svg)
 
 ---
 

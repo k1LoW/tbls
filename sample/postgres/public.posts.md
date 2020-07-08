@@ -42,7 +42,7 @@ Posts table
 
 ## Relations
 
-![er](public.posts.png)
+![er](public.posts.svg)
 
 ---
 

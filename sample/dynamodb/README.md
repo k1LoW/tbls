@@ -11,7 +11,7 @@
 
 ## Relations
 
-![er](schema.png)
+![er](schema.svg)
 
 ---
 

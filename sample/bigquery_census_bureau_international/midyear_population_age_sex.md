@@ -119,7 +119,7 @@
 
 ## Relations
 
-![er](midyear_population_age_sex.png)
+![er](midyear_population_age_sex.svg)
 
 ---
 

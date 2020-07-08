@@ -48,7 +48,7 @@ CREATE TABLE `logs` (
 
 ## ER図
 
-![er](logs.png)
+![er](logs.svg)
 
 ---
 

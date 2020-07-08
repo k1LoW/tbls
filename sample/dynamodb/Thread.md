@@ -17,7 +17,7 @@
 
 ## Relations
 
-![er](Thread.png)
+![er](Thread.svg)
 
 ---
 

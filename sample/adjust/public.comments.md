@@ -37,7 +37,7 @@ comment
 
 ## Relations
 
-![er](public.comments.png)
+![er](public.comments.svg)
 
 ---
 

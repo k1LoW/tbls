@@ -49,7 +49,7 @@ CREATE TABLE comment_stars (
 
 ## Relations
 
-![er](comment_stars.png)
+![er](comment_stars.svg)
 
 ---
 

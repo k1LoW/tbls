@@ -27,7 +27,7 @@ Sample database document.
 
 ## Relations
 
-![er](schema.png)
+![er](schema.svg)
 
 ---
 

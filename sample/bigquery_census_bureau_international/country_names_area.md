@@ -16,7 +16,7 @@
 
 ## Relations
 
-![er](country_names_area.png)
+![er](country_names_area.svg)
 
 ---
 

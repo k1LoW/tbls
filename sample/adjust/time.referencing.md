@@ -26,7 +26,7 @@
 
 ## Relations
 
-![er](time.referencing.png)
+![er](time.referencing.svg)
 
 ---
 

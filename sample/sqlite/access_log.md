@@ -19,7 +19,7 @@ CREATE VIRTUAL TABLE access_log USING fts4(logs)
 
 ## Relations
 
-![er](access_log.png)
+![er](access_log.svg)
 
 ---
 

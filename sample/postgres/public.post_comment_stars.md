@@ -33,7 +33,7 @@ CREATE MATERIALIZED VIEW post_comment_stars AS (
 
 ## Relations
 
-![er](public.post_comment_stars.png)
+![er](public.post_comment_stars.svg)
 
 ---
 

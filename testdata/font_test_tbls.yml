@@ -1,5 +1,6 @@
 ---
 er:
+  format: png
   comment: true
   font: ./testdata/mplus-1p-light.ttf
 labels:

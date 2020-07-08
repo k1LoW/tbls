@@ -52,7 +52,7 @@ CREATE TABLE `users` (
 
 ## ER図
 
-![er](users.png)
+![er](users.svg)
 
 ---
 

@@ -18,7 +18,7 @@ audit log table
 
 ## Relations
 
-![er](public.logs.png)
+![er](public.logs.svg)
 
 ---
 

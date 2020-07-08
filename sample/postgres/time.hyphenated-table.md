@@ -22,7 +22,7 @@
 
 ## Relations
 
-![er](time.hyphenated-table.png)
+![er](time.hyphenated-table.svg)
 
 ---
 

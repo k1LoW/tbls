@@ -38,7 +38,7 @@ CREATE TABLE `hyphen-table` (
 
 ## ER図
 
-![er](hyphen-table.png)
+![er](hyphen-table.svg)
 
 ---
 

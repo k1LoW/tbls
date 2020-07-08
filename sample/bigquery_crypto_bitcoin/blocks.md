@@ -25,7 +25,7 @@ Data is exported using https://github.com/blockchain-etl/bitcoin-etl
 
 ## Relations
 
-![er](blocks.png)
+![er](blocks.svg)
 
 ---
 

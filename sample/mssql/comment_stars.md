@@ -29,7 +29,7 @@
 
 ## Relations
 
-![er](comment_stars.png)
+![er](comment_stars.svg)
 
 ---
 

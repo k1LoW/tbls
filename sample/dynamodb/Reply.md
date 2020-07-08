@@ -24,7 +24,7 @@
 
 ## Relations
 
-![er](Reply.png)
+![er](Reply.svg)
 
 ---
 

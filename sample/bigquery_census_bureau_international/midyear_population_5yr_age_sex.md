@@ -23,7 +23,7 @@
 
 ## Relations
 
-![er](midyear_population_5yr_age_sex.png)
+![er](midyear_population_5yr_age_sex.svg)
 
 ---
 

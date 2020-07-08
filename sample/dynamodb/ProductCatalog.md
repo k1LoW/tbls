@@ -16,7 +16,7 @@
 
 ## Relations
 
-![er](ProductCatalog.png)
+![er](ProductCatalog.svg)
 
 ---
 

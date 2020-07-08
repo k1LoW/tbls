@@ -48,7 +48,7 @@ CREATE TABLE `logs` (
 
 ## Relations
 
-![er](logs.png)
+![er](logs.svg)
 
 ---
 

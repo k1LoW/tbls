@@ -47,7 +47,7 @@ CREATE TABLE `user_options` (
 
 ## Relations
 
-![er](user_options.png)
+![er](user_options.svg)
 
 ---
 

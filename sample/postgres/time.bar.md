@@ -22,7 +22,7 @@
 
 ## Relations
 
-![er](time.bar.png)
+![er](time.bar.svg)
 
 ---
 

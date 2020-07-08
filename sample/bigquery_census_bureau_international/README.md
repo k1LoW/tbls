@@ -31,7 +31,7 @@ See the GCP Marketplace listing for more details and sample queries: https://con
 
 ## Relations
 
-![er](schema.png)
+![er](schema.svg)
 
 ---
 

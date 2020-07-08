@@ -45,7 +45,7 @@ FROM `bigquery-public-data.crypto_bitcoin.transactions` as transactions,
 
 ## Relations
 
-![er](outputs.png)
+![er](outputs.svg)
 
 ---
 
