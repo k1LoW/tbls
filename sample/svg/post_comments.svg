@@ -14,9 +14,9 @@
 <title>post_comments</title>
 <polygon fill="#efefef" stroke="transparent" points="46,-256 46,-302 408,-302 408,-256 46,-256"/>
 <polygon fill="none" stroke="#000000" points="46,-256 46,-302 408,-302 408,-256 46,-256"/>
-<text text-anchor="start" x="146.7801" y="-279.8" font-family="Bold" font-size="18.00" fill="#000000">post_comments</text>
-<text text-anchor="start" x="259.7697" y="-279.8" font-family="Arial" font-size="14.00" fill="#000000"> </text>
-<text text-anchor="start" x="263.6603" y="-279.8" font-family="Arial" font-size="14.00" fill="#666666">[VIEW]</text>
+<text text-anchor="start" x="139.7619" y="-279.8" font-family="Arial Bold" font-size="18.00" fill="#000000">post_comments</text>
+<text text-anchor="start" x="266.7879" y="-279.8" font-family="Arial" font-size="14.00" fill="#000000"> </text>
+<text text-anchor="start" x="270.6785" y="-279.8" font-family="Arial" font-size="14.00" fill="#666666">[VIEW]</text>
 <text text-anchor="start" x="131.6985" y="-265.4" font-family="Arial" font-size="14.00" fill="#333333">post and comments View table</text>
 <polygon fill="none" stroke="#000000" points="46,-226 46,-256 408,-256 408,-226 46,-226"/>
 <text text-anchor="start" x="53" y="-237.4" font-family="Arial" font-size="14.00" fill="#000000">id </text>
