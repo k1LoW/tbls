@@ -522,7 +522,7 @@ er:
   # Skip generation of ER diagram
   # Default is false
   skip: false
-  # ER diagram format
+  # ER diagram image format
   # Default is `png`
   format: svg
   # Add table/column comment to ER diagram
@@ -531,6 +531,9 @@ er:
   # Distance between tables that display relations in the ER
   # Default is 1
   distance: 2
+  # ER diagram font (font name, font file, font path or keyword)
+  # Default is "" ( system default )
+  font: M+
 ```
 
 ### Lint
