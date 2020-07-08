@@ -13,6 +13,7 @@ require (
 	github.com/goccy/go-graphviz v0.0.6
 	github.com/goccy/go-yaml v1.4.3
 	github.com/google/go-cmp v0.4.0
+	github.com/k1LoW/ffff v0.1.1
 	github.com/karrick/godirwalk v1.15.6 // indirect
 	github.com/labstack/gommon v0.3.0
 	github.com/lib/pq v1.3.0
@@ -27,7 +28,7 @@ require (
 	github.com/spf13/pflag v1.0.5
 	github.com/xo/dburl v0.0.0-20200124232849-e9ec94f52bc3
 	golang.org/x/crypto v0.0.0-20200414173820-0848c9571904 // indirect
-	golang.org/x/image v0.0.0-20200119044424-58c23975cae1
+	golang.org/x/image v0.0.0-20200618115811-c13761719519
 	golang.org/x/tools v0.0.0-20200417140056-c07e33ef3290 // indirect
 	google.golang.org/api v0.21.0
 	google.golang.org/genproto v0.0.0-20200417142217-fb6d0575620b // indirect
