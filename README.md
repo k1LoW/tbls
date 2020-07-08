@@ -531,7 +531,7 @@ er:
   # Distance between tables that display relations in the ER
   # Default is 1
   distance: 2
-  # ER diagram font (font name, font file, font path or keyword)
+  # ER diagram (png/jpg) font (font name, font file, font path or keyword)
   # Default is "" ( system default )
   font: M+
 ```
