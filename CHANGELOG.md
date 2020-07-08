@@ -1,5 +1,10 @@
 # Changelog
 
+## [v1.40.0](https://github.com/k1LoW/tbls/compare/v1.39.0...v1.40.0) (2020-07-09)
+
+* [BREAKING] Change default ER diagram format to 'svg' [#244](https://github.com/k1LoW/tbls/pull/244) ([k1LoW](https://github.com/k1LoW))
+* Add er.font option for png/jpg ER diagram [#243](https://github.com/k1LoW/tbls/pull/243) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.39.0](https://github.com/k1LoW/tbls/compare/v1.38.3...v1.39.0) (2020-06-15)
 
 * [BREAKING][MySQL]Redact AUTO_INCREMENT value of table option by default [#241](https://github.com/k1LoW/tbls/pull/241) ([k1LoW](https://github.com/k1LoW))
