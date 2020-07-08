@@ -1,0 +1,23 @@
+---
+er:
+  comment: true
+  font: ./testdata/mplus-1p-light.ttf
+labels:
+  - サンプル
+  - tbls
+comments:
+  -
+    table: posts
+    tableComment: エントリ
+    columnComments:
+      body: 本文
+  -
+    table: post_comments
+    tableComment: post and comments View table
+    columnComments:
+      id: comments.id
+      title: posts.title
+      post_user: posts.users.username
+      comment_user: comments.users.username
+      created: comments.created
+      updated: comments.updated
