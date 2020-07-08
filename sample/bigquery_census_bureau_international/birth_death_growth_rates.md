@@ -21,7 +21,7 @@
 
 ## Relations
 
-![er](birth_death_growth_rates.png)
+![er](birth_death_growth_rates.svg)
 
 ---
 

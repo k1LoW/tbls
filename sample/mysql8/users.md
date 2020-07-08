@@ -52,7 +52,7 @@ CREATE TABLE `users` (
 
 ## Relations
 
-![er](users.png)
+![er](users.svg)
 
 ---
 

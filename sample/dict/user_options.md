@@ -47,7 +47,7 @@ CREATE TABLE `user_options` (
 
 ## ER図
 
-![er](user_options.png)
+![er](user_options.svg)
 
 ---
 

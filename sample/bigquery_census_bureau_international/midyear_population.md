@@ -17,7 +17,7 @@
 
 ## Relations
 
-![er](midyear_population.png)
+![er](midyear_population.svg)
 
 ---
 

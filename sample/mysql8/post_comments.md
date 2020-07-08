@@ -27,7 +27,7 @@ CREATE VIEW post_comments AS (select `c`.`id` AS `id`,`p`.`title` AS `title`,`u2
 
 ## Relations
 
-![er](post_comments.png)
+![er](post_comments.svg)
 
 ---
 

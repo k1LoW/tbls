@@ -28,7 +28,7 @@
 
 ## Relations
 
-![er](mortality_life_expectancy.png)
+![er](mortality_life_expectancy.svg)
 
 ---
 

@@ -36,7 +36,7 @@ CREATE TABLE `CamelizeTable` (
 
 ## ER図
 
-![er](CamelizeTable.png)
+![er](CamelizeTable.svg)
 
 ---
 

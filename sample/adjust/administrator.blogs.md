@@ -28,7 +28,7 @@
 
 ## Relations
 
-![er](administrator.blogs.png)
+![er](administrator.blogs.svg)
 
 ---
 

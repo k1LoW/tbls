@@ -41,7 +41,7 @@
 
 ## Relations
 
-![er](posts.png)
+![er](posts.svg)
 
 ---
 

@@ -23,7 +23,7 @@
 
 ## Relations
 
-![er](public.CamelizeTable.png)
+![er](public.CamelizeTable.svg)
 
 ---
 

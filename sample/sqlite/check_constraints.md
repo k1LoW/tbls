@@ -57,7 +57,7 @@ CREATE TABLE check_constraints (
 
 ## Relations
 
-![er](check_constraints.png)
+![er](check_constraints.svg)
 
 ---
 

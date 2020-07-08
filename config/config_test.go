@@ -26,7 +26,7 @@ func TestLoadDefault(t *testing.T) {
 	if want := "dbdoc"; config.DocPath != want {
 		t.Errorf("got %v\nwant %v", config.DocPath, want)
 	}
-	if want := "png"; config.ER.Format != want {
+	if want := "svg"; config.ER.Format != want {
 		t.Errorf("got %v\nwant %v", config.ER.Format, want)
 	}
 	if want := 1; *config.ER.Distance != want {

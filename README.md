@@ -523,7 +523,7 @@ er:
   # Default is false
   skip: false
   # ER diagram image format
-  # Default is `png`
+  # Default is `svg`
   format: svg
   # Add table/column comment to ER diagram
   # Default is false
@@ -816,7 +816,7 @@ Flags:
   -a, --add config         additional schema data path (deprecated, use config)
   -j, --adjust-table       adjust column width of table
   -c, --config string      config file path
-  -t, --er-format string   ER diagrams output format [png, svg, jpg, ...]. default: png
+  -t, --er-format string   ER diagrams output format [png, svg, jpg, ...]. default: svg
   -f, --force              force
   -h, --help               help for doc
       --sort               sort

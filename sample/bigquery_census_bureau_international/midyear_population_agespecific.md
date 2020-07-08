@@ -19,7 +19,7 @@
 
 ## Relations
 
-![er](midyear_population_agespecific.png)
+![er](midyear_population_agespecific.svg)
 
 ---
 

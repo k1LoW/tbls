@@ -32,7 +32,7 @@ CREATE VIEW post_comments AS
 
 ## Relations
 
-![er](post_comments.png)
+![er](post_comments.svg)
 
 ---
 

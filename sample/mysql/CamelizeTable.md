@@ -36,7 +36,7 @@ CREATE TABLE `CamelizeTable` (
 
 ## Relations
 
-![er](CamelizeTable.png)
+![er](CamelizeTable.svg)
 
 ---
 

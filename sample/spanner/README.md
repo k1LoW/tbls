@@ -1,4 +1,4 @@
-# projects/test-project/instances/test-instance/databases/testdb
+# projects/western-voyage-282714/instances/test-instance/databases/testdb
 
 ## Tables
 
@@ -14,7 +14,7 @@
 
 ## Relations
 
-![er](schema.png)
+![er](schema.svg)
 
 ---
 

@@ -23,7 +23,7 @@ const DefaultDocPath = "dbdoc"
 var DefaultConfigFilePaths = []string{".tbls.yml", "tbls.yml"}
 
 // DefaultERFormat is the default ER diagram format
-const DefaultERFormat = "png"
+const DefaultERFormat = "svg"
 
 // DefaultDistance is the default distance between tables that display relations in the ER
 var DefaultDistance = 1

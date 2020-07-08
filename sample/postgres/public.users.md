@@ -40,7 +40,7 @@ Users table
 
 ## Relations
 
-![er](public.users.png)
+![er](public.users.svg)
 
 ---
 

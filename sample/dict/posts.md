@@ -61,7 +61,7 @@ CREATE TABLE `posts` (
 
 ## ER図
 
-![er](posts.png)
+![er](posts.svg)
 
 ---
 

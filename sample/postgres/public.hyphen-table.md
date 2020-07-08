@@ -26,7 +26,7 @@
 
 ## Relations
 
-![er](public.hyphen-table.png)
+![er](public.hyphen-table.svg)
 
 ---
 

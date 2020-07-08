@@ -50,7 +50,7 @@ CREATE TABLE comments (
 
 ## Relations
 
-![er](comments.png)
+![er](comments.svg)
 
 ---
 

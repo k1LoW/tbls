@@ -2,7 +2,7 @@ name: ""
 dsn: ""
 docPath: dbdoc
 er:
-  format: png
+  format: svg
   distance: 1
 comments:
 - table: a

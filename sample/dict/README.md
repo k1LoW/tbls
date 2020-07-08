@@ -16,7 +16,7 @@
 
 ## ER図
 
-![er](schema.png)
+![er](schema.svg)
 
 ---
 

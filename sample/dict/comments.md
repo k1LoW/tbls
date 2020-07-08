@@ -60,7 +60,7 @@ CREATE TABLE `comments` (
 
 ## ER図
 
-![er](comments.png)
+![er](comments.svg)
 
 ---
 

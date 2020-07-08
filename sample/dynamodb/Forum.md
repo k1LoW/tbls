@@ -16,7 +16,7 @@
 
 ## Relations
 
-![er](Forum.png)
+![er](Forum.svg)
 
 ---
 

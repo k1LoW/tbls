@@ -22,7 +22,7 @@
 
 ## Relations
 
-![er](logs.png)
+![er](logs.svg)
 
 ---
 

@@ -27,7 +27,7 @@ Sample PostgreSQL database document.
 
 ## Relations
 
-![er](schema.png)
+![er](schema.svg)
 
 ---
 

@@ -26,7 +26,7 @@
 
 ## Relations
 
-![er](backup.blogs.png)
+![er](backup.blogs.svg)
 
 ---
 

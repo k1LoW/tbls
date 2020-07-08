@@ -28,7 +28,7 @@ User options table
 
 ## Relations
 
-![er](public.user_options.png)
+![er](public.user_options.svg)
 
 ---
 

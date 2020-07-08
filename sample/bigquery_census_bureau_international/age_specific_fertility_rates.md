@@ -26,7 +26,7 @@
 
 ## Relations
 
-![er](age_specific_fertility_rates.png)
+![er](age_specific_fertility_rates.svg)
 
 ---
 

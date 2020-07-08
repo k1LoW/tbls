@@ -19,7 +19,7 @@ CREATE VIRTUAL TABLE syslog USING fts3(logs)
 
 ## Relations
 
-![er](syslog.png)
+![er](syslog.svg)
 
 ---
 
