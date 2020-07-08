@@ -17,7 +17,7 @@
 
 ## Relations
 
-![er](CamelizeTable.png)
+![er](CamelizeTable.svg)
 
 ---
 

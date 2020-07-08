@@ -21,19 +21,19 @@ Blog entries
 
 | Name | Type | Definition |
 | ---- | ---- | ---------- |
-| PRIMARY_KEY | PRIMARY_KEY | PRIMARY KEY(post_id, user_id) |
+| PRIMARY_KEY | PRIMARY_KEY | PRIMARY KEY(user_id, post_id) |
 | INTERLEAVE | INTERLEAVE | INTERLEAVE IN PARENT users ON DELETE CASCADE |
 
 ## Indexes
 
 | Name | Definition |
 | ---- | ---------- |
-| posts_user_id_title_idx | CREATE UNIQUE NULL_FILTERED INDEX posts_user_id_title_idx ON posts (title, user_id) |
+| posts_user_id_title_idx | CREATE UNIQUE NULL_FILTERED INDEX posts_user_id_title_idx ON posts (user_id, title) |
 | posts_user_id_idx | CREATE INDEX posts_user_id_idx ON posts (user_id) STORING (title) |
 
 ## Relations
 
-![er](posts.png)
+![er](posts.svg)
 
 ---
 

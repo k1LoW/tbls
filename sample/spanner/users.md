@@ -30,7 +30,7 @@ Users
 
 ## Relations
 
-![er](users.png)
+![er](users.svg)
 
 ---
 
