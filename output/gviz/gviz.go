@@ -5,6 +5,7 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/beta/freetype/truetype"
@@ -97,7 +98,7 @@ func getFaceFunc(keyword string) (func(size float64) (font.Face, error), error) 
 		}
 	}
 
-	fb, err := ioutil.ReadFile(path)
+	fb, err := ioutil.ReadFile(filepath.Clean(path))
 	if err != nil {
 		return faceFunc, errors.WithStack(err)
 	}
