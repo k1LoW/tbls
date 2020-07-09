@@ -704,7 +704,7 @@ relations:
       - id
 ```
 
-![img](sample/mysql/logs.png)
+![img](sample/mysql/logs.svg)
 
 ### Dictionary
 
