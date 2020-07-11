@@ -105,7 +105,7 @@ var rootCmd = &cobra.Command{
 				subCmdArgs := []string{"__complete"}
 				subCmdArgs = append(subCmdArgs, args[1:]...)
 				subCmdArgs = append(subCmdArgs, toComplete)
-				out, err := exec.Command(subCmd, subCmdArgs...).Output()
+				out, err := exec.Command(subCmd, subCmdArgs...).Output() // #nosec
 				if err != nil {
 					return []string{}, cobra.ShellCompDirectiveError
 				}
@@ -207,7 +207,7 @@ func init() {
 
 // getExtSubCmds
 func getExtSubCmds(parentCmd string) ([]string, error) {
-	out, err := exec.Command("bash", "-i", "-c", fmt.Sprintf("compgen -c %s- | sort -u", parentCmd)).Output()
+	out, err := exec.Command("bash", "-i", "-c", fmt.Sprintf("compgen -c %s- | sort -u", parentCmd)).Output() // #nosec
 	if err != nil {
 		return []string{}, err
 	}
