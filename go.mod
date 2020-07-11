@@ -26,8 +26,8 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/pmezard/go-difflib v1.0.0
 	github.com/sirupsen/logrus v1.6.0 // indirect
-	github.com/spf13/cobra v1.0.0
-	github.com/spf13/pflag v1.0.5
+	github.com/spf13/cobra v1.0.1-0.20200710123203-207dc47664b4
+	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/xo/dburl v0.0.0-20200124232849-e9ec94f52bc3
 	go.opencensus.io v0.22.4 // indirect
 	golang.org/x/crypto v0.0.0-20200707235045-ab33eee955e0 // indirect

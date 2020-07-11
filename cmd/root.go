@@ -25,12 +25,15 @@ import (
 	"io/ioutil"
 	"os"
 	"os/exec"
+	"path/filepath"
+	sortpkg "sort"
 	"strconv"
 	"strings"
 
 	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/datasource"
 	"github.com/k1LoW/tbls/output/json"
+	"github.com/k1LoW/tbls/version"
 	"github.com/spf13/cobra"
 )
 
@@ -77,6 +80,8 @@ Additional help topics:{{range .Commands}}{{if .IsAdditionalHelpTopicCommand}}
 Use "{{.CommandPath}} [command] --help" for more information about a command.{{end}}
 `
 
+var subCmds = []string{}
+
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:                "tbls",
@@ -86,21 +91,22 @@ var rootCmd = &cobra.Command{
 	SilenceUsage:       true,
 	Args:               cobra.ArbitraryArgs,
 	DisableFlagParsing: true,
+	ValidArgsFunction:  genValidArgsFunc("tbls"),
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
 			cmd.Println(cmd.UsageString())
 			return
 		}
 		envs := os.Environ()
-		subCommand := args[0]
-		path, err := exec.LookPath(cmd.Use + "-" + subCommand)
+		subCmd := args[0]
+		path, err := exec.LookPath(version.Name + "-" + subCmd)
 		if err != nil {
-			if strings.HasPrefix(subCommand, "-") {
-				cmd.PrintErrf("Error: unknown flag: '%s'\n", subCommand)
+			if strings.HasPrefix(subCmd, "-") {
+				cmd.PrintErrf("Error: unknown flag: '%s'\n", subCmd)
 				cmd.HelpFunc()(cmd, args)
 				return
 			}
-			cmd.PrintErrln(`Error: unknown command "` + subCommand + `" for "tbls"`)
+			cmd.PrintErrln(`Error: unknown command "` + subCmd + `" for "tbls"`)
 			cmd.PrintErrln("Run 'tbls --help' for usage.")
 			return
 		}
@@ -157,6 +163,12 @@ var rootCmd = &cobra.Command{
 }
 
 func Execute() {
+	var err error
+	subCmds, err = getExtSubCmds("tbls")
+	if err != nil {
+		printError(err)
+	}
+
 	if err := rootCmd.Execute(); err != nil {
 		printError(err)
 		os.Exit(1)
@@ -165,6 +177,69 @@ func Execute() {
 
 func init() {
 	rootCmd.SetUsageTemplate(rootUsageTemplate)
+}
+
+// genValidArgsFunc
+func genValidArgsFunc(prefix string) func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+	return func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+		toC := toComplete
+		if len(args) > 0 {
+			toC = args[0]
+		}
+		completions := []string{}
+		for _, subCmd := range subCmds {
+			trimed := strings.TrimPrefix(subCmd, fmt.Sprintf("%s-", prefix))
+			switch {
+			case len(args) == 0 && toComplete == "":
+				completions = append(completions, fmt.Sprintf("%s\t%s", trimed, subCmd))
+			case trimed == toC && len(args) > 0:
+				// exec external sub-command "__complete"
+				subCmdArgs := []string{"__complete"}
+				subCmdArgs = append(subCmdArgs, args[1:]...)
+				subCmdArgs = append(subCmdArgs, toComplete)
+				out, err := exec.Command(subCmd, subCmdArgs...).Output() // #nosec
+				if err != nil {
+					return []string{}, cobra.ShellCompDirectiveError
+				}
+				splited := strings.Split(strings.TrimRight(string(out), "\n"), "\n")
+				completions = append(completions, splited[:len(splited)-1]...)
+			case trimed != strings.TrimPrefix(trimed, toC):
+				completions = append(completions, fmt.Sprintf("%s\t%s", trimed, subCmd))
+			}
+		}
+
+		return completions, cobra.ShellCompDirectiveNoFileComp
+	}
+}
+
+// getExtSubCmds
+func getExtSubCmds(prefix string) ([]string, error) {
+	subCmds := []string{}
+	paths := unique(filepath.SplitList(os.Getenv("PATH")))
+	for _, p := range paths {
+		if strings.TrimSpace(p) == "" {
+			continue
+		}
+		files, err := ioutil.ReadDir(p)
+		if err != nil {
+			continue
+		}
+		for _, f := range files {
+			if f.IsDir() {
+				continue
+			}
+			if !strings.HasPrefix(f.Name(), fmt.Sprintf("%s-", prefix)) {
+				continue
+			}
+			mode := f.Mode()
+			if mode&0111 == 0 {
+				continue
+			}
+			subCmds = append(subCmds, f.Name())
+		}
+	}
+	sortpkg.Strings(subCmds)
+	return unique(subCmds), nil
 }
 
 func parseConfigPath(args []string) (string, []string) {
@@ -198,4 +273,17 @@ func printError(err error) {
 	} else {
 		fmt.Println(err)
 	}
+}
+
+func unique(paths []string) []string {
+	exist := map[string]bool{}
+	np := []string{}
+	for _, p := range paths {
+		if exist[p] {
+			continue
+		}
+		exist[p] = true
+		np = append(np, p)
+	}
+	return np
 }
