@@ -25,7 +25,6 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/k1LoW/tbls/internal"
 	"github.com/spf13/cobra"
 )
 
@@ -79,12 +78,12 @@ tbls completion zsh > $fpath[1]/_tbls
 
 		switch sh {
 		case "bash":
-			if err := internal.GenBashCompletion(rootCmd, o); err != nil {
+			if err := cmd.Root().GenBashCompletion(o); err != nil {
 				_, _ = fmt.Fprintf(os.Stderr, "%s\n", err)
 				os.Exit(1)
 			}
 		case "zsh":
-			if err := internal.GenZshCompletion(rootCmd, o); err != nil {
+			if err := cmd.Root().GenZshCompletion(o); err != nil {
 				_, _ = fmt.Fprintf(os.Stderr, "%s\n", err)
 				os.Exit(1)
 			}
