@@ -131,14 +131,11 @@ func AnalyzeHTTPResource(dsn config.DSN) (*schema.Schema, error) {
 		return s, errors.WithStack(err)
 	}
 	defer resp.Body.Close()
-
 	dec := json.NewDecoder(resp.Body)
-	err = dec.Decode(s)
-	if err != nil {
+	if err := dec.Decode(s); err != nil {
 		return s, errors.WithStack(err)
 	}
-	err = s.Repair()
-	if err != nil {
+	if err := s.Repair(); err != nil {
 		return s, errors.WithStack(err)
 	}
 	return s, nil
