@@ -28,7 +28,6 @@ import (
 	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/datasource"
 	"github.com/k1LoW/tbls/output"
-	"github.com/k1LoW/tbls/output/cacoo"
 	tbls_config "github.com/k1LoW/tbls/output/config"
 	"github.com/k1LoW/tbls/output/dot"
 	"github.com/k1LoW/tbls/output/gviz"
@@ -104,8 +103,6 @@ var outCmd = &cobra.Command{
 			o = xlsx.New(c)
 		case "plantuml":
 			o = plantuml.New(c)
-		case "cacoo":
-			o = cacoo.New(c)
 		case "png", "svg", "jpg":
 			c.ER.Format = format
 			o = gviz.New(c)
