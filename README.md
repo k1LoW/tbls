@@ -807,13 +807,13 @@ Usage:
   tbls doc [DSN] [DOC_PATH] [flags]
 
 Flags:
-  -a, --add config         additional schema data path (deprecated, use config)
   -j, --adjust-table       adjust column width of table
   -c, --config string      config file path
-  -t, --er-format string   ER diagrams output format [png, svg, jpg, ...]. default: svg
+  -t, --er-format string   ER diagrams output format (png, svg, jpg, ...). default: svg
   -f, --force              force
   -h, --help               help for doc
       --sort               sort
+      --when string        command execute condition
       --without-er         no generate ER diagrams
 ```
 

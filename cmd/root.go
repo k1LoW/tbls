@@ -50,9 +50,6 @@ var sort bool
 // configPath is a config file path
 var configPath string
 
-// additionalDataPath is a additional data path
-var additionalDataPath string
-
 // erFormat is a option that ER diagram file format
 var erFormat string
 

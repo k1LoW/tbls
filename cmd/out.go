@@ -68,11 +68,6 @@ var outCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		if configPath == "" && additionalDataPath != "" {
-			fmt.Println("Warning: `--add` option is deprecated. Use `--config`")
-			configPath = additionalDataPath
-		}
-
 		options, err := loadOutArgs(args)
 		if err != nil {
 			printError(err)
@@ -183,6 +178,5 @@ func init() {
 	outCmd.Flags().StringVarP(&outPath, "out", "o", "", "output file path")
 	outCmd.Flags().StringVar(&tableName, "table", "", "table name")
 	outCmd.Flags().IntVarP(&distance, "distance", "", config.DefaultDistance, "distance between tables that display associations in the ER")
-	outCmd.Flags().StringVarP(&additionalDataPath, "add", "a", "", "additional schema data path (deprecated, use `config`)")
 	outCmd.Flags().StringVarP(&when, "when", "", "", "command execute condition")
 }
