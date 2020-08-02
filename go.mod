@@ -3,6 +3,7 @@ module github.com/k1LoW/tbls
 require (
 	cloud.google.com/go/bigquery v1.9.0
 	cloud.google.com/go/spanner v1.7.0
+	github.com/antonmedv/expr v1.8.8
 	github.com/aws/aws-sdk-go v1.33.3
 	github.com/beta/freetype v0.0.1
 	github.com/denisenkom/go-mssqldb v0.0.0-20200620013148-b91950f658ec

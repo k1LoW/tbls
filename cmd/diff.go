@@ -24,6 +24,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/k1LoW/tbls/cmdutil"
 	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/datasource"
 	"github.com/k1LoW/tbls/output/md"
@@ -37,6 +38,14 @@ var diffCmd = &cobra.Command{
 	Short: "diff database and document",
 	Long:  `'tbls diff' shows the difference between database schema and generated document.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		if allow, err := cmdutil.IsAllowedToExecute(when); !allow || err != nil {
+			if err != nil {
+				printError(err)
+				os.Exit(1)
+			}
+			return
+		}
+
 		c, err := config.New()
 		if err != nil {
 			printError(err)
@@ -113,6 +122,7 @@ func init() {
 	diffCmd.Flags().StringVarP(&erFormat, "er-format", "t", "", fmt.Sprintf("ER diagrams output format (png, svg, jpg, ...). default: %s", config.DefaultERFormat))
 	diffCmd.Flags().BoolVarP(&adjust, "adjust-table", "j", false, "adjust column width of table")
 	diffCmd.Flags().StringVarP(&additionalDataPath, "add", "a", "", "additional schema data path (deprecated, use `config`)")
+	diffCmd.Flags().StringVarP(&when, "when", "", "", "command execute condition")
 	if err := diffCmd.MarkZshCompPositionalArgumentFile(2); err != nil {
 		_, _ = fmt.Fprintf(os.Stderr, "%s\n", err)
 		os.Exit(1)

@@ -30,6 +30,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/k1LoW/tbls/cmdutil"
 	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/datasource"
 	"github.com/k1LoW/tbls/output/json"
@@ -54,6 +55,9 @@ var additionalDataPath string
 
 // erFormat is a option that ER diagram file format
 var erFormat string
+
+// when is a option that command execute condition
+var when string
 
 const rootUsageTemplate = `Usage:{{if .Runnable}}{{if ne .UseLine "tbls [flags]" }}
   {{.UseLine}}{{end}}{{end}}{{if .HasAvailableSubCommands}}
@@ -93,10 +97,22 @@ var rootCmd = &cobra.Command{
 	DisableFlagParsing: true,
 	ValidArgsFunction:  genValidArgsFunc("tbls"),
 	Run: func(cmd *cobra.Command, args []string) {
+		configPath, args := cmdutil.PickOption(args, []string{"-c", "--config"})
+		when, args := cmdutil.PickOption(args, []string{"--when"})
+
+		if allow, err := cmdutil.IsAllowedToExecute(when); !allow || err != nil {
+			if err != nil {
+				printError(err)
+				os.Exit(1)
+			}
+			return
+		}
+
 		if len(args) == 0 {
 			cmd.Println(cmd.UsageString())
 			return
 		}
+
 		envs := os.Environ()
 		subCmd := args[0]
 		path, err := exec.LookPath(version.Name + "-" + subCmd)
@@ -111,7 +127,6 @@ var rootCmd = &cobra.Command{
 			return
 		}
 
-		configPath, args := parseConfigPath(args[1:])
 		cfg, err := config.New()
 		if err != nil {
 			printError(err)
@@ -177,6 +192,8 @@ func Execute() {
 
 func init() {
 	rootCmd.SetUsageTemplate(rootUsageTemplate)
+	rootCmd.Flags().StringVarP(&when, "when", "", "", "command execute condition")
+	rootCmd.Flags().StringVarP(&configPath, "config", "c", "", "config file path")
 }
 
 // genValidArgsFunc
@@ -240,29 +257,6 @@ func getExtSubCmds(prefix string) ([]string, error) {
 	}
 	sortpkg.Strings(subCmds)
 	return unique(subCmds), nil
-}
-
-func parseConfigPath(args []string) (string, []string) {
-	var (
-		configPath string
-		skipNext   bool
-	)
-	remains := []string{}
-	for i, a := range args {
-		switch {
-		case a == "-c", a == "--config":
-			configPath = args[i+1]
-			skipNext = true
-		case strings.HasPrefix(a, "-c="), strings.HasPrefix(a, "--config="):
-			splited := strings.Split(a, "=")
-			configPath = splited[1]
-		case skipNext:
-			skipNext = false
-		default:
-			remains = append(remains, a)
-		}
-	}
-	return configPath, remains
 }
 
 func printError(err error) {
