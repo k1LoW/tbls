@@ -97,6 +97,8 @@ var rootCmd = &cobra.Command{
 			cmd.Println(cmd.UsageString())
 			return
 		}
+		configPath, args := pickOption(args, []string{"-c", "--config"})
+
 		envs := os.Environ()
 		subCmd := args[0]
 		path, err := exec.LookPath(version.Name + "-" + subCmd)
@@ -111,7 +113,6 @@ var rootCmd = &cobra.Command{
 			return
 		}
 
-		configPath, args := parseConfigPath(args[1:])
 		cfg, err := config.New()
 		if err != nil {
 			printError(err)
@@ -240,29 +241,6 @@ func getExtSubCmds(prefix string) ([]string, error) {
 	}
 	sortpkg.Strings(subCmds)
 	return unique(subCmds), nil
-}
-
-func parseConfigPath(args []string) (string, []string) {
-	var (
-		configPath string
-		skipNext   bool
-	)
-	remains := []string{}
-	for i, a := range args {
-		switch {
-		case a == "-c", a == "--config":
-			configPath = args[i+1]
-			skipNext = true
-		case strings.HasPrefix(a, "-c="), strings.HasPrefix(a, "--config="):
-			splited := strings.Split(a, "=")
-			configPath = splited[1]
-		case skipNext:
-			skipNext = false
-		default:
-			remains = append(remains, a)
-		}
-	}
-	return configPath, remains
 }
 
 func printError(err error) {
