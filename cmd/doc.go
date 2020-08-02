@@ -58,11 +58,6 @@ var docCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		if configPath == "" && additionalDataPath != "" {
-			fmt.Println("Warning: `--add` option is deprecated. Use `--config`")
-			configPath = additionalDataPath
-		}
-
 		options, err := loadDocArgs(args)
 		if err != nil {
 			printError(err)
@@ -201,7 +196,6 @@ func init() {
 	docCmd.Flags().StringVarP(&erFormat, "er-format", "t", "", fmt.Sprintf("ER diagrams output format (png, svg, jpg, ...). default: %s", config.DefaultERFormat))
 	docCmd.Flags().BoolVarP(&withoutER, "without-er", "", false, "no generate ER diagrams")
 	docCmd.Flags().BoolVarP(&adjust, "adjust-table", "j", false, "adjust column width of table")
-	docCmd.Flags().StringVarP(&additionalDataPath, "add", "a", "", "additional schema data path (deprecated, use `config`)")
 	docCmd.Flags().StringVarP(&when, "when", "", "", "command execute condition")
 	if err := docCmd.MarkZshCompPositionalArgumentFile(2); err != nil {
 		_, _ = fmt.Fprintf(os.Stderr, "%s\n", err)
