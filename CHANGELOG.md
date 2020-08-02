@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.42.0](https://github.com/k1LoW/tbls/compare/v1.41.0...v1.42.0) (2020-08-03)
+
+* [BREAKING] Remove `--add` option [#249](https://github.com/k1LoW/tbls/pull/249) ([k1LoW](https://github.com/k1LoW))
+* Add --when option [#248](https://github.com/k1LoW/tbls/pull/248) ([k1LoW](https://github.com/k1LoW))
+* [BREAKING] Move `tbls out -t cacoo` to `tbls cacoo csv` (tbls-cacoo) [#247](https://github.com/k1LoW/tbls/pull/247) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.40.0](https://github.com/k1LoW/tbls/compare/v1.39.0...v1.40.0) (2020-07-09)
 
 * [BREAKING] Change default ER diagram format to 'svg' [#244](https://github.com/k1LoW/tbls/pull/244) ([k1LoW](https://github.com/k1LoW))

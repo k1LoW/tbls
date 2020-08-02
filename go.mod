@@ -10,7 +10,6 @@ require (
 	github.com/fatih/color v1.9.0 // indirect
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/gobuffalo/packr/v2 v2.8.0
-	github.com/gocarina/gocsv v0.0.0-20200330101823-46266ca37bd3
 	github.com/goccy/go-graphviz v0.0.6
 	github.com/goccy/go-yaml v1.7.18
 	github.com/google/go-cmp v0.5.0
