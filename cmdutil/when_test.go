@@ -1,4 +1,4 @@
-package cmd
+package cmdutil
 
 import (
 	"os"
@@ -37,7 +37,7 @@ func TestIsAllowedToExecute(t *testing.T) {
 		for k, v := range tt.envset {
 			os.Setenv(k, v)
 		}
-		got, err := isAllowedToExecute(tt.when)
+		got, err := IsAllowedToExecute(tt.when)
 		if err != nil {
 			t.Fatal(err)
 		}

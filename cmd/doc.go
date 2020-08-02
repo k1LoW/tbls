@@ -25,6 +25,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/k1LoW/tbls/cmdutil"
 	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/datasource"
 	"github.com/k1LoW/tbls/output/gviz"
@@ -43,7 +44,7 @@ var docCmd = &cobra.Command{
 	Short: "document a database",
 	Long:  `'tbls doc' analyzes a database and generate document in GitHub Friendly Markdown format.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if allow, err := isAllowedToExecute(when); !allow || err != nil {
+		if allow, err := cmdutil.IsAllowedToExecute(when); !allow || err != nil {
 			if err != nil {
 				printError(err)
 				os.Exit(1)

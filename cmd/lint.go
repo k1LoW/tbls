@@ -25,6 +25,7 @@ import (
 	"os"
 	"reflect"
 
+	"github.com/k1LoW/tbls/cmdutil"
 	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/datasource"
 	"github.com/labstack/gommon/color"
@@ -38,7 +39,7 @@ var lintCmd = &cobra.Command{
 	Short: "check database document",
 	Long:  `'tbls lint' check database document.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if allow, err := isAllowedToExecute(when); !allow || err != nil {
+		if allow, err := cmdutil.IsAllowedToExecute(when); !allow || err != nil {
 			if err != nil {
 				printError(err)
 				os.Exit(1)

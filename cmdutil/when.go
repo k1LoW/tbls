@@ -1,4 +1,4 @@
-package cmd
+package cmdutil
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	"github.com/antonmedv/expr"
 )
 
-func isAllowedToExecute(when string) (bool, error) {
+func IsAllowedToExecute(when string) (bool, error) {
 	if when == "" {
 		return true, nil
 	}

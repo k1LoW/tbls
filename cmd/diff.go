@@ -24,6 +24,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/k1LoW/tbls/cmdutil"
 	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/datasource"
 	"github.com/k1LoW/tbls/output/md"
@@ -37,7 +38,7 @@ var diffCmd = &cobra.Command{
 	Short: "diff database and document",
 	Long:  `'tbls diff' shows the difference between database schema and generated document.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if allow, err := isAllowedToExecute(when); !allow || err != nil {
+		if allow, err := cmdutil.IsAllowedToExecute(when); !allow || err != nil {
 			if err != nil {
 				printError(err)
 				os.Exit(1)

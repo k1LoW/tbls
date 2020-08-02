@@ -1,11 +1,11 @@
-package cmd
+package cmdutil
 
 import (
 	"fmt"
 	"strings"
 )
 
-func pickOption(args []string, opts []string) (string, []string) {
+func PickOption(args []string, opts []string) (string, []string) {
 	var (
 		v        string
 		skipNext bool

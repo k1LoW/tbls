@@ -1,4 +1,4 @@
-package cmd
+package cmdutil
 
 import (
 	"testing"
@@ -22,7 +22,7 @@ func TestPickOption(t *testing.T) {
 		{[]string{"-b", "B"}, []string{"-b"}, "B", []string{}},
 	}
 	for _, tt := range tests {
-		got, gotRemains := pickOption(tt.args, tt.opts)
+		got, gotRemains := PickOption(tt.args, tt.opts)
 		if got != tt.want {
 			t.Errorf("got %v\nwant %v", got, tt.want)
 		}

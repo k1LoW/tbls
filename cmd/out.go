@@ -25,6 +25,7 @@ import (
 	"io"
 	"os"
 
+	"github.com/k1LoW/tbls/cmdutil"
 	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/datasource"
 	"github.com/k1LoW/tbls/output"
@@ -53,7 +54,7 @@ var outCmd = &cobra.Command{
 	Short: "analyzes a database and output",
 	Long:  `'tbls out' analyzes a database and output.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if allow, err := isAllowedToExecute(when); !allow || err != nil {
+		if allow, err := cmdutil.IsAllowedToExecute(when); !allow || err != nil {
 			if err != nil {
 				printError(err)
 				os.Exit(1)

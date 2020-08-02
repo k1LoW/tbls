@@ -30,6 +30,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/k1LoW/tbls/cmdutil"
 	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/datasource"
 	"github.com/k1LoW/tbls/output/json"
@@ -96,10 +97,10 @@ var rootCmd = &cobra.Command{
 	DisableFlagParsing: true,
 	ValidArgsFunction:  genValidArgsFunc("tbls"),
 	Run: func(cmd *cobra.Command, args []string) {
-		configPath, args := pickOption(args, []string{"-c", "--config"})
-		when, args := pickOption(args, []string{"--when"})
+		configPath, args := cmdutil.PickOption(args, []string{"-c", "--config"})
+		when, args := cmdutil.PickOption(args, []string{"--when"})
 
-		if allow, err := isAllowedToExecute(when); !allow || err != nil {
+		if allow, err := cmdutil.IsAllowedToExecute(when); !allow || err != nil {
 			if err != nil {
 				printError(err)
 				os.Exit(1)
