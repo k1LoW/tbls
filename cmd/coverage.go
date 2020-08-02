@@ -43,6 +43,14 @@ var coverageCmd = &cobra.Command{
 	Short: "measure document coverage",
 	Long:  `'tbls coverage' measure document coverage.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		if allow, err := isAllowedToExecute(when); !allow || err != nil {
+			if err != nil {
+				printError(err)
+				os.Exit(1)
+			}
+			return
+		}
+
 		c, err := config.New()
 		if err != nil {
 			printError(err)
@@ -118,4 +126,5 @@ func init() {
 	rootCmd.AddCommand(coverageCmd)
 	coverageCmd.Flags().StringVarP(&configPath, "config", "c", "", "config file path")
 	coverageCmd.Flags().StringVarP(&cformat, "format", "t", "", "output format")
+	convergeCmd.Flags().StringVarP(&when, "when", "", "", "command execute condition")
 }

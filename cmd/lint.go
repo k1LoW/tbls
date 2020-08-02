@@ -38,6 +38,14 @@ var lintCmd = &cobra.Command{
 	Short: "check database document",
 	Long:  `'tbls lint' check database document.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		if allow, err := isAllowedToExecute(when); !allow || err != nil {
+			if err != nil {
+				printError(err)
+				os.Exit(1)
+			}
+			return
+		}
+
 		c, err := config.New()
 		if err != nil {
 			printError(err)
@@ -106,6 +114,7 @@ func loadLintArgs(args []string) ([]config.Option, error) {
 func init() {
 	rootCmd.AddCommand(lintCmd)
 	lintCmd.Flags().StringVarP(&configPath, "config", "c", "", "config file path")
+	lintCmd.Flags().StringVarP(&when, "when", "", "", "command execute condition")
 	err := lintCmd.MarkZshCompPositionalArgumentFile(2)
 	if err != nil {
 		_, _ = fmt.Fprintf(os.Stderr, "%s\n", err)

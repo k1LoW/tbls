@@ -55,6 +55,9 @@ var additionalDataPath string
 // erFormat is a option that ER diagram file format
 var erFormat string
 
+// when is a option that command execute condition
+var when string
+
 const rootUsageTemplate = `Usage:{{if .Runnable}}{{if ne .UseLine "tbls [flags]" }}
   {{.UseLine}}{{end}}{{end}}{{if .HasAvailableSubCommands}}
   {{.CommandPath}} [command]{{end}}{{if gt (len .Aliases) 0}}
@@ -93,11 +96,21 @@ var rootCmd = &cobra.Command{
 	DisableFlagParsing: true,
 	ValidArgsFunction:  genValidArgsFunc("tbls"),
 	Run: func(cmd *cobra.Command, args []string) {
+		configPath, args := pickOption(args, []string{"-c", "--config"})
+		when, args := pickOption(args, []string{"--when"})
+
+		if allow, err := isAllowedToExecute(when); !allow || err != nil {
+			if err != nil {
+				printError(err)
+				os.Exit(1)
+			}
+			return
+		}
+
 		if len(args) == 0 {
 			cmd.Println(cmd.UsageString())
 			return
 		}
-		configPath, args := pickOption(args, []string{"-c", "--config"})
 
 		envs := os.Environ()
 		subCmd := args[0]
@@ -178,6 +191,8 @@ func Execute() {
 
 func init() {
 	rootCmd.SetUsageTemplate(rootUsageTemplate)
+	rootCmd.Flags().StringVarP(&when, "when", "", "", "command execute condition")
+	rootCmd.Flags().StringVarP(&configPath, "config", "c", "", "config file path")
 }
 
 // genValidArgsFunc

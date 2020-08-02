@@ -53,6 +53,14 @@ var outCmd = &cobra.Command{
 	Short: "analyzes a database and output",
 	Long:  `'tbls out' analyzes a database and output.`,
 	Run: func(cmd *cobra.Command, args []string) {
+		if allow, err := isAllowedToExecute(when); !allow || err != nil {
+			if err != nil {
+				printError(err)
+				os.Exit(1)
+			}
+			return
+		}
+
 		c, err := config.New()
 		if err != nil {
 			printError(err)
@@ -175,4 +183,5 @@ func init() {
 	outCmd.Flags().StringVar(&tableName, "table", "", "table name")
 	outCmd.Flags().IntVarP(&distance, "distance", "", config.DefaultDistance, "distance between tables that display associations in the ER")
 	outCmd.Flags().StringVarP(&additionalDataPath, "add", "a", "", "additional schema data path (deprecated, use `config`)")
+	outCmd.Flags().StringVarP(&when, "when", "", "", "command execute condition")
 }

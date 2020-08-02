@@ -17,6 +17,9 @@ func TestPickOption(t *testing.T) {
 		{[]string{"-a", "-b", "B", "-c"}, []string{"-b"}, "B", []string{"-a", "-c"}},
 		{[]string{"-a", "-b=B", "-c"}, []string{"-b"}, "B", []string{"-a", "-c"}},
 		{[]string{"-a", "-b=B", "-c"}, []string{"-b", "--bbb"}, "B", []string{"-a", "-c"}},
+		{[]string{"-a", "-b=B", "-c"}, []string{"-d"}, "", []string{"-a", "-b=B", "-c"}},
+		{[]string{"-b=B"}, []string{"-b"}, "B", []string{}},
+		{[]string{"-b", "B"}, []string{"-b"}, "B", []string{}},
 	}
 	for _, tt := range tests {
 		got, gotRemains := pickOption(tt.args, tt.opts)
