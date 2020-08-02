@@ -126,5 +126,5 @@ func init() {
 	rootCmd.AddCommand(coverageCmd)
 	coverageCmd.Flags().StringVarP(&configPath, "config", "c", "", "config file path")
 	coverageCmd.Flags().StringVarP(&cformat, "format", "t", "", "output format")
-	convergeCmd.Flags().StringVarP(&when, "when", "", "", "command execute condition")
+	coverageCmd.Flags().StringVarP(&when, "when", "", "", "command execute condition")
 }
