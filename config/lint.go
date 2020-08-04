@@ -38,8 +38,9 @@ type Rule interface {
 
 // RequireTableComment checks table comment
 type RequireTableComment struct {
-	Enabled bool     `yaml:"enabled"`
-	Exclude []string `yaml:"exclude"`
+	Enabled      bool     `yaml:"enabled"`
+	AllOrNothing bool     `yaml:"allOrNothing"`
+	Exclude      []string `yaml:"exclude"`
 }
 
 // IsEnabled return Rule is enabled or not
@@ -51,11 +52,13 @@ func (r RequireTableComment) IsEnabled() bool {
 func (r RequireTableComment) Check(s *schema.Schema, exclude []string) []RuleWarn {
 	warns := []RuleWarn{}
 	if !r.IsEnabled() {
-		return warns
+		return []RuleWarn{}
 	}
 	msg := "table comment required."
 
 	nt := s.NormalizeTableNames(r.Exclude)
+	commented := false
+
 	for _, t := range s.Tables {
 		if contains(exclude, t.Name) {
 			continue
@@ -68,7 +71,12 @@ func (r RequireTableComment) Check(s *schema.Schema, exclude []string) []RuleWar
 				Target:  t.Name,
 				Message: msg,
 			})
+			continue
 		}
+		commented = true
+	}
+	if r.AllOrNothing && !commented {
+		return []RuleWarn{}
 	}
 	return warns
 }
@@ -76,6 +84,7 @@ func (r RequireTableComment) Check(s *schema.Schema, exclude []string) []RuleWar
 // RequireColumnComment checks column comment
 type RequireColumnComment struct {
 	Enabled       bool     `yaml:"enabled"`
+	AllOrNothing  bool     `yaml:"allOrNothing"`
 	Exclude       []string `yaml:"exclude"`
 	ExcludeTables []string `yaml:"excludeTables"`
 }
@@ -89,11 +98,13 @@ func (r RequireColumnComment) IsEnabled() bool {
 func (r RequireColumnComment) Check(s *schema.Schema, exclude []string) []RuleWarn {
 	warns := []RuleWarn{}
 	if !r.IsEnabled() {
-		return warns
+		return []RuleWarn{}
 	}
 	msg := "column comment required."
 
 	nt := s.NormalizeTableNames(r.ExcludeTables)
+	commented := false
+
 	for _, t := range s.Tables {
 		if contains(exclude, t.Name) {
 			continue
@@ -111,8 +122,13 @@ func (r RequireColumnComment) Check(s *schema.Schema, exclude []string) []RuleWa
 					Target:  target,
 					Message: msg,
 				})
+				continue
 			}
+			commented = true
 		}
+	}
+	if r.AllOrNothing && !commented {
+		return []RuleWarn{}
 	}
 	return warns
 }
@@ -120,6 +136,7 @@ func (r RequireColumnComment) Check(s *schema.Schema, exclude []string) []RuleWa
 // RequireIndexComment checks index comment
 type RequireIndexComment struct {
 	Enabled       bool     `yaml:"enabled"`
+	AllOrNothing  bool     `yaml:"allOrNothing"`
 	Exclude       []string `yaml:"exclude"`
 	ExcludeTables []string `yaml:"excludeTables"`
 }
@@ -133,11 +150,13 @@ func (r RequireIndexComment) IsEnabled() bool {
 func (r RequireIndexComment) Check(s *schema.Schema, exclude []string) []RuleWarn {
 	warns := []RuleWarn{}
 	if !r.IsEnabled() {
-		return warns
+		return []RuleWarn{}
 	}
 	msg := "index comment required."
 
 	nt := s.NormalizeTableNames(r.ExcludeTables)
+	commented := false
+
 	for _, t := range s.Tables {
 		if contains(exclude, t.Name) {
 			continue
@@ -155,8 +174,13 @@ func (r RequireIndexComment) Check(s *schema.Schema, exclude []string) []RuleWar
 					Target:  target,
 					Message: msg,
 				})
+				continue
 			}
+			commented = true
 		}
+	}
+	if r.AllOrNothing && !commented {
+		return []RuleWarn{}
 	}
 	return warns
 }
@@ -164,6 +188,7 @@ func (r RequireIndexComment) Check(s *schema.Schema, exclude []string) []RuleWar
 // RequireConstraintComment checks constraint comment
 type RequireConstraintComment struct {
 	Enabled       bool     `yaml:"enabled"`
+	AllOrNothing  bool     `yaml:"allOrNothing"`
 	Exclude       []string `yaml:"exclude"`
 	ExcludeTables []string `yaml:"excludeTables"`
 }
@@ -177,11 +202,13 @@ func (r RequireConstraintComment) IsEnabled() bool {
 func (r RequireConstraintComment) Check(s *schema.Schema, exclude []string) []RuleWarn {
 	warns := []RuleWarn{}
 	if !r.IsEnabled() {
-		return warns
+		return []RuleWarn{}
 	}
 	msg := "constraint comment required."
 
 	nt := s.NormalizeTableNames(r.ExcludeTables)
+	commented := false
+
 	for _, t := range s.Tables {
 		if contains(exclude, t.Name) {
 			continue
@@ -199,8 +226,13 @@ func (r RequireConstraintComment) Check(s *schema.Schema, exclude []string) []Ru
 					Target:  target,
 					Message: msg,
 				})
+				continue
 			}
+			commented = true
 		}
+	}
+	if r.AllOrNothing && !commented {
+		return []RuleWarn{}
 	}
 	return warns
 }
@@ -208,6 +240,7 @@ func (r RequireConstraintComment) Check(s *schema.Schema, exclude []string) []Ru
 // RequireTriggerComment checks trigger comment
 type RequireTriggerComment struct {
 	Enabled       bool     `yaml:"enabled"`
+	AllOrNothing  bool     `yaml:"allOrNothing"`
 	Exclude       []string `yaml:"exclude"`
 	ExcludeTables []string `yaml:"excludeTables"`
 }
@@ -221,11 +254,13 @@ func (r RequireTriggerComment) IsEnabled() bool {
 func (r RequireTriggerComment) Check(s *schema.Schema, exclude []string) []RuleWarn {
 	warns := []RuleWarn{}
 	if !r.IsEnabled() {
-		return warns
+		return []RuleWarn{}
 	}
 	msg := "trigger comment required."
 
 	nt := s.NormalizeTableNames(r.ExcludeTables)
+	commented := false
+
 	for _, t := range s.Tables {
 		if contains(exclude, t.Name) {
 			continue
@@ -243,8 +278,13 @@ func (r RequireTriggerComment) Check(s *schema.Schema, exclude []string) []RuleW
 					Target:  target,
 					Message: msg,
 				})
+				continue
 			}
+			commented = true
 		}
+	}
+	if r.AllOrNothing && !commented {
+		return []RuleWarn{}
 	}
 	return warns
 }
