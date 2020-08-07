@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.43.0](https://github.com/k1LoW/tbls/compare/v1.42.0...v1.43.0) (2020-08-07)
+
+* Add `allOrNothing:` lint option [#250](https://github.com/k1LoW/tbls/pull/250) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.42.0](https://github.com/k1LoW/tbls/compare/v1.41.0...v1.42.0) (2020-08-03)
 
 * [BREAKING] Remove `--add` option [#249](https://github.com/k1LoW/tbls/pull/249) ([k1LoW](https://github.com/k1LoW))
