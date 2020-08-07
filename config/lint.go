@@ -291,8 +291,9 @@ func (r RequireTriggerComment) Check(s *schema.Schema, exclude []string) []RuleW
 
 // UnrelatedTable checks isolated table
 type UnrelatedTable struct {
-	Enabled bool     `yaml:"enabled"`
-	Exclude []string `yaml:"exclude"`
+	Enabled      bool     `yaml:"enabled"`
+	AllOrNothing bool     `yaml:"allOrNothing"`
+	Exclude      []string `yaml:"exclude"`
 }
 
 // IsEnabled return Rule is enabled or not
@@ -304,11 +305,12 @@ func (r UnrelatedTable) IsEnabled() bool {
 func (r UnrelatedTable) Check(s *schema.Schema, exclude []string) []RuleWarn {
 	warns := []RuleWarn{}
 	if !r.IsEnabled() {
-		return warns
+		return []RuleWarn{}
 	}
 	msgFmt := "unrelated (isolated) table exists. %s"
 
 	nt := s.NormalizeTableNames(r.Exclude)
+	related := false
 	ut := map[string]*schema.Table{}
 	for _, t := range s.Tables {
 		if contains(exclude, t.Name) {
@@ -319,9 +321,14 @@ func (r UnrelatedTable) Check(s *schema.Schema, exclude []string) []RuleWarn {
 		}
 		ut[t.Name] = t
 	}
+	before := len(ut)
 	for _, rl := range s.Relations {
 		delete(ut, rl.Table.Name)
 		delete(ut, rl.ParentTable.Name)
+	}
+	after := len(ut)
+	if before != after {
+		related = true
 	}
 	if len(ut) > 0 {
 		us := []string{}
@@ -332,6 +339,9 @@ func (r UnrelatedTable) Check(s *schema.Schema, exclude []string) []RuleWarn {
 			Target:  s.Name,
 			Message: fmt.Sprintf(msgFmt, us),
 		})
+	}
+	if r.AllOrNothing && !related {
+		return []RuleWarn{}
 	}
 	return warns
 }

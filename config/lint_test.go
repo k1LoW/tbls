@@ -2,6 +2,7 @@ package config
 
 import (
 	"database/sql"
+	"fmt"
 	"testing"
 
 	"github.com/k1LoW/tbls/schema"
@@ -230,36 +231,51 @@ func TestRequireTriggerComment(t *testing.T) {
 
 func TestUnrelatedTable(t *testing.T) {
 	tests := []struct {
-		enabled     bool
-		lintExclude []string
-		exclude     []string
-		want        int
-		wantMsg     string
+		enabled        bool
+		allOrNothing   bool
+		lintExclude    []string
+		exclude        []string
+		want           int
+		wantMsg        string
+		wantNoRelation int
 	}{
-		{true, []string{}, []string{}, 1, "unrelated (isolated) table exists. [table_c]"},
-		{false, []string{}, []string{}, 0, ""},
-		{true, []string{}, []string{"table_b"}, 1, "unrelated (isolated) table exists. [table_c]"},
-		{true, []string{}, []string{"table_c"}, 0, ""},
-		{true, []string{"table_c"}, []string{}, 0, ""},
-		{true, []string{}, []string{"*_c"}, 0, ""},
-		{true, []string{"*_c"}, []string{}, 0, ""},
+		{true, false, []string{}, []string{}, 1, "unrelated (isolated) table exists. [table_c]", 1},
+		{false, false, []string{}, []string{}, 0, "", 0},
+		{true, false, []string{}, []string{"table_b"}, 1, "unrelated (isolated) table exists. [table_c]", 1},
+		{true, false, []string{}, []string{"table_c"}, 0, "", 1},
+		{true, false, []string{"table_c"}, []string{}, 0, "", 1},
+		{true, false, []string{}, []string{"*_c"}, 0, "", 1},
+		{true, false, []string{"*_c"}, []string{}, 0, "", 1},
+
+		{true, true, []string{}, []string{}, 1, "unrelated (isolated) table exists. [table_c]", 0},
+		{false, true, []string{}, []string{}, 0, "", 0},
+		{true, true, []string{}, []string{"table_b"}, 1, "unrelated (isolated) table exists. [table_c]", 0},
+		{true, true, []string{}, []string{"table_c"}, 0, "", 0},
+		{true, true, []string{"table_c"}, []string{}, 0, "", 0},
+		{true, true, []string{}, []string{"*_c"}, 0, "", 0},
+		{true, true, []string{"*_c"}, []string{}, 0, "", 0},
 	}
 
 	for i, tt := range tests {
 		r := UnrelatedTable{
-			Enabled: tt.enabled,
-			Exclude: tt.exclude,
+			Enabled:      tt.enabled,
+			AllOrNothing: tt.allOrNothing,
+			Exclude:      tt.exclude,
 		}
 		s := newTestSchema()
 		warns := r.Check(s, tt.lintExclude)
 		if len(warns) != tt.want {
 			t.Errorf("TestUnrelatedTable(%d): got %v\nwant %v", i, len(warns), tt.want)
 		}
-		if len(warns) == 0 {
-			continue
+		if len(warns) > 0 {
+			if warns[0].Message != tt.wantMsg {
+				t.Errorf("TestUnrelatedTable(%d): got %v\nwant %v", i, warns[0].Message, tt.wantMsg)
+			}
 		}
-		if warns[0].Message != tt.wantMsg {
-			t.Errorf("TestUnrelatedTable(%d): got %v\nwant %v", i, warns[0].Message, tt.wantMsg)
+		ns := newTestNoRelationSchema()
+		if warns := r.Check(ns, tt.lintExclude); len(warns) != tt.wantNoRelation {
+			fmt.Printf("%v\n", warns)
+			t.Errorf("TestUnrelatedTable(%d) (no relation): got %v\nwant %v", i, len(warns), tt.wantNoRelation)
 		}
 	}
 }
@@ -616,5 +632,17 @@ func newTestNoCommentSchema() *schema.Schema {
 			tri.Comment = ""
 		}
 	}
+	return s
+}
+
+func newTestNoRelationSchema() *schema.Schema {
+	s := newTestSchema()
+	for _, t := range s.Tables {
+		for _, c := range t.Columns {
+			c.ChildRelations = nil
+			c.ParentRelations = nil
+		}
+	}
+	s.Relations = nil
 	return s
 }
