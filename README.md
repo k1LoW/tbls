@@ -546,9 +546,13 @@ lint:
   # require table comment
   requireTableComment:
     enabled: true
+    # all commented, or all uncommented.
+    allOrNothing: false
   # require column comment
   requireColumnComment:
     enabled: true
+    # all commented, or all uncommented.
+    allOrNothing: true
     # exclude columns from warnings
     exclude:
       - id
@@ -561,6 +565,8 @@ lint:
   # find a table that has no relation
   unrelatedTable:
     enabled: true
+    # all related, or all unrelated.
+    allOrNothing: true
     # exclude tables from warnings
     exclude:
       - logs
