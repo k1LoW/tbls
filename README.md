@@ -562,6 +562,42 @@ lint:
     excludeTables:
       - logs
       - comment_stars
+  # require index comment
+  requireIndexComment:
+    enabled: true
+    # all commented, or all uncommented.
+    allOrNothing: false
+    # exclude indexes from warnings
+    exclude:
+      - user_id_idx
+    # exclude tables from warnings
+    excludeTables:
+      - logs
+      - comment_stars
+  # require constraint comment
+  requireConstraintComment:
+    enabled: true
+    # all commented, or all uncommented.
+    allOrNothing: false
+    # exclude constrains from warnings
+    exclude:
+      - unique_user_name
+    # exclude tables from warnings
+    excludeTables:
+      - logs
+      - comment_stars
+  # require trigger comment
+  requireTriggerComment:
+    enabled: true
+    # all commented, or all uncommented.
+    allOrNothing: false
+    # exclude triggers from warnings
+    exclude:
+      - update_count
+    # exclude tables from warnings
+    excludeTables:
+      - logs
+      - comment_stars
   # find a table that has no relation
   unrelatedTable:
     enabled: true
