@@ -2,6 +2,7 @@ package config
 
 import (
 	"database/sql"
+	"fmt"
 	"testing"
 
 	"github.com/k1LoW/tbls/schema"
@@ -9,27 +10,39 @@ import (
 
 func TestRequireTableComment(t *testing.T) {
 	tests := []struct {
-		enabled     bool
-		lintExclude []string
-		exclude     []string
-		want        int
+		enabled       bool
+		allOrNothing  bool
+		lintExclude   []string
+		exclude       []string
+		want          int
+		wantNoComment int
 	}{
-		{true, []string{}, []string{}, 1},
-		{false, []string{}, []string{}, 0},
-		{true, []string{}, []string{"table_a"}, 0},
-		{true, []string{"table_a"}, []string{}, 0},
-		{true, []string{"*_a"}, []string{}, 0},
+		{true, false, []string{}, []string{}, 1, 3},
+		{false, false, []string{}, []string{}, 0, 0},
+		{true, false, []string{}, []string{"table_a"}, 0, 2},
+		{true, false, []string{"table_a"}, []string{}, 0, 2},
+		{true, false, []string{"*_a"}, []string{}, 0, 2},
+
+		{true, true, []string{}, []string{}, 1, 0},
+		{false, true, []string{}, []string{}, 0, 0},
+		{true, true, []string{}, []string{"table_a"}, 0, 0},
+		{true, true, []string{"table_a"}, []string{}, 0, 0},
+		{true, true, []string{"*_a"}, []string{}, 0, 0},
 	}
 
 	for i, tt := range tests {
 		r := RequireTableComment{
-			Enabled: tt.enabled,
-			Exclude: tt.exclude,
+			Enabled:      tt.enabled,
+			AllOrNothing: tt.allOrNothing,
+			Exclude:      tt.exclude,
 		}
 		s := newTestSchema()
-		warns := r.Check(s, tt.lintExclude)
-		if len(warns) != tt.want {
+		if warns := r.Check(s, tt.lintExclude); len(warns) != tt.want {
 			t.Errorf("TestRequireTableComment(%d): got %v\nwant %v", i, len(warns), tt.want)
+		}
+		ns := newTestNoCommentSchema()
+		if warns := r.Check(ns, tt.lintExclude); len(warns) != tt.wantNoComment {
+			t.Errorf("TestRequireTableComment(%d) (no comment schema): got %v\nwant %v", i, len(warns), tt.wantNoComment)
 		}
 	}
 }
@@ -37,32 +50,49 @@ func TestRequireTableComment(t *testing.T) {
 func TestRequireColumnComment(t *testing.T) {
 	tests := []struct {
 		enabled       bool
+		allOrNothing  bool
 		lintExclude   []string
 		exclude       []string
 		excludeTables []string
 		want          int
+		wantNoComment int
 	}{
-		{true, []string{}, []string{}, []string{}, 1},
-		{false, []string{}, []string{}, []string{}, 0},
-		{true, []string{}, []string{"column_b1"}, []string{}, 0},
-		{true, []string{}, []string{"table_b.column_b1"}, []string{}, 0},
-		{true, []string{}, []string{"table_a.colmun_b1"}, []string{}, 1},
-		{true, []string{}, []string{}, []string{"table_b"}, 0},
-		{true, []string{"table_b"}, []string{}, []string{}, 0},
-		{true, []string{}, []string{"*_b1"}, []string{}, 0},
-		{true, []string{}, []string{"table_b.*_b1"}, []string{}, 0},
+		{true, false, []string{}, []string{}, []string{}, 1, 8},
+		{false, false, []string{}, []string{}, []string{}, 0, 0},
+		{true, false, []string{}, []string{"column_b1"}, []string{}, 0, 7},
+		{true, false, []string{}, []string{"table_b.column_b1"}, []string{}, 0, 7},
+		{true, false, []string{}, []string{"table_a.colmun_b1"}, []string{}, 1, 8},
+		{true, false, []string{}, []string{}, []string{"table_b"}, 0, 6},
+		{true, false, []string{"table_b"}, []string{}, []string{}, 0, 6},
+		{true, false, []string{}, []string{"*_b1"}, []string{}, 0, 7},
+		{true, false, []string{}, []string{"table_b.*_b1"}, []string{}, 0, 7},
+
+		{true, true, []string{}, []string{}, []string{}, 1, 0},
+		{false, true, []string{}, []string{}, []string{}, 0, 0},
+		{true, true, []string{}, []string{"column_b1"}, []string{}, 0, 0},
+		{true, true, []string{}, []string{"table_b.column_b1"}, []string{}, 0, 0},
+		{true, true, []string{}, []string{"table_a.colmun_b1"}, []string{}, 1, 0},
+		{true, true, []string{}, []string{}, []string{"table_b"}, 0, 0},
+		{true, true, []string{"table_b"}, []string{}, []string{}, 0, 0},
+		{true, true, []string{}, []string{"*_b1"}, []string{}, 0, 0},
+		{true, true, []string{}, []string{"table_b.*_b1"}, []string{}, 0, 0},
 	}
 
 	for i, tt := range tests {
 		r := RequireColumnComment{
 			Enabled:       tt.enabled,
+			AllOrNothing:  tt.allOrNothing,
 			Exclude:       tt.exclude,
 			ExcludeTables: tt.excludeTables,
 		}
 		s := newTestSchema()
-		warns := r.Check(s, tt.lintExclude)
-		if len(warns) != tt.want {
+		if warns := r.Check(s, tt.lintExclude); len(warns) != tt.want {
 			t.Errorf("TestRequireColumnComment(%d): got %v\nwant %v", i, len(warns), tt.want)
+		}
+
+		ns := newTestNoCommentSchema()
+		if warns := r.Check(ns, tt.lintExclude); len(warns) != tt.wantNoComment {
+			t.Errorf("TestRequireColumnComment(%d) (no comment schema): got %v\nwant %v", i, len(warns), tt.wantNoComment)
 		}
 	}
 }
@@ -70,29 +100,43 @@ func TestRequireColumnComment(t *testing.T) {
 func TestRequireIndexComment(t *testing.T) {
 	tests := []struct {
 		enabled       bool
+		allOrNothing  bool
 		lintExclude   []string
 		exclude       []string
 		excludeTables []string
 		want          int
+		wantNoComment int
 	}{
-		{true, []string{}, []string{}, []string{}, 1},
-		{false, []string{}, []string{}, []string{}, 0},
-		{true, []string{"table_a"}, []string{}, []string{}, 0},
-		{true, []string{}, []string{"a2_idx"}, []string{}, 0},
-		{true, []string{}, []string{"table_a.a2_idx"}, []string{}, 0},
-		{true, []string{}, []string{}, []string{"table_a"}, 0},
+		{true, false, []string{}, []string{}, []string{}, 1, 1},
+		{false, false, []string{}, []string{}, []string{}, 0, 0},
+		{true, false, []string{"table_a"}, []string{}, []string{}, 0, 0},
+		{true, false, []string{}, []string{"a2_idx"}, []string{}, 0, 0},
+		{true, false, []string{}, []string{"table_a.a2_idx"}, []string{}, 0, 0},
+		{true, false, []string{}, []string{}, []string{"table_a"}, 0, 0},
+
+		{true, true, []string{}, []string{}, []string{}, 0, 0},
+		{false, true, []string{}, []string{}, []string{}, 0, 0},
+		{true, true, []string{"table_a"}, []string{}, []string{}, 0, 0},
+		{true, true, []string{}, []string{"a2_idx"}, []string{}, 0, 0},
+		{true, true, []string{}, []string{"table_a.a2_idx"}, []string{}, 0, 0},
+		{true, true, []string{}, []string{}, []string{"table_a"}, 0, 0},
 	}
 
 	for i, tt := range tests {
 		r := RequireIndexComment{
 			Enabled:       tt.enabled,
+			AllOrNothing:  tt.allOrNothing,
 			Exclude:       tt.exclude,
 			ExcludeTables: tt.excludeTables,
 		}
 		s := newTestSchema()
-		warns := r.Check(s, tt.lintExclude)
-		if len(warns) != tt.want {
+		if warns := r.Check(s, tt.lintExclude); len(warns) != tt.want {
 			t.Errorf("TestRequireIndexComment(%d): got %v\nwant %v", i, len(warns), tt.want)
+		}
+
+		ns := newTestNoCommentSchema()
+		if warns := r.Check(ns, tt.lintExclude); len(warns) != tt.wantNoComment {
+			t.Errorf("TestRequireIndexComment(%d) (no comment schema): got %v\nwant %v", i, len(warns), tt.wantNoComment)
 		}
 	}
 }
@@ -100,29 +144,43 @@ func TestRequireIndexComment(t *testing.T) {
 func TestRequireConstraintComment(t *testing.T) {
 	tests := []struct {
 		enabled       bool
+		allOrNothing  bool
 		lintExclude   []string
 		exclude       []string
 		excludeTables []string
 		want          int
+		wantNoComment int
 	}{
-		{true, []string{}, []string{}, []string{}, 2},
-		{false, []string{}, []string{}, []string{}, 0},
-		{true, []string{"table_a"}, []string{}, []string{}, 0},
-		{true, []string{}, []string{"a1_b1_fk"}, []string{}, 1},
-		{true, []string{}, []string{"a1_unique"}, []string{}, 1},
-		{true, []string{}, []string{"table_a.a1_b1_fk"}, []string{}, 1},
+		{true, false, []string{}, []string{}, []string{}, 1, 2},
+		{false, false, []string{}, []string{}, []string{}, 0, 0},
+		{true, false, []string{"table_a"}, []string{}, []string{}, 0, 0},
+		{true, false, []string{}, []string{"a1_b1_fk"}, []string{}, 1, 1},
+		{true, false, []string{}, []string{"a1_unique"}, []string{}, 0, 1},
+		{true, false, []string{}, []string{"table_a.a1_b1_fk"}, []string{}, 1, 1},
+
+		{true, true, []string{}, []string{}, []string{}, 1, 0},
+		{false, true, []string{}, []string{}, []string{}, 0, 0},
+		{true, true, []string{"table_a"}, []string{}, []string{}, 0, 0},
+		{true, true, []string{}, []string{"a1_b1_fk"}, []string{}, 0, 0},
+		{true, true, []string{}, []string{"a1_unique"}, []string{}, 0, 0},
+		{true, true, []string{}, []string{"table_a.a1_b1_fk"}, []string{}, 0, 0},
 	}
 
 	for i, tt := range tests {
 		r := RequireConstraintComment{
 			Enabled:       tt.enabled,
+			AllOrNothing:  tt.allOrNothing,
 			Exclude:       tt.exclude,
 			ExcludeTables: tt.excludeTables,
 		}
 		s := newTestSchema()
-		warns := r.Check(s, tt.lintExclude)
-		if len(warns) != tt.want {
+		if warns := r.Check(s, tt.lintExclude); len(warns) != tt.want {
 			t.Errorf("TestRequireConstraintComment(%d): got %v\nwant %v", i, len(warns), tt.want)
+		}
+
+		ns := newTestNoCommentSchema()
+		if warns := r.Check(ns, tt.lintExclude); len(warns) != tt.wantNoComment {
+			t.Errorf("TestRequireConstraintComment(%d) (no comment schema): got %v\nwant %v", i, len(warns), tt.wantNoComment)
 		}
 	}
 }
@@ -130,65 +188,94 @@ func TestRequireConstraintComment(t *testing.T) {
 func TestRequireTriggerComment(t *testing.T) {
 	tests := []struct {
 		enabled       bool
+		allOrNothing  bool
 		lintExclude   []string
 		exclude       []string
 		excludeTables []string
 		want          int
+		wantNoComment int
 	}{
-		{true, []string{}, []string{}, []string{}, 1},
-		{false, []string{}, []string{}, []string{}, 0},
-		{true, []string{"table_a"}, []string{}, []string{}, 0},
-		{true, []string{}, []string{"update_table_a_column_a2"}, []string{}, 0},
-		{true, []string{}, []string{"table_a.update_table_a_column_a2"}, []string{}, 0},
-		{true, []string{}, []string{}, []string{"table_a"}, 0},
+		{true, false, []string{}, []string{}, []string{}, 1, 2},
+		{false, false, []string{}, []string{}, []string{}, 0, 0},
+		{true, false, []string{"table_a"}, []string{}, []string{}, 0, 0},
+		{true, false, []string{}, []string{"update_table_a_column_a2"}, []string{}, 0, 1},
+		{true, false, []string{}, []string{"table_a.update_table_a_column_a2"}, []string{}, 0, 1},
+		{true, false, []string{}, []string{}, []string{"table_a"}, 0, 0},
+
+		{true, true, []string{}, []string{}, []string{}, 1, 0},
+		{false, true, []string{}, []string{}, []string{}, 0, 0},
+		{true, true, []string{"table_a"}, []string{}, []string{}, 0, 0},
+		{true, true, []string{}, []string{"update_table_a_column_a2"}, []string{}, 0, 0},
+		{true, true, []string{}, []string{"table_a.update_table_a_column_a2"}, []string{}, 0, 0},
+		{true, true, []string{}, []string{}, []string{"table_a"}, 0, 0},
 	}
 
 	for i, tt := range tests {
 		r := RequireTriggerComment{
 			Enabled:       tt.enabled,
+			AllOrNothing:  tt.allOrNothing,
 			Exclude:       tt.exclude,
 			ExcludeTables: tt.excludeTables,
 		}
 		s := newTestSchema()
-		warns := r.Check(s, tt.lintExclude)
-		if len(warns) != tt.want {
+		if warns := r.Check(s, tt.lintExclude); len(warns) != tt.want {
 			t.Errorf("TestRequireTriggerComment(%d): got %v\nwant %v", i, len(warns), tt.want)
+		}
+
+		ns := newTestNoCommentSchema()
+		if warns := r.Check(ns, tt.lintExclude); len(warns) != tt.wantNoComment {
+			t.Errorf("TestRequireTriggerComment(%d) (no comment schema): got %v\nwant %v", i, len(warns), tt.wantNoComment)
 		}
 	}
 }
 
 func TestUnrelatedTable(t *testing.T) {
 	tests := []struct {
-		enabled     bool
-		lintExclude []string
-		exclude     []string
-		want        int
-		wantMsg     string
+		enabled        bool
+		allOrNothing   bool
+		lintExclude    []string
+		exclude        []string
+		want           int
+		wantMsg        string
+		wantNoRelation int
 	}{
-		{true, []string{}, []string{}, 1, "unrelated (isolated) table exists. [table_c]"},
-		{false, []string{}, []string{}, 0, ""},
-		{true, []string{}, []string{"table_b"}, 1, "unrelated (isolated) table exists. [table_c]"},
-		{true, []string{}, []string{"table_c"}, 0, ""},
-		{true, []string{"table_c"}, []string{}, 0, ""},
-		{true, []string{}, []string{"*_c"}, 0, ""},
-		{true, []string{"*_c"}, []string{}, 0, ""},
+		{true, false, []string{}, []string{}, 1, "unrelated (isolated) table exists. [table_c]", 1},
+		{false, false, []string{}, []string{}, 0, "", 0},
+		{true, false, []string{}, []string{"table_b"}, 1, "unrelated (isolated) table exists. [table_c]", 1},
+		{true, false, []string{}, []string{"table_c"}, 0, "", 1},
+		{true, false, []string{"table_c"}, []string{}, 0, "", 1},
+		{true, false, []string{}, []string{"*_c"}, 0, "", 1},
+		{true, false, []string{"*_c"}, []string{}, 0, "", 1},
+
+		{true, true, []string{}, []string{}, 1, "unrelated (isolated) table exists. [table_c]", 0},
+		{false, true, []string{}, []string{}, 0, "", 0},
+		{true, true, []string{}, []string{"table_b"}, 1, "unrelated (isolated) table exists. [table_c]", 0},
+		{true, true, []string{}, []string{"table_c"}, 0, "", 0},
+		{true, true, []string{"table_c"}, []string{}, 0, "", 0},
+		{true, true, []string{}, []string{"*_c"}, 0, "", 0},
+		{true, true, []string{"*_c"}, []string{}, 0, "", 0},
 	}
 
 	for i, tt := range tests {
 		r := UnrelatedTable{
-			Enabled: tt.enabled,
-			Exclude: tt.exclude,
+			Enabled:      tt.enabled,
+			AllOrNothing: tt.allOrNothing,
+			Exclude:      tt.exclude,
 		}
 		s := newTestSchema()
 		warns := r.Check(s, tt.lintExclude)
 		if len(warns) != tt.want {
 			t.Errorf("TestUnrelatedTable(%d): got %v\nwant %v", i, len(warns), tt.want)
 		}
-		if len(warns) == 0 {
-			continue
+		if len(warns) > 0 {
+			if warns[0].Message != tt.wantMsg {
+				t.Errorf("TestUnrelatedTable(%d): got %v\nwant %v", i, warns[0].Message, tt.wantMsg)
+			}
 		}
-		if warns[0].Message != tt.wantMsg {
-			t.Errorf("TestUnrelatedTable(%d): got %v\nwant %v", i, warns[0].Message, tt.wantMsg)
+		ns := newTestNoRelationSchema()
+		if warns := r.Check(ns, tt.lintExclude); len(warns) != tt.wantNoRelation {
+			fmt.Printf("%v\n", warns)
+			t.Errorf("TestUnrelatedTable(%d) (no relation): got %v\nwant %v", i, len(warns), tt.wantNoRelation)
 		}
 	}
 }
@@ -483,6 +570,7 @@ func newTestSchema() *schema.Schema {
 			ReferenceTable:   &tb.Name,
 			Columns:          []string{"column_a1"},
 			ReferenceColumns: []string{"column_b1"},
+			Comment:          "a1_b1_fk comment",
 		},
 		&schema.Constraint{
 			Name:           "a1_unique",
@@ -490,6 +578,7 @@ func newTestSchema() *schema.Schema {
 			Table:          &ta.Name,
 			ReferenceTable: nil,
 			Columns:        []string{"column_a1"},
+			Comment:        "", // empty comment
 		},
 	}
 
@@ -523,5 +612,37 @@ func newTestSchema() *schema.Schema {
 			DatabaseVersion: "1.0.0",
 		},
 	}
+	return s
+}
+
+func newTestNoCommentSchema() *schema.Schema {
+	s := newTestSchema()
+	for _, t := range s.Tables {
+		t.Comment = ""
+		for _, c := range t.Columns {
+			c.Comment = ""
+		}
+		for _, i := range t.Indexes {
+			i.Comment = ""
+		}
+		for _, c := range t.Constraints {
+			c.Comment = ""
+		}
+		for _, tri := range t.Triggers {
+			tri.Comment = ""
+		}
+	}
+	return s
+}
+
+func newTestNoRelationSchema() *schema.Schema {
+	s := newTestSchema()
+	for _, t := range s.Tables {
+		for _, c := range t.Columns {
+			c.ChildRelations = nil
+			c.ParentRelations = nil
+		}
+	}
+	s.Relations = nil
 	return s
 }
