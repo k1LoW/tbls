@@ -149,8 +149,8 @@ ORDER BY oid`)
 				constraintDef                  string
 				constraintType                 string
 				constraintReferenceTable       sql.NullString
-				constraintColumnNames          []string
-				constraintReferenceColumnNames []string
+				constraintColumnNames          []sql.NullString
+				constraintReferenceColumnNames []sql.NullString
 				constraintComment              sql.NullString
 			)
 			err = constraintRows.Scan(&constraintName, &constraintDef, &constraintType, &constraintReferenceTable, pq.Array(&constraintColumnNames), pq.Array(&constraintReferenceColumnNames), &constraintComment)
@@ -163,9 +163,9 @@ ORDER BY oid`)
 				Type:             convertConstraintType(constraintType),
 				Def:              constraintDef,
 				Table:            &table.Name,
-				Columns:          constraintColumnNames,
+				Columns:          arrayRemoveNull(constraintColumnNames),
 				ReferenceTable:   &rt,
-				ReferenceColumns: constraintReferenceColumnNames,
+				ReferenceColumns: arrayRemoveNull(constraintReferenceColumnNames),
 				Comment:          constraintComment.String,
 			}
 
@@ -279,7 +279,7 @@ ORDER BY attr.attnum;
 			var (
 				indexName        string
 				indexDef         string
-				indexColumnNames []string
+				indexColumnNames []sql.NullString
 				indexComment     sql.NullString
 			)
 			err = indexRows.Scan(&indexName, &indexDef, pq.Array(&indexColumnNames), &indexComment)
@@ -290,7 +290,7 @@ ORDER BY attr.attnum;
 				Name:    indexName,
 				Def:     indexDef,
 				Table:   &table.Name,
-				Columns: indexColumnNames,
+				Columns: arrayRemoveNull(indexColumnNames),
 				Comment: indexComment.String,
 			}
 
@@ -393,8 +393,8 @@ SELECT
   END AS def,
   cons.contype AS type,
   fcls.relname,
-  ARRAY_REMOVE(ARRAY_AGG(attr.attname), NULL),
-  ARRAY_REMOVE(ARRAY_AGG(fattr.attname), NULL),
+  ARRAY_AGG(attr.attname),
+  ARRAY_AGG(fattr.attname),
   descr.description AS comment
 FROM pg_constraint AS cons
 LEFT JOIN pg_trigger AS trig ON trig.tgconstraint = cons.oid AND NOT trig.tgisinternal
@@ -408,6 +408,17 @@ AND (cons.conkey IS NULL OR attr.attnum = ANY(cons.conkey))
 AND (cons.confkey IS NULL OR fattr.attnum = ANY(cons.confkey))
 GROUP BY cons.conindid, cons.conname, cons.contype, cons.oid, trig.oid, fcls.relname, descr.description
 ORDER BY cons.conindid, cons.conname`
+}
+
+// arrayRemoveNull
+func arrayRemoveNull(in []sql.NullString) []string {
+	out := []string{}
+	for _, i := range in {
+		if i.Valid {
+			out = append(out, i.String)
+		}
+	}
+	return out
 }
 
 func (p *Postgres) queryForIndexes() string {
@@ -427,7 +438,7 @@ ORDER BY idx.indexrelid`
 SELECT
   cls.relname AS indexname,
   pg_get_indexdef(idx.indexrelid) AS indexdef,
-  ARRAY_REMOVE(ARRAY_AGG(attr.attname), NULL),
+  ARRAY_AGG(attr.attname),
   descr.description AS comment
 FROM pg_index AS idx
 INNER JOIN pg_class AS cls ON idx.indexrelid = cls.oid

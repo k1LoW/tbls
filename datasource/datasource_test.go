@@ -68,7 +68,7 @@ func TestAnalyzeTables(t *testing.T) {
 		want := tt.tableCount
 		got := len(schema.Tables)
 		if got != want {
-			t.Errorf("got %v\nwant %v", got, want)
+			t.Errorf("%v: got %v\nwant %v", tt.dsn, got, want)
 		}
 	}
 }
