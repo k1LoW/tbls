@@ -55,10 +55,10 @@ func (m *Mysql) Analyze(s *schema.Schema) error {
 	// tables and comments
 	tableRows, err := m.db.Query(`
 SELECT table_name, table_type, table_comment FROM information_schema.tables WHERE table_schema = ?;`, s.Name)
-	defer tableRows.Close()
 	if err != nil {
 		return errors.WithStack(err)
 	}
+	defer tableRows.Close()
 
 	relations := []*schema.Relation{}
 
@@ -82,10 +82,10 @@ SELECT table_name, table_type, table_comment FROM information_schema.tables WHER
 		// table definition
 		if tableType == "BASE TABLE" {
 			tableDefRows, err := m.db.Query(fmt.Sprintf("SHOW CREATE TABLE `%s`", tableName))
-			defer tableDefRows.Close()
 			if err != nil {
 				return errors.WithStack(err)
 			}
+			defer tableDefRows.Close()
 			for tableDefRows.Next() {
 				var (
 					tableName string
@@ -110,10 +110,10 @@ SELECT view_definition FROM information_schema.views
 WHERE table_schema = ?
 AND table_name = ?;
 		`, s.Name, tableName)
-			defer viewDefRows.Close()
 			if err != nil {
 				return errors.WithStack(err)
 			}
+			defer viewDefRows.Close()
 			for viewDefRows.Next() {
 				var tableDef string
 				err := viewDefRows.Scan(&tableDef)
@@ -139,10 +139,10 @@ WHERE s.table_name = c.table_name
 AND s.table_schema = ?
 AND s.table_name = ?
 GROUP BY key_type, s.table_name, s.index_name, s.index_type`, s.Name, tableName)
-		defer indexRows.Close()
 		if err != nil {
 			return errors.WithStack(err)
 		}
+		defer indexRows.Close()
 
 		indexes := []*schema.Index{}
 		for indexRows.Next() {
@@ -207,10 +207,10 @@ ON kcu.constraint_name = sub.constraint_name AND kcu.table_schema = sub.table_sc
 WHERE kcu.table_schema= ?
    AND kcu.table_name = ?
 GROUP BY kcu.constraint_name, sub.costraint_type, kcu.referenced_table_name`, tableName, s.Name, tableName)
-		defer constraintRows.Close()
 		if err != nil {
 			return errors.WithStack(err)
 		}
+		defer constraintRows.Close()
 
 		constraints := []*schema.Constraint{}
 		for constraintRows.Next() {
@@ -272,10 +272,10 @@ FROM information_schema.triggers
 WHERE event_object_schema = ?
 AND event_object_table = ?
 `, s.Name, tableName)
-		defer triggerRows.Close()
 		if err != nil {
 			return errors.WithStack(err)
 		}
+		defer triggerRows.Close()
 		triggers := []*schema.Trigger{}
 		for triggerRows.Next() {
 			var (
@@ -305,10 +305,10 @@ AND event_object_table = ?
 SELECT column_name, column_default, is_nullable, column_type, column_comment
 FROM information_schema.columns
 WHERE table_schema = ? AND table_name = ? ORDER BY ordinal_position`, s.Name, tableName)
-		defer columnRows.Close()
 		if err != nil {
 			return errors.WithStack(err)
 		}
+		defer columnRows.Close()
 		columns := []*schema.Column{}
 		for columnRows.Next() {
 			var (
