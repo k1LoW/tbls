@@ -52,10 +52,10 @@ func (l *Sqlite) Analyze(s *schema.Schema) error {
 SELECT name, type, sql
 FROM sqlite_master
 WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
-	defer tableRows.Close()
 	if err != nil {
 		return errors.WithStack(err)
 	}
+	defer tableRows.Close()
 
 	relations := []*schema.Relation{}
 
@@ -94,10 +94,10 @@ WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
 
 		// columns
 		columnRows, err := l.db.Query(fmt.Sprintf("PRAGMA table_info(`%s`)", tableName))
-		defer columnRows.Close()
 		if err != nil {
 			return errors.WithStack(err)
 		}
+		defer columnRows.Close()
 
 		columns := []*schema.Column{}
 		for columnRows.Next() {
@@ -139,10 +139,10 @@ WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
 		fkSlice := []*fk{}
 
 		foreignKeyRows, err := l.db.Query(fmt.Sprintf("PRAGMA foreign_key_list(`%s`)", tableName))
-		defer foreignKeyRows.Close()
 		if err != nil {
 			return errors.WithStack(err)
 		}
+		defer foreignKeyRows.Close()
 		for foreignKeyRows.Next() {
 			var (
 				foreignKeyID                string
@@ -214,10 +214,10 @@ WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
 
 		// indexes and constraints(UNIQUE, PRIMARY KEY)
 		indexRows, err := l.db.Query(fmt.Sprintf("PRAGMA index_list(`%s`)", tableName))
-		defer indexRows.Close()
 		if err != nil {
 			return errors.WithStack(err)
 		}
+		defer indexRows.Close()
 
 		indexes := []*schema.Index{}
 		for indexRows.Next() {
@@ -312,10 +312,10 @@ WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
 		triggerRows, err := l.db.Query(`
 SELECT name, sql FROM sqlite_master WHERE type = 'trigger' AND tbl_name = ?;
 `, tableName)
-		defer triggerRows.Close()
 		if err != nil {
 			return errors.WithStack(err)
 		}
+		defer triggerRows.Close()
 
 		triggers := []*schema.Trigger{}
 		for triggerRows.Next() {

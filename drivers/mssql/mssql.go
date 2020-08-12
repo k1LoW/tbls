@@ -50,10 +50,10 @@ LEFT JOIN sys.extended_properties AS e ON
 e.major_id = o.object_id AND e.name = 'MS_Description' AND e.minor_id = 0
 WHERE type IN ('U', 'V')  ORDER BY OBJECT_ID
 `)
-	defer tableRows.Close()
 	if err != nil {
 		return errors.WithStack(err)
 	}
+	defer tableRows.Close()
 
 	tables := []*schema.Table{}
 	links := []relationLink{}
@@ -88,10 +88,10 @@ WHERE type IN ('U', 'V')  ORDER BY OBJECT_ID
 			viewDefRows, err := m.db.Query(`
 SELECT definition FROM sys.sql_modules WHERE object_id = $1
 `, tableOid)
-			defer viewDefRows.Close()
 			if err != nil {
 				return errors.WithStack(err)
 			}
+			defer viewDefRows.Close()
 			for viewDefRows.Next() {
 				var tableDef sql.NullString
 				err := viewDefRows.Scan(&tableDef)
@@ -120,10 +120,10 @@ WHERE c.object_id = $1
 and t.name != 'sysname'
 ORDER BY c.column_id
 `, tableOid)
-		defer columnRows.Close()
 		if err != nil {
 			return errors.WithStack(err)
 		}
+		defer columnRows.Close()
 
 		columns := []*schema.Column{}
 		for columnRows.Next() {
@@ -171,10 +171,10 @@ WHERE i.object_id = object_id($1)
 GROUP BY c.name, i.index_id, i.type_desc, i.is_unique, i.is_primary_key, i.is_unique_constraint, c.is_system_named
 ORDER BY i.index_id
 `, fmt.Sprintf("%s.%s", tableSchema, tableName))
-		defer keyRows.Close()
 		if err != nil {
 			return errors.WithStack(err)
 		}
+		defer keyRows.Close()
 		for keyRows.Next() {
 			var (
 				indexName               string
@@ -232,10 +232,10 @@ LEFT JOIN sys.foreign_key_columns AS fc ON f.object_id = fc.constraint_object_id
 WHERE f.parent_object_id = object_id($1)
 GROUP BY f.name, f.parent_object_id, f.referenced_object_id, delete_referential_action_desc, update_referential_action_desc, f.is_system_named
 `, fmt.Sprintf("%s.%s", tableSchema, tableName))
-		defer fkRows.Close()
 		if err != nil {
 			return errors.WithStack(err)
 		}
+		defer fkRows.Close()
 		for fkRows.Next() {
 			var (
 				fkName              string
@@ -277,10 +277,10 @@ SELECT name, definition, is_system_named
 FROM sys.check_constraints
 WHERE parent_object_id = object_id($1)
 `, fmt.Sprintf("%s.%s", tableSchema, tableName))
-		defer checkRows.Close()
 		if err != nil {
 			return errors.WithStack(err)
 		}
+		defer checkRows.Close()
 		for checkRows.Next() {
 			var (
 				checkName          string
@@ -311,10 +311,10 @@ ON sm.object_id = t.object_id
 WHERE type = 'TR'
 AND parent_id = object_id($1)
 `, fmt.Sprintf("%s.%s", tableSchema, tableName))
-		defer triggerRows.Close()
 		if err != nil {
 			return errors.WithStack(err)
 		}
+		defer triggerRows.Close()
 
 		triggers := []*schema.Trigger{}
 		for triggerRows.Next() {
@@ -353,10 +353,10 @@ WHERE i.object_id = object_id($1)
 GROUP BY i.name, i.index_id, i.type_desc, i.is_unique, i.is_primary_key, i.is_unique_constraint, c.is_system_named
 ORDER BY i.index_id
 `, fmt.Sprintf("%s.%s", tableSchema, tableName))
-		defer indexRows.Close()
 		if err != nil {
 			return errors.WithStack(err)
 		}
+		defer indexRows.Close()
 		indexes := []*schema.Index{}
 		for indexRows.Next() {
 			var (

@@ -38,10 +38,10 @@ func (p *Postgres) Analyze(s *schema.Schema) error {
 	// current schema
 	var currentSchema string
 	schemaRows, err := p.db.Query(`SELECT current_schema()`)
-	defer schemaRows.Close()
 	if err != nil {
 		return errors.WithStack(err)
 	}
+	defer schemaRows.Close()
 	for schemaRows.Next() {
 		err := schemaRows.Scan(&currentSchema)
 		if err != nil {
@@ -53,10 +53,10 @@ func (p *Postgres) Analyze(s *schema.Schema) error {
 	// search_path
 	var searchPaths string
 	pathRows, err := p.db.Query(`SHOW search_path`)
-	defer pathRows.Close()
 	if err != nil {
 		return errors.WithStack(err)
 	}
+	defer pathRows.Close()
 	for pathRows.Next() {
 		err := pathRows.Scan(&searchPaths)
 		if err != nil {
@@ -86,10 +86,10 @@ LEFT JOIN pg_description AS descr ON cls.oid = descr.objoid AND descr.objsubid =
 WHERE ns.nspname NOT IN ('pg_catalog', 'information_schema')
 AND cls.relkind IN ('r', 'p', 'v', 'f', 'm')
 ORDER BY oid`)
-	defer tableRows.Close()
 	if err != nil {
 		return errors.WithStack(err)
 	}
+	defer tableRows.Close()
 
 	relations := []*schema.Relation{}
 
@@ -120,10 +120,10 @@ ORDER BY oid`)
 		// (materialized) view definition
 		if tableType == "VIEW" || tableType == "MATERIALIZED VIEW" {
 			viewDefRows, err := p.db.Query(`SELECT pg_get_viewdef($1::oid);`, tableOid)
-			defer viewDefRows.Close()
 			if err != nil {
 				return errors.WithStack(err)
 			}
+			defer viewDefRows.Close()
 			for viewDefRows.Next() {
 				var tableDef sql.NullString
 				err := viewDefRows.Scan(&tableDef)
@@ -136,10 +136,10 @@ ORDER BY oid`)
 
 		// constraints
 		constraintRows, err := p.db.Query(p.queryForConstraints(), tableOid)
-		defer constraintRows.Close()
 		if err != nil {
 			return errors.WithStack(err)
 		}
+		defer constraintRows.Close()
 
 		constraints := []*schema.Constraint{}
 
@@ -190,10 +190,10 @@ WHERE tgisinternal = false
 AND tgrelid = $1::oid
 ORDER BY tgrelid
 `, tableOid)
-			defer triggerRows.Close()
 			if err != nil {
 				return errors.WithStack(err)
 			}
+			defer triggerRows.Close()
 
 			triggers := []*schema.Trigger{}
 			for triggerRows.Next() {
@@ -238,10 +238,10 @@ AND NOT attr.attisdropped
 AND attr.attrelid = $1::oid
 ORDER BY attr.attnum;
 `, tableOid)
-		defer columnRows.Close()
 		if err != nil {
 			return errors.WithStack(err)
 		}
+		defer columnRows.Close()
 
 		columns := []*schema.Column{}
 		for columnRows.Next() {
@@ -269,10 +269,10 @@ ORDER BY attr.attnum;
 
 		// indexes
 		indexRows, err := p.db.Query(p.queryForIndexes(), tableOid)
-		defer indexRows.Close()
 		if err != nil {
 			return errors.WithStack(err)
 		}
+		defer indexRows.Close()
 
 		indexes := []*schema.Index{}
 		for indexRows.Next() {
