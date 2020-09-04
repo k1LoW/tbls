@@ -21,6 +21,7 @@ Sample database document.
 | [post_comments](post_comments.md) | 7 | post and comments View table | VIEW |
 | [CamelizeTable](CamelizeTable.md) | 2 |  | BASIC TABLE |
 | [hyphen-table](hyphen-table.md) | 3 |  | BASIC TABLE |
+| [administrator.blogs](administrator.blogs.md) | 6 | admin blogs | BASIC TABLE |
 
 ## Relations
 

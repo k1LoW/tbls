@@ -1,5 +1,6 @@
 DROP TRIGGER IF EXISTS update_users_updated;
 DROP TRIGGER IF EXISTS update_posts_updated;
+DROP TABLE IF EXISTS administrator.blogs;
 DROP VIEW IF EXISTS post_comments;
 DROP TABLE IF EXISTS "hyphen-table";
 DROP TABLE IF EXISTS "CamelizeTable";
@@ -10,6 +11,7 @@ DROP TABLE IF EXISTS posts;
 DROP TYPE IF EXISTS post_types;
 DROP TABLE IF EXISTS user_options;
 DROP TABLE IF EXISTS users;
+DROP SCHEMA IF EXISTS administrator;
 
 CREATE TABLE users (
   id int NOT NULL IDENTITY(1,1) PRIMARY KEY,
@@ -132,6 +134,18 @@ CREATE TABLE "hyphen-table" (
   id int NOT NULL,
   "hyphen-column" text NOT NULL,
   created date NOT NULL
+);
+
+CREATE SCHEMA administrator;
+
+CREATE TABLE administrator.blogs (
+  id int NOT NULL IDENTITY(1,1) PRIMARY KEY,
+  user_id int NOT NULL,
+  name text NOT NULL,
+  description text,
+  created date NOT NULL,
+  updated date,
+  CONSTRAINT blogs_user_id_fk FOREIGN KEY(user_id) REFERENCES dbo.users(id) ON UPDATE NO ACTION ON DELETE CASCADE
 );
 
 CREATE TRIGGER update_users_updated

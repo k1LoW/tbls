@@ -18,7 +18,7 @@ Sample PostgreSQL database document.
 | [public.post_comment_stars](public.post_comment_stars.md) | 5       |                                            | MATERIALIZED VIEW |
 | [public.CamelizeTable](public.CamelizeTable.md)           | 2       |                                            | BASE TABLE        |
 | [public.hyphen-table](public.hyphen-table.md)             | 4       |                                            | BASE TABLE        |
-| [administrator.blogs](administrator.blogs.md)             | 6       |                                            | BASE TABLE        |
+| [administrator.blogs](administrator.blogs.md)             | 6       | admin blogs                                | BASE TABLE        |
 | [backup.blogs](backup.blogs.md)                           | 5       |                                            | BASE TABLE        |
 | [backup.blog_options](backup.blog_options.md)             | 4       |                                            | BASE TABLE        |
 | [time.bar](time.bar.md)                                   | 1       |                                            | BASE TABLE        |

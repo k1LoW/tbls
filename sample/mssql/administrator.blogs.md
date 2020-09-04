@@ -8,25 +8,25 @@ admin blogs
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | integer | nextval('administrator.blogs_id_seq'::regclass) | false |  |  |  |
-| user_id | integer |  | false |  | [public.users](public.users.md) |  |
+| id | int |  | false |  |  |  |
+| user_id | int |  | false |  | [users](users.md) |  |
 | name | text |  | false |  |  |  |
 | description | text |  | true |  |  |  |
-| created | timestamp without time zone |  | false |  |  |  |
-| updated | timestamp without time zone |  | true |  |  |  |
+| created | date |  | false |  |  |  |
+| updated | date |  | true |  |  |  |
 
 ## Constraints
 
 | Name | Type | Definition |
 | ---- | ---- | ---------- |
-| blogs_user_id_fk | FOREIGN KEY | FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE |
-| blogs_pkey | PRIMARY KEY | PRIMARY KEY (id) |
+| PK__blogs_* | PRIMARY KEY | CLUSTERED, unique, part of a PRIMARY KEY constraint, [ id ] |
+| blogs_user_id_fk | FOREIGN KEY | FOREIGN KEY(user_id) REFERENCES users(id) ON UPDATE NO_ACTION ON DELETE CASCADE |
 
 ## Indexes
 
 | Name | Definition |
 | ---- | ---------- |
-| blogs_pkey | CREATE UNIQUE INDEX blogs_pkey ON administrator.blogs USING btree (id) |
+| PK__blogs_* | CLUSTERED, unique, part of a PRIMARY KEY constraint, [ id ] |
 
 ## Relations
 

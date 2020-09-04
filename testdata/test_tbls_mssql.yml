@@ -1,7 +1,8 @@
 ---
-desc: Sample PostgreSQL database document.
-exclude:
-  - user_access_logs
+desc: Sample database document.
+labels:
+  - sample
+  - tbls
 lint:
   requireColumnComment:
     enabled: true
@@ -47,11 +48,12 @@ comments:
     table: posts
     columnComments:
       body: post body
-    triggerComments:
-      update_posts_updated: Update updated when posts update
+    labels:
+      - green
+      - red
+      - blue
   -
     table: logs
-    tableComment: audit log table
   -
     table: post_comments
     tableComment: post and comments View table
@@ -62,12 +64,6 @@ comments:
       comment_user: comments.users.username
       created: comments.created
       updated: comments.updated
-  -
-    table: user_options
-    constraintComments:
-      user_options_user_id_fk: FK
-    indexComments:
-      user_options_pkey: PRIMARY KEY
   -
     table: administrator.blogs
     tableComment: admin blogs
