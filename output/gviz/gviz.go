@@ -37,8 +37,7 @@ func New(c *config.Config) *Gviz {
 // OutputSchema output dot format for full relation.
 func (g *Gviz) OutputSchema(wr io.Writer, s *schema.Schema) error {
 	buf := &bytes.Buffer{}
-	err := g.dot.OutputSchema(buf, s)
-	if err != nil {
+	if err := g.dot.OutputSchema(buf, s); err != nil {
 		return errors.WithStack(err)
 	}
 	return g.render(wr, buf.Bytes())
