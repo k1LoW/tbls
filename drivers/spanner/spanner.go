@@ -343,6 +343,11 @@ func (sp *Spanner) Info() (*schema.Driver, error) {
 	d := &schema.Driver{
 		Name:            "spanner",
 		DatabaseVersion: "",
+		CaseSensitive: &schema.CaseSensitive{
+			Database: true,
+			Table:    true,
+			Column:   true,
+		},
 	}
 	return d, nil
 }

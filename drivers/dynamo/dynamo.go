@@ -152,6 +152,11 @@ func (d *Dynamodb) Info() (*schema.Driver, error) {
 	driver := &schema.Driver{
 		Name:            "dynamodb",
 		DatabaseVersion: "",
+		CaseSensitive: &schema.CaseSensitive{
+			Database: true,
+			Table:    true,
+			Column:   true,
+		},
 		Meta: &schema.DriverMeta{
 			Dict: &dct,
 		},

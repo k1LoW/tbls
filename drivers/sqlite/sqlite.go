@@ -404,6 +404,11 @@ func (l *Sqlite) Info() (*schema.Driver, error) {
 	d := &schema.Driver{
 		Name:            "sqlite",
 		DatabaseVersion: v,
+		CaseSensitive: &schema.CaseSensitive{
+			Database: false,
+			Table:    false,
+			Column:   false,
+		},
 	}
 	return d, nil
 }

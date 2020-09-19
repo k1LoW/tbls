@@ -111,6 +111,11 @@ func (b *Bigquery) Info() (*schema.Driver, error) {
 	d := &schema.Driver{
 		Name:            "bigquery",
 		DatabaseVersion: "",
+		CaseSensitive: &schema.CaseSensitive{
+			Database: true,
+			Table:    true,
+			Column:   false,
+		},
 		Meta: &schema.DriverMeta{
 			Dict: &dct,
 		},

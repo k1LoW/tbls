@@ -385,6 +385,11 @@ func (m *Mysql) Info() (*schema.Driver, error) {
 	d := &schema.Driver{
 		Name:            "mysql",
 		DatabaseVersion: v,
+		CaseSensitive: &schema.CaseSensitive{
+			Database: true,
+			Table:    true,
+			Column:   false,
+		},
 	}
 	return d, nil
 }

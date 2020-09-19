@@ -452,6 +452,11 @@ func (m *Mssql) Info() (*schema.Driver, error) {
 	d := &schema.Driver{
 		Name:            "mssql",
 		DatabaseVersion: v,
+		CaseSensitive: &schema.CaseSensitive{
+			Database: false, // default:  SQL_Latin1_General_CP1_CI_AS
+			Table:    false,
+			Column:   false,
+		},
 	}
 	return d, nil
 }

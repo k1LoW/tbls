@@ -100,9 +100,17 @@ type DriverMeta struct {
 
 // Driver is the struct for tbls driver information
 type Driver struct {
-	Name            string      `json:"name"`
-	DatabaseVersion string      `json:"database_version" yaml:"databaseVersion"`
+	Name            string `json:"name"`
+	DatabaseVersion string `json:"database_version" yaml:"databaseVersion"`
+	CaseSensitive   *CaseSensitive
 	Meta            *DriverMeta `json:"meta"`
+}
+
+// CaseSensitive is the struct for database case-sensitive
+type CaseSensitive struct {
+	Database bool
+	Table    bool
+	Column   bool
 }
 
 // Schema is the struct for database schema

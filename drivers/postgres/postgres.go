@@ -366,7 +366,12 @@ func (p *Postgres) Info() (*schema.Driver, error) {
 	d := &schema.Driver{
 		Name:            name,
 		DatabaseVersion: v,
-		Meta:            &schema.DriverMeta{},
+		CaseSensitive: &schema.CaseSensitive{
+			Database: true,
+			Table:    true,
+			Column:   true,
+		},
+		Meta: &schema.DriverMeta{},
 	}
 	return d, nil
 }
