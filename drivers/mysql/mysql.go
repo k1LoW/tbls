@@ -77,6 +77,7 @@ SELECT table_name, table_type, table_comment FROM information_schema.tables WHER
 			Name:    tableName,
 			Type:    tableType,
 			Comment: tableComment,
+			Schema:  s,
 		}
 
 		// table definition

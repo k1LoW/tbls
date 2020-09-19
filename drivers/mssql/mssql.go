@@ -81,6 +81,7 @@ WHERE type IN ('U', 'V')  ORDER BY OBJECT_ID
 			Name:    name,
 			Type:    tableType,
 			Comment: tableComment.String,
+			Schema:  s,
 		}
 
 		// view definition

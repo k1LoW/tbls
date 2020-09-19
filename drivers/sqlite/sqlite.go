@@ -84,9 +84,10 @@ WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
 		}
 
 		table := &schema.Table{
-			Name: tableName,
-			Type: tableType,
-			Def:  tableDef,
+			Name:   tableName,
+			Type:   tableType,
+			Def:    tableDef,
+			Schema: s,
 		}
 
 		// constraints

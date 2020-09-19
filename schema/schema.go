@@ -80,6 +80,7 @@ type Table struct {
 	Triggers    []*Trigger    `json:"triggers"`
 	Def         string        `json:"def"`
 	Labels      Labels        `json:"labels,omitempty"`
+	Schema      *Schema       `json:"-"`
 }
 
 // Relation is the struct for table relation

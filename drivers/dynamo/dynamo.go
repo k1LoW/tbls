@@ -57,6 +57,7 @@ func (d *Dynamodb) Analyze(s *schema.Schema) error {
 				Columns:     listColumns(desc.Table),
 				Constraints: listConstraints(desc.Table),
 				Indexes:     listIndexes(desc.Table),
+				Schema:      s,
 			}
 			tables = append(tables, table)
 		}

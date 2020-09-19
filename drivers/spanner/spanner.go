@@ -69,8 +69,9 @@ WHERE
 			return errors.WithStack(err)
 		}
 		table := &schema.Table{
-			Name: tableName.StringVal,
-			Type: tableType,
+			Name:   tableName.StringVal,
+			Type:   tableType,
+			Schema: s,
 		}
 
 		if parentTableName.StringVal != "" {

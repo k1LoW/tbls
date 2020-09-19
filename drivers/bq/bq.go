@@ -74,6 +74,7 @@ func (b *Bigquery) Analyze(s *schema.Schema) error {
 			Def:     m.ViewQuery,
 			Columns: listColumns(m.Schema, ""),
 			Labels:  labels,
+			Schema:  s,
 		}
 
 		tables = append(tables, table)

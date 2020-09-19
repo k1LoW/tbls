@@ -115,6 +115,7 @@ ORDER BY oid`)
 			Name:    name,
 			Type:    tableType,
 			Comment: tableComment.String,
+			Schema:  s,
 		}
 
 		// (materialized) view definition
