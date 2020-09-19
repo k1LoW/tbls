@@ -9,8 +9,11 @@
 CREATE TABLE `hyphen-table` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `hyphen-column` text NOT NULL,
+  `CamelizeTable_CamelizeColumn` int(11) NOT NULL,
   `created` datetime NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `CamelizeTable_CamelizeColumn_fk` (`CamelizeTable_CamelizeColumn`),
+  CONSTRAINT `CamelizeTable_CamelizeColumn_fk` FOREIGN KEY (`CamelizeTable_CamelizeColumn`) REFERENCES `CamelizeTable` (`CamelizeColumn`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1
 ```
 
@@ -22,18 +25,21 @@ CREATE TABLE `hyphen-table` (
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
 | id | bigint(20) |  | false |  |  |  |
 | hyphen-column | text |  | false |  |  |  |
+| CamelizeTable_CamelizeColumn | int(11) |  | false |  |  |  |
 | created | datetime |  | false |  |  |  |
 
 ## Constraints
 
 | Name | Type | Definition |
 | ---- | ---- | ---------- |
+| CamelizeTable_CamelizeColumn_fk | FOREIGN KEY | FOREIGN KEY (CamelizeTable_CamelizeColumn) REFERENCES CamelizeTable (CamelizeColumn) |
 | PRIMARY | PRIMARY KEY | PRIMARY KEY (id) |
 
 ## Indexes
 
 | Name | Definition |
 | ---- | ---------- |
+| CamelizeTable_CamelizeColumn_fk | KEY CamelizeTable_CamelizeColumn_fk (CamelizeTable_CamelizeColumn) USING BTREE |
 | PRIMARY | PRIMARY KEY (id) USING BTREE |
 
 ## Relations

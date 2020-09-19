@@ -8,8 +8,10 @@
 ```sql
 CREATE TABLE `CamelizeTable` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `CamelizeColumn` int(11) NOT NULL,
   `created` datetime NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `CamelizeColumn` (`CamelizeColumn`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1
 ```
 
@@ -17,22 +19,25 @@ CREATE TABLE `CamelizeTable` (
 
 ## カラム一覧
 
-| 名前      | タイプ        | デフォルト値       | Nullable | 子テーブル      | 親テーブル      | コメント     |
-| ------- | ---------- | ------------ | -------- | ---------- | ---------- | -------- |
-| id      | bigint(20) |              | false    |            |            |          |
-| created | datetime   |              | false    |            |            |          |
+| 名前             | タイプ        | デフォルト値       | Nullable | 子テーブル                           | 親テーブル      | コメント     |
+| -------------- | ---------- | ------------ | -------- | ------------------------------- | ---------- | -------- |
+| id             | bigint(20) |              | false    |                                 |            |          |
+| CamelizeColumn | int(11)    |              | false    | [hyphen-table](hyphen-table.md) |            |          |
+| created        | datetime   |              | false    |                                 |            |          |
 
 ## 制約一覧
 
-| 名前      | タイプ         | 定義               |
-| ------- | ----------- | ---------------- |
-| PRIMARY | PRIMARY KEY | PRIMARY KEY (id) |
+| 名前             | タイプ         | 定義                                         |
+| -------------- | ----------- | ------------------------------------------ |
+| CamelizeColumn | UNIQUE      | UNIQUE KEY CamelizeColumn (CamelizeColumn) |
+| PRIMARY        | PRIMARY KEY | PRIMARY KEY (id)                           |
 
 ## INDEX一覧
 
-| 名前      | 定義                           |
-| ------- | ---------------------------- |
-| PRIMARY | PRIMARY KEY (id) USING BTREE |
+| 名前             | 定義                                                     |
+| -------------- | ------------------------------------------------------ |
+| PRIMARY        | PRIMARY KEY (id) USING BTREE                           |
+| CamelizeColumn | UNIQUE KEY CamelizeColumn (CamelizeColumn) USING BTREE |
 
 ## ER図
 

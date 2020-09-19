@@ -8,8 +8,10 @@
 ```sql
 CREATE TABLE `CamelizeTable` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `CamelizeColumn` int(11) NOT NULL,
   `created` datetime NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `CamelizeColumn` (`CamelizeColumn`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1
 ```
 
@@ -20,12 +22,14 @@ CREATE TABLE `CamelizeTable` (
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
 | id | bigint(20) |  | false |  |  |  |
+| CamelizeColumn | int(11) |  | false | [hyphen-table](hyphen-table.md) |  |  |
 | created | datetime |  | false |  |  |  |
 
 ## Constraints
 
 | Name | Type | Definition |
 | ---- | ---- | ---------- |
+| CamelizeColumn | UNIQUE | UNIQUE KEY CamelizeColumn (CamelizeColumn) |
 | PRIMARY | PRIMARY KEY | PRIMARY KEY (id) |
 
 ## Indexes
@@ -33,6 +37,7 @@ CREATE TABLE `CamelizeTable` (
 | Name | Definition |
 | ---- | ---------- |
 | PRIMARY | PRIMARY KEY (id) USING BTREE |
+| CamelizeColumn | UNIQUE KEY CamelizeColumn (CamelizeColumn) USING BTREE |
 
 ## Relations
 

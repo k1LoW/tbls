@@ -88,13 +88,17 @@ CREATE VIEW post_comments AS (
 
 CREATE TABLE CamelizeTable (
   id bigint PRIMARY KEY AUTO_INCREMENT,
-  created datetime NOT NULL
+  CamelizeColumn int NOT NULL,
+  created datetime NOT NULL,
+  UNIQUE(CamelizeColumn)
 );
 
 CREATE TABLE `hyphen-table` (
   id bigint PRIMARY KEY AUTO_INCREMENT,
   `hyphen-column` text NOT NULL,
-  created datetime NOT NULL
+  CamelizeTable_CamelizeColumn int NOT NULL,
+  created datetime NOT NULL,
+  CONSTRAINT CamelizeTable_CamelizeColumn_fk FOREIGN KEY(camelizetable_CAMELIZECOLUMN) REFERENCES CamelizeTable(cAmElIzEcOlUmN) ON UPDATE NO ACTION ON DELETE CASCADE
 );
 
 CREATE TRIGGER update_posts_updated BEFORE UPDATE ON posts
