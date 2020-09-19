@@ -49,4 +49,8 @@ relations:
 driver:
   name: testdriver
   databaseVersion: 1.0.0
+  caseSensitive:
+    database: true
+    table: true
+    column: true
   meta: {}

@@ -1176,6 +1176,11 @@
   "driver": {
     "name": "postgres",
     "database_version": "PostgreSQL 10.11 (Debian 10.11-1.pgdg90+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 6.3.0-18+deb9u1) 6.3.0 20170516, 64-bit",
+    "case_sensitive": {
+      "database": true,
+      "table": true,
+      "column": true
+    },
     "meta": {
       "current_schema": "public"
     }

@@ -251,6 +251,11 @@ func newTestSchema() *Schema {
 		Driver: &Driver{
 			Name:            "testdriver",
 			DatabaseVersion: "1.0.0",
+			CaseSensitive: &CaseSensitive{
+				Database: true,
+				Table:    true,
+				Column:   true,
+			},
 		},
 	}
 	return s

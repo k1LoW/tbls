@@ -35,12 +35,14 @@ func (d Driver) MarshalJSON() ([]byte, error) {
 		d.Meta = &DriverMeta{}
 	}
 	return json.Marshal(&struct {
-		Name            string      `json:"name"`
-		DatabaseVersion string      `json:"database_version"`
-		Meta            *DriverMeta `json:"meta"`
+		Name            string         `json:"name"`
+		DatabaseVersion string         `json:"database_version"`
+		CaseSensitive   *CaseSensitive `json:"case_sensitive"`
+		Meta            *DriverMeta    `json:"meta"`
 	}{
 		Name:            d.Name,
 		DatabaseVersion: d.DatabaseVersion,
+		CaseSensitive:   d.CaseSensitive,
 		Meta:            d.Meta,
 	})
 }

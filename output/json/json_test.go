@@ -140,7 +140,12 @@ func newTestSchema() *schema.Schema {
 		Driver: &schema.Driver{
 			Name:            "testdriver",
 			DatabaseVersion: "1.0.0",
-			Meta:            &schema.DriverMeta{},
+			CaseSensitive: &schema.CaseSensitive{
+				Database: true,
+				Table:    true,
+				Column:   true,
+			},
+			Meta: &schema.DriverMeta{},
 		},
 	}
 	return s
