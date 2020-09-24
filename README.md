@@ -99,6 +99,16 @@ $ go get github.com/k1LoW/tbls
 $ docker pull k1low/tbls:latest
 ```
 
+**temporary:**
+
+``` console
+$ source <(curl https://git.io/use-tbls)
+```
+
+``` console
+$ curl -sL https://git.io/use-tbls > /tmp/use-tbls.tmp && . /tmp/use-tbls.tmp
+```
+
 ## Getting Started
 
 ### Document a database
