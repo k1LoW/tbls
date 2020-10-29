@@ -47,6 +47,7 @@ type Config struct {
 	MergedDict  dict.Dict            `yaml:"-"`
 	Path        string               `yaml:"-"`
 	root        string               `yaml:"-"`
+	Templates   Templates            `yaml:"templates,omitempty"`
 }
 
 type DSN struct {
