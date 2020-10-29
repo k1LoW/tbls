@@ -44,10 +44,10 @@ type Config struct {
 	Relations   []AdditionalRelation `yaml:"relations,omitempty"`
 	Comments    []AdditionalComment  `yaml:"comments,omitempty"`
 	Dict        dict.Dict            `yaml:"dict,omitempty"`
+	Templates   Templates            `yaml:"templates,omitempty"`
 	MergedDict  dict.Dict            `yaml:"-"`
 	Path        string               `yaml:"-"`
 	root        string               `yaml:"-"`
-	Templates   Templates            `yaml:"templates,omitempty"`
 }
 
 type DSN struct {
