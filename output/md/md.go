@@ -35,9 +35,41 @@ func New(c *config.Config, er bool) *Md {
 	}
 }
 
+func (m *Md) indexTemplate() (string, error) {
+	if len(m.config.Templates.MD.Index) > 0 {
+		tb, err := ioutil.ReadFile(m.config.Templates.MD.Index)
+		if err != nil {
+			return string(tb), errors.WithStack(err)
+		}
+		return string(tb), nil
+	} else {
+		ts, err := m.box.FindString("index.md.tmpl")
+		if err != nil {
+			return ts, errors.WithStack(err)
+		}
+		return ts, nil
+	}
+}
+
+func (m *Md) tableTemplate() (string, error) {
+	if len(m.config.Templates.MD.Table) > 0 {
+		tb, err := ioutil.ReadFile(m.config.Templates.MD.Table)
+		if err != nil {
+			return string(tb), errors.WithStack(err)
+		}
+		return string(tb), nil
+	} else {
+		ts, err := m.box.FindString("table.md.tmpl")
+		if err != nil {
+			return ts, errors.WithStack(err)
+		}
+		return ts, nil
+	}
+}
+
 // OutputSchema output .md format for all tables.
 func (m *Md) OutputSchema(wr io.Writer, s *schema.Schema) error {
-	ts, err := m.box.FindString("index.md.tmpl")
+	ts, err := m.indexTemplate()
 	if err != nil {
 		return errors.WithStack(err)
 	}
@@ -54,7 +86,7 @@ func (m *Md) OutputSchema(wr io.Writer, s *schema.Schema) error {
 
 // OutputTable output md format for table.
 func (m *Md) OutputTable(wr io.Writer, t *schema.Table) error {
-	ts, err := m.box.FindString("table.md.tmpl")
+	ts, err := m.tableTemplate()
 	if err != nil {
 		return errors.WithStack(err)
 	}

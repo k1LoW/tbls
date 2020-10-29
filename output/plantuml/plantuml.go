@@ -3,6 +3,7 @@ package plantuml
 import (
 	"fmt"
 	"io"
+	"io/ioutil"
 	"strings"
 	"text/template"
 
@@ -27,6 +28,38 @@ func New(c *config.Config) *PlantUML {
 	}
 }
 
+func (p *PlantUML) schemaTemplate() (string, error) {
+	if len(p.config.Templates.PUML.Schema) > 0 {
+		tb, err := ioutil.ReadFile(p.config.Templates.PUML.Schema)
+		if err != nil {
+			return string(tb), errors.WithStack(err)
+		}
+		return string(tb), nil
+	} else {
+		ts, err := p.box.FindString("schema.puml.tmpl")
+		if err != nil {
+			return ts, errors.WithStack(err)
+		}
+		return ts, nil
+	}
+}
+
+func (p *PlantUML) tableTemplate() (string, error) {
+	if len(p.config.Templates.PUML.Table) > 0 {
+		tb, err := ioutil.ReadFile(p.config.Templates.PUML.Table)
+		if err != nil {
+			return string(tb), errors.WithStack(err)
+		}
+		return string(tb), nil
+	} else {
+		ts, err := p.box.FindString("table.puml.tmpl")
+		if err != nil {
+			return ts, errors.WithStack(err)
+		}
+		return ts, nil
+	}
+}
+
 // OutputSchema output dot format for full relation.
 func (p *PlantUML) OutputSchema(wr io.Writer, s *schema.Schema) error {
 	for _, t := range s.Tables {
@@ -36,7 +69,7 @@ func (p *PlantUML) OutputSchema(wr io.Writer, s *schema.Schema) error {
 		}
 	}
 
-	ts, err := p.box.FindString("schema.puml.tmpl")
+	ts, err := p.schemaTemplate()
 	if err != nil {
 		return errors.WithStack(err)
 	}
@@ -64,7 +97,7 @@ func (p *PlantUML) OutputTable(wr io.Writer, t *schema.Table) error {
 			return errors.WithStack(err)
 		}
 	}
-	ts, err := p.box.FindString("table.puml.tmpl")
+	ts, err := p.tableTemplate()
 	if err != nil {
 		return errors.WithStack(err)
 	}
