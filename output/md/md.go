@@ -302,6 +302,9 @@ func (m *Md) makeTableTemplateData(t *schema.Table, adjust bool) map[string]inte
 		childRelations := []string{}
 		cEncountered := map[string]bool{}
 		for _, r := range c.ChildRelations {
+			if r == nil || r.Table == nil {
+				continue
+			}
 			if _, ok := cEncountered[r.Table.Name]; ok {
 				continue
 			}
@@ -311,6 +314,9 @@ func (m *Md) makeTableTemplateData(t *schema.Table, adjust bool) map[string]inte
 		parentRelations := []string{}
 		pEncountered := map[string]bool{}
 		for _, r := range c.ParentRelations {
+			if r == nil || r.ParentTable == nil {
+				continue
+			}
 			if _, ok := pEncountered[r.ParentTable.Name]; ok {
 				continue
 			}

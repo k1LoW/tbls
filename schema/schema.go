@@ -6,6 +6,7 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/gertd/go-pluralize"
 	"github.com/k1LoW/tbls/dict"
 	"github.com/pkg/errors"
 )
@@ -113,6 +114,14 @@ type Schema struct {
 	Relations []*Relation `json:"relations"`
 	Driver    *Driver     `json:"driver"`
 	Labels    Labels      `json:"labels,omitempty"`
+}
+
+// AutomaticRelation is the struct for table detected relation
+type AutomaticRelation struct {
+	Table         string   `yaml:"table"`
+	Columns       []string `yaml:"columns"`
+	ParentTable   string   `yaml:"parentTable"`
+	ParentColumns []string `yaml:"parentColumns"`
 }
 
 func (s *Schema) NormalizeTableName(name string) string {
@@ -282,6 +291,9 @@ func (t *Table) CollectTablesAndRelations(distance int, root bool) ([]*Table, []
 	distance = distance - 1
 	for _, c := range t.Columns {
 		for _, r := range c.ParentRelations {
+			if r.ParentTable == nil {
+				continue
+			}
 			relations = append(relations, r)
 			ts, rs, err := r.ParentTable.CollectTablesAndRelations(distance, false)
 			if err != nil {
@@ -291,6 +303,9 @@ func (t *Table) CollectTablesAndRelations(distance int, root bool) ([]*Table, []
 			relations = append(relations, rs...)
 		}
 		for _, r := range c.ChildRelations {
+			if r.Table == nil {
+				continue
+			}
 			relations = append(relations, r)
 			ts, rs, err := r.Table.CollectTablesAndRelations(distance, false)
 			if err != nil {
@@ -327,4 +342,76 @@ func (t *Table) CollectTablesAndRelations(distance int, root bool) ([]*Table, []
 	}
 
 	return uTables, uRelations, nil
+}
+
+func (s *Schema) MergeAutomaticRelations() {
+	relations := s.detectAutomaticRelations()
+
+	for _, r := range relations {
+		s.appendAutomaticRelations(r)
+	}
+}
+
+func (s *Schema) appendAutomaticRelations(ar *AutomaticRelation) {
+	relation := &Relation{
+		Virtual: true,
+		Def:     "Automatic Relation",
+	}
+	var err error
+	relation.Table, err = s.FindTableByName(ar.Table)
+	if err != nil {
+		return
+	}
+	for _, c := range ar.Columns {
+		column, err := relation.Table.FindColumnByName(c)
+		if err != nil {
+			return
+		}
+		relation.Columns = append(relation.Columns, column)
+		column.ParentRelations = append(column.ParentRelations, relation)
+	}
+
+	relation.ParentTable, err = s.FindTableByName(ar.ParentTable)
+	if err != nil {
+		return
+	}
+	for _, c := range ar.ParentColumns {
+		column, err := relation.ParentTable.FindColumnByName(c)
+		if err != nil {
+			return
+		}
+		relation.ParentColumns = append(relation.ParentColumns, column)
+		column.ChildRelations = append(column.ChildRelations, relation)
+	}
+
+	s.Relations = append(s.Relations, relation)
+}
+
+func (s *Schema) detectAutomaticRelations() []*AutomaticRelation {
+	pluralizeClient := pluralize.NewClient()
+	relations := make([]*AutomaticRelation, 0)
+
+	for _, t := range s.Tables {
+		relation := &AutomaticRelation{
+			Table: t.Name,
+		}
+
+		for _, c := range t.Columns {
+			splitted := strings.Split(c.Name, "_")
+
+			if len(splitted) == 2 && splitted[1] == "id" {
+				relation.Columns = []string{c.Name}
+				relation.ParentTable = pluralizeClient.Plural(splitted[0])
+				relation.ParentColumns = []string{"id"}
+			}
+		}
+
+		if len(relation.Columns) == 0 {
+			continue
+		}
+
+		relations = append(relations, relation)
+	}
+
+	return relations
 }
