@@ -38,6 +38,37 @@ func TestOutputSchema(t *testing.T) {
 	}
 }
 
+func TestOutputSchemaTemplate(t *testing.T) {
+	s := newTestSchema()
+	c, err := config.New()
+	if err != nil {
+		t.Error(err)
+	}
+	err = c.LoadConfigFile(filepath.Join(testdataDir(), "out_templates_test_tbls.yml"))
+	if err != nil {
+		t.Error(err)
+	}
+
+	// use the templates in the testdata directory
+	c.Templates.Dot.Schema = filepath.Join(testdataDir(), c.Templates.Dot.Schema)
+	err = c.MergeAdditionalData(s)
+	if err != nil {
+		t.Error(err)
+	}
+	o := New(c)
+	buf := &bytes.Buffer{}
+
+	err = o.OutputSchema(buf, s)
+	if err != nil {
+		t.Error(err)
+	}
+	want, _ := ioutil.ReadFile(filepath.Join(testdataDir(), "dot_template_test_schema.dot.golden"))
+	got := buf.String()
+	if got != string(want) {
+		t.Errorf("got %v\nwant %v", got, string(want))
+	}
+}
+
 func TestOutputTable(t *testing.T) {
 	s := newTestSchema()
 	c, err := config.New()
@@ -58,6 +89,35 @@ func TestOutputTable(t *testing.T) {
 	buf := &bytes.Buffer{}
 	_ = o.OutputTable(buf, ta)
 	want, _ := ioutil.ReadFile(filepath.Join(testdataDir(), "dot_test_a.dot.golden"))
+	got := buf.String()
+	if got != string(want) {
+		t.Errorf("got %v\nwant %v", got, string(want))
+	}
+}
+
+func TestOutputTableTemplate(t *testing.T) {
+	s := newTestSchema()
+	c, err := config.New()
+	if err != nil {
+		t.Error(err)
+	}
+	err = c.LoadConfigFile(filepath.Join(testdataDir(), "out_templates_test_tbls.yml"))
+	if err != nil {
+		t.Error(err)
+	}
+	// use the templates in the testdata directory
+	c.Templates.Dot.Table = filepath.Join(testdataDir(), c.Templates.Dot.Table)
+
+	err = c.MergeAdditionalData(s)
+	if err != nil {
+		t.Error(err)
+	}
+	ta := s.Tables[0]
+
+	o := New(c)
+	buf := &bytes.Buffer{}
+	_ = o.OutputTable(buf, ta)
+	want, _ := ioutil.ReadFile(filepath.Join(testdataDir(), "dot_template_test_a.dot.golden"))
 	got := buf.String()
 	if got != string(want) {
 		t.Errorf("got %v\nwant %v", got, string(want))
