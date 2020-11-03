@@ -330,7 +330,7 @@ func (t *Table) CollectTablesAndRelations(distance int, root bool) ([]*Table, []
 	return uTables, uRelations, nil
 }
 
-func (s *Schema) MergeAutomaticRelations() {
+func (s *Schema) MergeDetectedRelation() {
 	pluralizeClient := pluralize.NewClient()
 	var (
 		err          error
@@ -341,7 +341,7 @@ func (s *Schema) MergeAutomaticRelations() {
 		for _, c := range t.Columns {
 			relation := &Relation{
 				Virtual: true,
-				Def:     "Automatic Relation",
+				Def:     "Detected Relation",
 				Table:   t,
 			}
 			index := strings.LastIndex(c.Name, "_")

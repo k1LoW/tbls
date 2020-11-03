@@ -13,7 +13,7 @@ import (
 
 func TestOutputSchema(t *testing.T) {
 	format := "svg"
-	
+
 	s := newTestSchema()
 	c, err := config.New()
 	if err != nil {
@@ -22,7 +22,7 @@ func TestOutputSchema(t *testing.T) {
 	option := config.ERFormat(format)
 	if err := c.LoadOption(option); err != nil {
 		t.Fatal(err)
-	}	
+	}
 	if err := c.LoadConfigFile(filepath.Join(testdataDir(), "out_test_tbls.yml")); err != nil {
 		t.Fatal(err)
 	}
@@ -52,7 +52,7 @@ func TestOutputTable(t *testing.T) {
 	option := config.ERFormat(format)
 	if err := c.LoadOption(option); err != nil {
 		t.Fatal(err)
-	}	
+	}
 	if err := c.LoadConfigFile(filepath.Join(testdataDir(), "out_test_tbls.yml")); err != nil {
 		t.Error(err)
 	}
