@@ -1,0 +1,33 @@
+@startuml
+{{ $sc := .showComment -}}
+!define table(name, desc) entity name as "desc" << (T,#5DBCD2) >>
+!define view(name, desc) entity name as "desc" << (V,#C6EDDB) >>
+!define column(name, type, desc) name <font color="#666666">[type]</font><font color="#333333">desc</font>
+hide methods
+hide stereotypes
+
+skinparam class {
+  BackgroundColor White
+  BorderColor #6E6E6E
+  ArrowColor Lime
+}
+
+' tables
+{{- range $i, $t := .Schema.Tables }}
+{{- if ne $t.Type "VIEW" }}
+table("{{ $t.Name }}", "{{ $t.Name }}{{ if $sc }}{{ if ne $t.Comment "" }}\n{{ $t.Comment | html | escape_nl }}{{ end }}{{ end }}") {
+{{- else }}
+view("{{ $t.Name }}", "{{ $t.Name }}{{ if $sc }}{{ if ne $t.Comment "" }}\n{{ $t.Comment | html | escape_nl }}{{ end }}{{ end }}") {
+{{- end }}
+{{- range $ii, $c := $t.Columns }}
+  column("{{ $c.Name | html }}", "{{ $c.Type | html }}", "{{ if $sc }}{{ if ne $c.Comment "" }} {{ $c.Comment | html | nl2space }}{{ end }}{{ end }}")
+{{- end }}
+}
+{{- end }}
+
+' relations
+{{- range $j, $r := .Schema.Relations }}
+"{{ $r.Table.Name }}" }-- "{{ $r.ParentTable.Name }}" : "{{ $r.Def | html }}"
+{{- end }}
+
+@enduml
