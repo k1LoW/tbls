@@ -22,6 +22,17 @@ var tests = []struct {
 	{"--adjust option", "README.md", "md_test_README.md.adjust.golden", true},
 }
 
+var testsTemplate = []struct {
+	name     string
+	gotFile  string
+	wantFile string
+	adjust   bool
+}{
+	{"README.md", "README.md", "md_template_test_README.md.golden", false},
+	{"a.md", "a.md", "md_template_test_a.md.golden", false},
+	{"--adjust option", "README.md", "md_template_test_README.md.adjust.golden", true},
+}
+
 func TestOutput(t *testing.T) {
 	for _, tt := range tests {
 		s := newTestSchema()
@@ -38,6 +49,48 @@ func TestOutput(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
+		err = c.MergeAdditionalData(s)
+		if err != nil {
+			t.Error(err)
+		}
+		err = Output(s, c, force)
+		if err != nil {
+			t.Error(err)
+		}
+		want, err := ioutil.ReadFile(filepath.Join(testdataDir(), tt.wantFile))
+		if err != nil {
+			t.Error(err)
+		}
+		got, err := ioutil.ReadFile(filepath.Join(tempDir, tt.gotFile))
+		if err != nil {
+			log.Fatal(err)
+		}
+		if string(got) != string(want) {
+			t.Errorf("got %v\nwant %v", string(got), string(want))
+		}
+	}
+}
+
+func TestOutputTemplate(t *testing.T) {
+	for _, tt := range testsTemplate {
+		s := newTestSchema()
+		c, err := config.New()
+		if err != nil {
+			t.Error(err)
+		}
+		tempDir, _ := ioutil.TempDir("", "tbls")
+		force := true
+		adjust := tt.adjust
+		erFormat := "png"
+		defer os.RemoveAll(tempDir)
+		err = c.Load(filepath.Join(testdataDir(), "out_templates_test_tbls.yml"), config.DocPath(tempDir), config.Adjust(adjust), config.ERFormat(erFormat))
+		if err != nil {
+			t.Error(err)
+		}
+		// use the templates in the testdata directory
+		c.Templates.MD.Table = filepath.Join(testdataDir(), c.Templates.MD.Table)
+		c.Templates.MD.Index = filepath.Join(testdataDir(), c.Templates.MD.Index)
+
 		err = c.MergeAdditionalData(s)
 		if err != nil {
 			t.Error(err)
