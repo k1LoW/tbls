@@ -47,6 +47,7 @@ type Config struct {
 	MergedDict  dict.Dict            `yaml:"-"`
 	Path        string               `yaml:"-"`
 	root        string               `yaml:"-"`
+	BaseUrl     string               `yaml:"baseUrl,omitempty"`
 }
 
 type DSN struct {
@@ -150,6 +151,16 @@ func ERFormat(erFormat string) Option {
 func Distance(distance int) Option {
 	return func(c *Config) error {
 		c.ER.Distance = &distance
+		return nil
+	}
+}
+
+// BaseUrl return Option set Config.BaseUrl
+func BaseUrl(baseUrl string) Option {
+	return func(c *Config) error {
+		if baseUrl != "" {
+			c.BaseUrl = baseUrl
+		}
 		return nil
 	}
 }
