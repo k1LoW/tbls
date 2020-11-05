@@ -545,9 +545,6 @@ er:
   # ER diagram (png/jpg) font (font name, font file, font path or keyword)
   # Default is "" ( system default )
   font: M+
-  # ER diagram dot format template, if specified this template file will be used
-  # in place of the defualt one to generate the dot file for graphviz
-  # template: schema.dot.tmpl
 ```
 
 It is also possible to personalize the output by providing your own templates.
