@@ -1,0 +1,24 @@
+---
+comments:
+  -
+    table: a
+    tableComment: TABLE A
+    columnComments:
+      a: COLUMN A
+    indexComments:
+      "PRIMARY KEY": PRIMARY
+    constraintComments:
+      PRIMARY: PRIMARY KEY
+    triggerComments:
+      update_a_a2: Update a2 when a update
+templates:
+  dot:
+    schema: 'templates/schema.dot.tmpl'
+    table: 'templates/table.dot.tmpl'
+  puml:
+    schema: 'templates/schema.puml.tmpl'
+    table: 'templates/table.puml.tmpl'
+  md:
+    index: 'templates/index.md.tmpl'
+    table: 'templates/table.md.tmpl'
+

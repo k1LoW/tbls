@@ -38,6 +38,35 @@ func TestOutputSchema(t *testing.T) {
 	}
 }
 
+func TestOutputSchemaTemplate(t *testing.T) {
+	s := newTestSchema()
+	c, err := config.New()
+	if err != nil {
+		t.Error(err)
+	}
+	err = c.LoadConfigFile(filepath.Join(testdataDir(), "out_templates_test_tbls.yml"))
+	if err != nil {
+		t.Error(err)
+	}
+	// use the templates in the testdata directory
+	c.Templates.PUML.Schema = filepath.Join(testdataDir(), c.Templates.PUML.Schema)
+	err = c.MergeAdditionalData(s)
+	if err != nil {
+		t.Error(err)
+	}
+	o := New(c)
+	buf := &bytes.Buffer{}
+	err = o.OutputSchema(buf, s)
+	if err != nil {
+		t.Error(err)
+	}
+	want, _ := ioutil.ReadFile(filepath.Join(testdataDir(), "plantuml_template_test_schema.puml.golden"))
+	got := buf.String()
+	if got != string(want) {
+		t.Errorf("got %v\nwant %v", got, string(want))
+	}
+}
+
 func TestOutputTable(t *testing.T) {
 	s := newTestSchema()
 	c, err := config.New()
@@ -58,6 +87,34 @@ func TestOutputTable(t *testing.T) {
 	buf := &bytes.Buffer{}
 	_ = o.OutputTable(buf, ta)
 	want, _ := ioutil.ReadFile(filepath.Join(testdataDir(), "plantuml_test_a.puml.golden"))
+	got := buf.String()
+	if got != string(want) {
+		t.Errorf("got %v\nwant %v", got, string(want))
+	}
+}
+
+func TestOutputTableTemplate(t *testing.T) {
+	s := newTestSchema()
+	c, err := config.New()
+	if err != nil {
+		t.Error(err)
+	}
+	err = c.LoadConfigFile(filepath.Join(testdataDir(), "out_templates_test_tbls.yml"))
+	if err != nil {
+		t.Error(err)
+	}
+	// use the templates in the testdata directory
+	c.Templates.PUML.Table = filepath.Join(testdataDir(), c.Templates.PUML.Table)
+	err = c.MergeAdditionalData(s)
+	if err != nil {
+		t.Error(err)
+	}
+	ta := s.Tables[0]
+
+	o := New(c)
+	buf := &bytes.Buffer{}
+	_ = o.OutputTable(buf, ta)
+	want, _ := ioutil.ReadFile(filepath.Join(testdataDir(), "plantuml_template_test_a.puml.golden"))
 	got := buf.String()
 	if got != string(want) {
 		t.Errorf("got %v\nwant %v", got, string(want))
