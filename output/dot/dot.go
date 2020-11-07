@@ -2,6 +2,7 @@ package dot
 
 import (
 	"io"
+	"io/ioutil"
 	"text/template"
 
 	"github.com/gobuffalo/packr/v2"
@@ -25,9 +26,41 @@ func New(c *config.Config) *Dot {
 	}
 }
 
+func (d *Dot) schemaTemplate() (string, error) {
+	if len(d.config.Templates.Dot.Schema) > 0 {
+		tb, err := ioutil.ReadFile(d.config.Templates.Dot.Schema)
+		if err != nil {
+			return string(tb), errors.WithStack(err)
+		}
+		return string(tb), nil
+	} else {
+		ts, err := d.box.FindString("schema.dot.tmpl")
+		if err != nil {
+			return ts, errors.WithStack(err)
+		}
+		return ts, nil
+	}
+}
+
+func (d *Dot) tableTemplate() (string, error) {
+	if len(d.config.Templates.Dot.Table) > 0 {
+		tb, err := ioutil.ReadFile(d.config.Templates.Dot.Table)
+		if err != nil {
+			return string(tb), errors.WithStack(err)
+		}
+		return string(tb), nil
+	} else {
+		ts, err := d.box.FindString("table.dot.tmpl")
+		if err != nil {
+			return ts, errors.WithStack(err)
+		}
+		return ts, nil
+	}
+}
+
 // OutputSchema output dot format for full relation.
 func (d *Dot) OutputSchema(wr io.Writer, s *schema.Schema) error {
-	ts, err := d.box.FindString("schema.dot.tmpl")
+	ts, err := d.schemaTemplate()
 	if err != nil {
 		return errors.WithStack(err)
 	}
@@ -50,7 +83,7 @@ func (d *Dot) OutputTable(wr io.Writer, t *schema.Table) error {
 		return errors.WithStack(err)
 	}
 
-	ts, err := d.box.FindString("table.dot.tmpl")
+	ts, err := d.tableTemplate()
 	if err != nil {
 		return errors.WithStack(err)
 	}

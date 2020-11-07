@@ -1,5 +1,10 @@
 # Changelog
 
+## [v1.44.0](https://github.com/k1LoW/tbls/compare/v1.43.1...v1.44.0) (2020-11-05)
+
+* Bump up go version [#262](https://github.com/k1LoW/tbls/pull/262) ([k1LoW](https://github.com/k1LoW))
+* Support personalized templates [#258](https://github.com/k1LoW/tbls/pull/258) ([folago](https://github.com/folago))
+
 ## [v1.43.1](https://github.com/k1LoW/tbls/compare/v1.43.0...v1.43.1) (2020-08-13)
 
 * Remove array_remove() for supporting PostgreSQL 9.2 [#253](https://github.com/k1LoW/tbls/pull/253) ([k1LoW](https://github.com/k1LoW))
