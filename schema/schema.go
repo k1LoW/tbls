@@ -3,10 +3,10 @@ package schema
 import (
 	"database/sql"
 	"fmt"
+	"github.com/k1LoW/tbls/config"
 	"sort"
 	"strings"
 
-	"github.com/gertd/go-pluralize"
 	"github.com/k1LoW/tbls/dict"
 	"github.com/pkg/errors"
 )
@@ -331,7 +331,6 @@ func (t *Table) CollectTablesAndRelations(distance int, root bool) ([]*Table, []
 }
 
 func (s *Schema) MergeDetectedRelation() {
-	pluralizeClient := pluralize.NewClient()
 	var (
 		err          error
 		parentColumn *Column
@@ -344,15 +343,11 @@ func (s *Schema) MergeDetectedRelation() {
 				Def:     "Detected Relation",
 				Table:   t,
 			}
-			index := strings.LastIndex(c.Name, "_")
 
-			if index == -1 || c.Name[index+1:len(c.Name)] != "id" {
+			if relation.ParentTable, err = s.FindTableByName(config.ToParentTableName(c.Name)); err != nil {
 				continue
 			}
-			if relation.ParentTable, err = s.FindTableByName(pluralizeClient.Plural(c.Name[:index])); err != nil {
-				continue
-			}
-			if parentColumn, err = relation.ParentTable.FindColumnByName("id"); err != nil {
+			if parentColumn, err = relation.ParentTable.FindColumnByName(config.ToParentColumnName(c.Name)); err != nil {
 				continue
 			}
 

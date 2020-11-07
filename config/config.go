@@ -30,24 +30,24 @@ var DefaultDistance = 1
 
 // Config is tbls config
 type Config struct {
-	Name                  string               `yaml:"name"`
-	Desc                  string               `yaml:"desc,omitempty"`
-	Labels                []string             `yaml:"labels,omitempty"`
-	DSN                   DSN                  `yaml:"dsn"`
-	DocPath               string               `yaml:"docPath"`
-	Format                Format               `yaml:"format,omitempty"`
-	ER                    ER                   `yaml:"er,omitempty"`
-	Include               []string             `yaml:"include,omitempty"`
-	Exclude               []string             `yaml:"exclude,omitempty"`
-	Lint                  Lint                 `yaml:"lint,omitempty"`
-	LintExclude           []string             `yaml:"lintExclude,omitempty"`
-	ShouldDetectRelations bool                 `yaml:"shouldDetectRelations,omitempty"`
-	Relations             []AdditionalRelation `yaml:"relations,omitempty"`
-	Comments              []AdditionalComment  `yaml:"comments,omitempty"`
-	Dict                  dict.Dict            `yaml:"dict,omitempty"`
-	MergedDict            dict.Dict            `yaml:"-"`
-	Path                  string               `yaml:"-"`
-	root                  string               `yaml:"-"`
+	Name        string               `yaml:"name"`
+	Desc        string               `yaml:"desc,omitempty"`
+	Labels      []string             `yaml:"labels,omitempty"`
+	DSN         DSN                  `yaml:"dsn"`
+	DocPath     string               `yaml:"docPath"`
+	Format      Format               `yaml:"format,omitempty"`
+	ER          ER                   `yaml:"er,omitempty"`
+	Include     []string             `yaml:"include,omitempty"`
+	Exclude     []string             `yaml:"exclude,omitempty"`
+	Lint        Lint                 `yaml:"lint,omitempty"`
+	LintExclude []string             `yaml:"lintExclude,omitempty"`
+	Naming      Naming               `yaml:"naming,omitempty"`
+	Relations   []AdditionalRelation `yaml:"relations,omitempty"`
+	Comments    []AdditionalComment  `yaml:"comments,omitempty"`
+	Dict        dict.Dict            `yaml:"dict,omitempty"`
+	MergedDict  dict.Dict            `yaml:"-"`
+	Path        string               `yaml:"-"`
+	root        string               `yaml:"-"`
 }
 
 type DSN struct {
@@ -88,6 +88,11 @@ type AdditionalComment struct {
 	ConstraintComments map[string]string `yaml:"constraintComments,omitempty"`
 	TriggerComments    map[string]string `yaml:"triggerComments,omitempty"`
 	Labels             []string          `yaml:"labels,omitempty"`
+}
+
+type Naming struct {
+	Strategy        string
+	DetectRelations bool
 }
 
 // Option function change Config
@@ -302,7 +307,8 @@ func (c *Config) ModifySchema(s *schema.Schema) error {
 			return err
 		}
 	}
-	if c.ShouldDetectRelations {
+	if c.Naming.DetectRelations {
+		SelectNamingStrategy(c.Naming.Strategy)
 		s.MergeDetectedRelation()
 	}
 	c.mergeDictFromSchema(s)
