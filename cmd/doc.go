@@ -198,7 +198,7 @@ func init() {
 	docCmd.Flags().BoolVarP(&withoutER, "without-er", "", false, "no generate ER diagrams")
 	docCmd.Flags().BoolVarP(&adjust, "adjust-table", "j", false, "adjust column width of table")
 	docCmd.Flags().StringVarP(&when, "when", "", "", "command execute condition")
-	docCmd.Flags().StringVarP(&baseUrl, "baseUrl", "b", "", "base url for links")
+	docCmd.Flags().StringVarP(&baseUrl, "base-url", "b", "", "base url for links")
 	if err := docCmd.MarkZshCompPositionalArgumentFile(2); err != nil {
 		_, _ = fmt.Fprintf(os.Stderr, "%s\n", err)
 		os.Exit(1)
