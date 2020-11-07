@@ -91,8 +91,8 @@ type AdditionalComment struct {
 }
 
 type Naming struct {
-	Strategy        string
-	DetectRelations bool
+	Strategy        string `yaml:"strategy,omitempty"`
+	DetectRelations bool   `yaml:"detectRelations,omitempty"`
 }
 
 // Option function change Config
@@ -307,9 +307,8 @@ func (c *Config) ModifySchema(s *schema.Schema) error {
 			return err
 		}
 	}
-	if c.Naming.DetectRelations {
-		SelectNamingStrategy(c.Naming.Strategy)
-		s.MergeDetectedRelation()
+	if c.Naming.DetectRelations && SelectNamingStrategy(c.Naming.Strategy) {
+		mergeDetectedRelations(s)
 	}
 	c.mergeDictFromSchema(s)
 	return nil
@@ -497,6 +496,38 @@ func mergeAdditionalComments(s *schema.Schema, comments []AdditionalComment) err
 		}
 	}
 	return nil
+}
+
+func mergeDetectedRelations(s *schema.Schema) {
+	var (
+		err          error
+		parentColumn *schema.Column
+	)
+
+	for _, t := range s.Tables {
+		for _, c := range t.Columns {
+			relation := &schema.Relation{
+				Virtual: true,
+				Def:     "Detected Relation",
+				Table:   t,
+			}
+
+			if relation.ParentTable, err = s.FindTableByName(ToParentTableName(c.Name)); err != nil {
+				continue
+			}
+			if parentColumn, err = relation.ParentTable.FindColumnByName(ToParentColumnName(c.Name)); err != nil {
+				continue
+			}
+
+			relation.Columns = append(relation.Columns, c)
+			relation.ParentColumns = append(relation.ParentColumns, parentColumn)
+
+			c.ParentRelations = append(c.ParentRelations, relation)
+			parentColumn.ChildRelations = append(parentColumn.ChildRelations, relation)
+
+			s.Relations = append(s.Relations, relation)
+		}
+	}
 }
 
 func parseWithEnviron(v string) (string, error) {

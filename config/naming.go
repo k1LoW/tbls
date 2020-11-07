@@ -24,15 +24,16 @@ type NamingStrategy struct {
 }
 
 // SelectNamingStrategy sets the naming strategy
-func SelectNamingStrategy(name string) {
-	if name == "" {
-		return
-	}
+func SelectNamingStrategy(name string) bool {
 	switch name {
+	case "":
 	// TODO: Add case if added naming strategy
 	default:
-		fmt.Println("Not exists naming strategy")
+		fmt.Printf("Naming strategy does not exist. strategy: %s\n", name)
+		return false
 	}
+
+	return true
 }
 
 // ParentTableName alters the given name by Table

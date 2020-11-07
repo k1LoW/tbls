@@ -3,7 +3,6 @@ package schema
 import (
 	"database/sql"
 	"fmt"
-	"github.com/k1LoW/tbls/config"
 	"sort"
 	"strings"
 
@@ -328,36 +327,4 @@ func (t *Table) CollectTablesAndRelations(distance int, root bool) ([]*Table, []
 	}
 
 	return uTables, uRelations, nil
-}
-
-func (s *Schema) MergeDetectedRelation() {
-	var (
-		err          error
-		parentColumn *Column
-	)
-
-	for _, t := range s.Tables {
-		for _, c := range t.Columns {
-			relation := &Relation{
-				Virtual: true,
-				Def:     "Detected Relation",
-				Table:   t,
-			}
-
-			if relation.ParentTable, err = s.FindTableByName(config.ToParentTableName(c.Name)); err != nil {
-				continue
-			}
-			if parentColumn, err = relation.ParentTable.FindColumnByName(config.ToParentColumnName(c.Name)); err != nil {
-				continue
-			}
-
-			relation.Columns = append(relation.Columns, c)
-			relation.ParentColumns = append(relation.ParentColumns, parentColumn)
-
-			c.ParentRelations = append(c.ParentRelations, relation)
-			parentColumn.ChildRelations = append(parentColumn.ChildRelations, relation)
-
-			s.Relations = append(s.Relations, relation)
-		}
-	}
 }
