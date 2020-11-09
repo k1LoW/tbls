@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"reflect"
 	"testing"
 
 	"github.com/k1LoW/tbls/schema"
@@ -462,4 +463,150 @@ func testdataDir() string {
 	wd, _ := os.Getwd()
 	dir, _ := filepath.Abs(filepath.Join(filepath.Dir(wd), "testdata"))
 	return dir
+}
+
+func Test_mergeDetectedRelations(t *testing.T) {
+	var (
+		err          error
+		table        *schema.Table
+		column       *schema.Column
+		parentColumn *schema.Column
+		relations    []*schema.Relation
+	)
+	s1 := &schema.Schema{
+		Name: "testschema",
+		Tables: []*schema.Table{
+			{
+				Name:    "users",
+				Comment: "users comment",
+				Columns: []*schema.Column{
+					{
+						Name: "id",
+						Type: "serial",
+					},
+					{
+						Name: "username",
+						Type: "text",
+					},
+				},
+			},
+			{
+				Name:    "posts",
+				Comment: "posts comment",
+				Columns: []*schema.Column{
+					{
+						Name: "id",
+						Type: "serial",
+					},
+					{
+						Name: "user_id",
+						Type: "int",
+					},
+					{
+						Name: "title",
+						Type: "text",
+					},
+				},
+			},
+		},
+	}
+	s2 := &schema.Schema{
+		Name: "testschema",
+		Tables: []*schema.Table{
+			{
+				Name:    "users",
+				Comment: "users comment",
+				Columns: []*schema.Column{
+					{
+						Name: "id",
+						Type: "serial",
+					},
+				},
+			},
+			{
+				Name:    "posts",
+				Comment: "posts comment",
+				Columns: []*schema.Column{
+					{
+						Name: "id",
+						Type: "serial",
+					},
+					{
+						Name: "uid",
+						Type: "int",
+					},
+					{
+						Name: "title",
+						Type: "text",
+					},
+				},
+			},
+		},
+	}
+	table, err = s1.FindTableByName("posts")
+	if err != nil {
+		t.Fatal(err)
+	}
+	column, err = table.FindColumnByName("user_id")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	relation := &schema.Relation{
+		Virtual: true,
+		Def:     "Detected Relation",
+		Table:   table,
+	}
+	if relation.ParentTable, err = s1.FindTableByName(ToParentTableName("user_id")); err != nil {
+		t.Fatal(err)
+	}
+	if parentColumn, err = relation.ParentTable.FindColumnByName(ToParentColumnName("users")); err != nil {
+		t.Fatal(err)
+	}
+	relation.Columns = append(relation.Columns, column)
+	relation.ParentColumns = append(relation.ParentColumns, parentColumn)
+
+	column.ParentRelations = append(column.ParentRelations, relation)
+	parentColumn.ChildRelations = append(parentColumn.ChildRelations, relation)
+
+	relations = append(relations, relation)
+
+	type args struct {
+		s *schema.Schema
+	}
+	type want struct {
+		r []*schema.Relation
+	}
+	tests := []struct {
+		name string
+		args args
+		want want
+	}{
+		{
+			name: "Detect relation succeed",
+			args: args{
+				s: s1,
+			},
+			want: want{
+				r: relations,
+			},
+		},
+		{
+			name: "Detect relation failed",
+			args: args{
+				s: s2,
+			},
+			want: want{
+				r: nil,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			mergeDetectedRelations(tt.args.s)
+			if !reflect.DeepEqual(tt.args.s.Relations, tt.want.r) {
+				t.Errorf("got: %#v\nwant: %#v", tt.args.s.Relations, tt.want.r)
+			}
+		})
+	}
 }
