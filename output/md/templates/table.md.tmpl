@@ -53,7 +53,7 @@
 {{- if .er -}}
 ## {{ "Relations" | lookup }}
 
-![er]({{ .Table.Name }}.{{ .erFormat }})
+![er]({{ .baseUrl }}{{ .Table.Name }}.{{ .erFormat }})
 
 {{ end -}}
 ---

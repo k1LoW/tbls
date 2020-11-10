@@ -77,6 +77,7 @@ func (m *Md) OutputSchema(wr io.Writer, s *schema.Schema) error {
 	templateData := m.makeSchemaTemplateData(s, m.config.Format.Adjust)
 	templateData["er"] = m.er
 	templateData["erFormat"] = m.config.ER.Format
+	templateData["baseUrl"] = m.config.BaseUrl
 	err = tmpl.Execute(wr, templateData)
 	if err != nil {
 		return errors.WithStack(err)
@@ -94,6 +95,7 @@ func (m *Md) OutputTable(wr io.Writer, t *schema.Table) error {
 	templateData := m.makeTableTemplateData(t, m.config.Format.Adjust)
 	templateData["er"] = m.er
 	templateData["erFormat"] = m.config.ER.Format
+	templateData["baseUrl"] = m.config.BaseUrl
 
 	err = tmpl.Execute(wr, templateData)
 	if err != nil {
@@ -295,7 +297,7 @@ func (m *Md) makeSchemaTemplateData(s *schema.Schema, adjust bool) map[string]in
 	}
 	for _, t := range s.Tables {
 		data := []string{
-			fmt.Sprintf("[%s](%s.md)", t.Name, t.Name),
+			fmt.Sprintf("[%s](%s%s.md)", t.Name, m.config.BaseUrl, t.Name),
 			fmt.Sprintf("%d", len(t.Columns)),
 			t.Comment,
 			t.Type,
@@ -337,7 +339,7 @@ func (m *Md) makeTableTemplateData(t *schema.Table, adjust bool) map[string]inte
 			if _, ok := cEncountered[r.Table.Name]; ok {
 				continue
 			}
-			childRelations = append(childRelations, fmt.Sprintf("[%s](%s.md)", r.Table.Name, r.Table.Name))
+			childRelations = append(childRelations, fmt.Sprintf("[%s](%s%s.md)", r.Table.Name, m.config.BaseUrl, r.Table.Name))
 			cEncountered[r.Table.Name] = true
 		}
 		parentRelations := []string{}
@@ -346,7 +348,7 @@ func (m *Md) makeTableTemplateData(t *schema.Table, adjust bool) map[string]inte
 			if _, ok := pEncountered[r.ParentTable.Name]; ok {
 				continue
 			}
-			parentRelations = append(parentRelations, fmt.Sprintf("[%s](%s.md)", r.ParentTable.Name, r.ParentTable.Name))
+			parentRelations = append(parentRelations, fmt.Sprintf("[%s](%s%s.md)", r.ParentTable.Name, m.config.BaseUrl, r.ParentTable.Name))
 			pEncountered[r.ParentTable.Name] = true
 		}
 		data := []string{

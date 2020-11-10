@@ -9,3 +9,4 @@ testdb.sqlite3
 .tbls.yml
 *client_secrets.json*
 .DS_Store
+.idea

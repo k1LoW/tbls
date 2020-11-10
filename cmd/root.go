@@ -56,6 +56,8 @@ var erFormat string
 // when is a option that command execute condition
 var when string
 
+var baseUrl string
+
 const rootUsageTemplate = `Usage:{{if .Runnable}}{{if ne .UseLine "tbls [flags]" }}
   {{.UseLine}}{{end}}{{end}}{{if .HasAvailableSubCommands}}
   {{.CommandPath}} [command]{{end}}{{if gt (len .Aliases) 0}}
