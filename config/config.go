@@ -30,25 +30,26 @@ var DefaultDistance = 1
 
 // Config is tbls config
 type Config struct {
-	Name        string               `yaml:"name"`
-	Desc        string               `yaml:"desc,omitempty"`
-	Labels      []string             `yaml:"labels,omitempty"`
-	DSN         DSN                  `yaml:"dsn"`
-	DocPath     string               `yaml:"docPath"`
-	Format      Format               `yaml:"format,omitempty"`
-	ER          ER                   `yaml:"er,omitempty"`
-	Include     []string             `yaml:"include,omitempty"`
-	Exclude     []string             `yaml:"exclude,omitempty"`
-	Lint        Lint                 `yaml:"lint,omitempty"`
-	LintExclude []string             `yaml:"lintExclude,omitempty"`
-	Relations   []AdditionalRelation `yaml:"relations,omitempty"`
-	Comments    []AdditionalComment  `yaml:"comments,omitempty"`
-	Dict        dict.Dict            `yaml:"dict,omitempty"`
-	Templates   Templates            `yaml:"templates,omitempty"`
-	MergedDict  dict.Dict            `yaml:"-"`
-	Path        string               `yaml:"-"`
-	root        string               `yaml:"-"`
-	BaseUrl     string               `yaml:"baseUrl,omitempty"`
+	Name                   string                 `yaml:"name"`
+	Desc                   string                 `yaml:"desc,omitempty"`
+	Labels                 []string               `yaml:"labels,omitempty"`
+	DSN                    DSN                    `yaml:"dsn"`
+	DocPath                string                 `yaml:"docPath"`
+	Format                 Format                 `yaml:"format,omitempty"`
+	ER                     ER                     `yaml:"er,omitempty"`
+	Include                []string               `yaml:"include,omitempty"`
+	Exclude                []string               `yaml:"exclude,omitempty"`
+	Lint                   Lint                   `yaml:"lint,omitempty"`
+	LintExclude            []string               `yaml:"lintExclude,omitempty"`
+	Relations              []AdditionalRelation   `yaml:"relations,omitempty"`
+	Comments               []AdditionalComment    `yaml:"comments,omitempty"`
+	Dict                   dict.Dict              `yaml:"dict,omitempty"`
+	Templates              Templates              `yaml:"templates,omitempty"`
+	DetectVirtualRelations DetectVirtualRelations `yaml:"detectVirtualRelations,omitempty"`
+	MergedDict             dict.Dict              `yaml:"-"`
+	Path                   string                 `yaml:"-"`
+	root                   string                 `yaml:"-"`
+	BaseUrl                string                 `yaml:"baseUrl,omitempty"`
 }
 
 type DSN struct {
@@ -89,6 +90,11 @@ type AdditionalComment struct {
 	ConstraintComments map[string]string `yaml:"constraintComments,omitempty"`
 	TriggerComments    map[string]string `yaml:"triggerComments,omitempty"`
 	Labels             []string          `yaml:"labels,omitempty"`
+}
+
+type DetectVirtualRelations struct {
+	Enabled  bool   `yaml:"enabled,omitempty"`
+	Strategy string `yaml:"strategy,omitempty"`
 }
 
 // Option function change Config
@@ -313,6 +319,9 @@ func (c *Config) ModifySchema(s *schema.Schema) error {
 			return err
 		}
 	}
+	if c.DetectVirtualRelations.Enabled && SelectNamingStrategy(c.DetectVirtualRelations.Strategy) {
+		mergeDetectedRelations(s)
+	}
 	c.mergeDictFromSchema(s)
 	return nil
 }
@@ -499,6 +508,38 @@ func mergeAdditionalComments(s *schema.Schema, comments []AdditionalComment) err
 		}
 	}
 	return nil
+}
+
+func mergeDetectedRelations(s *schema.Schema) {
+	var (
+		err          error
+		parentColumn *schema.Column
+	)
+
+	for _, t := range s.Tables {
+		for _, c := range t.Columns {
+			relation := &schema.Relation{
+				Virtual: true,
+				Def:     "Detected Relation",
+				Table:   t,
+			}
+
+			if relation.ParentTable, err = s.FindTableByName(ToParentTableName(c.Name)); err != nil {
+				continue
+			}
+			if parentColumn, err = relation.ParentTable.FindColumnByName(ToParentColumnName(c.Name)); err != nil {
+				continue
+			}
+
+			relation.Columns = append(relation.Columns, c)
+			relation.ParentColumns = append(relation.ParentColumns, parentColumn)
+
+			c.ParentRelations = append(c.ParentRelations, relation)
+			parentColumn.ChildRelations = append(parentColumn.ChildRelations, relation)
+
+			s.Relations = append(s.Relations, relation)
+		}
+	}
 }
 
 func parseWithEnviron(v string) (string, error) {

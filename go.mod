@@ -9,6 +9,7 @@ require (
 	github.com/aws/aws-sdk-go v1.35.21
 	github.com/beta/freetype v0.0.1
 	github.com/denisenkom/go-mssqldb v0.0.0-20201105052611-0f236ab67f08
+	github.com/gertd/go-pluralize v0.1.7
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/gobuffalo/packr/v2 v2.8.0
 	github.com/goccy/go-graphviz v0.0.8

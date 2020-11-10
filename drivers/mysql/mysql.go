@@ -367,7 +367,6 @@ WHERE table_schema = ? AND table_name = ? ORDER BY ordinal_position`, s.Name, ta
 			column.ChildRelations = append(column.ChildRelations, r)
 		}
 	}
-
 	s.Relations = relations
 
 	return nil
