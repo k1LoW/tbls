@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.45.0](https://github.com/k1LoW/tbls/compare/v1.44.0...v1.45.0) (2020-11-10)
+
+* Add flag that it should deltect relations  [#260](https://github.com/k1LoW/tbls/pull/260) ([syarig](https://github.com/syarig))
+* [BigQuery] Sort labels [#263](https://github.com/k1LoW/tbls/pull/263) ([k1LoW](https://github.com/k1LoW))
+* Add baseUrl flag for links [#261](https://github.com/k1LoW/tbls/pull/261) ([wubin1989](https://github.com/wubin1989))
+
 ## [v1.44.0](https://github.com/k1LoW/tbls/compare/v1.43.1...v1.44.0) (2020-11-05)
 
 * Bump up go version [#262](https://github.com/k1LoW/tbls/pull/262) ([k1LoW](https://github.com/k1LoW))
