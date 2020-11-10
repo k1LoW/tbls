@@ -3,6 +3,7 @@ package bq
 import (
 	"context"
 	"fmt"
+	"sort"
 	"strings"
 
 	"cloud.google.com/go/bigquery"
@@ -43,6 +44,7 @@ func (b *Bigquery) Analyze(s *schema.Schema) error {
 	for k, v := range m.Labels {
 		s.Labels = append(s.Labels, &schema.Label{Name: fmt.Sprintf("%s:%s", k, v), Virtual: false})
 	}
+	sort.SliceStable(s.Labels, func(i, j int) bool { return s.Labels[i].Name < s.Labels[j].Name })
 
 	bt := ds.Tables(b.ctx)
 
@@ -64,6 +66,7 @@ func (b *Bigquery) Analyze(s *schema.Schema) error {
 		for k, v := range m.Labels {
 			labels = append(labels, &schema.Label{Name: fmt.Sprintf("%s:%s", k, v), Virtual: false})
 		}
+		sort.SliceStable(labels, func(i, j int) bool { return labels[i].Name < labels[j].Name })
 
 		splitted := strings.Split(m.FullID, fmt.Sprintf("%s.", b.datasetID))
 
