@@ -59,6 +59,7 @@ testdoc: testdoc_sqlite
 	./tbls diff pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -c testdata/test_tbls_postgres.yml sample/postgres
 	./tbls diff my://root:mypass@localhost:33306/testdb -c testdata/test_tbls.yml sample/mysql
 	./tbls diff my://root:mypass@localhost:33308/testdb -c testdata/test_tbls.yml sample/mysql8
+	./tbls diff my://root:mypass@localhost:33308/norelation -c testdata/test_tbls_detect_relations.yml sample/detect_relations
 	./tbls diff ms://SA:MSSQLServer-Passw0rd@localhost:11433/testdb -c testdata/test_tbls_mssql.yml sample/mssql
 	env AWS_ENDPOINT_URL=http://localhost:18000 ./tbls diff dynamodb://ap-northeast-1 -c testdata/test_tbls_dynamodb.yml sample/dynamodb
 	./tbls diff pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -c testdata/test_tbls_postgres.yml -j sample/adjust
