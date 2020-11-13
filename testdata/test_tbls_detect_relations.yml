@@ -1,0 +1,38 @@
+---
+desc: Sample database document.
+labels:
+  - sample
+  - tbls
+detectVirtualRelations:
+  enabled: true
+lint:
+  requireColumnComment:
+    enabled: true
+    exclude:
+      - id
+      - created
+      - updated
+  columnCount:
+    enabled: true
+    max: 5
+comments:
+  -
+    table: posts
+    columnComments:
+      body: post body
+    labels:
+      - green
+      - red
+      - blue
+  -
+    table: logs
+  -
+    table: post_comments
+    tableComment: post and comments View table
+    columnComments:
+      id: comments.id
+      title: posts.title
+      post_user: posts.users.username
+      comment_user: comments.users.username
+      created: comments.created
+      updated: comments.updated
