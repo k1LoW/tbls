@@ -8,7 +8,7 @@ post and comments View table
 <summary><strong>Table Definition</strong></summary>
 
 ```sql
-CREATE VIEW post_comments AS (select `c`.`id` AS `id`,`p`.`title` AS `title`,`u2`.`username` AS `post_user`,`c`.`comment` AS `comment`,`u2`.`username` AS `comment_user`,`c`.`created` AS `created`,`c`.`updated` AS `updated` from (((`norelation`.`posts` `p` left join `norelation`.`comments` `c` on((`p`.`id` = `c`.`post_id`))) left join `norelation`.`users` `u` on((`u`.`id` = `p`.`user_id`))) left join `norelation`.`users` `u2` on((`u2`.`id` = `c`.`user_id`))))
+CREATE VIEW post_comments AS (select `c`.`id` AS `id`,`p`.`title` AS `title`,`u2`.`username` AS `post_user`,`c`.`comment` AS `comment`,`u2`.`username` AS `comment_user`,`c`.`created` AS `created`,`c`.`updated` AS `updated` from (((`relations`.`posts` `p` left join `relations`.`comments` `c` on((`p`.`id` = `c`.`post_id`))) left join `relations`.`users` `u` on((`u`.`id` = `p`.`user_id`))) left join `relations`.`users` `u2` on((`u2`.`id` = `c`.`user_id`))))
 ```
 
 </details>

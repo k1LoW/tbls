@@ -27,7 +27,7 @@ CREATE TABLE `users` (
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | int |  | false | [comment_stars](comment_stars.md) [comments](comments.md) [logs](logs.md) [posts](posts.md) |  |  |
+| id | int |  | false | [user_options](user_options.md) [comment_stars](comment_stars.md) [comments](comments.md) [logs](logs.md) [posts](posts.md) |  |  |
 | username | varchar(50) |  | false |  |  |  |
 | password | varchar(50) |  | false |  |  |  |
 | email | varchar(355) |  | false |  |  | ex. user@example.com |
