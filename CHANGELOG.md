@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.45.1](https://github.com/k1LoW/tbls/compare/v1.45.0...v1.45.1) (2020-11-23)
+
+* Fix detectVirtualRelations: default strategy [#264](https://github.com/k1LoW/tbls/pull/264) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.45.0](https://github.com/k1LoW/tbls/compare/v1.44.0...v1.45.0) (2020-11-10)
 
 * Add flag that it should deltect relations  [#260](https://github.com/k1LoW/tbls/pull/260) ([syarig](https://github.com/syarig))
