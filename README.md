@@ -762,6 +762,15 @@ relations:
 
 ![img](sample/mysql/logs.svg)
 
+#### Automatically detect relations
+
+`detectVirtualRelations:` if enabled, automatically detect relations from table and column names.
+
+``` yaml
+detectVirtualRelations:
+  enabled: true
+```
+
 ### Dictionary
 
 `dict:` is used to replace title/table header of database document
