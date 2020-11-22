@@ -534,9 +534,13 @@ func mergeDetectedRelations(s *schema.Schema) {
 			relation.Columns = append(relation.Columns, c)
 			relation.ParentColumns = append(relation.ParentColumns, parentColumn)
 
+			if _, err := s.FindRelation(relation.Columns, relation.ParentColumns); err == nil {
+				// If the relation already exists, do not create a new virtual relation.
+				continue
+			}
+
 			c.ParentRelations = append(c.ParentRelations, relation)
 			parentColumn.ChildRelations = append(parentColumn.ChildRelations, relation)
-
 			s.Relations = append(s.Relations, relation)
 		}
 	}

@@ -24,6 +24,7 @@ CREATE TABLE user_options (
   created timestamp NOT NULL,
   updated timestamp,
   UNIQUE(user_id),
+  CONSTRAINT user_options_user_id_fk FOREIGN KEY(user_id) REFERENCES users(id) ON UPDATE NO ACTION ON DELETE CASCADE
 ) COMMENT = 'User options table';
 
 CREATE TABLE posts (

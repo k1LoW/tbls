@@ -139,6 +139,40 @@ func (s *Schema) FindTableByName(name string) (*Table, error) {
 	return nil, errors.WithStack(fmt.Errorf("not found table '%s'", name))
 }
 
+// FindRelation ...
+func (s *Schema) FindRelation(cs, pcs []*Column) (*Relation, error) {
+L:
+	for _, r := range s.Relations {
+		if len(r.Columns) != len(cs) || len(r.ParentColumns) != len(pcs) {
+			continue
+		}
+		for _, rc := range r.Columns {
+			exist := false
+			for _, cc := range cs {
+				if rc == cc {
+					exist = true
+				}
+			}
+			if !exist {
+				continue L
+			}
+		}
+		for _, rc := range r.ParentColumns {
+			exist := false
+			for _, cc := range pcs {
+				if rc == cc {
+					exist = true
+				}
+			}
+			if !exist {
+				continue L
+			}
+		}
+		return r, nil
+	}
+	return nil, errors.WithStack(fmt.Errorf("not found relation '%v, %v'", cs, pcs))
+}
+
 // FindColumnByName find column by column name
 func (t *Table) FindColumnByName(name string) (*Column, error) {
 	for _, c := range t.Columns {
@@ -179,6 +213,7 @@ func (t *Table) FindTriggerByName(name string) (*Trigger, error) {
 	return nil, errors.WithStack(fmt.Errorf("not found trigger '%s' on table '%s'", name, t.Name))
 }
 
+// FindConstrainsByColumnName find constraint by column name
 func (t *Table) FindConstrainsByColumnName(name string) []*Constraint {
 	cts := []*Constraint{}
 	for _, ct := range t.Constraints {

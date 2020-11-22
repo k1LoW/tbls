@@ -27,7 +27,7 @@ jobs:
           sudo pip install codecov
 
       - name: Install aws-cli
-        uses: chrislennon/action-aws-cli@v1.1
+        uses: isbang/setup-awscli@v0.1.0
 
       - name: Check out source code
         uses: actions/checkout@v2
@@ -74,7 +74,7 @@ jobs:
           choco install sqlite
 
       - name: Install aws-cli
-        uses: chrislennon/action-aws-cli@v1.1
+        uses: isbang/setup-awscli@v0.1.0
 
       - name: Use LF
         run: |
