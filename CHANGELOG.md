@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.45.2](https://github.com/k1LoW/tbls/compare/v1.45.1...v1.45.2) (2020-11-26)
+
+* Fix external sub-command logic [#265](https://github.com/k1LoW/tbls/pull/265) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.45.1](https://github.com/k1LoW/tbls/compare/v1.45.0...v1.45.1) (2020-11-23)
 
 * Fix detectVirtualRelations: default strategy [#264](https://github.com/k1LoW/tbls/pull/264) ([k1LoW](https://github.com/k1LoW))
