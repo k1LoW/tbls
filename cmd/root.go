@@ -125,6 +125,7 @@ var rootCmd = &cobra.Command{
 			cmd.PrintErrln("Run 'tbls --help' for usage.")
 			return
 		}
+		args = args[1:]
 
 		cfg, err := config.New()
 		if err != nil {
