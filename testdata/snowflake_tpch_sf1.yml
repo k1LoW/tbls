@@ -1,0 +1,60 @@
+docPath: sample/snowflake
+relations:
+  -
+    table: CUSTOMER
+    columns:
+      - C_NATIONKEY
+    parentTable: NATION
+    parentColumns:
+      - N_NATIONKEY
+  -
+    table: LINEITEM
+    columns:
+      - L_PARTKEY
+      - L_SUPPKEY
+    parentTable: PARTSUPP
+    parentColumns:
+      - PS_PARTKEY
+      - PS_SUPPKEY
+  -
+    table: LINEITEM
+    columns:
+      - L_ORDERKEY
+    parentTable: ORDERS
+    parentColumns:
+      - O_ORDERKEY
+  -
+    table: NATION
+    columns:
+      - N_REGIONKEY
+    parentTable: REGION
+    parentColumns:
+      - R_REGIONKEY
+  -
+    table: ORDERS
+    columns:
+      - O_CUSTKEY
+    parentTable: CUSTOMER
+    parentColumns:
+      - C_CUSTKEY
+  -
+    table: PARTSUPP
+    columns:
+      - PS_PARTKEY
+    parentTable: PART
+    parentColumns:
+      - P_PARTKEY
+  -
+    table: PARTSUPP
+    columns:
+      - PS_SUPPKEY
+    parentTable: SUPPLIER
+    parentColumns:
+      - S_SUPPKEY
+  -
+    table: SUPPLIER
+    columns:
+      - S_NATIONKEY
+    parentTable: NATION
+    parentColumns:
+      - N_NATIONKEY
