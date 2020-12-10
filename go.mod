@@ -25,6 +25,7 @@ require (
 	github.com/minio/minio v0.0.0-20201104210605-71753e21e0d7
 	github.com/pkg/errors v0.9.1
 	github.com/pmezard/go-difflib v1.0.0
+	github.com/snowflakedb/gosnowflake v1.3.11
 	github.com/spf13/cobra v1.1.1
 	github.com/xo/dburl v0.0.0-20200910011426-652e0d5720a3
 	golang.org/x/image v0.0.0-20200927104501-e162460cd6b5

@@ -491,6 +491,16 @@ dsn:
     Authorization: token GITHUB_OAUTH_TOKEN
 ```
 
+**Snowflake:**
+
+``` yaml
+---
+# .tbls.yml
+dsn: snowflake://user:password@myaccount/mydb/myschema
+```
+
+See also: https://pkg.go.dev/github.com/snowflakedb/gosnowflake
+
 ### Document path
 
 `tbls doc` generates document in the directory specified by `docPath:`.

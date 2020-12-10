@@ -26,6 +26,7 @@ import (
 	"github.com/k1LoW/tbls/drivers/mysql"
 	"github.com/k1LoW/tbls/drivers/postgres"
 	"github.com/k1LoW/tbls/drivers/redshift"
+	"github.com/k1LoW/tbls/drivers/snowflake"
 	"github.com/k1LoW/tbls/drivers/spanner"
 	"github.com/k1LoW/tbls/drivers/sqlite"
 	"github.com/k1LoW/tbls/schema"
@@ -105,6 +106,9 @@ func Analyze(dsn config.DSN) (*schema.Schema, error) {
 	case "mssql":
 		s.Name = splitted[1]
 		driver = mssql.New(db)
+	case "snowflake":
+		s.Name = splitted[2]
+		driver = snowflake.New(db)
 	default:
 		return s, errors.WithStack(fmt.Errorf("unsupported driver '%s'", u.Driver))
 	}
