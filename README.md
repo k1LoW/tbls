@@ -464,6 +464,16 @@ To set AWS credentials, you can use
 2. Add query to DSN
     - `?aws_access_key_id=XXXXXxxxxxxxXXXXXXX&aws_secret_access_key=XXXXXxxxxxxxXXXXXXX`
 
+**Snowflake (Experimental):**
+
+``` yaml
+---
+# .tbls.yml
+dsn: snowflake://user:password@myaccount/mydb/myschema
+```
+
+See also: https://pkg.go.dev/github.com/snowflakedb/gosnowflake
+
 **JSON:**
 
 The JSON file output by the `tbls out -t json` command can be read as a datasource.
@@ -490,16 +500,6 @@ dsn:
   headers:
     Authorization: token GITHUB_OAUTH_TOKEN
 ```
-
-**Snowflake:**
-
-``` yaml
----
-# .tbls.yml
-dsn: snowflake://user:password@myaccount/mydb/myschema
-```
-
-See also: https://pkg.go.dev/github.com/snowflakedb/gosnowflake
 
 ### Document path
 
