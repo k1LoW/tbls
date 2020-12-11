@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.46.0](https://github.com/k1LoW/tbls/compare/v1.45.2...v1.46.0) (2020-12-11)
+
+* Support Snowflake [#267](https://github.com/k1LoW/tbls/pull/267) ([kanata2](https://github.com/kanata2))
+
 ## [v1.45.2](https://github.com/k1LoW/tbls/compare/v1.45.1...v1.45.2) (2020-11-26)
 
 * Fix external sub-command logic [#265](https://github.com/k1LoW/tbls/pull/265) ([k1LoW](https://github.com/k1LoW))
