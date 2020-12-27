@@ -19,6 +19,8 @@ import (
 	"github.com/pmezard/go-difflib/difflib"
 )
 
+var mdEscRep = strings.NewReplacer("`", "\\`")
+
 // Md struct
 type Md struct {
 	config *config.Config
@@ -374,7 +376,7 @@ func (m *Md) makeTableTemplateData(t *schema.Table, adjust bool) map[string]inte
 				c.Type,
 				c.Default.String,
 				fmt.Sprintf("%v", c.Nullable),
-				c.ExtraDef,
+				mdEscRep.Replace(c.ExtraDef),
 				strings.Join(childRelations, " "),
 				strings.Join(parentRelations, " "),
 				c.Comment,
