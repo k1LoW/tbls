@@ -16,6 +16,7 @@ CREATE TABLE `comments` (
   `post_id` bigint NOT NULL,
   `user_id` int NOT NULL,
   `comment` text NOT NULL COMMENT 'Comment\nMulti-line\r\ncolumn\rcomment',
+  `post_id_desc` bigint GENERATED ALWAYS AS ((`post_id` * -(1))) VIRTUAL,
   `created` datetime NOT NULL,
   `updated` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -31,14 +32,15 @@ CREATE TABLE `comments` (
 
 ## Columns
 
-| Name | Type | Default | Nullable | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | bigint |  | false | [logs](logs.md) |  |  |
-| post_id | bigint |  | false | [comment_stars](comment_stars.md) | [posts](posts.md) |  |
-| user_id | int |  | false | [comment_stars](comment_stars.md) | [users](users.md) |  |
-| comment | text |  | false |  |  | Comment<br>Multi-line<br>column<br>comment |
-| created | datetime |  | false |  |  |  |
-| updated | datetime |  | true |  |  |  |
+| Name | Type | Default | Nullable | Extra Definition | Children | Parents | Comment |
+| ---- | ---- | ------- | -------- | --------------- | -------- | ------- | ------- |
+| id | bigint |  | false | auto_increment | [logs](logs.md) |  |  |
+| post_id | bigint |  | false |  | [comment_stars](comment_stars.md) | [posts](posts.md) |  |
+| user_id | int |  | false |  | [comment_stars](comment_stars.md) | [users](users.md) |  |
+| comment | text |  | false |  |  |  | Comment<br>Multi-line<br>column<br>comment |
+| post_id_desc | bigint |  | true | GENERATED ALWAYS AS ((`post_id` * -(1))) VIRTUAL |  |  |  |
+| created | datetime |  | false |  |  |  |  |
+| updated | datetime |  | true |  |  |  |  |
 
 ## Constraints
 

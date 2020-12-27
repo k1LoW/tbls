@@ -24,15 +24,15 @@ CREATE TABLE `logs` (
 
 ## Columns
 
-| Name | Type | Default | Nullable | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | bigint(20) |  | false |  |  |  |
-| user_id | int(11) |  | false |  |  |  |
-| post_id | bigint(20) |  | true |  |  |  |
-| comment_id | bigint(20) |  | true |  |  |  |
-| comment_star_id | bigint(20) |  | true |  |  |  |
-| payload | text |  | true |  |  |  |
-| created | datetime |  | false |  |  |  |
+| Name | Type | Default | Nullable | Extra Definition | Children | Parents | Comment |
+| ---- | ---- | ------- | -------- | --------------- | -------- | ------- | ------- |
+| id | bigint(20) |  | false | auto_increment |  |  |  |
+| user_id | int(11) |  | false |  |  |  |  |
+| post_id | bigint(20) |  | true |  |  |  |  |
+| comment_id | bigint(20) |  | true |  |  |  |  |
+| comment_star_id | bigint(20) |  | true |  |  |  |  |
+| payload | text |  | true |  |  |  |  |
+| created | datetime |  | false |  |  |  |  |
 
 ## Constraints
 

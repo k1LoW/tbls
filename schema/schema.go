@@ -227,6 +227,15 @@ func (t *Table) FindConstrainsByColumnName(name string) []*Constraint {
 	return cts
 }
 
+func (t *Table) HasColumnWithExtraDef() bool {
+	for _, c := range t.Columns {
+		if c.ExtraDef != "" {
+			return true
+		}
+	}
+	return false
+}
+
 // Sort schema tables, columns, relations, and constrains
 func (s *Schema) Sort() error {
 	for _, t := range s.Tables {

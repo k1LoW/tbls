@@ -24,15 +24,15 @@ CREATE TABLE `logs` (
 
 ## カラム一覧
 
-| 名前              | タイプ        | デフォルト値       | Nullable | 子テーブル      | 親テーブル      | コメント     |
-| --------------- | ---------- | ------------ | -------- | ---------- | ---------- | -------- |
-| id              | bigint(20) |              | false    |            |            |          |
-| user_id         | int(11)    |              | false    |            |            |          |
-| post_id         | bigint(20) |              | true     |            |            |          |
-| comment_id      | bigint(20) |              | true     |            |            |          |
-| comment_star_id | bigint(20) |              | true     |            |            |          |
-| payload         | text       |              | true     |            |            |          |
-| created         | datetime   |              | false    |            |            |          |
+| 名前              | タイプ        | デフォルト値       | Nullable | Extra Definition | 子テーブル      | 親テーブル      | コメント     |
+| --------------- | ---------- | ------------ | -------- | ---------------- | ---------- | ---------- | -------- |
+| id              | bigint(20) |              | false    | auto_increment   |            |            |          |
+| user_id         | int(11)    |              | false    |                  |            |            |          |
+| post_id         | bigint(20) |              | true     |                  |            |            |          |
+| comment_id      | bigint(20) |              | true     |                  |            |            |          |
+| comment_star_id | bigint(20) |              | true     |                  |            |            |          |
+| payload         | text       |              | true     |                  |            |            |          |
+| created         | datetime   |              | false    |                  |            |            |          |
 
 ## 制約一覧
 

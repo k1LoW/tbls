@@ -36,9 +36,34 @@ func TestAnalyzeView(t *testing.T) {
 		t.Fatal(err)
 	}
 	view, _ := s.FindTableByName("post_comments")
-	want := view.Def
-	if want == "" {
+	if got := view.Def; got == "" {
 		t.Errorf("got not empty string.")
+	}
+}
+
+func TestExtraDef(t *testing.T) {
+	driver, err := New(db)
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = driver.Analyze(s)
+	if err != nil {
+		t.Fatal(err)
+	}
+	tbl, _ := s.FindTableByName("comments")
+	{
+		c, _ := tbl.FindColumnByName("id")
+		got := c.ExtraDef
+		if want := "auto_increment"; got != want {
+			t.Errorf("got %v\nwant %v", got, want)
+		}
+	}
+	{
+		c, _ := tbl.FindColumnByName("post_id_desc")
+		got := c.ExtraDef
+		if want := "GENERATED ALWAYS AS ((`post_id` * -(1))) VIRTUAL"; got != want {
+			t.Errorf("got %v\nwant %v", got, want)
+		}
 	}
 }
 

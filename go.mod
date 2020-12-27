@@ -6,6 +6,7 @@ require (
 	cloud.google.com/go/bigquery v1.13.0
 	cloud.google.com/go/spanner v1.11.0
 	github.com/antonmedv/expr v1.8.9
+	github.com/aquasecurity/go-version v0.0.0-20201115065329-578079e4ab05
 	github.com/aws/aws-sdk-go v1.35.21
 	github.com/beta/freetype v0.0.1
 	github.com/denisenkom/go-mssqldb v0.0.0-20201105052611-0f236ab67f08

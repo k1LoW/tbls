@@ -26,14 +26,14 @@ CREATE TABLE `comment_stars` (
 
 ## カラム一覧
 
-| 名前              | タイプ        | デフォルト値              | Nullable | 子テーブル      | 親テーブル                                     | コメント     |
-| --------------- | ---------- | ------------------- | -------- | ---------- | ----------------------------------------- | -------- |
-| id              | bigint(20) |                     | false    |            |                                           |          |
-| user_id         | int(11)    |                     | false    |            |                                           |          |
-| comment_post_id | bigint(20) |                     | false    |            | [comments](comments.md)                   |          |
-| comment_user_id | int(11)    |                     | false    |            | [users](users.md) [comments](comments.md) |          |
-| created         | timestamp  | CURRENT_TIMESTAMP   | false    |            |                                           |          |
-| updated         | timestamp  | 0000-00-00 00:00:00 | false    |            |                                           |          |
+| 名前              | タイプ        | デフォルト値              | Nullable | Extra Definition            | 子テーブル      | 親テーブル                                     | コメント     |
+| --------------- | ---------- | ------------------- | -------- | --------------------------- | ---------- | ----------------------------------------- | -------- |
+| id              | bigint(20) |                     | false    | auto_increment              |            |                                           |          |
+| user_id         | int(11)    |                     | false    |                             |            |                                           |          |
+| comment_post_id | bigint(20) |                     | false    |                             |            | [comments](comments.md)                   |          |
+| comment_user_id | int(11)    |                     | false    |                             |            | [users](users.md) [comments](comments.md) |          |
+| created         | timestamp  | CURRENT_TIMESTAMP   | false    | on update CURRENT_TIMESTAMP |            |                                           |          |
+| updated         | timestamp  | 0000-00-00 00:00:00 | false    |                             |            |                                           |          |
 
 ## 制約一覧
 

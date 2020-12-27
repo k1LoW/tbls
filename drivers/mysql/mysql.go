@@ -6,6 +6,7 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/aquasecurity/go-version/pkg/version"
 	"github.com/k1LoW/tbls/drivers"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/pkg/errors"
@@ -13,6 +14,7 @@ import (
 
 var reFK = regexp.MustCompile(`FOREIGN KEY \((.+)\) REFERENCES ([^\s]+)\s?\((.+)\)`)
 var reAI = regexp.MustCompile(`AUTO_INCREMENT=[\d]+`)
+var supportGeneratedColumn = true
 
 // Mysql struct
 type Mysql struct {
@@ -51,6 +53,18 @@ func (m *Mysql) Analyze(s *schema.Schema) error {
 		return errors.WithStack(err)
 	}
 	s.Driver = d
+
+	verGeneratedColumn, err := version.Parse("5.7.6")
+	if err != nil {
+		return err
+	}
+	v, err := version.Parse(s.Driver.DatabaseVersion)
+	if err != nil {
+		return err
+	}
+	if v.LessThan(verGeneratedColumn) {
+		supportGeneratedColumn = false
+	}
 
 	// tables and comments
 	tableRows, err := m.db.Query(`
@@ -301,10 +315,17 @@ AND event_object_table = ?
 		table.Triggers = triggers
 
 		// columns and comments
-		columnRows, err := m.db.Query(`
-SELECT column_name, column_default, is_nullable, column_type, column_comment
+		columnStmt := `
+SELECT column_name, column_default, is_nullable, column_type, column_comment, extra, generation_expression
 FROM information_schema.columns
-WHERE table_schema = ? AND table_name = ? ORDER BY ordinal_position`, s.Name, tableName)
+WHERE table_schema = ? AND table_name = ? ORDER BY ordinal_position`
+		if !supportGeneratedColumn {
+			columnStmt = `
+SELECT column_name, column_default, is_nullable, column_type, column_comment, extra
+FROM information_schema.columns
+WHERE table_schema = ? AND table_name = ? ORDER BY ordinal_position`
+		}
+		columnRows, err := m.db.Query(columnStmt, s.Name, tableName)
 		if err != nil {
 			return errors.WithStack(err)
 		}
@@ -312,15 +333,35 @@ WHERE table_schema = ? AND table_name = ? ORDER BY ordinal_position`, s.Name, ta
 		columns := []*schema.Column{}
 		for columnRows.Next() {
 			var (
-				columnName    string
-				columnDefault sql.NullString
-				isNullable    string
-				columnType    string
-				columnComment sql.NullString
+				columnName     string
+				columnDefault  sql.NullString
+				isNullable     string
+				columnType     string
+				columnComment  sql.NullString
+				extra          sql.NullString
+				generationExpr sql.NullString
 			)
-			err = columnRows.Scan(&columnName, &columnDefault, &isNullable, &columnType, &columnComment)
-			if err != nil {
-				return errors.WithStack(err)
+			if supportGeneratedColumn {
+				err = columnRows.Scan(&columnName, &columnDefault, &isNullable, &columnType, &columnComment, &extra, &generationExpr)
+				if err != nil {
+					return errors.WithStack(err)
+				}
+			} else {
+				err = columnRows.Scan(&columnName, &columnDefault, &isNullable, &columnType, &columnComment, &extra)
+				if err != nil {
+					return errors.WithStack(err)
+				}
+			}
+			extraDef := extra.String
+			if generationExpr.String != "" {
+				switch extraDef {
+				case "VIRTUAL GENERATED":
+					extraDef = fmt.Sprintf("GENERATED ALWAYS AS (%s) VIRTUAL", generationExpr.String)
+				case "STORED GENERATED":
+					extraDef = fmt.Sprintf("GENERATED ALWAYS AS (%s) STORED", generationExpr.String)
+				default:
+					extraDef = fmt.Sprintf("%s:%s", extraDef, generationExpr.String)
+				}
 			}
 			column := &schema.Column{
 				Name:     columnName,
@@ -328,6 +369,7 @@ WHERE table_schema = ? AND table_name = ? ORDER BY ordinal_position`, s.Name, ta
 				Nullable: convertColumnNullable(isNullable),
 				Default:  columnDefault,
 				Comment:  columnComment.String,
+				ExtraDef: extraDef,
 			}
 
 			columns = append(columns, column)

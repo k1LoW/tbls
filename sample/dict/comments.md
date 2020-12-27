@@ -16,6 +16,7 @@ CREATE TABLE `comments` (
   `post_id` bigint(20) NOT NULL,
   `user_id` int(11) NOT NULL,
   `comment` text NOT NULL COMMENT 'Comment\nMulti-line\r\ncolumn\rcomment',
+  `post_id_desc` bigint(20) GENERATED ALWAYS AS ((`post_id` * -(1))) VIRTUAL,
   `created` datetime NOT NULL,
   `updated` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -31,14 +32,15 @@ CREATE TABLE `comments` (
 
 ## カラム一覧
 
-| 名前      | タイプ        | デフォルト値       | Nullable | 子テーブル                             | 親テーブル             | コメント                                       |
-| ------- | ---------- | ------------ | -------- | --------------------------------- | ----------------- | ------------------------------------------ |
-| id      | bigint(20) |              | false    |                                   |                   |                                            |
-| post_id | bigint(20) |              | false    | [comment_stars](comment_stars.md) | [posts](posts.md) |                                            |
-| user_id | int(11)    |              | false    | [comment_stars](comment_stars.md) | [users](users.md) |                                            |
-| comment | text       |              | false    |                                   |                   | Comment<br>Multi-line<br>column<br>comment |
-| created | datetime   |              | false    |                                   |                   |                                            |
-| updated | datetime   |              | true     |                                   |                   |                                            |
+| 名前           | タイプ        | デフォルト値       | Nullable | Extra Definition                                 | 子テーブル                             | 親テーブル             | コメント                                       |
+| ------------ | ---------- | ------------ | -------- | ------------------------------------------------ | --------------------------------- | ----------------- | ------------------------------------------ |
+| id           | bigint(20) |              | false    | auto_increment                                   |                                   |                   |                                            |
+| post_id      | bigint(20) |              | false    |                                                  | [comment_stars](comment_stars.md) | [posts](posts.md) |                                            |
+| user_id      | int(11)    |              | false    |                                                  | [comment_stars](comment_stars.md) | [users](users.md) |                                            |
+| comment      | text       |              | false    |                                                  |                                   |                   | Comment<br>Multi-line<br>column<br>comment |
+| post_id_desc | bigint(20) |              | true     | GENERATED ALWAYS AS ((`post_id` * -(1))) VIRTUAL |                                   |                   |                                            |
+| created      | datetime   |              | false    |                                                  |                                   |                   |                                            |
+| updated      | datetime   |              | true     |                                                  |                                   |                   |                                            |
 
 ## 制約一覧
 
