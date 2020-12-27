@@ -91,6 +91,7 @@ func (c Column) MarshalJSON() ([]byte, error) {
 			Type            string      `json:"type"`
 			Nullable        bool        `json:"nullable"`
 			Default         string      `json:"default"`
+			ExtraDef        string      `json:"extra_def,omitempty"`
 			Comment         string      `json:"comment"`
 			ParentRelations []*Relation `json:"-"`
 			ChildRelations  []*Relation `json:"-"`
@@ -100,6 +101,7 @@ func (c Column) MarshalJSON() ([]byte, error) {
 			Nullable:        c.Nullable,
 			Default:         c.Default.String,
 			Comment:         c.Comment,
+			ExtraDef:        c.ExtraDef,
 			ParentRelations: c.ParentRelations,
 			ChildRelations:  c.ChildRelations,
 		})
@@ -110,6 +112,7 @@ func (c Column) MarshalJSON() ([]byte, error) {
 		Nullable        bool        `json:"nullable"`
 		Default         *string     `json:"default"`
 		Comment         string      `json:"comment"`
+		ExtraDef        string      `json:"extra_def,omitempty"`
 		ParentRelations []*Relation `json:"-"`
 		ChildRelations  []*Relation `json:"-"`
 	}{
@@ -118,6 +121,7 @@ func (c Column) MarshalJSON() ([]byte, error) {
 		Nullable:        c.Nullable,
 		Default:         nil,
 		Comment:         c.Comment,
+		ExtraDef:        c.ExtraDef,
 		ParentRelations: c.ParentRelations,
 		ChildRelations:  c.ChildRelations,
 	})
@@ -159,6 +163,7 @@ func (c *Column) UnmarshalJSON(data []byte) error {
 		Nullable        bool        `json:"nullable"`
 		Default         *string     `json:"default"`
 		Comment         string      `json:"comment"`
+		ExtraDef        string      `json:"extra_def,omitempty"`
 		ParentRelations []*Relation `json:"-"`
 		ChildRelations  []*Relation `json:"-"`
 	}{}
@@ -176,6 +181,7 @@ func (c *Column) UnmarshalJSON(data []byte) error {
 		c.Default.Valid = false
 		c.Default.String = ""
 	}
+	c.ExtraDef = s.ExtraDef
 	c.Comment = s.Comment
 	return nil
 }

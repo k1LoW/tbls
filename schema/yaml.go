@@ -10,6 +10,7 @@ func (c Column) MarshalYAML() ([]byte, error) {
 			Type            string      `yaml:"type"`
 			Nullable        bool        `yaml:"nullable"`
 			Default         string      `yaml:"default"`
+			ExtraDef        string      `json:"extraDef,omitempty"`
 			Comment         string      `yaml:"comment"`
 			ParentRelations []*Relation `yaml:"-"`
 			ChildRelations  []*Relation `yaml:"-"`
@@ -19,6 +20,7 @@ func (c Column) MarshalYAML() ([]byte, error) {
 			Nullable:        c.Nullable,
 			Default:         c.Default.String,
 			Comment:         c.Comment,
+			ExtraDef:        c.ExtraDef,
 			ParentRelations: c.ParentRelations,
 			ChildRelations:  c.ChildRelations,
 		})
@@ -28,6 +30,7 @@ func (c Column) MarshalYAML() ([]byte, error) {
 		Type            string      `yaml:"type"`
 		Nullable        bool        `yaml:"nullable"`
 		Default         *string     `yaml:"default"`
+		ExtraDef        string      `json:"extraDef,omitempty"`
 		Comment         string      `yaml:"comment"`
 		ParentRelations []*Relation `yaml:"-"`
 		ChildRelations  []*Relation `yaml:"-"`
@@ -36,6 +39,7 @@ func (c Column) MarshalYAML() ([]byte, error) {
 		Type:            c.Type,
 		Nullable:        c.Nullable,
 		Default:         nil,
+		ExtraDef:        c.ExtraDef,
 		Comment:         c.Comment,
 		ParentRelations: c.ParentRelations,
 		ChildRelations:  c.ChildRelations,
@@ -78,6 +82,7 @@ func (c *Column) UnmarshalYAML(data []byte) error {
 		Nullable        bool        `yaml:"nullable"`
 		Default         *string     `yaml:"default"`
 		Comment         string      `yaml:"comment"`
+		ExtraDef        string      `json:"extraDef,omitempty"`
 		ParentRelations []*Relation `yaml:"-"`
 		ChildRelations  []*Relation `yaml:"-"`
 	}{}
@@ -96,6 +101,7 @@ func (c *Column) UnmarshalYAML(data []byte) error {
 		c.Default.Valid = false
 		c.Default.String = ""
 	}
+	c.ExtraDef = s.ExtraDef
 	c.Comment = s.Comment
 	return nil
 }
