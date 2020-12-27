@@ -17,7 +17,7 @@ func TestMain(m *testing.M) {
 	s = &schema.Schema{
 		Name: "testdb",
 	}
-	db, _ = dburl.Open("my://root:mypass@localhost:33306/testdb")
+	db, _ = dburl.Open("my://root:mypass@localhost:33308/testdb")
 	defer db.Close()
 	exit := m.Run()
 	if exit != 0 {

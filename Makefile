@@ -24,7 +24,7 @@ ci_windows: depsdev build db_sqlite testdoc_sqlite
 
 db: db_sqlite
 	usql pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -f testdata/pg.sql
-	usql my://root:mypass@localhost:33306/testdb -f testdata/my.sql
+	usql my://root:mypass@localhost:33306/testdb -f testdata/my56.sql
 	usql my://root:mypass@localhost:33308/testdb -f testdata/my.sql
 	usql my://root:mypass@localhost:33308/testdb -c "CREATE DATABASE IF NOT EXISTS relations;"
 	usql my://root:mypass@localhost:33308/relations -f testdata/detect_relations.sql
