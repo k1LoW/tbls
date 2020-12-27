@@ -65,6 +65,7 @@ type Column struct {
 	Nullable        bool           `json:"nullable"`
 	Default         sql.NullString `json:"default"`
 	Comment         string         `json:"comment"`
+	ExtraDef        string         `json:"extra_def,omitempty" yaml:"extraDef,omitempty"`
 	ParentRelations []*Relation    `json:"-"`
 	ChildRelations  []*Relation    `json:"-"`
 }
@@ -224,6 +225,15 @@ func (t *Table) FindConstrainsByColumnName(name string) []*Constraint {
 		}
 	}
 	return cts
+}
+
+func (t *Table) HasColumnWithExtraDef() bool {
+	for _, c := range t.Columns {
+		if c.ExtraDef != "" {
+			return true
+		}
+	}
+	return false
 }
 
 // Sort schema tables, columns, relations, and constrains

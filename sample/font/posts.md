@@ -27,15 +27,15 @@ CREATE TABLE `posts` (
 
 ## Columns
 
-| Name | Type | Default | Nullable | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | bigint(20) |  | false | [comments](comments.md) |  |  |
-| user_id | int(11) |  | false |  | [users](users.md) |  |
-| title | varchar(255) |  | false |  |  |  |
-| body | text |  | false |  |  | 本文 |
-| post_type | enum('public','private','draft') |  | false |  |  | public/private/draft |
-| created | datetime |  | false |  |  |  |
-| updated | datetime |  | true |  |  |  |
+| Name | Type | Default | Nullable | Extra Definition | Children | Parents | Comment |
+| ---- | ---- | ------- | -------- | --------------- | -------- | ------- | ------- |
+| id | bigint(20) |  | false | auto_increment | [comments](comments.md) |  |  |
+| user_id | int(11) |  | false |  |  | [users](users.md) |  |
+| title | varchar(255) |  | false |  |  |  |  |
+| body | text |  | false |  |  |  | 本文 |
+| post_type | enum('public','private','draft') |  | false |  |  |  | public/private/draft |
+| created | datetime |  | false |  |  |  |  |
+| updated | datetime |  | true |  |  |  |  |
 
 ## Constraints
 

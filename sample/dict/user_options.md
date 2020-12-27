@@ -23,12 +23,12 @@ CREATE TABLE `user_options` (
 
 ## カラム一覧
 
-| 名前         | タイプ        | デフォルト値              | Nullable | 子テーブル      | 親テーブル             | コメント     |
-| ---------- | ---------- | ------------------- | -------- | ---------- | ----------------- | -------- |
-| user_id    | int(11)    |                     | false    |            | [users](users.md) |          |
-| show_email | tinyint(1) | 0                   | false    |            |                   |          |
-| created    | timestamp  | CURRENT_TIMESTAMP   | false    |            |                   |          |
-| updated    | timestamp  | 0000-00-00 00:00:00 | false    |            |                   |          |
+| 名前         | タイプ        | デフォルト値              | Nullable | Extra Definition            | 子テーブル      | 親テーブル             | コメント     |
+| ---------- | ---------- | ------------------- | -------- | --------------------------- | ---------- | ----------------- | -------- |
+| user_id    | int(11)    |                     | false    |                             |            | [users](users.md) |          |
+| show_email | tinyint(1) | 0                   | false    |                             |            |                   |          |
+| created    | timestamp  | CURRENT_TIMESTAMP   | false    | on update CURRENT_TIMESTAMP |            |                   |          |
+| updated    | timestamp  | 0000-00-00 00:00:00 | false    |                             |            |                   |          |
 
 ## 制約一覧
 

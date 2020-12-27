@@ -46,7 +46,6 @@ CREATE TABLE comments (
   post_id bigint NOT NULL,
   user_id int NOT NULL,
   comment text NOT NULL COMMENT 'Comment\nMulti-line\r\ncolumn\rcomment',
-  post_id_desc bigint GENERATED ALWAYS AS (post_id * -1) VIRTUAL,
   created datetime NOT NULL,
   updated datetime,
   CONSTRAINT comments_id_pk PRIMARY KEY(id),

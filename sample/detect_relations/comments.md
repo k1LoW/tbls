@@ -28,14 +28,14 @@ CREATE TABLE `comments` (
 
 ## Columns
 
-| Name | Type | Default | Nullable | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | bigint |  | false | [logs](logs.md) |  |  |
-| post_id | bigint |  | false |  | [posts](posts.md) |  |
-| user_id | int |  | false |  | [users](users.md) |  |
-| comment | text |  | false |  |  | Comment<br>Multi-line<br>column<br>comment |
-| created | datetime |  | false |  |  |  |
-| updated | datetime |  | true |  |  |  |
+| Name | Type | Default | Nullable | Extra Definition | Children | Parents | Comment |
+| ---- | ---- | ------- | -------- | --------------- | -------- | ------- | ------- |
+| id | bigint |  | false | auto_increment | [logs](logs.md) |  |  |
+| post_id | bigint |  | false |  |  | [posts](posts.md) |  |
+| user_id | int |  | false |  |  | [users](users.md) |  |
+| comment | text |  | false |  |  |  | Comment<br>Multi-line<br>column<br>comment |
+| created | datetime |  | false |  |  |  |  |
+| updated | datetime |  | true |  |  |  |  |
 
 ## Constraints
 

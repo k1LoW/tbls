@@ -19,6 +19,8 @@ import (
 	"github.com/pmezard/go-difflib/difflib"
 )
 
+var mdEscRep = strings.NewReplacer("`", "\\`")
+
 // Md struct
 type Md struct {
 	config *config.Config
@@ -320,17 +322,34 @@ func (m *Md) makeSchemaTemplateData(s *schema.Schema, adjust bool) map[string]in
 
 func (m *Md) makeTableTemplateData(t *schema.Table, adjust bool) map[string]interface{} {
 	// Columns
-	columnsData := [][]string{
-		[]string{
-			m.config.MergedDict.Lookup("Name"),
-			m.config.MergedDict.Lookup("Type"),
-			m.config.MergedDict.Lookup("Default"),
-			m.config.MergedDict.Lookup("Nullable"),
-			m.config.MergedDict.Lookup("Children"),
-			m.config.MergedDict.Lookup("Parents"),
-			m.config.MergedDict.Lookup("Comment"),
-		},
-		[]string{"----", "----", "-------", "--------", "--------", "-------", "-------"},
+	columnsData := [][]string{}
+	if t.HasColumnWithExtraDef() {
+		columnsData = append(columnsData,
+			[]string{
+				m.config.MergedDict.Lookup("Name"),
+				m.config.MergedDict.Lookup("Type"),
+				m.config.MergedDict.Lookup("Default"),
+				m.config.MergedDict.Lookup("Nullable"),
+				m.config.MergedDict.Lookup("Extra Definition"),
+				m.config.MergedDict.Lookup("Children"),
+				m.config.MergedDict.Lookup("Parents"),
+				m.config.MergedDict.Lookup("Comment"),
+			},
+			[]string{"----", "----", "-------", "--------", "---------------", "--------", "-------", "-------"},
+		)
+	} else {
+		columnsData = append(columnsData,
+			[]string{
+				m.config.MergedDict.Lookup("Name"),
+				m.config.MergedDict.Lookup("Type"),
+				m.config.MergedDict.Lookup("Default"),
+				m.config.MergedDict.Lookup("Nullable"),
+				m.config.MergedDict.Lookup("Children"),
+				m.config.MergedDict.Lookup("Parents"),
+				m.config.MergedDict.Lookup("Comment"),
+			},
+			[]string{"----", "----", "-------", "--------", "--------", "-------", "-------"},
+		)
 	}
 	for _, c := range t.Columns {
 		childRelations := []string{}
@@ -351,16 +370,30 @@ func (m *Md) makeTableTemplateData(t *schema.Table, adjust bool) map[string]inte
 			parentRelations = append(parentRelations, fmt.Sprintf("[%s](%s%s.md)", r.ParentTable.Name, m.config.BaseUrl, r.ParentTable.Name))
 			pEncountered[r.ParentTable.Name] = true
 		}
-		data := []string{
-			c.Name,
-			c.Type,
-			c.Default.String,
-			fmt.Sprintf("%v", c.Nullable),
-			strings.Join(childRelations, " "),
-			strings.Join(parentRelations, " "),
-			c.Comment,
+		if t.HasColumnWithExtraDef() {
+			data := []string{
+				c.Name,
+				c.Type,
+				c.Default.String,
+				fmt.Sprintf("%v", c.Nullable),
+				mdEscRep.Replace(c.ExtraDef),
+				strings.Join(childRelations, " "),
+				strings.Join(parentRelations, " "),
+				c.Comment,
+			}
+			columnsData = append(columnsData, data)
+		} else {
+			data := []string{
+				c.Name,
+				c.Type,
+				c.Default.String,
+				fmt.Sprintf("%v", c.Nullable),
+				strings.Join(childRelations, " "),
+				strings.Join(parentRelations, " "),
+				c.Comment,
+			}
+			columnsData = append(columnsData, data)
 		}
-		columnsData = append(columnsData, data)
 	}
 
 	// Constraints

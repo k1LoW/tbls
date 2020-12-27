@@ -31,14 +31,14 @@ CREATE TABLE `comments` (
 
 ## Columns
 
-| Name | Type | Default | Nullable | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | bigint(20) |  | false |  |  |  |
-| post_id | bigint(20) |  | false | [comment_stars](comment_stars.md) | [posts](posts.md) |  |
-| user_id | int(11) |  | false | [comment_stars](comment_stars.md) | [users](users.md) |  |
-| comment | text |  | false |  |  | Comment<br>Multi-line<br>column<br>comment |
-| created | datetime |  | false |  |  |  |
-| updated | datetime |  | true |  |  |  |
+| Name | Type | Default | Nullable | Extra Definition | Children | Parents | Comment |
+| ---- | ---- | ------- | -------- | --------------- | -------- | ------- | ------- |
+| id | bigint(20) |  | false | auto_increment |  |  |  |
+| post_id | bigint(20) |  | false |  | [comment_stars](comment_stars.md) | [posts](posts.md) |  |
+| user_id | int(11) |  | false |  | [comment_stars](comment_stars.md) | [users](users.md) |  |
+| comment | text |  | false |  |  |  | Comment<br>Multi-line<br>column<br>comment |
+| created | datetime |  | false |  |  |  |  |
+| updated | datetime |  | true |  |  |  |  |
 
 ## Constraints
 
