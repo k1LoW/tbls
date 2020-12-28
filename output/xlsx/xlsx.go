@@ -149,32 +149,50 @@ func (x *Xlsx) createTableSheet(w *excl.Workbook, t *schema.Table) (e error) {
 	setString(sheet, 2, 1, t.Comment)
 
 	setString(sheet, 4, 1, x.config.MergedDict.Lookup("Columns")).SetFont(excl.Font{Bold: true})
-	setHeader(sheet, 5, []string{
-		x.config.MergedDict.Lookup("Name"),
-		x.config.MergedDict.Lookup("Type"),
-		x.config.MergedDict.Lookup("Default"),
-		x.config.MergedDict.Lookup("Nullable"),
-		x.config.MergedDict.Lookup("Children"),
-		x.config.MergedDict.Lookup("Parents"),
-		x.config.MergedDict.Lookup("Comment"),
-	})
+	if t.HasColumnWithExtraDef() {
+		setHeader(sheet, 5, []string{
+			x.config.MergedDict.Lookup("Name"),
+			x.config.MergedDict.Lookup("Type"),
+			x.config.MergedDict.Lookup("Default"),
+			x.config.MergedDict.Lookup("Nullable"),
+			x.config.MergedDict.Lookup("Extra Definition"),
+			x.config.MergedDict.Lookup("Children"),
+			x.config.MergedDict.Lookup("Parents"),
+			x.config.MergedDict.Lookup("Comment"),
+		})
+	} else {
+		setHeader(sheet, 5, []string{
+			x.config.MergedDict.Lookup("Name"),
+			x.config.MergedDict.Lookup("Type"),
+			x.config.MergedDict.Lookup("Default"),
+			x.config.MergedDict.Lookup("Nullable"),
+			x.config.MergedDict.Lookup("Children"),
+			x.config.MergedDict.Lookup("Parents"),
+			x.config.MergedDict.Lookup("Comment"),
+		})
+	}
 	r := 6
 	for i, c := range t.Columns {
 		setStringWithBorder(sheet, r+i, 1, c.Name)
 		setStringWithBorder(sheet, r+i, 2, c.Type)
 		setStringWithBorder(sheet, r+i, 3, c.Default.String)
 		setStringWithBorder(sheet, r+i, 4, fmt.Sprintf("%v", c.Nullable))
+		ci := 5
+		if t.HasColumnWithExtraDef() {
+			setStringWithBorder(sheet, r+i, ci, fmt.Sprintf("%v", c.ExtraDef))
+			ci = 6
+		}
 		children := []string{}
 		for _, child := range c.ChildRelations {
 			children = append(children, child.Table.Name)
 		}
-		setStringWithBorder(sheet, r+i, 5, strings.Join(children, "\n"))
+		setStringWithBorder(sheet, r+i, ci+0, strings.Join(children, "\n"))
 		parents := []string{}
 		for _, parent := range c.ParentRelations {
 			parents = append(parents, parent.ParentTable.Name)
 		}
-		setStringWithBorder(sheet, r+i, 6, strings.Join(parents, "\n"))
-		setStringWithBorder(sheet, r+i, 7, c.Comment)
+		setStringWithBorder(sheet, r+i, ci+1, strings.Join(parents, "\n"))
+		setStringWithBorder(sheet, r+i, ci+2, c.Comment)
 	}
 	r = r + len(t.Columns)
 
