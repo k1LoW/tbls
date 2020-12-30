@@ -23,64 +23,67 @@ ci: depsdev build db test testdoc test_too_many_tables test_json test_ext_subcom
 ci_windows: depsdev build db_sqlite testdoc_sqlite
 
 db: db_sqlite
-	usql pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -f testdata/pg.sql
-	usql my://root:mypass@localhost:33306/testdb -f testdata/my56.sql
-	usql my://root:mypass@localhost:33308/testdb -f testdata/my.sql
+	usql pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -f testdata/ddl/postgres95.sql
+	usql pg://postgres:pgpass@localhost:55413/testdb?sslmode=disable -f testdata/ddl/postgres.sql
+	usql my://root:mypass@localhost:33306/testdb -f testdata/ddl/mysql56.sql
+	usql my://root:mypass@localhost:33308/testdb -f testdata/ddl/mysql.sql
 	usql my://root:mypass@localhost:33308/testdb -c "CREATE DATABASE IF NOT EXISTS relations;"
-	usql my://root:mypass@localhost:33308/relations -f testdata/detect_relations.sql
+	usql my://root:mypass@localhost:33308/relations -f testdata/ddl/detect_relations.sql
 	usql ms://SA:MSSQLServer-Passw0rd@localhost:11433/master -c "IF NOT EXISTS (SELECT * FROM sys.databases WHERE NAME = 'testdb') CREATE DATABASE testdb;"
-	usql ms://SA:MSSQLServer-Passw0rd@localhost:11433/testdb -f testdata/mssql.sql
-	./testdata/dynamodb.sh > /dev/null 2>&1
+	usql ms://SA:MSSQLServer-Passw0rd@localhost:11433/testdb -f testdata/ddl/mssql.sql
+	./testdata/ddl/dynamodb.sh > /dev/null 2>&1
 
 db_sqlite:
-	sqlite3 $(PWD)/testdata/testdb.sqlite3 < testdata/sqlite.sql
+	sqlite3 $(PWD)/testdata/testdb.sqlite3 < testdata/ddl/sqlite.sql
 
 test:
 	go test ./... -v -coverprofile=coverage.txt -covermode=count
 	$(MAKE) testdoc
 
 doc: build doc_sqlite
-	./tbls doc pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -c testdata/test_tbls_postgres.yml -f sample/postgres
-	./tbls doc my://root:mypass@localhost:33306/testdb -c testdata/test_tbls.yml -f sample/mysql
-	./tbls doc my://root:mypass@localhost:33308/testdb -c testdata/test_tbls.yml -f sample/mysql8
+	./tbls doc pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -c testdata/test_tbls_postgres.yml -f sample/postgres95
+	./tbls doc pg://postgres:pgpass@localhost:55413/testdb?sslmode=disable -c testdata/test_tbls_postgres.yml -f sample/postgres
+	./tbls doc my://root:mypass@localhost:33306/testdb -c testdata/test_tbls.yml -f sample/mysql56
+	./tbls doc my://root:mypass@localhost:33308/testdb -c testdata/test_tbls.yml -f sample/mysql
 	./tbls doc my://root:mypass@localhost:33308/relations -c testdata/test_tbls_detect_relations.yml -f sample/detect_relations
 	./tbls doc ms://SA:MSSQLServer-Passw0rd@localhost:11433/testdb -c testdata/test_tbls_mssql.yml -f sample/mssql
 	env AWS_ENDPOINT_URL=http://localhost:18000 ./tbls doc dynamodb://ap-northeast-1 -c testdata/test_tbls_dynamodb.yml -f sample/dynamodb
-	./tbls doc pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -c testdata/test_tbls_postgres.yml -j -f sample/adjust
-	./tbls doc my://root:mypass@localhost:33306/testdb -c testdata/test_tbls.yml -t png -f sample/png
-	./tbls doc my://root:mypass@localhost:33306/testdb -c testdata/exclude_test_tbls.yml -f sample/exclude
-	./tbls doc my://root:mypass@localhost:33306/testdb -c testdata/dict_test_tbls.yml -f sample/dict
-	./tbls doc my://root:mypass@localhost:33306/testdb -c testdata/font_test_tbls.yml -f sample/font
+	./tbls doc pg://postgres:pgpass@localhost:55413/testdb?sslmode=disable -c testdata/test_tbls_postgres.yml -j -f sample/adjust
+	./tbls doc my://root:mypass@localhost:33308/testdb -c testdata/test_tbls.yml -t png -f sample/png
+	./tbls doc my://root:mypass@localhost:33308/testdb -c testdata/exclude_test_tbls.yml -f sample/exclude
+	./tbls doc my://root:mypass@localhost:33308/testdb -c testdata/dict_test_tbls.yml -f sample/dict
+	./tbls doc my://root:mypass@localhost:33308/testdb -c testdata/font_test_tbls.yml -f sample/font
 
 doc_sqlite:
 	./tbls doc sq://$(PWD)/testdata/testdb.sqlite3 -c testdata/test_tbls.yml -f sample/sqlite
 
 testdoc: testdoc_sqlite
-	./tbls diff pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -c testdata/test_tbls_postgres.yml sample/postgres
-	./tbls diff my://root:mypass@localhost:33306/testdb -c testdata/test_tbls.yml sample/mysql
-	./tbls diff my://root:mypass@localhost:33308/testdb -c testdata/test_tbls.yml sample/mysql8
+	./tbls diff pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -c testdata/test_tbls_postgres.yml sample/postgres95
+	./tbls diff pg://postgres:pgpass@localhost:55413/testdb?sslmode=disable -c testdata/test_tbls_postgres.yml sample/postgres
+	./tbls diff my://root:mypass@localhost:33306/testdb -c testdata/test_tbls.yml sample/mysql56
+	./tbls diff my://root:mypass@localhost:33308/testdb -c testdata/test_tbls.yml sample/mysql
 	./tbls diff my://root:mypass@localhost:33308/relations -c testdata/test_tbls_detect_relations.yml sample/detect_relations
 	./tbls diff ms://SA:MSSQLServer-Passw0rd@localhost:11433/testdb -c testdata/test_tbls_mssql.yml sample/mssql
 	env AWS_ENDPOINT_URL=http://localhost:18000 ./tbls diff dynamodb://ap-northeast-1 -c testdata/test_tbls_dynamodb.yml sample/dynamodb
-	./tbls diff pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -c testdata/test_tbls_postgres.yml -j sample/adjust
-	./tbls diff my://root:mypass@localhost:33306/testdb -c testdata/test_tbls.yml -t png sample/png
-	./tbls diff my://root:mypass@localhost:33306/testdb -c testdata/exclude_test_tbls.yml sample/exclude
-	./tbls diff my://root:mypass@localhost:33306/testdb -c testdata/dict_test_tbls.yml sample/dict
-	./tbls diff my://root:mypass@localhost:33306/testdb -c testdata/font_test_tbls.yml sample/font
+	./tbls diff pg://postgres:pgpass@localhost:55413/testdb?sslmode=disable -c testdata/test_tbls_postgres.yml -j sample/adjust
+	./tbls diff my://root:mypass@localhost:33308/testdb -c testdata/test_tbls.yml -t png sample/png
+	./tbls diff my://root:mypass@localhost:33308/testdb -c testdata/exclude_test_tbls.yml sample/exclude
+	./tbls diff my://root:mypass@localhost:33308/testdb -c testdata/dict_test_tbls.yml sample/dict
+	./tbls diff my://root:mypass@localhost:33308/testdb -c testdata/font_test_tbls.yml sample/font
 
 testdoc_sqlite:
 	./tbls diff sq://$(PWD)/testdata/testdb.sqlite3 -c testdata/test_tbls.yml sample/sqlite
 
 test_too_many_tables:
-	usql pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -f testdata/createdb_too_many.sql
-	usql pg://postgres:pgpass@localhost:55432/too_many?sslmode=disable -f testdata/createtable_too_many.sql
+	usql pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -c "DROP DATABASE IF EXISTS too_many;CREATE DATABASE too_many;"
+	usql pg://postgres:pgpass@localhost:55432/too_many?sslmode=disable -f testdata/ddl/createtable_too_many.sql
 	ulimit -n 256 && ./tbls doc pg://postgres:pgpass@localhost:55432/too_many?sslmode=disable -f /tmp
 	ulimit -n 256 && ./tbls diff pg://postgres:pgpass@localhost:55432/too_many?sslmode=disable /tmp
 
 test_json:
-	./tbls out my://root:mypass@localhost:33306/testdb -c testdata/test_tbls.yml -t json > /tmp/tbls.json
+	./tbls out my://root:mypass@localhost:33308/testdb -c testdata/test_tbls.yml -t json > /tmp/tbls.json
 	./tbls diff json:///tmp/tbls.json sample/mysql
-	./tbls out pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -c testdata/test_tbls_postgres.yml -t json > /tmp/tbls.json
+	./tbls out pg://postgres:pgpass@localhost:55413/testdb?sslmode=disable -c testdata/test_tbls_postgres.yml -t json > /tmp/tbls.json
 	./tbls diff json:///tmp/tbls.json sample/postgres
 	./tbls out sq://$(PWD)/testdata/testdb.sqlite3 -c testdata/test_tbls.yml -t json > /tmp/tbls.json
 	./tbls diff json:///tmp/tbls.json sample/sqlite

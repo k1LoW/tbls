@@ -9,30 +9,30 @@ Users table
 
 ```sql
 CREATE TABLE `users` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int NOT NULL AUTO_INCREMENT,
   `username` varchar(50) NOT NULL,
   `password` varchar(50) NOT NULL,
   `email` varchar(355) NOT NULL COMMENT 'ex. user@example.com',
-  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `updated` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `created` timestamp NOT NULL,
+  `updated` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=[Redacted by tbls] DEFAULT CHARSET=latin1 COMMENT='Users table'
+) ENGINE=InnoDB AUTO_INCREMENT=[Redacted by tbls] DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Users table'
 ```
 
 </details>
 
 ## カラム一覧
 
-| 名前       | タイプ          | デフォルト値              | Nullable | Extra Definition            | 子テーブル                                                                                                       | 親テーブル      | コメント                 |
-| -------- | ------------ | ------------------- | -------- | --------------------------- | ----------------------------------------------------------------------------------------------------------- | ---------- | -------------------- |
-| id       | int(11)      |                     | false    | auto_increment              | [comment_stars](comment_stars.md) [comments](comments.md) [posts](posts.md) [user_options](user_options.md) |            |                      |
-| username | varchar(50)  |                     | false    |                             |                                                                                                             |            |                      |
-| password | varchar(50)  |                     | false    |                             |                                                                                                             |            |                      |
-| email    | varchar(355) |                     | false    |                             |                                                                                                             |            | ex. user@example.com |
-| created  | timestamp    | CURRENT_TIMESTAMP   | false    | on update CURRENT_TIMESTAMP |                                                                                                             |            |                      |
-| updated  | timestamp    | 0000-00-00 00:00:00 | false    |                             |                                                                                                             |            |                      |
+| 名前       | タイプ          | デフォルト値       | Nullable | Extra Definition | 子テーブル                                                                                                       | 親テーブル      | コメント                 |
+| -------- | ------------ | ------------ | -------- | ---------------- | ----------------------------------------------------------------------------------------------------------- | ---------- | -------------------- |
+| id       | int          |              | false    | auto_increment   | [comment_stars](comment_stars.md) [comments](comments.md) [posts](posts.md) [user_options](user_options.md) |            |                      |
+| username | varchar(50)  |              | false    |                  |                                                                                                             |            |                      |
+| password | varchar(50)  |              | false    |                  |                                                                                                             |            |                      |
+| email    | varchar(355) |              | false    |                  |                                                                                                             |            | ex. user@example.com |
+| created  | timestamp    |              | false    |                  |                                                                                                             |            |                      |
+| updated  | timestamp    |              | true     |                  |                                                                                                             |            |                      |
 
 ## 制約一覧
 

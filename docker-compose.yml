@@ -1,8 +1,8 @@
 version: '3.4'
 
 services:
-  postgres:
-    image: postgres:10
+  postgres95:
+    image: postgres:9.5
     restart: always
     ports:
       - "55432:5432"
@@ -10,7 +10,16 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=pgpass
       - POSTGRES_DB=testdb
-  mysql:
+  postgres:
+    image: postgres:13
+    restart: always
+    ports:
+      - "55413:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=pgpass
+      - POSTGRES_DB=testdb
+  mysql56:
     image: mysql:5.6
     restart: always
     ports:
@@ -18,7 +27,7 @@ services:
     environment:
       - MYSQL_DATABASE=testdb
       - MYSQL_ROOT_PASSWORD=mypass
-  mysql8:
+  mysql:
     image: mysql:8
     restart: always
     ports:

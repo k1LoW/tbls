@@ -7,10 +7,10 @@
 
 ```sql
 CREATE TABLE `CamelizeTable` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `id` bigint NOT NULL AUTO_INCREMENT,
   `created` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 ```
 
 </details>
@@ -19,7 +19,7 @@ CREATE TABLE `CamelizeTable` (
 
 | Name | Type | Default | Nullable | Extra Definition | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | --------------- | -------- | ------- | ------- |
-| id | bigint(20) |  | false | auto_increment |  |  |  |
+| id | bigint |  | false | auto_increment |  |  |  |
 | created | datetime |  | false |  |  |  |  |
 
 ## Constraints

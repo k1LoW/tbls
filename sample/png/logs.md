@@ -9,15 +9,15 @@ Auditログ
 
 ```sql
 CREATE TABLE `logs` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL,
-  `post_id` bigint(20) DEFAULT NULL,
-  `comment_id` bigint(20) DEFAULT NULL,
-  `comment_star_id` bigint(20) DEFAULT NULL,
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `post_id` bigint DEFAULT NULL,
+  `comment_id` bigint DEFAULT NULL,
+  `comment_star_id` bigint DEFAULT NULL,
   `payload` text,
   `created` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Auditログ'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Auditログ'
 ```
 
 </details>
@@ -26,11 +26,11 @@ CREATE TABLE `logs` (
 
 | Name | Type | Default | Nullable | Extra Definition | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | --------------- | -------- | ------- | ------- |
-| id | bigint(20) |  | false | auto_increment |  |  |  |
-| user_id | int(11) |  | false |  |  | [users](users.md) |  |
-| post_id | bigint(20) |  | true |  |  | [posts](posts.md) |  |
-| comment_id | bigint(20) |  | true |  |  | [comments](comments.md) |  |
-| comment_star_id | bigint(20) |  | true |  |  | [comment_stars](comment_stars.md) |  |
+| id | bigint |  | false | auto_increment |  |  |  |
+| user_id | int |  | false |  |  | [users](users.md) |  |
+| post_id | bigint |  | true |  |  | [posts](posts.md) |  |
+| comment_id | bigint |  | true |  |  | [comments](comments.md) |  |
+| comment_star_id | bigint |  | true |  |  | [comment_stars](comment_stars.md) |  |
 | payload | text |  | true |  |  |  |  |
 | created | datetime |  | false |  |  |  |  |
 

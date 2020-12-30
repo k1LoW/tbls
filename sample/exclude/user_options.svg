@@ -19,7 +19,7 @@
 <text text-anchor="start" x="353.7797" y="-515.3" font-family="Arial" font-size="14.00" fill="#666666">[BASE TABLE]</text>
 <polygon fill="none" stroke="#000000" points="240,-472.5 240,-502.5 454,-502.5 454,-472.5 240,-472.5"/>
 <text text-anchor="start" x="247" y="-483.9" font-family="Arial" font-size="14.00" fill="#000000">user_id </text>
-<text text-anchor="start" x="296.7882" y="-483.9" font-family="Arial" font-size="14.00" fill="#666666">[int(11)]</text>
+<text text-anchor="start" x="296.7882" y="-483.9" font-family="Arial" font-size="14.00" fill="#666666">[int]</text>
 <polygon fill="none" stroke="#000000" points="240,-442.5 240,-472.5 454,-472.5 454,-442.5 240,-442.5"/>
 <text text-anchor="start" x="247" y="-453.9" font-family="Arial" font-size="14.00" fill="#000000">show_email </text>
 <text text-anchor="start" x="324.784" y="-453.9" font-family="Arial" font-size="14.00" fill="#666666">[tinyint(1)]</text>
@@ -41,7 +41,7 @@
 <text text-anchor="start" x="323.766" y="-235.3" font-family="Arial" font-size="14.00" fill="#666666">[BASE TABLE]</text>
 <polygon fill="none" stroke="#000000" points="267,-192.5 267,-222.5 426,-222.5 426,-192.5 267,-192.5"/>
 <text text-anchor="start" x="274" y="-203.9" font-family="Arial" font-size="14.00" fill="#000000">id </text>
-<text text-anchor="start" x="288.7798" y="-203.9" font-family="Arial" font-size="14.00" fill="#666666">[int(11)]</text>
+<text text-anchor="start" x="288.7798" y="-203.9" font-family="Arial" font-size="14.00" fill="#666666">[int]</text>
 <polygon fill="none" stroke="#000000" points="267,-162.5 267,-192.5 426,-192.5 426,-162.5 267,-162.5"/>
 <text text-anchor="start" x="273.7693" y="-173.9" font-family="Arial" font-size="14.00" fill="#000000">username </text>
 <text text-anchor="start" x="339.8941" y="-173.9" font-family="Arial" font-size="14.00" fill="#666666">[varchar(50)]</text>

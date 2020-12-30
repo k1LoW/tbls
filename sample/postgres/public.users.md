@@ -36,7 +36,7 @@ Users table
 
 | Name | Definition | Comment |
 | ---- | ---------- | ------- |
-| update_users_updated | CREATE TRIGGER update_users_updated AFTER INSERT OR UPDATE ON public.users FOR EACH ROW EXECUTE PROCEDURE update_updated() | Update updated when users insert or update |
+| update_users_updated | CREATE TRIGGER update_users_updated AFTER INSERT OR UPDATE ON public.users FOR EACH ROW EXECUTE FUNCTION update_updated() | Update updated when users insert or update |
 
 ## Relations
 
