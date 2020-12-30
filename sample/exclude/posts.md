@@ -9,8 +9,8 @@ Posts table
 
 ```sql
 CREATE TABLE `posts` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL,
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
   `title` varchar(255) NOT NULL,
   `body` text NOT NULL,
   `post_type` enum('public','private','draft') NOT NULL COMMENT 'public/private/draft',
@@ -19,8 +19,8 @@ CREATE TABLE `posts` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_id` (`user_id`,`title`),
   KEY `posts_user_id_idx` (`id`) USING BTREE,
-  CONSTRAINT `posts_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Posts table'
+  CONSTRAINT `posts_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Posts table'
 ```
 
 </details>
@@ -29,8 +29,8 @@ CREATE TABLE `posts` (
 
 | Name | Type | Default | Nullable | Extra Definition | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | --------------- | -------- | ------- | ------- |
-| id | bigint(20) |  | false | auto_increment | [comments](comments.md) |  |  |
-| user_id | int(11) |  | false |  |  | [users](users.md) |  |
+| id | bigint |  | false | auto_increment | [comments](comments.md) |  |  |
+| user_id | int |  | false |  |  | [users](users.md) |  |
 | title | varchar(255) |  | false |  |  |  |  |
 | body | text |  | false |  |  |  | post body |
 | post_type | enum('public','private','draft') |  | false |  |  |  | public/private/draft |

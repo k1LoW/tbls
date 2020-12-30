@@ -7,22 +7,22 @@
 
 ```sql
 CREATE TABLE `hyphen-table` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `id` bigint NOT NULL AUTO_INCREMENT,
   `hyphen-column` text NOT NULL,
   `created` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 ```
 
 </details>
 
 ## カラム一覧
 
-| 名前            | タイプ        | デフォルト値       | Nullable | Extra Definition | 子テーブル      | 親テーブル      | コメント     |
-| ------------- | ---------- | ------------ | -------- | ---------------- | ---------- | ---------- | -------- |
-| id            | bigint(20) |              | false    | auto_increment   |            |            |          |
-| hyphen-column | text       |              | false    |                  |            |            |          |
-| created       | datetime   |              | false    |                  |            |            |          |
+| 名前            | タイプ      | デフォルト値       | Nullable | Extra Definition | 子テーブル      | 親テーブル      | コメント     |
+| ------------- | -------- | ------------ | -------- | ---------------- | ---------- | ---------- | -------- |
+| id            | bigint   |              | false    | auto_increment   |            |            |          |
+| hyphen-column | text     |              | false    |                  |            |            |          |
+| created       | datetime |              | false    |                  |            |            |          |
 
 ## 制約一覧
 

@@ -19,7 +19,7 @@
 <text text-anchor="start" x="161.2828" y="-148.3" font-family="Arial" font-size="14.00" fill="#666666">[BASE TABLE]</text>
 <polygon fill="none" stroke="#000000" points="46.5,-105.5 46.5,-135.5 261.5,-135.5 261.5,-105.5 46.5,-105.5"/>
 <text text-anchor="start" x="53.5" y="-116.9" font-family="Arial" font-size="14.00" fill="#000000">id </text>
-<text text-anchor="start" x="68.2798" y="-116.9" font-family="Arial" font-size="14.00" fill="#666666">[bigint(20)]</text>
+<text text-anchor="start" x="68.2798" y="-116.9" font-family="Arial" font-size="14.00" fill="#666666">[bigint]</text>
 <polygon fill="none" stroke="#000000" points="46.5,-75.5 46.5,-105.5 261.5,-105.5 261.5,-75.5 46.5,-75.5"/>
 <text text-anchor="start" x="53.5" y="-86.9" font-family="Arial" font-size="14.00" fill="#000000">hyphen&#45;column </text>
 <text text-anchor="start" x="153.0792" y="-86.9" font-family="Arial" font-size="14.00" fill="#666666">[text]</text>

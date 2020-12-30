@@ -7,11 +7,11 @@
 
 ```sql
 CREATE TABLE `hyphen-table` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `id` bigint NOT NULL AUTO_INCREMENT,
   `hyphen-column` text NOT NULL,
   `created` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 ```
 
 </details>
@@ -20,7 +20,7 @@ CREATE TABLE `hyphen-table` (
 
 | Name | Type | Default | Nullable | Extra Definition | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | --------------- | -------- | ------- | ------- |
-| id | bigint(20) |  | false | auto_increment |  |  |  |
+| id | bigint |  | false | auto_increment |  |  |  |
 | hyphen-column | text |  | false |  |  |  |  |
 | created | datetime |  | false |  |  |  |  |
 
