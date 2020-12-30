@@ -81,9 +81,9 @@ test_too_many_tables:
 	ulimit -n 256 && ./tbls diff pg://postgres:pgpass@localhost:55432/too_many?sslmode=disable /tmp
 
 test_json:
-	./tbls out my://root:mypass@localhost:33306/testdb -c testdata/test_tbls.yml -t json > /tmp/tbls.json
+	./tbls out my://root:mypass@localhost:33308/testdb -c testdata/test_tbls.yml -t json > /tmp/tbls.json
 	./tbls diff json:///tmp/tbls.json sample/mysql
-	./tbls out pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -c testdata/test_tbls_postgres.yml -t json > /tmp/tbls.json
+	./tbls out pg://postgres:pgpass@localhost:55413/testdb?sslmode=disable -c testdata/test_tbls_postgres.yml -t json > /tmp/tbls.json
 	./tbls diff json:///tmp/tbls.json sample/postgres
 	./tbls out sq://$(PWD)/testdata/testdb.sqlite3 -c testdata/test_tbls.yml -t json > /tmp/tbls.json
 	./tbls diff json:///tmp/tbls.json sample/sqlite
