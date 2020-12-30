@@ -23,17 +23,17 @@ ci: depsdev build db test testdoc test_too_many_tables test_json test_ext_subcom
 ci_windows: depsdev build db_sqlite testdoc_sqlite
 
 db: db_sqlite
-	usql pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -f testdata/pg.sql
-	usql my://root:mypass@localhost:33306/testdb -f testdata/my56.sql
-	usql my://root:mypass@localhost:33308/testdb -f testdata/my.sql
+	usql pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -f testdata/ddl/postgres96.sql
+	usql my://root:mypass@localhost:33306/testdb -f testdata/ddl/mysql56.sql
+	usql my://root:mypass@localhost:33308/testdb -f testdata/ddl/mysql.sql
 	usql my://root:mypass@localhost:33308/testdb -c "CREATE DATABASE IF NOT EXISTS relations;"
-	usql my://root:mypass@localhost:33308/relations -f testdata/detect_relations.sql
+	usql my://root:mypass@localhost:33308/relations -f testdata/ddl/detect_relations.sql
 	usql ms://SA:MSSQLServer-Passw0rd@localhost:11433/master -c "IF NOT EXISTS (SELECT * FROM sys.databases WHERE NAME = 'testdb') CREATE DATABASE testdb;"
-	usql ms://SA:MSSQLServer-Passw0rd@localhost:11433/testdb -f testdata/mssql.sql
-	./testdata/dynamodb.sh > /dev/null 2>&1
+	usql ms://SA:MSSQLServer-Passw0rd@localhost:11433/testdb -f testdata/ddl/mssql.sql
+	./testdata/ddl/dynamodb.sh > /dev/null 2>&1
 
 db_sqlite:
-	sqlite3 $(PWD)/testdata/testdb.sqlite3 < testdata/sqlite.sql
+	sqlite3 $(PWD)/testdata/testdb.sqlite3 < testdata/ddl/sqlite.sql
 
 test:
 	go test ./... -v -coverprofile=coverage.txt -covermode=count
@@ -72,8 +72,8 @@ testdoc_sqlite:
 	./tbls diff sq://$(PWD)/testdata/testdb.sqlite3 -c testdata/test_tbls.yml sample/sqlite
 
 test_too_many_tables:
-	usql pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -f testdata/createdb_too_many.sql
-	usql pg://postgres:pgpass@localhost:55432/too_many?sslmode=disable -f testdata/createtable_too_many.sql
+	usql pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -c "DROP DATABASE IF EXISTS too_many;CREATE DATABASE too_many;"
+	usql pg://postgres:pgpass@localhost:55432/too_many?sslmode=disable -f testdata/ddl/createtable_too_many.sql
 	ulimit -n 256 && ./tbls doc pg://postgres:pgpass@localhost:55432/too_many?sslmode=disable -f /tmp
 	ulimit -n 256 && ./tbls diff pg://postgres:pgpass@localhost:55432/too_many?sslmode=disable /tmp
 
