@@ -17,7 +17,7 @@ func TestMain(m *testing.M) {
 	s = &schema.Schema{
 		Name: "testdb",
 	}
-	db, _ = dburl.Open("pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable")
+	db, _ = dburl.Open("pg://postgres:pgpass@localhost:55413/testdb?sslmode=disable")
 	defer db.Close()
 	exit := m.Run()
 	if exit != 0 {
@@ -35,6 +35,21 @@ func TestAnalyzeView(t *testing.T) {
 	want := view.Def
 	if want == "" {
 		t.Errorf("got not empty string.")
+	}
+}
+
+func TestExtraDef(t *testing.T) {
+	driver := New(db)
+	if err := driver.Analyze(s); err != nil {
+		t.Fatal(err)
+	}
+	tbl, _ := s.FindTableByName("comments")
+	{
+		c, _ := tbl.FindColumnByName("post_id_desc")
+		got := c.ExtraDef
+		if want := "GENERATED ALWAYS AS (post_id * '-1'::integer) STORED"; got != want {
+			t.Errorf("got %v\nwant %v", got, want)
+		}
 	}
 }
 

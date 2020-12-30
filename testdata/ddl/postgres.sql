@@ -60,7 +60,7 @@ CREATE TABLE user_access_logs (
 CREATE TABLE posts (
   id bigserial NOT NULL,
   user_id int NOT NULL,
-  title varchar (255) NOT NULL,
+  title varchar (255) NOT NULL DEFAULT 'Untitled',
   body text NOT NULL,
   post_type post_types NOT NULL,
   labels varchar (50)[],
@@ -84,6 +84,7 @@ CREATE TABLE comments (
   post_id bigint NOT NULL,
   user_id int NOT NULL,
   comment text NOT NULL,
+  post_id_desc bigint GENERATED ALWAYS AS (post_id * -1) STORED,
   created timestamp without time zone NOT NULL,
   updated timestamp without time zone,
   CONSTRAINT comments_id_pk PRIMARY KEY(id),

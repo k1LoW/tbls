@@ -60,7 +60,7 @@ CREATE TABLE user_access_logs (
 CREATE TABLE posts (
   id bigserial NOT NULL,
   user_id int NOT NULL,
-  title varchar (255) NOT NULL,
+  title varchar (255) NOT NULL DEFAULT 'Untitled',
   body text NOT NULL,
   post_type post_types NOT NULL,
   labels varchar (50)[],
