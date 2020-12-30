@@ -11,7 +11,7 @@ Posts table
 CREATE TABLE `posts` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
-  `title` varchar(255) NOT NULL,
+  `title` varchar(255) NOT NULL DEFAULT 'Untitled',
   `body` text NOT NULL,
   `post_type` enum('public','private','draft') NOT NULL COMMENT 'public/private/draft',
   `created` datetime NOT NULL,
@@ -35,7 +35,7 @@ CREATE TABLE `posts` (
 | ---- | ---- | ------- | -------- | --------------- | -------- | ------- | ------- |
 | id | bigint |  | false | auto_increment | [comments](comments.md) [logs](logs.md) |  |  |
 | user_id | int |  | false |  |  | [users](users.md) |  |
-| title | varchar(255) |  | false |  |  |  |  |
+| title | varchar(255) | Untitled | false |  |  |  |  |
 | body | text |  | false |  |  |  | post body |
 | post_type | enum('public','private','draft') |  | false |  |  |  | public/private/draft |
 | created | datetime |  | false |  |  |  |  |

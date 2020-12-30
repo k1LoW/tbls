@@ -30,7 +30,7 @@ CREATE TABLE user_options (
 CREATE TABLE posts (
   id bigint AUTO_INCREMENT,
   user_id int NOT NULL,
-  title varchar (255) NOT NULL,
+  title varchar (255) NOT NULL DEFAULT 'Untitled',
   body text NOT NULL,
   post_type enum('public', 'private', 'draft')  NOT NULL COMMENT 'public/private/draft',
   created datetime NOT NULL,

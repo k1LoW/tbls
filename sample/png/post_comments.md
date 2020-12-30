@@ -18,7 +18,7 @@ CREATE VIEW post_comments AS (select `c`.`id` AS `id`,`p`.`title` AS `title`,`u2
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
 | id | bigint | 0 | true |  |  | comments.id |
-| title | varchar(255) |  | false |  |  | posts.title |
+| title | varchar(255) | Untitled | false |  |  | posts.title |
 | post_user | varchar(50) |  | true |  |  | posts.users.username |
 | comment | text |  | true |  |  | Comment<br>Multi-line<br>column<br>comment |
 | comment_user | varchar(50) |  | true |  |  | comments.users.username |
