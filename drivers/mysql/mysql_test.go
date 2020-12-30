@@ -46,8 +46,7 @@ func TestExtraDef(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	err = driver.Analyze(s)
-	if err != nil {
+	if err := driver.Analyze(s); err != nil {
 		t.Fatal(err)
 	}
 	tbl, _ := s.FindTableByName("comments")
@@ -61,7 +60,7 @@ func TestExtraDef(t *testing.T) {
 	{
 		c, _ := tbl.FindColumnByName("post_id_desc")
 		got := c.ExtraDef
-		if want := "GENERATED ALWAYS AS ((`post_id` * -(1))) VIRTUAL"; got != want {
+		if want := "GENERATED ALWAYS AS (`post_id` * -(1)) VIRTUAL"; got != want {
 			t.Errorf("got %v\nwant %v", got, want)
 		}
 	}

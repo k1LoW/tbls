@@ -38,7 +38,7 @@ CREATE TABLE `comments` (
 | post_id | bigint |  | false |  | [comment_stars](comment_stars.md) | [posts](posts.md) |  |
 | user_id | int |  | false |  | [comment_stars](comment_stars.md) | [users](users.md) |  |
 | comment | text |  | false |  |  |  | Comment<br>Multi-line<br>column<br>comment |
-| post_id_desc | bigint |  | true | GENERATED ALWAYS AS ((\`post_id\` * -(1))) VIRTUAL |  |  |  |
+| post_id_desc | bigint |  | true | GENERATED ALWAYS AS (\`post_id\` * -(1)) VIRTUAL |  |  |  |
 | created | datetime |  | false |  |  |  |  |
 | updated | datetime |  | true |  |  |  |  |
 
