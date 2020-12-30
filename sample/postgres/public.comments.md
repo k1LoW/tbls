@@ -9,14 +9,15 @@ comment
 
 ## Columns
 
-| Name | Type | Default | Nullable | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | bigint | nextval('comments_id_seq'::regclass) | false | [public.logs](public.logs.md) |  |  |
-| post_id | bigint |  | false | [public.comment_stars](public.comment_stars.md) | [public.posts](public.posts.md) |  |
-| user_id | integer |  | false | [public.comment_stars](public.comment_stars.md) | [public.users](public.users.md) |  |
-| comment | text |  | false |  |  | Comment<br>Multi-line<br>column<br>comment |
-| created | timestamp without time zone |  | false |  |  |  |
-| updated | timestamp without time zone |  | true |  |  |  |
+| Name | Type | Default | Nullable | Extra Definition | Children | Parents | Comment |
+| ---- | ---- | ------- | -------- | --------------- | -------- | ------- | ------- |
+| id | bigint | nextval('comments_id_seq'::regclass) | false |  | [public.logs](public.logs.md) |  |  |
+| post_id | bigint |  | false |  | [public.comment_stars](public.comment_stars.md) | [public.posts](public.posts.md) |  |
+| user_id | integer |  | false |  | [public.comment_stars](public.comment_stars.md) | [public.users](public.users.md) |  |
+| comment | text |  | false |  |  |  | Comment<br>Multi-line<br>column<br>comment |
+| post_id_desc | bigint |  | true | GENERATED ALWAYS AS (post_id * '-1'::integer) STORED |  |  |  |
+| created | timestamp without time zone |  | false |  |  |  |  |
+| updated | timestamp without time zone |  | true |  |  |  |  |
 
 ## Constraints
 

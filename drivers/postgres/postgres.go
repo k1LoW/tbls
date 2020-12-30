@@ -6,6 +6,7 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/aquasecurity/go-version/pkg/version"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/lib/pq"
 	"github.com/pkg/errors"
@@ -217,27 +218,11 @@ ORDER BY tgrelid
 		}
 
 		// columns
-		columnRows, err := p.db.Query(`
-SELECT
-    attr.attname AS column_name,
-    pg_get_expr(def.adbin, def.adrelid) AS column_default,
-    NOT (attr.attnotnull OR tp.typtype = 'd' AND tp.typnotnull) AS is_nullable,
-    CASE
-        WHEN 'character varying'::regtype = ANY(ARRAY[attr.atttypid, tp.typelem]) THEN
-            REPLACE(format_type(attr.atttypid, attr.atttypmod), 'character varying', 'varchar')
-        ELSE format_type(attr.atttypid, attr.atttypmod)
-    END AS data_type,
-    descr.description AS comment
-FROM pg_attribute AS attr
-INNER JOIN pg_type AS tp ON attr.atttypid = tp.oid
-LEFT JOIN pg_attrdef AS def ON attr.attrelid = def.adrelid AND attr.attnum = def.adnum
-LEFT JOIN pg_description AS descr ON attr.attrelid = descr.objoid AND attr.attnum = descr.objsubid
-WHERE
-    attr.attnum > 0
-AND NOT attr.attisdropped
-AND attr.attrelid = $1::oid
-ORDER BY attr.attnum;
-`, tableOid)
+		columnStmt, err := p.queryForColumns(s.Driver.DatabaseVersion)
+		if err != nil {
+			return errors.WithStack(err)
+		}
+		columnRows, err := p.db.Query(columnStmt, tableOid)
 		if err != nil {
 			return errors.WithStack(err)
 		}
@@ -246,13 +231,14 @@ ORDER BY attr.attnum;
 		columns := []*schema.Column{}
 		for columnRows.Next() {
 			var (
-				columnName    string
-				columnDefault sql.NullString
-				isNullable    bool
-				dataType      string
-				columnComment sql.NullString
+				columnName               string
+				columnDefaultOrGenerated sql.NullString
+				attrgenerated            sql.NullString
+				isNullable               bool
+				dataType                 string
+				columnComment            sql.NullString
 			)
-			err = columnRows.Scan(&columnName, &columnDefault, &isNullable, &dataType, &columnComment)
+			err = columnRows.Scan(&columnName, &columnDefaultOrGenerated, &attrgenerated, &isNullable, &dataType, &columnComment)
 			if err != nil {
 				return errors.WithStack(err)
 			}
@@ -260,8 +246,15 @@ ORDER BY attr.attnum;
 				Name:     columnName,
 				Type:     dataType,
 				Nullable: isNullable,
-				Default:  columnDefault,
 				Comment:  columnComment.String,
+			}
+			switch attrgenerated.String {
+			case "":
+				column.Default = columnDefaultOrGenerated
+			case "s":
+				column.ExtraDef = fmt.Sprintf("GENERATED ALWAYS AS %s STORED", columnDefaultOrGenerated.String)
+			default:
+				return fmt.Errorf("unsupported pg_attribute.attrgenerated '%s'", attrgenerated.String)
 			}
 			columns = append(columns, column)
 		}
@@ -374,6 +367,66 @@ func (p *Postgres) Info() (*schema.Driver, error) {
 // EnableRsMode enable rsMode
 func (p *Postgres) EnableRsMode() {
 	p.rsMode = true
+}
+
+func (p *Postgres) queryForColumns(v string) (string, error) {
+	verGeneratedColumn, err := version.Parse("12")
+	if err != nil {
+		return "", err
+	}
+	// v => PostgreSQL 9.5.24 on x86_64-pc-linux-gnu (Debian 9.5.24-1.pgdg90+1), compiled by gcc (Debian 6.3.0-18+deb9u1) 6.3.0 20170516, 64-bit
+	splited := strings.Split(v, " ")
+	vv, err := version.Parse(splited[1])
+	if err != nil {
+		return "", err
+	}
+	if vv.LessThan(verGeneratedColumn) {
+		return `
+SELECT
+    attr.attname AS column_name,
+    pg_get_expr(def.adbin, def.adrelid) AS column_default,
+    '' as dummy,
+    NOT (attr.attnotnull OR tp.typtype = 'd' AND tp.typnotnull) AS is_nullable,
+    CASE
+        WHEN 'character varying'::regtype = ANY(ARRAY[attr.atttypid, tp.typelem]) THEN
+            REPLACE(format_type(attr.atttypid, attr.atttypmod), 'character varying', 'varchar')
+        ELSE format_type(attr.atttypid, attr.atttypmod)
+    END AS data_type,
+    descr.description AS comment
+FROM pg_attribute AS attr
+INNER JOIN pg_type AS tp ON attr.atttypid = tp.oid
+LEFT JOIN pg_attrdef AS def ON attr.attrelid = def.adrelid AND attr.attnum = def.adnum AND attr.atthasdef
+LEFT JOIN pg_description AS descr ON attr.attrelid = descr.objoid AND attr.attnum = descr.objsubid
+WHERE
+    attr.attnum > 0
+AND NOT attr.attisdropped
+AND attr.attrelid = $1::oid
+ORDER BY attr.attnum;
+`, nil
+	} else {
+		return `
+SELECT
+    attr.attname AS column_name,
+    pg_get_expr(def.adbin, def.adrelid) AS column_default,
+    attr.attgenerated,
+    NOT (attr.attnotnull OR tp.typtype = 'd' AND tp.typnotnull) AS is_nullable,
+    CASE
+        WHEN 'character varying'::regtype = ANY(ARRAY[attr.atttypid, tp.typelem]) THEN
+            REPLACE(format_type(attr.atttypid, attr.atttypmod), 'character varying', 'varchar')
+        ELSE format_type(attr.atttypid, attr.atttypmod)
+    END AS data_type,
+    descr.description AS comment
+FROM pg_attribute AS attr
+INNER JOIN pg_type AS tp ON attr.atttypid = tp.oid
+LEFT JOIN pg_attrdef AS def ON attr.attrelid = def.adrelid AND attr.attnum = def.adnum AND attr.atthasdef
+LEFT JOIN pg_description AS descr ON attr.attrelid = descr.objoid AND attr.attnum = descr.objsubid
+WHERE
+    attr.attnum > 0
+AND NOT attr.attisdropped
+AND attr.attrelid = $1::oid
+ORDER BY attr.attnum;
+`, nil
+	}
 }
 
 func (p *Postgres) queryForConstraints() string {

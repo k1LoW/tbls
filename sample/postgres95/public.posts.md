@@ -10,7 +10,7 @@ Posts table
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
 | id | bigint | nextval('posts_id_seq'::regclass) | false | [public.comments](public.comments.md) [public.logs](public.logs.md) |  |  |
 | user_id | integer |  | false |  | [public.users](public.users.md) |  |
-| title | varchar(255) |  | false |  |  |  |
+| title | varchar(255) | 'Untitled'::character varying | false |  |  |  |
 | body | text |  | false |  |  | post body |
 | post_type | post_types |  | false |  |  | public/private/draft |
 | labels | varchar(50)[] |  | true |  |  |  |
