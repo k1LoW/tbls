@@ -356,9 +356,9 @@ WHERE table_schema = ? AND table_name = ? ORDER BY ordinal_position`
 			if generationExpr.String != "" {
 				switch extraDef {
 				case "VIRTUAL GENERATED":
-					extraDef = fmt.Sprintf("GENERATED ALWAYS AS (%s) VIRTUAL", generationExpr.String)
+					extraDef = fmt.Sprintf("GENERATED ALWAYS AS %s VIRTUAL", generationExpr.String)
 				case "STORED GENERATED":
-					extraDef = fmt.Sprintf("GENERATED ALWAYS AS (%s) STORED", generationExpr.String)
+					extraDef = fmt.Sprintf("GENERATED ALWAYS AS %s STORED", generationExpr.String)
 				default:
 					extraDef = fmt.Sprintf("%s:%s", extraDef, generationExpr.String)
 				}
