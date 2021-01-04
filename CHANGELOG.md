@@ -1,5 +1,13 @@
 # Changelog
 
+## [v1.47.0](https://github.com/k1LoW/tbls/compare/v1.46.0...v1.47.0) (2020-12-31)
+
+* Fix MySQL extra definition [#272](https://github.com/k1LoW/tbls/pull/272) ([k1LoW](https://github.com/k1LoW))
+* [BREAKING][PostgreSQL]Support Extra Definition (Generated column) [#271](https://github.com/k1LoW/tbls/pull/271) ([k1LoW](https://github.com/k1LoW))
+* Organize testdata [#270](https://github.com/k1LoW/tbls/pull/270) ([k1LoW](https://github.com/k1LoW))
+* xlsx format support extra definition [#269](https://github.com/k1LoW/tbls/pull/269) ([k1LoW](https://github.com/k1LoW))
+* [BREAKING][MySQL]Support Extra Definition (AUTO_INCREMENT / Generated  column etc) [#268](https://github.com/k1LoW/tbls/pull/268) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.46.0](https://github.com/k1LoW/tbls/compare/v1.45.2...v1.46.0) (2020-12-11)
 
 * Support Snowflake [#267](https://github.com/k1LoW/tbls/pull/267) ([kanata2](https://github.com/kanata2))
