@@ -1,5 +1,10 @@
 # Changelog
 
+## [v1.48.0](https://github.com/k1LoW/tbls/compare/v1.47.0...v1.48.0) (2021-01-16)
+
+* Add hide_auto_increment option to hide the entire AUTO_INCREMENT clause [#277](https://github.com/k1LoW/tbls/pull/277) ([k1LoW](https://github.com/k1LoW))
+* Support MariaDB [#276](https://github.com/k1LoW/tbls/pull/276) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.47.0](https://github.com/k1LoW/tbls/compare/v1.46.0...v1.47.0) (2020-12-31)
 
 * Fix MySQL extra definition [#272](https://github.com/k1LoW/tbls/pull/272) ([k1LoW](https://github.com/k1LoW))
