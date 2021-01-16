@@ -16,9 +16,11 @@ export AWS_DEFAULT_REGION=ap-northeast-1
 
 BUILD_LDFLAGS = -X $(PKG).commit=$(COMMIT) -X $(PKG).date=$(DATE)
 
+TMPDIR ?= /tmp
+
 default: test
 
-ci: depsdev build db test testdoc test_too_many_tables test_json test_ext_subcommand sec doc
+ci: depsdev build db test testdoc testdoc_hide_auto_increment test_too_many_tables test_json test_ext_subcommand sec doc
 
 ci_windows: depsdev build db_sqlite testdoc_sqlite
 
@@ -76,6 +78,13 @@ testdoc: testdoc_sqlite
 
 testdoc_sqlite:
 	./tbls diff sq://$(PWD)/testdata/testdb.sqlite3 -c testdata/test_tbls.yml sample/sqlite
+
+testdoc_hide_auto_increment:
+	usql my://root:mypass@localhost:33308/testdb -c "CREATE DATABASE IF NOT EXISTS auto_increment;"
+	usql my://root:mypass@localhost:33308/auto_increment -f testdata/ddl/auto_increment.sql
+	./tbls doc my://root:mypass@localhost:33308/auto_increment?hide_auto_increment -f $(TMPDIR)/auto_increment
+	usql my://root:mypass@localhost:33308/auto_increment -c "INSERT INTO users (username, password, email, created) VALUES ('alice', 'PASS', 'alice@example.com', now());"
+	./tbls diff my://root:mypass@localhost:33308/auto_increment?hide_auto_increment $(TMPDIR)/auto_increment
 
 test_too_many_tables:
 	usql pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -c "DROP DATABASE IF EXISTS too_many;CREATE DATABASE too_many;"
