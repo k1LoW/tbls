@@ -83,8 +83,7 @@ func (m *Mysql) Analyze(s *schema.Schema) error {
 	}
 
 	// tables and comments
-	tableRows, err := m.db.Query(`
-SELECT table_name, table_type, table_comment FROM information_schema.tables WHERE table_schema = ?;`, s.Name)
+	tableRows, err := m.db.Query(m.queryForTables(), s.Name)
 	if err != nil {
 		return errors.WithStack(err)
 	}
@@ -454,6 +453,15 @@ func (m *Mysql) Info() (*schema.Driver, error) {
 // EnableMariaMode enable mariaMode
 func (m *Mysql) EnableMariaMode() {
 	m.mariaMode = true
+}
+
+func (m *Mysql) queryForTables() string {
+	if m.mariaMode {
+		return `
+SELECT table_name, table_type, table_comment FROM information_schema.tables WHERE table_schema = ? ORDER BY table_name;`
+	}
+	return `
+SELECT table_name, table_type, table_comment FROM information_schema.tables WHERE table_schema = ?;`
 }
 
 func convertColumnNullable(str string) bool {
