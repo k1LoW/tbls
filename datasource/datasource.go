@@ -71,6 +71,10 @@ func Analyze(dsn config.DSN) (*schema.Schema, error) {
 				opts = append(opts, mysql.ShowAutoIcrrement())
 				values.Del(k)
 			}
+			if k == "hide_auto_increment" {
+				opts = append(opts, mysql.HideAutoIcrrement())
+				values.Del(k)
+			}
 		}
 		u.RawQuery = values.Encode()
 		urlstr = u.String()

@@ -13,14 +13,19 @@ import (
 )
 
 var reFK = regexp.MustCompile(`FOREIGN KEY \((.+)\) REFERENCES ([^\s]+)\s?\((.+)\)`)
-var reAI = regexp.MustCompile(`AUTO_INCREMENT=[\d]+`)
+var reAI = regexp.MustCompile(` AUTO_INCREMENT=[\d]+`)
 var supportGeneratedColumn = true
 
 // Mysql struct
 type Mysql struct {
-	db                *sql.DB
-	mariaMode         bool
+	db        *sql.DB
+	mariaMode bool
+
+	// Show AUTO_INCREMENT with increment number
 	showAutoIncrement bool
+
+	// Hide the entire AUTO_INCREMENT clause
+	hideAutoIncrement bool
 }
 
 func ShowAutoIcrrement() drivers.Option {
@@ -28,6 +33,16 @@ func ShowAutoIcrrement() drivers.Option {
 		switch d := d.(type) {
 		case *Mysql:
 			d.showAutoIncrement = true
+		}
+		return nil
+	}
+}
+
+func HideAutoIcrrement() drivers.Option {
+	return func(d drivers.Driver) error {
+		switch d := d.(type) {
+		case *Mysql:
+			d.hideAutoIncrement = true
 		}
 		return nil
 	}
@@ -124,10 +139,14 @@ func (m *Mysql) Analyze(s *schema.Schema) error {
 				if err != nil {
 					return errors.WithStack(err)
 				}
-				if m.showAutoIncrement {
+
+				switch {
+				case m.showAutoIncrement:
 					table.Def = tableDef
-				} else {
-					table.Def = reAI.ReplaceAllLiteralString(tableDef, "AUTO_INCREMENT=[Redacted by tbls]")
+				case m.hideAutoIncrement:
+					table.Def = reAI.ReplaceAllLiteralString(tableDef, "")
+				default:
+					table.Def = reAI.ReplaceAllLiteralString(tableDef, " AUTO_INCREMENT=[Redacted by tbls]")
 				}
 			}
 		}
