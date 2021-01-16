@@ -22,6 +22,7 @@ import (
 	"github.com/k1LoW/tbls/drivers"
 	"github.com/k1LoW/tbls/drivers/bq"
 	"github.com/k1LoW/tbls/drivers/dynamo"
+	"github.com/k1LoW/tbls/drivers/mariadb"
 	"github.com/k1LoW/tbls/drivers/mssql"
 	"github.com/k1LoW/tbls/drivers/mysql"
 	"github.com/k1LoW/tbls/drivers/postgres"
@@ -96,7 +97,11 @@ func Analyze(dsn config.DSN) (*schema.Schema, error) {
 		}
 	case "mysql":
 		s.Name = splitted[1]
-		driver, err = mysql.New(db, opts...)
+		if u.Scheme == "maria" || u.Scheme == "mariadb" {
+			driver, err = mariadb.New(db, opts...)
+		} else {
+			driver, err = mysql.New(db, opts...)
+		}
 		if err != nil {
 			return s, err
 		}

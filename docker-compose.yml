@@ -35,6 +35,14 @@ services:
     environment:
       - MYSQL_DATABASE=testdb
       - MYSQL_ROOT_PASSWORD=mypass
+  mariadb:
+    image: mariadb:10.5
+    restart: always
+    ports:
+      - "33309:3306"
+    environment:
+      - MYSQL_DATABASE=testdb
+      - MYSQL_ROOT_PASSWORD=mypass
   mssql:
     image: mcr.microsoft.com/mssql/server:2017-latest
     restart: always

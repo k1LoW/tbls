@@ -368,6 +368,18 @@ dsn: mysql://dbuser:dbpass@hostname:3306/dbname
 dsn: my://dbuser:dbpass@hostname:3306/dbname
 ```
 
+**MariaDB:**
+
+``` yaml
+# .tbls.yml
+dsn: mariadb://dbuser:dbpass@hostname:3306/dbname
+```
+
+``` yaml
+# .tbls.yml
+dsn: maria://dbuser:dbpass@hostname:3306/dbname
+```
+
 **SQLite:**
 
 ``` yaml
