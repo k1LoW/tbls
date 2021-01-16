@@ -19,6 +19,7 @@ var supportGeneratedColumn = true
 // Mysql struct
 type Mysql struct {
 	db                *sql.DB
+	mariaMode         bool
 	showAutoIncrement bool
 }
 
@@ -54,16 +55,31 @@ func (m *Mysql) Analyze(s *schema.Schema) error {
 	}
 	s.Driver = d
 
-	verGeneratedColumn, err := version.Parse("5.7.6")
-	if err != nil {
-		return err
-	}
-	v, err := version.Parse(s.Driver.DatabaseVersion)
-	if err != nil {
-		return err
-	}
-	if v.LessThan(verGeneratedColumn) {
-		supportGeneratedColumn = false
+	if m.mariaMode {
+		verGeneratedColumn, err := version.Parse("10.2")
+		if err != nil {
+			return err
+		}
+		splitted := strings.Split(s.Driver.DatabaseVersion, "-")
+		v, err := version.Parse(splitted[0])
+		if err != nil {
+			return err
+		}
+		if v.LessThan(verGeneratedColumn) {
+			supportGeneratedColumn = false
+		}
+	} else {
+		verGeneratedColumn, err := version.Parse("5.7.6")
+		if err != nil {
+			return err
+		}
+		v, err := version.Parse(s.Driver.DatabaseVersion)
+		if err != nil {
+			return err
+		}
+		if v.LessThan(verGeneratedColumn) {
+			supportGeneratedColumn = false
+		}
 	}
 
 	// tables and comments
@@ -423,11 +439,21 @@ func (m *Mysql) Info() (*schema.Driver, error) {
 		return nil, err
 	}
 
+	name := "mysql"
+	if m.mariaMode {
+		name = "mariadb"
+	}
+
 	d := &schema.Driver{
-		Name:            "mysql",
+		Name:            name,
 		DatabaseVersion: v,
 	}
 	return d, nil
+}
+
+// EnableMariaMode enable mariaMode
+func (m *Mysql) EnableMariaMode() {
+	m.mariaMode = true
 }
 
 func convertColumnNullable(str string) bool {
