@@ -16,6 +16,8 @@ export AWS_DEFAULT_REGION=ap-northeast-1
 
 BUILD_LDFLAGS = -X $(PKG).commit=$(COMMIT) -X $(PKG).date=$(DATE)
 
+TMPDIR ?= /tmp
+
 default: test
 
 ci: depsdev build db test testdoc testdoc_hide_auto_increment test_too_many_tables test_json test_ext_subcommand sec doc
