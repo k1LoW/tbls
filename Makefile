@@ -33,7 +33,7 @@ db: db_sqlite
 	usql my://root:mypass@localhost:33308/relations -f testdata/ddl/detect_relations.sql
 	usql maria://root:mypass@localhost:33309/testdb -f testdata/ddl/mysql.sql
 	usql ms://SA:MSSQLServer-Passw0rd@localhost:11433/master -c "IF NOT EXISTS (SELECT * FROM sys.databases WHERE NAME = 'testdb') CREATE DATABASE testdb;"
-	usql ms://SA:MSSQLServer-Passw0rd@localhost:11433/testdb -f testdata/ddl/mssql.sql
+	usql ms://SA:MSSQLServer-Passw0rd@localhost:11433/testdb -f testdata/ddl/mssql.sql || true
 	./testdata/ddl/dynamodb.sh > /dev/null 2>&1
 
 db_sqlite:

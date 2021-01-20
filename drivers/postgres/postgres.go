@@ -13,6 +13,7 @@ import (
 )
 
 var reFK = regexp.MustCompile(`FOREIGN KEY \((.+)\) REFERENCES ([^\s]+)\s?\((.+)\)`)
+var reVersion = regexp.MustCompile(`([0-9]+(\.[0-9]+)*)`)
 
 // Postgres struct
 type Postgres struct {
@@ -375,8 +376,11 @@ func (p *Postgres) queryForColumns(v string) (string, error) {
 		return "", err
 	}
 	// v => PostgreSQL 9.5.24 on x86_64-pc-linux-gnu (Debian 9.5.24-1.pgdg90+1), compiled by gcc (Debian 6.3.0-18+deb9u1) 6.3.0 20170516, 64-bit
-	splited := strings.Split(v, " ")
-	vv, err := version.Parse(splited[1])
+	matches := reVersion.FindStringSubmatch(v)
+	if matches == nil {
+		return "", fmt.Errorf("malformed version: %s", v)
+	}
+	vv, err := version.Parse(matches[1])
 	if err != nil {
 		return "", err
 	}
