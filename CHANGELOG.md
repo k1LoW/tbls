@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.48.1](https://github.com/k1LoW/tbls/compare/v1.48.0...v1.48.1) (2021-01-21)
+
+* [PostgreSQL]Fix version parse [#279](https://github.com/k1LoW/tbls/pull/279) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.48.0](https://github.com/k1LoW/tbls/compare/v1.47.0...v1.48.0) (2021-01-16)
 
 * Add hide_auto_increment option to hide the entire AUTO_INCREMENT clause [#277](https://github.com/k1LoW/tbls/pull/277) ([k1LoW](https://github.com/k1LoW))
