@@ -5,6 +5,7 @@ coverage:
         target: 65%
     patch: off
 ignore:
+  - "datasource/gcp.go"
   - "drivers/bq"
   - "drivers/spanner"
   - "schema/json.go"
