@@ -37,7 +37,7 @@ import (
 var diffCmd = &cobra.Command{
 	Use:   "diff [DSN] [DOC_PATH]",
 	Short: "diff database and ( document or database )",
-	Long:  `'tbls diff' shows the difference between database schema and generated document.`,
+	Long:  `'tbls diff' shows the difference between database schema and ( generated document or other database schema ).`,
 	Args:  cobra.MaximumNArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
 		if allow, err := cmdutil.IsAllowedToExecute(when); !allow || err != nil {
