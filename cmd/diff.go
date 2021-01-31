@@ -28,6 +28,7 @@ import (
 	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/datasource"
 	"github.com/k1LoW/tbls/output/md"
+	"github.com/k1LoW/tbls/schema"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
@@ -35,8 +36,9 @@ import (
 // diffCmd represents the diff command
 var diffCmd = &cobra.Command{
 	Use:   "diff [DSN] [DOC_PATH]",
-	Short: "diff database and document",
+	Short: "diff database and ( document or database )",
 	Long:  `'tbls diff' shows the difference between database schema and generated document.`,
+	Args:  cobra.MaximumNArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
 		if allow, err := cmdutil.IsAllowedToExecute(when); !allow || err != nil {
 			if err != nil {
@@ -52,31 +54,100 @@ var diffCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		options, err := loadDiffArgs(args)
+		c2, err := config.New()
 		if err != nil {
 			printError(err)
 			os.Exit(1)
 		}
 
-		err = c.Load(configPath, options...)
+		var (
+			s       *schema.Schema
+			s2      *schema.Schema
+			docPath string
+			diff    string
+		)
+
+		options := loadDiffOpts()
+
+		switch len(args) {
+		case 2:
+			if _, err := os.Lstat(args[1]); err == nil {
+				// a:path and b:dsn
+				if err := c.Load(configPath, append(options, config.DSNURL(args[0]))...); err != nil {
+					printError(err)
+					os.Exit(1)
+				}
+				c2 = nil
+				docPath = args[1]
+			} else {
+				// a:dsn and b:dsn
+				if err := c.Load(configPath, append(options, config.DSNURL(args[0]))...); err != nil {
+					printError(err)
+					os.Exit(1)
+				}
+				if err := c2.Load(configPath, append(options, config.DSNURL(args[1]))...); err != nil {
+					printError(err)
+					os.Exit(1)
+				}
+				docPath = ""
+			}
+		case 1:
+			if err := c.Load(configPath); err != nil {
+				printError(err)
+				os.Exit(1)
+			}
+			if _, err := os.Lstat(args[0]); err == nil {
+				// a:path and b:dsn in config
+				c2 = nil
+				docPath = args[0]
+			} else {
+				// a:dsn in config and b:dsn
+				if err := c2.Load(configPath, append(options, config.DSNURL(args[0]))...); err != nil {
+					printError(err)
+					os.Exit(1)
+				}
+				docPath = ""
+			}
+		case 0:
+			// a:path in config and b:dsn in config
+			if err := c.Load(configPath); err != nil {
+				printError(err)
+				os.Exit(1)
+			}
+			c2 = nil
+			docPath = ""
+		}
+
+		s, err = datasource.Analyze(c.DSN)
 		if err != nil {
 			printError(err)
 			os.Exit(1)
 		}
-
-		s, err := datasource.Analyze(c.DSN)
-		if err != nil {
+		if err := c.ModifySchema(s); err != nil {
 			printError(err)
 			os.Exit(1)
 		}
 
-		err = c.ModifySchema(s)
-		if err != nil {
-			printError(err)
-			os.Exit(1)
+		if c2 != nil {
+			s2, err = datasource.Analyze(c2.DSN)
+			if err != nil {
+				printError(err)
+				os.Exit(1)
+			}
+			if err := c2.ModifySchema(s2); err != nil {
+				printError(err)
+				os.Exit(1)
+			}
 		}
 
-		diff, err := md.Diff(s, c)
+		switch {
+		case docPath != "":
+			diff, err = md.DiffSchemaAndDocs(docPath, s, c)
+		case s2 != nil:
+			diff, err = md.DiffSchemas(s, s2, c, c2)
+		default:
+			err = errors.New("not implemented")
+		}
 		if err != nil {
 			printError(err)
 			os.Exit(2)
@@ -88,11 +159,8 @@ var diffCmd = &cobra.Command{
 	},
 }
 
-func loadDiffArgs(args []string) ([]config.Option, error) {
+func loadDiffOpts() []config.Option {
 	options := []config.Option{}
-	if len(args) > 2 {
-		return options, errors.WithStack(errors.New("too many arguments"))
-	}
 	if adjust {
 		options = append(options, config.Adjust(adjust))
 	}
@@ -100,14 +168,7 @@ func loadDiffArgs(args []string) ([]config.Option, error) {
 		options = append(options, config.Sort(sort))
 	}
 	options = append(options, config.ERFormat(erFormat))
-	if len(args) == 2 {
-		options = append(options, config.DSNURL(args[0]))
-		options = append(options, config.DocPath(args[1]))
-	}
-	if len(args) == 1 {
-		options = append(options, config.DSNURL(args[0]))
-	}
-	return options, nil
+	return options
 }
 
 func init() {

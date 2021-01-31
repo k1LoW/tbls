@@ -6,6 +6,7 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
+	"path"
 	"path/filepath"
 	"strings"
 	"text/template"
@@ -178,10 +179,88 @@ func Output(s *schema.Schema, c *config.Config, force bool) (e error) {
 	return nil
 }
 
-// Diff database and markdown files.
-func Diff(s *schema.Schema, c *config.Config) (string, error) {
-	docPath := c.DocPath
+// DiffSchemas show diff databases.
+func DiffSchemas(s, s2 *schema.Schema, c, c2 *config.Config) (string, error) {
+	var diff string
+	md := New(c, false)
 
+	// README.md
+	a := new(bytes.Buffer)
+	if err := md.OutputSchema(a, s); err != nil {
+		return "", errors.WithStack(err)
+	}
+
+	b := new(bytes.Buffer)
+	if err := md.OutputSchema(b, s2); err != nil {
+		return "", errors.WithStack(err)
+	}
+
+	mdsnA, err := c.MaskedDSN()
+	if err != nil {
+		return "", errors.WithStack(err)
+	}
+	from := fmt.Sprintf("tbls doc %s", mdsnA)
+
+	mdsnB, err := c.MaskedDSN()
+	if err != nil {
+		return "", errors.WithStack(err)
+	}
+	to := fmt.Sprintf("tbls doc %s", mdsnB)
+
+	d := difflib.UnifiedDiff{
+		A:        difflib.SplitLines(a.String()),
+		B:        difflib.SplitLines(b.String()),
+		FromFile: from,
+		ToFile:   to,
+		Context:  3,
+	}
+
+	text, _ := difflib.GetUnifiedDiffString(d)
+	if text != "" {
+		diff += fmt.Sprintf("diff %s '%s'\n", from, to)
+		diff += text
+	}
+
+	// tables
+	for _, t := range s.Tables {
+
+		tName := t.Name
+
+		a := new(bytes.Buffer)
+		if err := md.OutputTable(a, t); err != nil {
+			return "", errors.WithStack(err)
+		}
+		from := path.Join(mdsnA, tName)
+
+		b := new(bytes.Buffer)
+		t2, err := s2.FindTableByName(tName)
+		if err == nil {
+			if err := md.OutputTable(b, t2); err != nil {
+				return "", errors.WithStack(err)
+			}
+		}
+		to := path.Join(mdsnB, tName)
+
+		d := difflib.UnifiedDiff{
+			A:        difflib.SplitLines(a.String()),
+			B:        difflib.SplitLines(b.String()),
+			FromFile: from,
+			ToFile:   to,
+			Context:  3,
+		}
+
+		text, _ := difflib.GetUnifiedDiffString(d)
+		if text != "" {
+			diff += fmt.Sprintf("diff %s '%s'\n", from, to)
+			diff += text
+		}
+	}
+
+	return diff, nil
+}
+
+// DiffSchemaAndDocs show diff markdown files and database.
+func DiffSchemaAndDocs(docPath string, s *schema.Schema, c *config.Config) (string, error) {
 	var diff string
 	fullPath, err := filepath.Abs(docPath)
 	if err != nil {
@@ -193,7 +272,6 @@ func Diff(s *schema.Schema, c *config.Config) (string, error) {
 	}
 
 	// README.md
-	b := new(bytes.Buffer)
 	er := false
 	if _, err := os.Lstat(filepath.Join(fullPath, fmt.Sprintf("schema.%s", c.ER.Format))); err == nil {
 		er = true
@@ -201,6 +279,7 @@ func Diff(s *schema.Schema, c *config.Config) (string, error) {
 
 	md := New(c, er)
 
+	b := new(bytes.Buffer)
 	err = md.OutputSchema(b, s)
 	if err != nil {
 		return "", errors.WithStack(err)
