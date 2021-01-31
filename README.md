@@ -21,7 +21,7 @@ Key features of `tbls` are:
   - [Install](#install)
   - [Getting Started](#getting-started)
     - [Document a database](#document-a-database)
-    - [Diff database and document](#diff-database-and-document)
+    - [Diff database and ( document or database )](#diff-database-and--document-or-database-)
     - [Lint a database](#lint-a-database)
     - [Measure document coverage](#measure-document-coverage)
     - [Continuous Integration](#continuous-integration)
@@ -149,7 +149,7 @@ View the document on GitHub.
 
 ![sample](img/doc.png)
 
-### Diff database and document
+### Diff database and ( document or database )
 
 Update database schema.
 
@@ -186,6 +186,12 @@ diff postgres://dbuser:*****@hostname:5432/dbname doc/schema/users.md
 
  ## Constraints
 
+```
+
+And, `tbls diff` support for diff checking between database and other database
+
+``` console
+$ tbls diff postgres://dbuser:*****@local:5432/dbname postgres://dbuser:*****@production:5432/dbname
 ```
 
 > **Notice:** `tbls diff` shows the difference Markdown documents only.

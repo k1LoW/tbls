@@ -113,38 +113,66 @@ func TestOutputTemplate(t *testing.T) {
 	}
 }
 
-func TestDiff(t *testing.T) {
+func TestDiffSchemaAndDocs(t *testing.T) {
 	for _, tt := range tests {
-		s := newTestSchema()
-		c, err := config.New()
-		if err != nil {
-			t.Error(err)
-		}
-		tempDir, _ := ioutil.TempDir("", "tbls")
-		force := true
-		adjust := tt.adjust
-		erFormat := "png"
-		defer os.RemoveAll(tempDir)
-		err = c.Load(filepath.Join(testdataDir(), "out_test_tbls.yml"), config.DocPath(tempDir), config.Adjust(adjust), config.ERFormat(erFormat))
-		if err != nil {
-			t.Error(err)
-		}
-		err = c.MergeAdditionalData(s)
-		if err != nil {
-			t.Error(err)
-		}
-		err = Output(s, c, force)
-		if err != nil {
-			t.Error(err)
-		}
-		want := ""
-		got, err := Diff(s, c)
-		if err != nil {
-			t.Error(err)
-		}
-		if got != want {
-			t.Errorf("got %v\nwant %v", got, want)
-		}
+		func() {
+			s := newTestSchema()
+			c, err := config.New()
+			if err != nil {
+				t.Error(err)
+			}
+			docPath, _ := ioutil.TempDir("", "tbls")
+			force := true
+			adjust := tt.adjust
+			erFormat := "png"
+			defer os.RemoveAll(docPath)
+			err = c.Load(filepath.Join(testdataDir(), "out_test_tbls.yml"), config.DocPath(docPath), config.Adjust(adjust), config.ERFormat(erFormat))
+			if err != nil {
+				t.Error(err)
+			}
+			err = c.MergeAdditionalData(s)
+			if err != nil {
+				t.Error(err)
+			}
+			err = Output(s, c, force)
+			if err != nil {
+				t.Error(err)
+			}
+			want := ""
+			got, err := DiffSchemaAndDocs(docPath, s, c)
+			if err != nil {
+				t.Error(err)
+			}
+			if got != want {
+				t.Errorf("got %v\nwant %v", got, want)
+			}
+		}()
+	}
+}
+
+func TestDiffSchemas(t *testing.T) {
+	s := newTestSchema()
+	s2 := newTestSchema()
+	c, err := config.New()
+	if err != nil {
+		t.Error(err)
+	}
+	want := ""
+	got, err := DiffSchemas(s, s2, c, c)
+	if err != nil {
+		t.Error(err)
+	}
+	if got != want {
+		t.Errorf("got %v\nwant %v", got, want)
+	}
+
+	s2.Name = "modified"
+	got2, err := DiffSchemas(s, s2, c, c)
+	if err != nil {
+		t.Error(err)
+	}
+	if got2 == "" {
+		t.Error("diff should not be empty")
 	}
 }
 
