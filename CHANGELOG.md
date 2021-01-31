@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.49.0](https://github.com/k1LoW/tbls/compare/v1.48.1...v1.49.0) (2021-02-01)
+
+* Separate datasource/datasource.go [#282](https://github.com/k1LoW/tbls/pull/282) ([k1LoW](https://github.com/k1LoW))
+* Fix tbls diff output [#281](https://github.com/k1LoW/tbls/pull/281) ([k1LoW](https://github.com/k1LoW))
+* `tbls diff` support for diff checking between dsn and dsn [#280](https://github.com/k1LoW/tbls/pull/280) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.48.1](https://github.com/k1LoW/tbls/compare/v1.48.0...v1.48.1) (2021-01-21)
 
 * [PostgreSQL]Fix version parse [#279](https://github.com/k1LoW/tbls/pull/279) ([k1LoW](https://github.com/k1LoW))
