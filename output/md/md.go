@@ -222,9 +222,11 @@ func DiffSchemas(s, s2 *schema.Schema, c, c2 *config.Config) (string, error) {
 	}
 
 	// tables
+	diffed := map[string]struct{}{}
 	for _, t := range s.Tables {
 
 		tName := t.Name
+		diffed[tName] = struct{}{}
 
 		a := new(bytes.Buffer)
 		if err := md.OutputTable(a, t); err != nil {
@@ -243,6 +245,34 @@ func DiffSchemas(s, s2 *schema.Schema, c, c2 *config.Config) (string, error) {
 
 		d := difflib.UnifiedDiff{
 			A:        difflib.SplitLines(a.String()),
+			B:        difflib.SplitLines(b.String()),
+			FromFile: from,
+			ToFile:   to,
+			Context:  3,
+		}
+
+		text, _ := difflib.GetUnifiedDiffString(d)
+		if text != "" {
+			diff += fmt.Sprintf("diff %s '%s'\n", from, to)
+			diff += text
+		}
+	}
+	for _, t := range s2.Tables {
+		tName := t.Name
+		if _, ok := diffed[tName]; ok {
+			continue
+		}
+		a := ""
+		from := path.Join(mdsnA, tName)
+
+		b := new(bytes.Buffer)
+		if err := md.OutputTable(b, t); err != nil {
+			return "", errors.WithStack(err)
+		}
+		to := path.Join(mdsnB, tName)
+
+		d := difflib.UnifiedDiff{
+			A:        difflib.SplitLines(a),
 			B:        difflib.SplitLines(b.String()),
 			FromFile: from,
 			ToFile:   to,
@@ -314,12 +344,16 @@ func DiffSchemaAndDocs(docPath string, s *schema.Schema, c *config.Config) (stri
 	}
 
 	// tables
+	diffed := map[string]struct{}{
+		"README.md": struct{}{},
+	}
 	for _, t := range s.Tables {
 		b := new(bytes.Buffer)
 		er := false
 		if _, err := os.Lstat(filepath.Join(fullPath, fmt.Sprintf("%s.%s", t.Name, c.ER.Format))); err == nil {
 			er = true
 		}
+		to := path.Join(mdsn, t.Name)
 
 		md := New(c, er)
 
@@ -328,16 +362,53 @@ func DiffSchemaAndDocs(docPath string, s *schema.Schema, c *config.Config) (stri
 			return "", errors.WithStack(err)
 		}
 		targetPath := filepath.Join(fullPath, fmt.Sprintf("%s.md", t.Name))
+		diffed[fmt.Sprintf("%s.md", t.Name)] = struct{}{}
 		a, err := ioutil.ReadFile(filepath.Clean(targetPath))
 		if err != nil {
 			a = []byte{}
 		}
-
 		from := filepath.Join(docPath, fmt.Sprintf("%s.md", t.Name))
 
 		d := difflib.UnifiedDiff{
 			A:        difflib.SplitLines(string(a)),
 			B:        difflib.SplitLines(b.String()),
+			FromFile: from,
+			ToFile:   to,
+			Context:  3,
+		}
+
+		text, _ := difflib.GetUnifiedDiffString(d)
+		if text != "" {
+			diff += fmt.Sprintf("diff %s '%s'\n", from, to)
+			diff += text
+		}
+	}
+	files, err := ioutil.ReadDir(fullPath)
+	if err != nil {
+		return "", errors.WithStack(err)
+	}
+	for _, f := range files {
+		if _, ok := diffed[f.Name()]; ok {
+			continue
+		}
+		if filepath.Ext(f.Name()) != ".md" {
+			continue
+		}
+
+		fname := f.Name()
+		targetPath := filepath.Join(fullPath, fname)
+		a, err := ioutil.ReadFile(filepath.Clean(targetPath))
+		if err != nil {
+			return "", errors.WithStack(err)
+		}
+		from := filepath.Join(docPath, f.Name())
+
+		b := ""
+		to := path.Join(mdsn, filepath.Base(fname[:len(fname)-len(filepath.Ext(fname))]))
+
+		d := difflib.UnifiedDiff{
+			A:        difflib.SplitLines(string(a)),
+			B:        difflib.SplitLines(b),
 			FromFile: from,
 			ToFile:   to,
 			Context:  3,

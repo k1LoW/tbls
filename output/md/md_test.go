@@ -151,29 +151,61 @@ func TestDiffSchemaAndDocs(t *testing.T) {
 }
 
 func TestDiffSchemas(t *testing.T) {
-	s := newTestSchema()
-	s2 := newTestSchema()
-	c, err := config.New()
-	if err != nil {
-		t.Error(err)
-	}
-	want := ""
-	got, err := DiffSchemas(s, s2, c, c)
-	if err != nil {
-		t.Error(err)
-	}
-	if got != want {
-		t.Errorf("got %v\nwant %v", got, want)
+	testData := func() (s, s2 *schema.Schema, c *config.Config) {
+		s = newTestSchema()
+		s2 = newTestSchema()
+		c, _ = config.New()
+		return
 	}
 
-	s2.Name = "modified"
-	got2, err := DiffSchemas(s, s2, c, c)
-	if err != nil {
-		t.Error(err)
+	{
+		s, s2, c := testData()
+		want := ""
+		got, err := DiffSchemas(s, s2, c, c)
+		if err != nil {
+			t.Error(err)
+		}
+		if got != want {
+			t.Errorf("got %v\nwant %v", got, want)
+		}
 	}
-	if got2 == "" {
-		t.Error("diff should not be empty")
+
+	{
+		s, s2, c := testData()
+		s2.Name = "modified"
+		got2, err := DiffSchemas(s, s2, c, c)
+		if err != nil {
+			t.Error(err)
+		}
+		if got2 == "" {
+			t.Error("diff should not be empty")
+		}
 	}
+
+	{
+		s, s2, c := testData()
+		s.Tables = s.Tables[:len(s.Tables)-1]
+		got2, err := DiffSchemas(s, s2, c, c)
+		if err != nil {
+			t.Error(err)
+		}
+		if got2 == "" {
+			t.Error("diff should not be empty")
+		}
+	}
+
+	{
+		s, s2, c := testData()
+		s2.Tables = s2.Tables[:len(s2.Tables)-1]
+		got2, err := DiffSchemas(s, s2, c, c)
+		if err != nil {
+			t.Error(err)
+		}
+		if got2 == "" {
+			t.Error("diff should not be empty")
+		}
+	}
+
 }
 
 func testdataDir() string {
