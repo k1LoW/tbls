@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.49.1](https://github.com/k1LoW/tbls/compare/v1.49.0...v1.49.1) (2021-02-01)
+
+* Fix tbls diff (no args) [#283](https://github.com/k1LoW/tbls/pull/283) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.49.0](https://github.com/k1LoW/tbls/compare/v1.48.1...v1.49.0) (2021-02-01)
 
 * Separate datasource/datasource.go [#282](https://github.com/k1LoW/tbls/pull/282) ([k1LoW](https://github.com/k1LoW))
