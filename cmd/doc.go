@@ -22,6 +22,7 @@ package cmd
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 
@@ -35,8 +36,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// withoutER
-var withoutER bool
+var (
+	withoutER bool
+	rmDist    bool
+)
 
 // docCmd represents the doc command
 var docCmd = &cobra.Command{
@@ -80,6 +83,20 @@ var docCmd = &cobra.Command{
 		if err != nil {
 			printError(err)
 			os.Exit(1)
+		}
+
+		if rmDist && c.DocPath != "" {
+			docs, err := ioutil.ReadDir(c.DocPath)
+			if err != nil {
+				printError(err)
+				os.Exit(1)
+			}
+			for _, f := range docs {
+				if err := os.RemoveAll(filepath.Join(c.DocPath, f.Name())); err != nil {
+					printError(err)
+					os.Exit(1)
+				}
+			}
 		}
 
 		if !c.ER.Skip {
@@ -199,6 +216,7 @@ func init() {
 	docCmd.Flags().BoolVarP(&adjust, "adjust-table", "j", false, "adjust column width of table")
 	docCmd.Flags().StringVarP(&when, "when", "", "", "command execute condition")
 	docCmd.Flags().StringVarP(&baseUrl, "base-url", "b", "", "base url for links")
+	docCmd.Flags().BoolVarP(&rmDist, "rm-dist", "", false, "remove files in docPath before generating documents")
 	if err := docCmd.MarkZshCompPositionalArgumentFile(2); err != nil {
 		_, _ = fmt.Fprintf(os.Stderr, "%s\n", err)
 		os.Exit(1)
