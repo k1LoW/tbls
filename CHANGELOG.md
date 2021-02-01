@@ -1,5 +1,10 @@
 # Changelog
 
+## [v1.49.2](https://github.com/k1LoW/tbls/compare/v1.49.1...v1.49.2) (2021-02-01)
+
+* Add --rm-dist option to remove files in docPath before generating documents [#285](https://github.com/k1LoW/tbls/pull/285) ([k1LoW](https://github.com/k1LoW))
+* Fix dsn url (tbls diff output) [#284](https://github.com/k1LoW/tbls/pull/284) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.49.1](https://github.com/k1LoW/tbls/compare/v1.49.0...v1.49.1) (2021-02-01)
 
 * Fix tbls diff (no args) [#283](https://github.com/k1LoW/tbls/pull/283) ([k1LoW](https://github.com/k1LoW))
