@@ -196,6 +196,14 @@ $ tbls diff postgres://dbuser:*****@local:5432/dbname postgres://dbuser:*****@pr
 
 > **Notice:** `tbls diff` shows the difference Markdown documents only.
 
+### Update database documentation
+
+You can update the documentation with `--force` flag
+
+```console
+$ tbls doc --force
+```
+
 ### Lint a database
 
 Add linting rule to `.tbls.yml` following
