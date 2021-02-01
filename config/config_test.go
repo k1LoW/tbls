@@ -441,6 +441,10 @@ func TestMaskedDSN(t *testing.T) {
 			"pg://localhost:5432/testdb?sslmode=disable",
 			"pg://localhost:5432/testdb?sslmode=disable",
 		},
+		{
+			"bq://project-id/dataset-id?creds=/path/to/google_application_credentials.json",
+			"bq://project-id/dataset-id?creds=/path/to/google_application_credentials.json",
+		},
 	}
 
 	for _, tt := range tests {
