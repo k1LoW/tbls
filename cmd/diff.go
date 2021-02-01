@@ -29,7 +29,6 @@ import (
 	"github.com/k1LoW/tbls/datasource"
 	"github.com/k1LoW/tbls/output/md"
 	"github.com/k1LoW/tbls/schema"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -146,7 +145,7 @@ var diffCmd = &cobra.Command{
 		case s2 != nil:
 			diff, err = md.DiffSchemas(s, s2, c, c2)
 		default:
-			err = errors.New("not implemented")
+			diff, err = md.DiffSchemaAndDocs(c.DocPath, s, c)
 		}
 		if err != nil {
 			printError(err)
