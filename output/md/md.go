@@ -6,7 +6,6 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
-	"path"
 	"path/filepath"
 	"strings"
 	"text/template"
@@ -217,7 +216,7 @@ func DiffSchemas(s, s2 *schema.Schema, c, c2 *config.Config) (string, error) {
 
 	text, _ := difflib.GetUnifiedDiffString(d)
 	if text != "" {
-		diff += fmt.Sprintf("diff %s '%s'\n", from, to)
+		diff += fmt.Sprintf("diff '%s' '%s'\n", from, to)
 		diff += text
 	}
 
@@ -232,7 +231,7 @@ func DiffSchemas(s, s2 *schema.Schema, c, c2 *config.Config) (string, error) {
 		if err := md.OutputTable(a, t); err != nil {
 			return "", errors.WithStack(err)
 		}
-		from := path.Join(mdsnA, tName)
+		from := fmt.Sprintf("%s %s", mdsnA, tName)
 
 		b := new(bytes.Buffer)
 		t2, err := s2.FindTableByName(tName)
@@ -241,7 +240,7 @@ func DiffSchemas(s, s2 *schema.Schema, c, c2 *config.Config) (string, error) {
 				return "", errors.WithStack(err)
 			}
 		}
-		to := path.Join(mdsnB, tName)
+		to := fmt.Sprintf("%s %s", mdsnB, tName)
 
 		d := difflib.UnifiedDiff{
 			A:        difflib.SplitLines(a.String()),
@@ -253,7 +252,7 @@ func DiffSchemas(s, s2 *schema.Schema, c, c2 *config.Config) (string, error) {
 
 		text, _ := difflib.GetUnifiedDiffString(d)
 		if text != "" {
-			diff += fmt.Sprintf("diff %s '%s'\n", from, to)
+			diff += fmt.Sprintf("diff '%s' '%s'\n", from, to)
 			diff += text
 		}
 	}
@@ -263,13 +262,13 @@ func DiffSchemas(s, s2 *schema.Schema, c, c2 *config.Config) (string, error) {
 			continue
 		}
 		a := ""
-		from := path.Join(mdsnA, tName)
+		from := fmt.Sprintf("%s %s", mdsnA, tName)
 
 		b := new(bytes.Buffer)
 		if err := md.OutputTable(b, t); err != nil {
 			return "", errors.WithStack(err)
 		}
-		to := path.Join(mdsnB, tName)
+		to := fmt.Sprintf("%s %s", mdsnB, tName)
 
 		d := difflib.UnifiedDiff{
 			A:        difflib.SplitLines(a),
@@ -281,7 +280,7 @@ func DiffSchemas(s, s2 *schema.Schema, c, c2 *config.Config) (string, error) {
 
 		text, _ := difflib.GetUnifiedDiffString(d)
 		if text != "" {
-			diff += fmt.Sprintf("diff %s '%s'\n", from, to)
+			diff += fmt.Sprintf("diff '%s' '%s'\n", from, to)
 			diff += text
 		}
 	}
@@ -339,7 +338,7 @@ func DiffSchemaAndDocs(docPath string, s *schema.Schema, c *config.Config) (stri
 
 	text, _ := difflib.GetUnifiedDiffString(d)
 	if text != "" {
-		diff += fmt.Sprintf("diff %s '%s'\n", from, to)
+		diff += fmt.Sprintf("diff '%s' '%s'\n", from, to)
 		diff += text
 	}
 
@@ -353,7 +352,7 @@ func DiffSchemaAndDocs(docPath string, s *schema.Schema, c *config.Config) (stri
 		if _, err := os.Lstat(filepath.Join(fullPath, fmt.Sprintf("%s.%s", t.Name, c.ER.Format))); err == nil {
 			er = true
 		}
-		to := path.Join(mdsn, t.Name)
+		to := fmt.Sprintf("%s %s", mdsn, t.Name)
 
 		md := New(c, er)
 
@@ -379,7 +378,7 @@ func DiffSchemaAndDocs(docPath string, s *schema.Schema, c *config.Config) (stri
 
 		text, _ := difflib.GetUnifiedDiffString(d)
 		if text != "" {
-			diff += fmt.Sprintf("diff %s '%s'\n", from, to)
+			diff += fmt.Sprintf("diff '%s' '%s'\n", from, to)
 			diff += text
 		}
 	}
@@ -404,7 +403,7 @@ func DiffSchemaAndDocs(docPath string, s *schema.Schema, c *config.Config) (stri
 		from := filepath.Join(docPath, f.Name())
 
 		b := ""
-		to := path.Join(mdsn, filepath.Base(fname[:len(fname)-len(filepath.Ext(fname))]))
+		to := fmt.Sprintf("%s %s", mdsn, filepath.Base(fname[:len(fname)-len(filepath.Ext(fname))]))
 
 		d := difflib.UnifiedDiff{
 			A:        difflib.SplitLines(string(a)),
@@ -416,7 +415,7 @@ func DiffSchemaAndDocs(docPath string, s *schema.Schema, c *config.Config) (stri
 
 		text, _ := difflib.GetUnifiedDiffString(d)
 		if text != "" {
-			diff += fmt.Sprintf("diff %s '%s'\n", from, to)
+			diff += fmt.Sprintf("diff '%s' '%s'\n", from, to)
 			diff += text
 		}
 	}
