@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/antonmedv/expr"
+	"github.com/pkg/errors"
 )
 
 func IsAllowedToExecute(when string) (bool, error) {
@@ -25,7 +26,7 @@ func IsAllowedToExecute(when string) (bool, error) {
 		Env: em,
 	})
 	if err != nil {
-		return false, err
+		return false, errors.WithStack(err)
 	}
 	return got.(bool), nil
 }

@@ -52,43 +52,35 @@ var outCmd = &cobra.Command{
 	Use:   "out [DSN]",
 	Short: "analyzes a database and output",
 	Long:  `'tbls out' analyzes a database and output.`,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		if allow, err := cmdutil.IsAllowedToExecute(when); !allow || err != nil {
 			if err != nil {
-				printError(err)
-				os.Exit(1)
+				return err
 			}
-			return
+			return nil
 		}
 
 		c, err := config.New()
 		if err != nil {
-			printError(err)
-			os.Exit(1)
+			return err
 		}
 
 		options, err := loadOutArgs(args)
 		if err != nil {
-			printError(err)
-			os.Exit(1)
+			return err
 		}
 
-		err = c.Load(configPath, options...)
-		if err != nil {
-			printError(err)
-			os.Exit(1)
+		if err := c.Load(configPath, options...); err != nil {
+			return err
 		}
 
 		s, err := datasource.Analyze(c.DSN)
 		if err != nil {
-			printError(err)
-			os.Exit(1)
+			return err
 		}
 
-		err = c.ModifySchema(s)
-		if err != nil {
-			printError(err)
-			os.Exit(1)
+		if err := c.ModifySchema(s); err != nil {
+			return err
 		}
 
 		var o output.Output
@@ -112,16 +104,14 @@ var outCmd = &cobra.Command{
 		case "config":
 			o = tbls_config.New(c)
 		default:
-			printError(errors.Errorf("unsupported format '%s'", format))
-			os.Exit(1)
+			return errors.Errorf("unsupported format '%s'", format)
 		}
 
 		var wr io.Writer
 		if outPath != "" {
 			file, err := os.OpenFile(outPath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644) // #nosec
 			if err != nil {
-				printError(err)
-				os.Exit(1)
+				return errors.WithStack(err)
 			}
 			defer func() {
 				err := file.Close()
@@ -140,16 +130,16 @@ var outCmd = &cobra.Command{
 		} else {
 			t, ferr := s.FindTableByName(tableName)
 			if ferr != nil {
-				printError(ferr)
-				os.Exit(1)
+				return err
 			}
 			err = o.OutputTable(wr, t)
 		}
 
 		if err != nil {
-			printError(err)
-			os.Exit(1)
+			return err
 		}
+
+		return nil
 	},
 }
 

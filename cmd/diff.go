@@ -38,25 +38,22 @@ var diffCmd = &cobra.Command{
 	Short: "diff database and ( document or database )",
 	Long:  `'tbls diff' shows the difference between database schema and ( generated document or other database schema ).`,
 	Args:  cobra.MaximumNArgs(2),
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		if allow, err := cmdutil.IsAllowedToExecute(when); !allow || err != nil {
 			if err != nil {
-				printError(err)
-				os.Exit(1)
+				return err
 			}
-			return
+			return nil
 		}
 
 		c, err := config.New()
 		if err != nil {
-			printError(err)
-			os.Exit(1)
+			return err
 		}
 
 		c2, err := config.New()
 		if err != nil {
-			printError(err)
-			os.Exit(1)
+			return err
 		}
 
 		var (
@@ -73,27 +70,23 @@ var diffCmd = &cobra.Command{
 			if _, err := os.Lstat(args[1]); err == nil {
 				// a:path and b:dsn
 				if err := c.Load(configPath, append(options, config.DSNURL(args[0]))...); err != nil {
-					printError(err)
-					os.Exit(1)
+					return err
 				}
 				c2 = nil
 				docPath = args[1]
 			} else {
 				// a:dsn and b:dsn
 				if err := c.Load(configPath, append(options, config.DSNURL(args[0]))...); err != nil {
-					printError(err)
-					os.Exit(1)
+					return err
 				}
 				if err := c2.Load(configPath, append(options, config.DSNURL(args[1]))...); err != nil {
-					printError(err)
-					os.Exit(1)
+					return err
 				}
 				docPath = ""
 			}
 		case 1:
 			if err := c.Load(configPath); err != nil {
-				printError(err)
-				os.Exit(1)
+				return err
 			}
 			if _, err := os.Lstat(args[0]); err == nil {
 				// a:path and b:dsn in config
@@ -102,16 +95,14 @@ var diffCmd = &cobra.Command{
 			} else {
 				// a:dsn in config and b:dsn
 				if err := c2.Load(configPath, append(options, config.DSNURL(args[0]))...); err != nil {
-					printError(err)
-					os.Exit(1)
+					return err
 				}
 				docPath = ""
 			}
 		case 0:
 			// a:path in config and b:dsn in config
 			if err := c.Load(configPath); err != nil {
-				printError(err)
-				os.Exit(1)
+				return err
 			}
 			c2 = nil
 			docPath = ""
@@ -119,23 +110,19 @@ var diffCmd = &cobra.Command{
 
 		s, err = datasource.Analyze(c.DSN)
 		if err != nil {
-			printError(err)
-			os.Exit(1)
+			return err
 		}
 		if err := c.ModifySchema(s); err != nil {
-			printError(err)
-			os.Exit(1)
+			return err
 		}
 
 		if c2 != nil {
 			s2, err = datasource.Analyze(c2.DSN)
 			if err != nil {
-				printError(err)
-				os.Exit(1)
+				return err
 			}
 			if err := c2.ModifySchema(s2); err != nil {
-				printError(err)
-				os.Exit(1)
+				return err
 			}
 		}
 
@@ -148,13 +135,14 @@ var diffCmd = &cobra.Command{
 			diff, err = md.DiffSchemaAndDocs(c.DocPath, s, c)
 		}
 		if err != nil {
-			printError(err)
-			os.Exit(2)
+			return err
 		}
 		fmt.Print(diff)
 		if diff != "" {
 			os.Exit(1)
 		}
+
+		return nil
 	},
 }
 

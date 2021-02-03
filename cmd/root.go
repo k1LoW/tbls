@@ -95,21 +95,20 @@ var rootCmd = &cobra.Command{
 	Args:               cobra.ArbitraryArgs,
 	DisableFlagParsing: true,
 	ValidArgsFunction:  genValidArgsFunc("tbls"),
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		configPath, args := cmdutil.PickOption(args, []string{"-c", "--config"})
 		when, args := cmdutil.PickOption(args, []string{"--when"})
 
 		if allow, err := cmdutil.IsAllowedToExecute(when); !allow || err != nil {
 			if err != nil {
-				printError(err)
-				os.Exit(1)
+				return err
 			}
-			return
+			return nil
 		}
 
 		if len(args) == 0 {
 			cmd.Println(cmd.UsageString())
-			return
+			return nil
 		}
 
 		envs := os.Environ()
@@ -119,34 +118,30 @@ var rootCmd = &cobra.Command{
 			if strings.HasPrefix(subCmd, "-") {
 				cmd.PrintErrf("Error: unknown flag: '%s'\n", subCmd)
 				cmd.HelpFunc()(cmd, args)
-				return
+				return nil
 			}
 			cmd.PrintErrln(`Error: unknown command "` + subCmd + `" for "tbls"`)
 			cmd.PrintErrln("Run 'tbls --help' for usage.")
-			return
+			return nil
 		}
 		args = args[1:]
 
 		cfg, err := config.New()
 		if err != nil {
-			printError(err)
-			os.Exit(1)
+			return err
 		}
 		err = cfg.Load(configPath)
 		if err != nil {
-			printError(err)
-			os.Exit(1)
+			return err
 		}
 
 		if cfg.DSN.URL != "" {
 			s, err := datasource.Analyze(cfg.DSN)
 			if err != nil {
-				printError(err)
-				os.Exit(1)
+				return err
 			}
 			if err := cfg.ModifySchema(s); err != nil {
-				printError(err)
-				os.Exit(1)
+				return err
 			}
 
 			envs = append(envs, fmt.Sprintf("TBLS_DSN=%s", cfg.DSN.URL))
@@ -154,13 +149,11 @@ var rootCmd = &cobra.Command{
 			o := json.New(true)
 			tmpfile, err := ioutil.TempFile("", "TBLS_SCHEMA")
 			if err != nil {
-				printError(err)
-				os.Exit(1)
+				return err
 			}
 			defer os.Remove(tmpfile.Name())
 			if err := o.OutputSchema(tmpfile, s); err != nil {
-				printError(err)
-				os.Exit(1)
+				return err
 			}
 			envs = append(envs, fmt.Sprintf("TBLS_SCHEMA=%s", tmpfile.Name()))
 		}
@@ -171,9 +164,9 @@ var rootCmd = &cobra.Command{
 		c.Stdin = os.Stdin
 		c.Stderr = os.Stderr
 		if err := c.Run(); err != nil {
-			printError(err)
-			os.Exit(1)
+			return err
 		}
+		return nil
 	},
 }
 
@@ -182,6 +175,7 @@ func Execute() {
 	subCmds, err = getExtSubCmds("tbls")
 	if err != nil {
 		printError(err)
+		os.Exit(1)
 	}
 
 	if err := rootCmd.Execute(); err != nil {

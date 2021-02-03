@@ -38,43 +38,35 @@ var lintCmd = &cobra.Command{
 	Use:   "lint [DSN] [DOC_PATH]",
 	Short: "check database document",
 	Long:  `'tbls lint' check database document.`,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		if allow, err := cmdutil.IsAllowedToExecute(when); !allow || err != nil {
 			if err != nil {
-				printError(err)
-				os.Exit(1)
+				return err
 			}
-			return
+			return nil
 		}
 
 		c, err := config.New()
 		if err != nil {
-			printError(err)
-			os.Exit(1)
+			return err
 		}
 
 		options, err := loadLintArgs(args)
 		if err != nil {
-			printError(err)
-			os.Exit(1)
+			return err
 		}
 
-		err = c.Load(configPath, options...)
-		if err != nil {
-			printError(err)
-			os.Exit(1)
+		if err := c.Load(configPath, options...); err != nil {
+			return err
 		}
 
 		s, err := datasource.Analyze(c.DSN)
 		if err != nil {
-			printError(err)
-			os.Exit(1)
+			return err
 		}
 
-		err = c.ModifySchema(s)
-		if err != nil {
-			printError(err)
-			os.Exit(1)
+		if err := c.ModifySchema(s); err != nil {
+			return err
 		}
 
 		l := reflect.Indirect(reflect.ValueOf(c.Lint))
@@ -94,6 +86,8 @@ var lintCmd = &cobra.Command{
 			fmt.Println(color.White(fmt.Sprintf("\n%d detected", len(ruleWarns)), color.B))
 			os.Exit(1)
 		}
+
+		return nil
 	},
 }
 

@@ -57,7 +57,7 @@ tbls completion fish ~/.config/fish/completions/tbls.fish
 		}
 		return nil
 	},
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		var (
 			o   *os.File
 			err error
@@ -68,8 +68,7 @@ tbls completion fish ~/.config/fish/completions/tbls.fish
 		} else {
 			o, err = os.Create(out)
 			if err != nil {
-				_, _ = fmt.Fprintf(os.Stderr, "%s\n", err)
-				os.Exit(1)
+				return errors.WithStack(err)
 			}
 			defer func() {
 				err := o.Close()
@@ -83,26 +82,22 @@ tbls completion fish ~/.config/fish/completions/tbls.fish
 		switch sh {
 		case "bash":
 			if err := cmd.Root().GenBashCompletion(o); err != nil {
-				_, _ = fmt.Fprintf(os.Stderr, "%s\n", err)
-				os.Exit(1)
+				return errors.WithStack(err)
 			}
 		case "zsh":
 			if err := cmd.Root().GenZshCompletion(o); err != nil {
-				_, _ = fmt.Fprintf(os.Stderr, "%s\n", err)
-				os.Exit(1)
+				return errors.WithStack(err)
 			}
 		case "fish":
 			if err := cmd.Root().GenFishCompletion(o, true); err != nil {
-				_, _ = fmt.Fprintf(os.Stderr, "%s\n", err)
-				os.Exit(1)
+				return errors.WithStack(err)
 			}
 		case "powershell":
 			if err := cmd.Root().GenPowerShellCompletion(o); err != nil {
-				_, _ = fmt.Fprintf(os.Stderr, "%s\n", err)
-				os.Exit(1)
+				return errors.WithStack(err)
 			}
 		}
-
+		return nil
 	},
 }
 

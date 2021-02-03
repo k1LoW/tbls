@@ -43,43 +43,35 @@ var coverageCmd = &cobra.Command{
 	Use:   "coverage [DSN]",
 	Short: "measure document coverage",
 	Long:  `'tbls coverage' measure document coverage.`,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		if allow, err := cmdutil.IsAllowedToExecute(when); !allow || err != nil {
 			if err != nil {
-				printError(err)
-				os.Exit(1)
+				return err
 			}
-			return
+			return nil
 		}
 
 		c, err := config.New()
 		if err != nil {
-			printError(err)
-			os.Exit(1)
+			return err
 		}
 
 		options, err := loadCoverageArgs(args)
 		if err != nil {
-			printError(err)
-			os.Exit(1)
+			return err
 		}
 
-		err = c.Load(configPath, options...)
-		if err != nil {
-			printError(err)
-			os.Exit(1)
+		if err := c.Load(configPath, options...); err != nil {
+			return err
 		}
 
 		s, err := datasource.Analyze(c.DSN)
 		if err != nil {
-			printError(err)
-			os.Exit(1)
+			return err
 		}
 
-		err = c.ModifySchema(s)
-		if err != nil {
-			printError(err)
-			os.Exit(1)
+		if err := c.ModifySchema(s); err != nil {
+			return err
 		}
 
 		cover := coverage.Measure(s)
@@ -98,8 +90,7 @@ var coverageCmd = &cobra.Command{
 			encoder.SetIndent("", "  ")
 			err := encoder.Encode(cover)
 			if err != nil {
-				printError(err)
-				os.Exit(1)
+				return errors.WithStack(err)
 			}
 		default:
 			fmtName := fmt.Sprintf("%%-%ds", max)
@@ -109,6 +100,7 @@ var coverageCmd = &cobra.Command{
 				fmt.Printf(" %s %g%%\n", fmt.Sprintf(fmtName, t.Name), t.Coverage)
 			}
 		}
+		return nil
 	},
 }
 
