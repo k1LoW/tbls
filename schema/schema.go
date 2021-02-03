@@ -137,7 +137,7 @@ func (s *Schema) FindTableByName(name string) (*Table, error) {
 			return t, nil
 		}
 	}
-	return nil, errors.WithStack(fmt.Errorf("not found table '%s'", name))
+	return nil, errors.Errorf("not found table '%s'", name)
 }
 
 // FindRelation ...
@@ -171,7 +171,7 @@ L:
 		}
 		return r, nil
 	}
-	return nil, errors.WithStack(fmt.Errorf("not found relation '%v, %v'", cs, pcs))
+	return nil, errors.Errorf("not found relation '%v, %v'", cs, pcs)
 }
 
 // FindColumnByName find column by column name
@@ -181,7 +181,7 @@ func (t *Table) FindColumnByName(name string) (*Column, error) {
 			return c, nil
 		}
 	}
-	return nil, errors.WithStack(fmt.Errorf("not found column '%s' on table '%s'", name, t.Name))
+	return nil, errors.Errorf("not found column '%s' on table '%s'", name, t.Name)
 }
 
 // FindIndexByName find index by index name
@@ -191,7 +191,7 @@ func (t *Table) FindIndexByName(name string) (*Index, error) {
 			return i, nil
 		}
 	}
-	return nil, errors.WithStack(fmt.Errorf("not found index '%s' on table '%s'", name, t.Name))
+	return nil, errors.Errorf("not found index '%s' on table '%s'", name, t.Name)
 }
 
 // FindConstraintByName find constraint by constraint name
@@ -201,7 +201,7 @@ func (t *Table) FindConstraintByName(name string) (*Constraint, error) {
 			return c, nil
 		}
 	}
-	return nil, errors.WithStack(fmt.Errorf("not found constraint '%s' on table '%s'", name, t.Name))
+	return nil, errors.Errorf("not found constraint '%s' on table '%s'", name, t.Name)
 }
 
 // FindTriggerByName find trigger by trigger name
@@ -211,7 +211,7 @@ func (t *Table) FindTriggerByName(name string) (*Trigger, error) {
 			return trig, nil
 		}
 	}
-	return nil, errors.WithStack(fmt.Errorf("not found trigger '%s' on table '%s'", name, t.Name))
+	return nil, errors.Errorf("not found trigger '%s' on table '%s'", name, t.Name)
 }
 
 // FindConstrainsByColumnName find constraint by column name

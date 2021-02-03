@@ -418,6 +418,9 @@ WHERE table_schema = ? AND table_name = ? ORDER BY ordinal_position`
 	// Relations
 	for _, r := range relations {
 		result := reFK.FindAllStringSubmatch(r.Def, -1)
+		if len(result) == 0 || len(result[0]) < 4 {
+			return errors.Errorf("can not parse foreign key: %s", r.Def)
+		}
 		strColumns := strings.Split(result[0][1], ", ")
 		strParentTable := result[0][2]
 		strParentColumns := strings.Split(result[0][3], ", ")

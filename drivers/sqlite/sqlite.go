@@ -74,6 +74,9 @@ WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
 		if reFTS.MatchString(tableDef) {
 			tableType = "virtual table"
 			matches := reFTS.FindStringSubmatch(tableDef)
+			if len(matches) < 1 {
+				return errors.Errorf("can not parse table definition: %s", tableDef)
+			}
 			shadowTables = append(shadowTables, fmt.Sprintf("%s_content", tableName))
 			shadowTables = append(shadowTables, fmt.Sprintf("%s_segdir", tableName))
 			shadowTables = append(shadowTables, fmt.Sprintf("%s_segments", tableName))
@@ -361,6 +364,9 @@ SELECT name, sql FROM sqlite_master WHERE type = 'trigger' AND tbl_name = ?;
 	// Relations
 	for _, r := range relations {
 		result := reFK.FindAllStringSubmatch(r.Def, -1)
+		if len(result) < 1 || len(result[0]) < 4 {
+			return errors.Errorf("can not parse foreign key: %s", r.Def)
+		}
 		strColumns := strings.Split(result[0][1], ", ")
 		strParentTable := result[0][2]
 		strParentColumns := strings.Split(result[0][3], ", ")

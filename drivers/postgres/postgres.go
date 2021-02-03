@@ -255,7 +255,7 @@ ORDER BY tgrelid
 			case "s":
 				column.ExtraDef = fmt.Sprintf("GENERATED ALWAYS AS %s STORED", columnDefaultOrGenerated.String)
 			default:
-				return fmt.Errorf("unsupported pg_attribute.attrgenerated '%s'", attrgenerated.String)
+				return errors.Errorf("unsupported pg_attribute.attrgenerated '%s'", attrgenerated.String)
 			}
 			columns = append(columns, column)
 		}
@@ -300,6 +300,9 @@ ORDER BY tgrelid
 	// Relations
 	for _, r := range relations {
 		result := reFK.FindAllStringSubmatch(r.Def, -1)
+		if len(result) < 1 || len(result[0]) < 4 {
+			return errors.Errorf("can not parse foreign key: %s", r.Def)
+		}
 		strColumns := []string{}
 		for _, c := range strings.Split(result[0][1], ", ") {
 			strColumns = append(strColumns, strings.ReplaceAll(c, `"`, ""))
@@ -377,8 +380,8 @@ func (p *Postgres) queryForColumns(v string) (string, error) {
 	}
 	// v => PostgreSQL 9.5.24 on x86_64-pc-linux-gnu (Debian 9.5.24-1.pgdg90+1), compiled by gcc (Debian 6.3.0-18+deb9u1) 6.3.0 20170516, 64-bit
 	matches := reVersion.FindStringSubmatch(v)
-	if matches == nil {
-		return "", fmt.Errorf("malformed version: %s", v)
+	if matches == nil || len(matches) < 2 {
+		return "", errors.Errorf("malformed version: %s", v)
 	}
 	vv, err := version.Parse(matches[1])
 	if err != nil {

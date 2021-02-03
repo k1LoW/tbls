@@ -3,7 +3,6 @@ package datasource
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -50,7 +49,7 @@ func Analyze(dsn config.DSN) (*schema.Schema, error) {
 	}
 	splitted := strings.Split(u.Short(), "/")
 	if len(splitted) < 2 {
-		return s, errors.WithStack(fmt.Errorf("invalid DSN: parse %s -> %#v", urlstr, u))
+		return s, errors.Errorf("invalid DSN: parse %s -> %#v", urlstr, u)
 	}
 
 	opts := []drivers.Option{}
@@ -109,7 +108,7 @@ func Analyze(dsn config.DSN) (*schema.Schema, error) {
 		s.Name = splitted[2]
 		driver = snowflake.New(db)
 	default:
-		return s, errors.WithStack(fmt.Errorf("unsupported driver '%s'", u.Driver))
+		return s, errors.Errorf("unsupported driver '%s'", u.Driver)
 	}
 	err = driver.Analyze(s)
 	if err != nil {
