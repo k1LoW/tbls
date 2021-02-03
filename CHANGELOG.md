@@ -1,5 +1,10 @@
 # Changelog
 
+## [v1.49.3](https://github.com/k1LoW/tbls/compare/v1.49.2...v1.49.3) (2021-02-04)
+
+* Use RunE [#292](https://github.com/k1LoW/tbls/pull/292) ([k1LoW](https://github.com/k1LoW))
+* Fix errors handling [#291](https://github.com/k1LoW/tbls/pull/291) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.49.2](https://github.com/k1LoW/tbls/compare/v1.49.1...v1.49.2) (2021-02-01)
 
 * Add --rm-dist option to remove files in docPath before generating documents [#285](https://github.com/k1LoW/tbls/pull/285) ([k1LoW](https://github.com/k1LoW))
