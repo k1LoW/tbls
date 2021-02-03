@@ -46,73 +46,62 @@ var docCmd = &cobra.Command{
 	Use:   "doc [DSN] [DOC_PATH]",
 	Short: "document a database",
 	Long:  `'tbls doc' analyzes a database and generate document in GitHub Friendly Markdown format.`,
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		if allow, err := cmdutil.IsAllowedToExecute(when); !allow || err != nil {
 			if err != nil {
-				printError(err)
-				os.Exit(1)
+				return err
 			}
-			return
+			return nil
 		}
 
 		c, err := config.New()
 		if err != nil {
-			printError(err)
-			os.Exit(1)
+			return err
 		}
 
 		options, err := loadDocArgs(args)
 		if err != nil {
-			printError(err)
-			os.Exit(1)
+			return err
 		}
 
-		err = c.Load(configPath, options...)
-		if err != nil {
-			printError(err)
-			os.Exit(1)
+		if err := c.Load(configPath, options...); err != nil {
+			return err
 		}
 
 		s, err := datasource.Analyze(c.DSN)
 		if err != nil {
-			printError(err)
-			os.Exit(1)
+			return err
 		}
 
-		err = c.ModifySchema(s)
-		if err != nil {
-			printError(err)
-			os.Exit(1)
+		if err := c.ModifySchema(s); err != nil {
+			return err
 		}
 
 		if rmDist && c.DocPath != "" {
 			docs, err := ioutil.ReadDir(c.DocPath)
 			if err != nil {
-				printError(err)
-				os.Exit(1)
+				return errors.WithStack(err)
 			}
 			for _, f := range docs {
 				if err := os.RemoveAll(filepath.Join(c.DocPath, f.Name())); err != nil {
-					printError(err)
-					os.Exit(1)
+					return errors.WithStack(err)
 				}
 			}
 		}
 
 		if !c.ER.Skip {
-			err := withDot(s, c, force)
-			if err != nil {
-				printError(err)
-				os.Exit(1)
+			if err := withDot(s, c, force); err != nil {
+				return err
 			}
 		}
 
 		err = md.Output(s, c, force)
 
 		if err != nil {
-			printError(err)
-			os.Exit(1)
+			return err
 		}
+
+		return nil
 	},
 }
 
