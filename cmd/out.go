@@ -21,7 +21,6 @@
 package cmd
 
 import (
-	"fmt"
 	"io"
 	"os"
 
@@ -113,7 +112,7 @@ var outCmd = &cobra.Command{
 		case "config":
 			o = tbls_config.New(c)
 		default:
-			printError(fmt.Errorf("unsupported format '%s'", format))
+			printError(errors.Errorf("unsupported format '%s'", format))
 			os.Exit(1)
 		}
 

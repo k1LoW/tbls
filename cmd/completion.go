@@ -25,6 +25,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -49,7 +50,7 @@ tbls completion fish ~/.config/fish/completions/tbls.fish
 	ValidArgs: []string{"bash", "zsh", "fish", "powershell"},
 	Args: func(cmd *cobra.Command, args []string) error {
 		if len(args) != 1 {
-			return fmt.Errorf("accepts 1 arg, received %d", len(args))
+			return errors.Errorf("accepts 1 arg, received %d", len(args))
 		}
 		if err := cobra.OnlyValidArgs(cmd, args); err != nil {
 			return err
