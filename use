@@ -18,7 +18,7 @@ fi
 TBLS_ARCHIVE="/tmp/tbls.${TBLS_EXT}"
 
 TBLS_RELEASES_URL="https://github.com/k1LoW/tbls/releases"
-test -z "$TBLS_TMPDIR" && TBLS_TMPDIR="$(mktemp -d)"
+test -z "${TBLS_TMPDIR:-}" && TBLS_TMPDIR="$(mktemp -d)"
 
 last_version() {
   curl -sL -o /dev/null -w %{url_effective} "$TBLS_RELEASES_URL/latest" |
@@ -28,8 +28,8 @@ last_version() {
 }
 
 download() {
-  test -z "$TBLS_VERSION" && TBLS_VERSION="$(last_version)"
-  test -z "$TBLS_VERSION" && {
+  test -z "${TBLS_VERSION:-}" && TBLS_VERSION="$(last_version)"
+  test -z "${TBLS_VERSION:-}" && {
     echo "Unable to get tbls version." >&2
     exit 1
   }
