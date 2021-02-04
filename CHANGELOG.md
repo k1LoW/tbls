@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.49.4](https://github.com/k1LoW/tbls/compare/v1.49.3...v1.49.4) (2021-02-05)
+
+* [MariaDB]Fix bug when table has same name constraints. [#294](https://github.com/k1LoW/tbls/pull/294) ([k1LoW](https://github.com/k1LoW))
+* Handling empty env vars in strict mode [#293](https://github.com/k1LoW/tbls/pull/293) ([navaneeth-spotnana](https://github.com/navaneeth-spotnana))
+* Add section about updating the documentation [#287](https://github.com/k1LoW/tbls/pull/287) ([tomi](https://github.com/tomi))
+
 ## [v1.49.3](https://github.com/k1LoW/tbls/compare/v1.49.2...v1.49.3) (2021-02-04)
 
 * Use RunE [#292](https://github.com/k1LoW/tbls/pull/292) ([k1LoW](https://github.com/k1LoW))
