@@ -196,12 +196,20 @@ $ tbls diff postgres://dbuser:*****@local:5432/dbname postgres://dbuser:*****@pr
 
 > **Notice:** `tbls diff` shows the difference Markdown documents only.
 
-### Update database documentation
+### Re-generating database documentation
 
-You can update the documentation with `--force` flag
+Existing documentation can re-generated using either `--force` or `--rm-dist` flag.
+
+`--force` forces overwrite of the existing documents. It does not, however, remove files of removed tables.
 
 ```console
 $ tbls doc --force
+```
+
+`--rm-dist` removes files in docPath before generating the documents.
+
+```console
+$ tbls doc --rm-dist
 ```
 
 ### Lint a database
