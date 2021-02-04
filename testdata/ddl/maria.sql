@@ -1,6 +1,6 @@
 DROP TRIGGER IF EXISTS update_posts_updated;
 DROP VIEW IF EXISTS post_comments;
-DROP TABLE IF EXISTS same_name_constrants;
+DROP TABLE IF EXISTS same_name_constraints;
 DROP TABLE IF EXISTS `hyphen-table`;
 DROP TABLE IF EXISTS CamelizeTable;
 DROP TABLE IF EXISTS logs;
@@ -99,7 +99,7 @@ CREATE TABLE `hyphen-table` (
   created datetime NOT NULL
 );
 
-CREATE TABLE same_name_constrants (
+CREATE TABLE same_name_constraints (
   id bigint,
   user_id int NOT NULL,
   CONSTRAINT same_name FOREIGN KEY(user_id) REFERENCES users(id) ON UPDATE NO ACTION ON DELETE CASCADE,

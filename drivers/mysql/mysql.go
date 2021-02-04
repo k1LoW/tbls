@@ -232,13 +232,14 @@ SELECT
   GROUP_CONCAT(kcu.referenced_column_name ORDER BY kcu.ordinal_position, position_in_unique_constraint SEPARATOR ', ') AS referenced_column_name
 FROM information_schema.key_column_usage AS kcu
 LEFT JOIN information_schema.columns AS c ON kcu.table_schema = c.table_schema AND kcu.table_name = c.table_name AND kcu.column_name = c.column_name
-LEFT JOIN
+INNER JOIN
   (
    SELECT
    kcu.table_schema,
    kcu.table_name,
    kcu.constraint_name,
    kcu.column_name,
+   kcu.referenced_table_name,
    (CASE WHEN kcu.referenced_table_name IS NOT NULL THEN 'FOREIGN KEY'
         WHEN c.column_key = 'PRI' AND kcu.constraint_name = 'PRIMARY' THEN 'PRIMARY KEY'
         WHEN c.column_key = 'PRI' AND kcu.constraint_name != 'PRIMARY' THEN 'UNIQUE'
@@ -251,9 +252,12 @@ LEFT JOIN
    WHERE kcu.table_name = ?
    AND kcu.ordinal_position = 1
   ) AS sub
-ON kcu.constraint_name = sub.constraint_name AND kcu.table_schema = sub.table_schema AND kcu.table_name = sub.table_name
+ON kcu.constraint_name = sub.constraint_name
+  AND kcu.table_schema = sub.table_schema
+  AND kcu.table_name = sub.table_name
+  AND (kcu.referenced_table_name = sub.referenced_table_name OR (kcu.referenced_table_name IS NULL AND sub.referenced_table_name IS NULL))
 WHERE kcu.table_schema= ?
-   AND kcu.table_name = ?
+  AND kcu.table_name = ?
 GROUP BY kcu.constraint_name, sub.costraint_type, kcu.referenced_table_name`, tableName, s.Name, tableName)
 		if err != nil {
 			return errors.WithStack(err)
