@@ -6,9 +6,9 @@ labels: bug
 
 ### What happened
 
-### What you expected to happed
+### What you expected to happened
 
-### What stacktrace or error message from tbls did you see?
+### What stack trace or error message from tbls did you see?
 
 ### Anything else we need to know?
 
