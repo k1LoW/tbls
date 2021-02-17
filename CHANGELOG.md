@@ -1,5 +1,10 @@
 # Changelog
 
+## [v1.49.6](https://github.com/k1LoW/tbls/compare/v1.49.5...v1.49.6) (2021-02-18)
+
+* Show diff if no target directory [#299](https://github.com/k1LoW/tbls/pull/299) ([k1LoW](https://github.com/k1LoW))
+* [Cloud Spanner] Fix order of index columns [#298](https://github.com/k1LoW/tbls/pull/298) ([naoina](https://github.com/naoina))
+
 ## [v1.49.5](https://github.com/k1LoW/tbls/compare/v1.49.4...v1.49.5) (2021-02-17)
 
 * Fix 'no such file or directory error' when --rm-dist and no directory [#297](https://github.com/k1LoW/tbls/pull/297) ([k1LoW](https://github.com/k1LoW))
