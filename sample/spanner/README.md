@@ -1,4 +1,4 @@
-# projects/western-voyage-282714/instances/test-instance/databases/testdb
+# projects/tbls-spanner-test/instances/test-instance/databases/testdb
 
 ## Tables
 
