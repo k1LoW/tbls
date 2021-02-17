@@ -1,5 +1,10 @@
 # Changelog
 
+## [v1.49.5](https://github.com/k1LoW/tbls/compare/v1.49.4...v1.49.5) (2021-02-17)
+
+* Fix 'no such file or directory error' when --rm-dist and no directory [#297](https://github.com/k1LoW/tbls/pull/297) ([k1LoW](https://github.com/k1LoW))
+* Minor typos and fixes to issue templates [#296](https://github.com/k1LoW/tbls/pull/296) ([daltonfury42](https://github.com/daltonfury42))
+
 ## [v1.49.4](https://github.com/k1LoW/tbls/compare/v1.49.3...v1.49.4) (2021-02-05)
 
 * [MariaDB]Fix bug when table has same name constraints. [#294](https://github.com/k1LoW/tbls/pull/294) ([k1LoW](https://github.com/k1LoW))
