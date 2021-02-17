@@ -78,13 +78,15 @@ var docCmd = &cobra.Command{
 		}
 
 		if rmDist && c.DocPath != "" {
-			docs, err := ioutil.ReadDir(c.DocPath)
-			if err != nil {
-				return errors.WithStack(err)
-			}
-			for _, f := range docs {
-				if err := os.RemoveAll(filepath.Join(c.DocPath, f.Name())); err != nil {
+			if _, err := os.Lstat(c.DocPath); err == nil {
+				docs, err := ioutil.ReadDir(c.DocPath)
+				if err != nil {
 					return errors.WithStack(err)
+				}
+				for _, f := range docs {
+					if err := os.RemoveAll(filepath.Join(c.DocPath, f.Name())); err != nil {
+						return errors.WithStack(err)
+					}
 				}
 			}
 		}
