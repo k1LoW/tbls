@@ -23,6 +23,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/k1LoW/tbls/cmdutil"
 	"github.com/k1LoW/tbls/config"
@@ -68,7 +69,14 @@ var diffCmd = &cobra.Command{
 		switch len(args) {
 		case 2:
 			if _, err := os.Lstat(args[1]); err == nil {
-				// a:path and b:dsn
+				// a:dsn and b:path
+				if err := c.Load(configPath, append(options, config.DSNURL(args[0]))...); err != nil {
+					return err
+				}
+				c2 = nil
+				docPath = args[1]
+			} else if !strings.Contains(args[1], "://") {
+				// a:dsn and b:path
 				if err := c.Load(configPath, append(options, config.DSNURL(args[0]))...); err != nil {
 					return err
 				}

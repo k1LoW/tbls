@@ -296,10 +296,6 @@ func DiffSchemaAndDocs(docPath string, s *schema.Schema, c *config.Config) (stri
 		return "", errors.WithStack(err)
 	}
 
-	if !outputExists(s, fullPath) {
-		return "", errors.New("target files does not exists")
-	}
-
 	// README.md
 	er := false
 	if _, err := os.Lstat(filepath.Join(fullPath, fmt.Sprintf("schema.%s", c.ER.Format))); err == nil {
@@ -382,10 +378,8 @@ func DiffSchemaAndDocs(docPath string, s *schema.Schema, c *config.Config) (stri
 			diff += text
 		}
 	}
-	files, err := ioutil.ReadDir(fullPath)
-	if err != nil {
-		return "", errors.WithStack(err)
-	}
+	files := []os.FileInfo{}
+	files, _ = ioutil.ReadDir(fullPath)
 	for _, f := range files {
 		if _, ok := diffed[f.Name()]; ok {
 			continue
