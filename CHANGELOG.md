@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.49.7](https://github.com/k1LoW/tbls/compare/v1.49.6...v1.49.7) (2021-03-06)
+
+* Add Dockerfile for ghcr.io [#301](https://github.com/k1LoW/tbls/pull/301) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.49.6](https://github.com/k1LoW/tbls/compare/v1.49.5...v1.49.6) (2021-02-18)
 
 * Show diff if no target directory [#299](https://github.com/k1LoW/tbls/pull/299) ([k1LoW](https://github.com/k1LoW))
