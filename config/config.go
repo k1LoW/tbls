@@ -553,9 +553,6 @@ var (
 )
 
 func parseWithEnviron(v string) (string, error) {
-	if !re.MatchString(v) {
-		return v, nil
-	}
 	replaced := re.ReplaceAllString(v, "{{.$1}}")
 	replaced2 := re2.ReplaceAllString(replaced, "__TBLS__$1")
 	tmpl, err := template.New("config").Parse(replaced2)
