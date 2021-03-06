@@ -120,8 +120,8 @@ var rootCmd = &cobra.Command{
 				cmd.HelpFunc()(cmd, args)
 				return nil
 			}
-			cmd.PrintErrln(`Error: unknown command "` + subCmd + `" for "tbls"`)
-			cmd.PrintErrln("Run 'tbls --help' for usage.")
+			cmd.PrintErrf("Error: unknown command \"%s\" for \"%s\"\n", subCmd, version.Name)
+			cmd.PrintErrf("Run '%s --help' for usage.\n", version.Name)
 			return nil
 		}
 		args = args[1:]
