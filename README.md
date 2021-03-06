@@ -97,7 +97,7 @@ $ go get github.com/k1LoW/tbls
 **docker:**
 
 ```console
-$ docker pull k1low/tbls:latest
+$ docker pull ghcr.io/k1low/tbls:latest
 ```
 
 **temporary:**
