@@ -80,6 +80,7 @@ dockers:
       - 'ghcr.io/k1low/tbls:latest'
     dockerfile: docker/Dockerfile.ghcr.io
     build_flag_templates:
+      - "--pull"
       - "--label=org.opencontainers.image.created={{.Date}}"
       - "--label=org.opencontainers.image.name={{.ProjectName}}"
       - "--label=org.opencontainers.image.revision={{.FullCommit}}"
