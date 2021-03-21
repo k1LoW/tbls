@@ -147,28 +147,28 @@ ORDER BY oid`)
 
 		for constraintRows.Next() {
 			var (
-				constraintName                 string
-				constraintDef                  string
-				constraintType                 string
-				constraintReferenceTable       sql.NullString
-				constraintColumnNames          []sql.NullString
-				constraintReferenceColumnNames []sql.NullString
-				constraintComment              sql.NullString
+				constraintName                  string
+				constraintDef                   string
+				constraintType                  string
+				constraintReferencedTable       sql.NullString
+				constraintColumnNames           []sql.NullString
+				constraintReferencedColumnNames []sql.NullString
+				constraintComment               sql.NullString
 			)
-			err = constraintRows.Scan(&constraintName, &constraintDef, &constraintType, &constraintReferenceTable, pq.Array(&constraintColumnNames), pq.Array(&constraintReferenceColumnNames), &constraintComment)
+			err = constraintRows.Scan(&constraintName, &constraintDef, &constraintType, &constraintReferencedTable, pq.Array(&constraintColumnNames), pq.Array(&constraintReferencedColumnNames), &constraintComment)
 			if err != nil {
 				return errors.WithStack(err)
 			}
-			rt := constraintReferenceTable.String
+			rt := constraintReferencedTable.String
 			constraint := &schema.Constraint{
-				Name:             constraintName,
-				Type:             convertConstraintType(constraintType),
-				Def:              constraintDef,
-				Table:            &table.Name,
-				Columns:          arrayRemoveNull(constraintColumnNames),
-				ReferenceTable:   &rt,
-				ReferenceColumns: arrayRemoveNull(constraintReferenceColumnNames),
-				Comment:          constraintComment.String,
+				Name:              constraintName,
+				Type:              convertConstraintType(constraintType),
+				Def:               constraintDef,
+				Table:             &table.Name,
+				Columns:           arrayRemoveNull(constraintColumnNames),
+				ReferencedTable:   &rt,
+				ReferencedColumns: arrayRemoveNull(constraintReferencedColumnNames),
+				Comment:           constraintComment.String,
 			}
 
 			if constraintType == "f" {

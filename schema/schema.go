@@ -41,14 +41,14 @@ type Index struct {
 
 // Constraint is the struct for database constraint
 type Constraint struct {
-	Name             string   `json:"name"`
-	Type             string   `json:"type"`
-	Def              string   `json:"def"`
-	Table            *string  `json:"table"`
-	ReferenceTable   *string  `json:"reference_table" yaml:"referenceTable"`
-	Columns          []string `json:"columns"`
-	ReferenceColumns []string `json:"reference_columns" yaml:"referenceColumns"`
-	Comment          string   `json:"comment"`
+	Name              string   `json:"name"`
+	Type              string   `json:"type"`
+	Def               string   `json:"def"`
+	Table             *string  `json:"table"`
+	ReferencedTable   *string  `json:"referenced_table" yaml:"referencedTable"`
+	Columns           []string `json:"columns"`
+	ReferencedColumns []string `json:"referenced_columns" yaml:"referencedColumns"`
+	Comment           string   `json:"comment"`
 }
 
 // Trigger is the struct for database trigger

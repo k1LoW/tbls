@@ -198,13 +198,13 @@ WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
 			foreignKeyDef := fmt.Sprintf("FOREIGN KEY (%s) REFERENCES %s (%s) ON UPDATE %s ON DELETE %s MATCH %s",
 				strings.Join(f.ColumnNames, ", "), f.ForeignTableName, strings.Join(f.ForeignColumnNames, ", "), f.OnUpdate, f.OnDelete, f.Match) // #nosec
 			constraint := &schema.Constraint{
-				Name:             fmt.Sprintf("- (Foreign key ID: %s)", f.ID),
-				Type:             schema.TypeFK,
-				Def:              foreignKeyDef,
-				Table:            &table.Name,
-				Columns:          f.ColumnNames,
-				ReferenceTable:   &f.ForeignTableName,
-				ReferenceColumns: f.ForeignColumnNames,
+				Name:              fmt.Sprintf("- (Foreign key ID: %s)", f.ID),
+				Type:              schema.TypeFK,
+				Def:               foreignKeyDef,
+				Table:             &table.Name,
+				Columns:           f.ColumnNames,
+				ReferencedTable:   &f.ForeignTableName,
+				ReferencedColumns: f.ForeignColumnNames,
 			}
 			relation := &schema.Relation{
 				Table: table,

@@ -81,11 +81,11 @@
           "type": "CHECK",
           "def": "CHECK ((char_length((username)::text) \u003e 4))",
           "table": "public.users",
-          "reference_table": "",
+          "referenced_table": "",
           "columns": [
             "username"
           ],
-          "reference_columns": [
+          "referenced_columns": [
             ""
           ]
         },
@@ -94,11 +94,11 @@
           "type": "PRIMARY KEY",
           "def": "PRIMARY KEY (id)",
           "table": "public.users",
-          "reference_table": "",
+          "referenced_table": "",
           "columns": [
             "id"
           ],
-          "reference_columns": [
+          "referenced_columns": [
             ""
           ]
         },
@@ -107,11 +107,11 @@
           "type": "UNIQUE",
           "def": "UNIQUE (username)",
           "table": "public.users",
-          "reference_table": "",
+          "referenced_table": "",
           "columns": [
             "username"
           ],
-          "reference_columns": [
+          "referenced_columns": [
             ""
           ]
         },
@@ -120,11 +120,11 @@
           "type": "UNIQUE",
           "def": "UNIQUE (email)",
           "table": "public.users",
-          "reference_table": "",
+          "referenced_table": "",
           "columns": [
             "email"
           ],
-          "reference_columns": [
+          "referenced_columns": [
             ""
           ]
         }
@@ -187,11 +187,11 @@
           "type": "FOREIGN KEY",
           "def": "FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE",
           "table": "public.user_options",
-          "reference_table": "users",
+          "referenced_table": "users",
           "columns": [
             "user_id"
           ],
-          "reference_columns": [
+          "referenced_columns": [
             "id"
           ]
         },
@@ -200,11 +200,11 @@
           "type": "PRIMARY KEY",
           "def": "PRIMARY KEY (user_id)",
           "table": "public.user_options",
-          "reference_table": "",
+          "referenced_table": "",
           "columns": [
             "user_id"
           ],
-          "reference_columns": [
+          "referenced_columns": [
             ""
           ]
         }
@@ -307,7 +307,7 @@
           "type": "TRIGGER",
           "def": "CREATE CONSTRAINT TRIGGER update_posts_updated AFTER INSERT OR UPDATE ON public.posts NOT DEFERRABLE INITIALLY IMMEDIATE FOR EACH ROW EXECUTE PROCEDURE update_updated()",
           "table": "public.posts",
-          "reference_table": "",
+          "referenced_table": "",
           "columns": [
             "updated",
             "tableoid",
@@ -324,7 +324,7 @@
             "labels",
             "created"
           ],
-          "reference_columns": [
+          "referenced_columns": [
             ""
           ]
         },
@@ -333,11 +333,11 @@
           "type": "FOREIGN KEY",
           "def": "FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE",
           "table": "public.posts",
-          "reference_table": "users",
+          "referenced_table": "users",
           "columns": [
             "user_id"
           ],
-          "reference_columns": [
+          "referenced_columns": [
             "id"
           ]
         },
@@ -346,11 +346,11 @@
           "type": "PRIMARY KEY",
           "def": "PRIMARY KEY (id)",
           "table": "public.posts",
-          "reference_table": "",
+          "referenced_table": "",
           "columns": [
             "id"
           ],
-          "reference_columns": [
+          "referenced_columns": [
             ""
           ]
         },
@@ -359,12 +359,12 @@
           "type": "UNIQUE",
           "def": "UNIQUE (user_id, title)",
           "table": "public.posts",
-          "reference_table": "",
+          "referenced_table": "",
           "columns": [
             "user_id",
             "title"
           ],
-          "reference_columns": [
+          "referenced_columns": [
             ""
           ]
         }
@@ -459,11 +459,11 @@
           "type": "FOREIGN KEY",
           "def": "FOREIGN KEY (user_id) REFERENCES users(id)",
           "table": "public.comments",
-          "reference_table": "users",
+          "referenced_table": "users",
           "columns": [
             "user_id"
           ],
-          "reference_columns": [
+          "referenced_columns": [
             "id"
           ]
         },
@@ -472,11 +472,11 @@
           "type": "FOREIGN KEY",
           "def": "FOREIGN KEY (post_id) REFERENCES posts(id)",
           "table": "public.comments",
-          "reference_table": "posts",
+          "referenced_table": "posts",
           "columns": [
             "post_id"
           ],
-          "reference_columns": [
+          "referenced_columns": [
             "id"
           ]
         },
@@ -485,11 +485,11 @@
           "type": "PRIMARY KEY",
           "def": "PRIMARY KEY (id)",
           "table": "public.comments",
-          "reference_table": "",
+          "referenced_table": "",
           "columns": [
             "id"
           ],
-          "reference_columns": [
+          "referenced_columns": [
             ""
           ]
         },
@@ -498,12 +498,12 @@
           "type": "UNIQUE",
           "def": "UNIQUE (post_id, user_id)",
           "table": "public.comments",
-          "reference_table": "",
+          "referenced_table": "",
           "columns": [
             "post_id",
             "user_id"
           ],
-          "reference_columns": [
+          "referenced_columns": [
             ""
           ]
         }
@@ -577,11 +577,11 @@
           "type": "FOREIGN KEY",
           "def": "FOREIGN KEY (comment_user_id) REFERENCES users(id)",
           "table": "public.comment_stars",
-          "reference_table": "users",
+          "referenced_table": "users",
           "columns": [
             "comment_user_id"
           ],
-          "reference_columns": [
+          "referenced_columns": [
             "id"
           ]
         },
@@ -590,14 +590,14 @@
           "type": "FOREIGN KEY",
           "def": "FOREIGN KEY (comment_post_id, comment_user_id) REFERENCES comments(post_id, user_id)",
           "table": "public.comment_stars",
-          "reference_table": "comments",
+          "referenced_table": "comments",
           "columns": [
             "comment_post_id",
             "comment_post_id",
             "comment_user_id",
             "comment_user_id"
           ],
-          "reference_columns": [
+          "referenced_columns": [
             "post_id",
             "user_id",
             "post_id",
@@ -609,13 +609,13 @@
           "type": "UNIQUE",
           "def": "UNIQUE (user_id, comment_post_id, comment_user_id)",
           "table": "public.comment_stars",
-          "reference_table": "",
+          "referenced_table": "",
           "columns": [
             "user_id",
             "comment_post_id",
             "comment_user_id"
           ],
-          "reference_columns": [
+          "referenced_columns": [
             ""
           ]
         }
@@ -779,11 +779,11 @@
           "type": "UNIQUE",
           "def": "UNIQUE (id)",
           "table": "public.CamelizeTable",
-          "reference_table": "",
+          "referenced_table": "",
           "columns": [
             "id"
           ],
-          "reference_columns": [
+          "referenced_columns": [
             ""
           ]
         }
@@ -841,11 +841,11 @@
           "type": "FOREIGN KEY",
           "def": "FOREIGN KEY (\"CamelizeTableId\") REFERENCES \"CamelizeTable\"(id) ON DELETE CASCADE",
           "table": "public.hyphen-table",
-          "reference_table": "CamelizeTable",
+          "referenced_table": "CamelizeTable",
           "columns": [
             "CamelizeTableId"
           ],
-          "reference_columns": [
+          "referenced_columns": [
             "id"
           ]
         },
@@ -854,11 +854,11 @@
           "type": "UNIQUE",
           "def": "UNIQUE (\"hyphen-column\")",
           "table": "public.hyphen-table",
-          "reference_table": "",
+          "referenced_table": "",
           "columns": [
             "hyphen-column"
           ],
-          "reference_columns": [
+          "referenced_columns": [
             ""
           ]
         }
@@ -930,11 +930,11 @@
           "type": "FOREIGN KEY",
           "def": "FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE",
           "table": "administrator.blogs",
-          "reference_table": "users",
+          "referenced_table": "users",
           "columns": [
             "user_id"
           ],
-          "reference_columns": [
+          "referenced_columns": [
             "id"
           ]
         },
@@ -943,11 +943,11 @@
           "type": "PRIMARY KEY",
           "def": "PRIMARY KEY (id)",
           "table": "administrator.blogs",
-          "reference_table": "",
+          "referenced_table": "",
           "columns": [
             "id"
           ],
-          "reference_columns": [
+          "referenced_columns": [
             ""
           ]
         }
@@ -1012,11 +1012,11 @@
           "type": "PRIMARY KEY",
           "def": "PRIMARY KEY (id)",
           "table": "backup.blogs",
-          "reference_table": "",
+          "referenced_table": "",
           "columns": [
             "id"
           ],
-          "reference_columns": [
+          "referenced_columns": [
             ""
           ]
         }

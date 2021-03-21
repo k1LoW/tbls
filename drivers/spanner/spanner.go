@@ -249,13 +249,13 @@ GROUP BY c.TABLE_CATALOG, c.TABLE_SCHEMA, c.TABLE_NAME, c.INDEX_NAME, c.INDEX_TY
 				indexes = append(indexes, index)
 			case "PRIMARY_KEY":
 				constraint := &schema.Constraint{
-					Name:             "PRIMARY_KEY",
-					Type:             "PRIMARY_KEY",
-					Def:              fmt.Sprintf("PRIMARY KEY(%s)", columns),
-					Table:            &table.Name,
-					Columns:          strings.Split(columns, ", "),
-					ReferenceTable:   nil,
-					ReferenceColumns: []string{},
+					Name:              "PRIMARY_KEY",
+					Type:              "PRIMARY_KEY",
+					Def:               fmt.Sprintf("PRIMARY KEY(%s)", columns),
+					Table:             &table.Name,
+					Columns:           strings.Split(columns, ", "),
+					ReferencedTable:   nil,
+					ReferencedColumns: []string{},
 				}
 				constraints = append(constraints, constraint)
 			default:
@@ -285,13 +285,13 @@ GROUP BY c.TABLE_CATALOG, c.TABLE_SCHEMA, c.TABLE_NAME, c.INDEX_NAME, c.INDEX_TY
 
 		// constraints
 		constraint := &schema.Constraint{
-			Name:             "INTERLEAVE",
-			Type:             "INTERLEAVE",
-			Def:              def,
-			Table:            &t.Name,
-			Columns:          []string{},
-			ReferenceTable:   &pt.Name,
-			ReferenceColumns: []string{},
+			Name:              "INTERLEAVE",
+			Type:              "INTERLEAVE",
+			Def:               def,
+			Table:             &t.Name,
+			Columns:           []string{},
+			ReferencedTable:   &pt.Name,
+			ReferencedColumns: []string{},
 		}
 
 		// relations
@@ -319,7 +319,7 @@ GROUP BY c.TABLE_CATALOG, c.TABLE_SCHEMA, c.TABLE_NAME, c.INDEX_NAME, c.INDEX_TY
 		}
 		for _, c := range pt.Constraints {
 			if c.Type == "PRIMARY_KEY" {
-				constraint.ReferenceColumns = c.Columns
+				constraint.ReferencedColumns = c.Columns
 				for _, cName := range c.Columns {
 					column, err := pt.FindColumnByName(cName)
 					if err != nil {

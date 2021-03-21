@@ -253,13 +253,13 @@ GROUP BY f.name, f.parent_object_id, f.referenced_object_id, delete_referential_
 			}
 			fkDef := fmt.Sprintf("FOREIGN KEY(%s) REFERENCES %s(%s) ON UPDATE %s ON DELETE %s", fkColumnNames, fkParentTableName, fkParentColumnNames, fkUpdateAction, fkDeleteAction) // #nosec
 			constraint := &schema.Constraint{
-				Name:             convertSystemNamed(fkName, fkIsSystemNamed),
-				Type:             typeFk,
-				Def:              fkDef,
-				Table:            &table.Name,
-				Columns:          strings.Split(fkColumnNames, ", "),
-				ReferenceTable:   &fkParentTableName,
-				ReferenceColumns: strings.Split(fkParentColumnNames, ", "),
+				Name:              convertSystemNamed(fkName, fkIsSystemNamed),
+				Type:              typeFk,
+				Def:               fkDef,
+				Table:             &table.Name,
+				Columns:           strings.Split(fkColumnNames, ", "),
+				ReferencedTable:   &fkParentTableName,
+				ReferencedColumns: strings.Split(fkParentColumnNames, ", "),
 			}
 			links = append(links, relationLink{
 				table:         table.Name,

@@ -68,22 +68,22 @@ func TestTable_FindConstrainsByColumnName(t *testing.T) {
 	}
 	table.Constraints = []*Constraint{
 		&Constraint{
-			Name:             "PRIMARY",
-			Type:             "PRIMARY KEY",
-			Def:              "PRIMARY KEY(a)",
-			ReferenceTable:   nil,
-			Table:            &table.Name,
-			Columns:          []string{"a"},
-			ReferenceColumns: []string{},
+			Name:              "PRIMARY",
+			Type:              "PRIMARY KEY",
+			Def:               "PRIMARY KEY(a)",
+			ReferencedTable:   nil,
+			Table:             &table.Name,
+			Columns:           []string{"a"},
+			ReferencedColumns: []string{},
 		},
 		&Constraint{
-			Name:             "UNIQUE",
-			Type:             "UNIQUE",
-			Def:              "UNIQUE KEY a (b)",
-			ReferenceTable:   nil,
-			Table:            &table.Name,
-			Columns:          []string{"b"},
-			ReferenceColumns: []string{},
+			Name:              "UNIQUE",
+			Type:              "UNIQUE",
+			Def:               "UNIQUE KEY a (b)",
+			ReferencedTable:   nil,
+			Table:             &table.Name,
+			Columns:           []string{"b"},
+			ReferencedColumns: []string{},
 		},
 	}
 

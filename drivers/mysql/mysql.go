@@ -303,8 +303,8 @@ GROUP BY kcu.constraint_name, sub.costraint_type, kcu.referenced_table_name`, ta
 				Columns: strings.Split(constraintColumnName, ", "),
 			}
 			if constraintRefTableName.String != "" {
-				constraint.ReferenceTable = &constraintRefTableName.String
-				constraint.ReferenceColumns = strings.Split(constraintRefColumnName.String, ", ")
+				constraint.ReferencedTable = &constraintRefTableName.String
+				constraint.ReferencedColumns = strings.Split(constraintRefColumnName.String, ", ")
 			}
 
 			constraints = append(constraints, constraint)
