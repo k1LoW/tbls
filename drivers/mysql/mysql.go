@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/aquasecurity/go-version/pkg/version"
+	"github.com/k1LoW/tbls/ddl"
 	"github.com/k1LoW/tbls/drivers"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/pkg/errors"
@@ -451,6 +452,20 @@ WHERE table_schema = ? AND table_name = ? ORDER BY ordinal_position`
 		}
 	}
 	s.Relations = relations
+
+	// referenced tables of view
+	for _, t := range s.Tables {
+		if t.Type != "VIEW" {
+			continue
+		}
+		for _, rts := range ddl.ParseReferencedTables(t.Def) {
+			rt, err := s.FindTableByName(strings.TrimPrefix(rts, fmt.Sprintf("%s.", s.Name)))
+			if err != nil {
+				return err
+			}
+			t.ReferencedTables = append(t.ReferencedTables, rt)
+		}
+	}
 
 	return nil
 }
