@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/aquasecurity/go-version/pkg/version"
+	"github.com/k1LoW/tbls/ddl"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/lib/pq"
 	"github.com/pkg/errors"
@@ -342,6 +343,20 @@ ORDER BY tgrelid
 	}
 
 	s.Relations = relations
+
+	// referenced tables of view
+	for _, t := range s.Tables {
+		if t.Type != "VIEW" && t.Type != "MATERIALIZED VIEW" {
+			continue
+		}
+		for _, rts := range ddl.ParseReferencedTables(t.Def) {
+			rt, err := s.FindTableByName(rts)
+			if err != nil {
+				return err
+			}
+			t.ReferencedTables = append(t.ReferencedTables, rt)
+		}
+	}
 
 	return nil
 }
