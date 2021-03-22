@@ -8,6 +8,7 @@ import (
 
 	"regexp"
 
+	"github.com/k1LoW/tbls/ddl"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/pkg/errors"
 )
@@ -394,6 +395,20 @@ SELECT name, sql FROM sqlite_master WHERE type = 'trigger' AND tbl_name = ?;
 	}
 
 	s.Relations = relations
+
+	// referenced tables of view
+	for _, t := range s.Tables {
+		if t.Type != "view" {
+			continue
+		}
+		for _, rts := range ddl.ParseReferencedTables(t.Def) {
+			rt, err := s.FindTableByName(rts)
+			if err != nil {
+				return err
+			}
+			t.ReferencedTables = append(t.ReferencedTables, rt)
+		}
+	}
 
 	return nil
 }
