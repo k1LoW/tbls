@@ -60,26 +60,33 @@ func (t Table) MarshalJSON() ([]byte, error) {
 		t.Triggers = []*Trigger{}
 	}
 
+	referencedTables := []string{}
+	for _, rt := range t.ReferencedTables {
+		referencedTables = append(referencedTables, rt.Name)
+	}
+
 	return json.Marshal(&struct {
-		Name        string        `json:"name"`
-		Type        string        `json:"type"`
-		Comment     string        `json:"comment"`
-		Columns     []*Column     `json:"columns"`
-		Indexes     []*Index      `json:"indexes"`
-		Constraints []*Constraint `json:"constraints"`
-		Triggers    []*Trigger    `json:"triggers"`
-		Def         string        `json:"def"`
-		Labels      Labels        `json:"labels,omitempty"`
+		Name             string        `json:"name"`
+		Type             string        `json:"type"`
+		Comment          string        `json:"comment"`
+		Columns          []*Column     `json:"columns"`
+		Indexes          []*Index      `json:"indexes"`
+		Constraints      []*Constraint `json:"constraints"`
+		Triggers         []*Trigger    `json:"triggers"`
+		Def              string        `json:"def"`
+		Labels           Labels        `json:"labels,omitempty"`
+		ReferencedTables []string      `json:"referenced_tables,omitempty"`
 	}{
-		Name:        t.Name,
-		Type:        t.Type,
-		Comment:     t.Comment,
-		Columns:     t.Columns,
-		Indexes:     t.Indexes,
-		Constraints: t.Constraints,
-		Triggers:    t.Triggers,
-		Def:         t.Def,
-		Labels:      t.Labels,
+		Name:             t.Name,
+		Type:             t.Type,
+		Comment:          t.Comment,
+		Columns:          t.Columns,
+		Indexes:          t.Indexes,
+		Constraints:      t.Constraints,
+		Triggers:         t.Triggers,
+		Def:              t.Def,
+		Labels:           t.Labels,
+		ReferencedTables: referencedTables,
 	})
 }
 
@@ -155,6 +162,41 @@ func (r Relation) MarshalJSON() ([]byte, error) {
 	})
 }
 
+// UnmarshalJSON unmarshal JSON to schema.Table
+func (t *Table) UnmarshalJSON(data []byte) error {
+	s := struct {
+		Name             string        `json:"name"`
+		Type             string        `json:"type"`
+		Comment          string        `json:"comment"`
+		Columns          []*Column     `json:"columns"`
+		Indexes          []*Index      `json:"indexes"`
+		Constraints      []*Constraint `json:"constraints"`
+		Triggers         []*Trigger    `json:"triggers"`
+		Def              string        `json:"def"`
+		Labels           Labels        `json:"labels,omitempty"`
+		ReferencedTables []string      `json:"referenced_tables,omitempty"`
+	}{}
+	err := json.Unmarshal(data, &s)
+	if err != nil {
+		return err
+	}
+	t.Name = s.Name
+	t.Type = s.Type
+	t.Comment = s.Comment
+	t.Columns = s.Columns
+	t.Indexes = s.Indexes
+	t.Constraints = s.Constraints
+	t.Triggers = s.Triggers
+	t.Def = s.Def
+	t.Labels = s.Labels
+	for _, rt := range s.ReferencedTables {
+		t.ReferencedTables = append(t.ReferencedTables, &Table{
+			Name: rt,
+		})
+	}
+	return nil
+}
+
 // UnmarshalJSON unmarshal JSON to schema.Column
 func (c *Column) UnmarshalJSON(data []byte) error {
 	s := struct {
@@ -186,7 +228,7 @@ func (c *Column) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// UnmarshalJSON unmarshal JSON to schema.Column
+// UnmarshalJSON unmarshal JSON to schema.Relation
 func (r *Relation) UnmarshalJSON(data []byte) error {
 	s := struct {
 		Table         string   `json:"table"`

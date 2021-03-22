@@ -72,15 +72,16 @@ type Column struct {
 
 // Table is the struct for database table
 type Table struct {
-	Name        string        `json:"name"`
-	Type        string        `json:"type"`
-	Comment     string        `json:"comment"`
-	Columns     []*Column     `json:"columns"`
-	Indexes     []*Index      `json:"indexes"`
-	Constraints []*Constraint `json:"constraints"`
-	Triggers    []*Trigger    `json:"triggers"`
-	Def         string        `json:"def"`
-	Labels      Labels        `json:"labels,omitempty"`
+	Name             string        `json:"name"`
+	Type             string        `json:"type"`
+	Comment          string        `json:"comment"`
+	Columns          []*Column     `json:"columns"`
+	Indexes          []*Index      `json:"indexes"`
+	Constraints      []*Constraint `json:"constraints"`
+	Triggers         []*Trigger    `json:"triggers"`
+	Def              string        `json:"def"`
+	Labels           Labels        `json:"labels,omitempty"`
+	ReferencedTables []*Table      `json:"referenced_tables,omitempty" yaml:"referencedTables,omitempty"`
 }
 
 // Relation is the struct for table relation
@@ -284,6 +285,13 @@ func (s *Schema) Repair() error {
 		if len(t.Triggers) == 0 {
 			t.Triggers = nil
 		}
+		for i, rt := range t.ReferencedTables {
+			tt, err := s.FindTableByName(rt.Name)
+			if err != nil {
+				return errors.Wrap(err, "failed to repair referenced tables")
+			}
+			t.ReferencedTables[i] = tt
+		}
 	}
 
 	for _, r := range s.Relations {
@@ -314,6 +322,7 @@ func (s *Schema) Repair() error {
 		}
 		r.ParentTable = pt
 	}
+
 	return nil
 }
 

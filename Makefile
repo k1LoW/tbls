@@ -58,10 +58,10 @@ doc: build doc_sqlite
 	./tbls doc my://root:mypass@localhost:33308/testdb -c testdata/dict_test_tbls.yml -f sample/dict
 	./tbls doc my://root:mypass@localhost:33308/testdb -c testdata/font_test_tbls.yml -f sample/font
 
-doc_sqlite:
+doc_sqlite: build
 	./tbls doc sq://$(PWD)/testdata/testdb.sqlite3 -c testdata/test_tbls.yml -f sample/sqlite
 
-testdoc: testdoc_sqlite
+testdoc: build testdoc_sqlite
 	./tbls diff pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -c testdata/test_tbls_postgres.yml sample/postgres95
 	./tbls diff pg://postgres:pgpass@localhost:55413/testdb?sslmode=disable -c testdata/test_tbls_postgres.yml sample/postgres
 	./tbls diff my://root:mypass@localhost:33306/testdb -c testdata/test_tbls.yml sample/mysql56
@@ -76,23 +76,23 @@ testdoc: testdoc_sqlite
 	./tbls diff my://root:mypass@localhost:33308/testdb -c testdata/dict_test_tbls.yml sample/dict
 	./tbls diff my://root:mypass@localhost:33308/testdb -c testdata/font_test_tbls.yml sample/font
 
-testdoc_sqlite:
+testdoc_sqlite: build
 	./tbls diff sq://$(PWD)/testdata/testdb.sqlite3 -c testdata/test_tbls.yml sample/sqlite
 
-testdoc_hide_auto_increment:
+testdoc_hide_auto_increment: build
 	usql my://root:mypass@localhost:33308/testdb -c "CREATE DATABASE IF NOT EXISTS auto_increment;"
 	usql my://root:mypass@localhost:33308/auto_increment -f testdata/ddl/auto_increment.sql
 	./tbls doc my://root:mypass@localhost:33308/auto_increment?hide_auto_increment -f $(TMPDIR)/auto_increment
 	usql my://root:mypass@localhost:33308/auto_increment -c "INSERT INTO users (username, password, email, created) VALUES ('alice', 'PASS', 'alice@example.com', now());"
 	./tbls diff my://root:mypass@localhost:33308/auto_increment?hide_auto_increment $(TMPDIR)/auto_increment
 
-test_too_many_tables:
+test_too_many_tables: build
 	usql pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -c "DROP DATABASE IF EXISTS too_many;CREATE DATABASE too_many;"
 	usql pg://postgres:pgpass@localhost:55432/too_many?sslmode=disable -f testdata/ddl/createtable_too_many.sql
 	ulimit -n 256 && ./tbls doc pg://postgres:pgpass@localhost:55432/too_many?sslmode=disable -f /tmp
 	ulimit -n 256 && ./tbls diff pg://postgres:pgpass@localhost:55432/too_many?sslmode=disable /tmp
 
-test_json:
+test_json: build
 	./tbls out my://root:mypass@localhost:33308/testdb -c testdata/test_tbls.yml -t json > /tmp/tbls.json
 	./tbls diff json:///tmp/tbls.json sample/mysql
 	./tbls out pg://postgres:pgpass@localhost:55413/testdb?sslmode=disable -c testdata/test_tbls_postgres.yml -t json > /tmp/tbls.json
@@ -100,29 +100,29 @@ test_json:
 	./tbls out sq://$(PWD)/testdata/testdb.sqlite3 -c testdata/test_tbls.yml -t json > /tmp/tbls.json
 	./tbls diff json:///tmp/tbls.json sample/sqlite
 
-test_env:
+test_env: build
 	env TBLS_DSN=my://root:mypass@localhost:33306/testdb TBLS_DOC_PATH=sample/mysql ./tbls doc -c testdata/test_tbls.yml -f
 	env TBLS_DSN=my://root:mypass@localhost:33306/testdb TBLS_DOC_PATH=sample/mysql ./tbls diff -c testdata/test_tbls.yml
 
-test_config:
+test_config: build
 	./tbls doc -c testdata/mysql_testdb_config.yml -f
 	./tbls diff -c testdata/mysql_testdb_config.yml
 	cp testdata/mysql_testdb_config.yml .tbls.yml
 	./tbls diff
 	rm .tbls.yml
 
-doc_bigquery:
+doc_bigquery: build
 	./tbls doc bq://bigquery-public-data/crypto_bitcoin?creds=client_secrets.json -c testdata/crypto_bitcoin_tbls.yml -f sample/bigquery_crypto_bitcoin
 	./tbls doc bq://bigquery-public-data/census_bureau_international?creds=client_secrets.json -f sample/bigquery_census_bureau_international
 
-test_bigquery:
+test_bigquery: build
 	./tbls diff bq://bigquery-public-data/crypto_bitcoin?creds=client_secrets.json -c testdata/crypto_bitcoin_tbls.yml sample/bigquery_crypto_bitcoin
 	./tbls diff bq://bigquery-public-data/census_bureau_international?creds=client_secrets.json sample/bigquery_census_bureau_international
 
-doc_spanner:
+doc_spanner: build
 	./tbls doc spanner://$(GCLOUD_PROJECT)/test-instance/testdb?creds=spanner_client_secrets.json -c testdata/spanner_tbls.yml -f sample/spanner
 
-test_spanner:
+test_spanner: build
 	./tbls diff spanner://$(GCLOUD_PROJECT)/test-instance/testdb?creds=spanner_client_secrets.json -c testdata/spanner_tbls.yml sample/spanner
 
 test_ext_subcommand: build

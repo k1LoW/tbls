@@ -15,6 +15,11 @@
 ```
 
 </details>
+{{- end }}{{ $len := len .ReferencedTables }}{{ if ne $len 0 }}
+
+## {{ "Referenced Tables" | lookup }}
+{{ range $rt := .ReferencedTables }}
+- {{ $rt }}{{ end }}
 {{- end }}
 {{- if ne (len .Table.Labels) 0 }}
 
