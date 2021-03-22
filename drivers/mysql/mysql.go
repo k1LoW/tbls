@@ -461,7 +461,10 @@ WHERE table_schema = ? AND table_name = ? ORDER BY ordinal_position`
 		for _, rts := range ddl.ParseReferencedTables(t.Def) {
 			rt, err := s.FindTableByName(strings.TrimPrefix(rts, fmt.Sprintf("%s.", s.Name)))
 			if err != nil {
-				return err
+				rt = &schema.Table{
+					Name:     rts,
+					External: true,
+				}
 			}
 			t.ReferencedTables = append(t.ReferencedTables, rt)
 		}

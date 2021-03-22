@@ -447,7 +447,10 @@ ORDER BY i.index_id
 		for _, rts := range ddl.ParseReferencedTables(t.Def) {
 			rt, err := s.FindTableByName(rts)
 			if err != nil {
-				return err
+				rt = &schema.Table{
+					Name:     rts,
+					External: true,
+				}
 			}
 			t.ReferencedTables = append(t.ReferencedTables, rt)
 		}

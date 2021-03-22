@@ -631,6 +631,10 @@ func (m *Md) makeTableTemplateData(t *schema.Table, adjust bool) map[string]inte
 	// Referenced Tables
 	referencedTables := []string{}
 	for _, rt := range t.ReferencedTables {
+		if rt.External {
+			referencedTables = append(referencedTables, rt.Name)
+			continue
+		}
 		referencedTables = append(referencedTables, fmt.Sprintf("[%s](%s%s.md)", rt.Name, m.config.BaseUrl, rt.Name))
 	}
 

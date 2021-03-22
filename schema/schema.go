@@ -82,6 +82,7 @@ type Table struct {
 	Def              string        `json:"def"`
 	Labels           Labels        `json:"labels,omitempty"`
 	ReferencedTables []*Table      `json:"referenced_tables,omitempty" yaml:"referencedTables,omitempty"`
+	External         bool          `json:"-"` // Table external to the schema
 }
 
 // Relation is the struct for table relation
@@ -288,7 +289,8 @@ func (s *Schema) Repair() error {
 		for i, rt := range t.ReferencedTables {
 			tt, err := s.FindTableByName(rt.Name)
 			if err != nil {
-				return errors.Wrap(err, "failed to repair referenced tables")
+				rt.External = true
+				tt = rt
 			}
 			t.ReferencedTables[i] = tt
 		}
