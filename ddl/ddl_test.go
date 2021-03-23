@@ -35,6 +35,18 @@ func TestParseReferencedTables(t *testing.T) {
 			"CREATE VIEW post_comments AS (select `c`.`id` AS `id`,`p`.`title` AS `title`,`u2`.`username` AS `post_user`,`c`.`comment` AS `comment`,`u2`.`username` AS `comment_user`,`c`.`created` AS `created`,`c`.`updated` AS `updated` from (((`testdb`.`posts` `p` left join `testdb`.`comments` `c` on((`p`.`id` = `c`.`post_id`))) left join `testdb`.`users` `u` on((`u`.`id` = `p`.`user_id`))) left join `testdb`.`users` `u2` on((`u2`.`id` = `c`.`user_id`))))",
 			[]string{"testdb.posts", "testdb.comments", "testdb.users"},
 		},
+		{
+			"CREATE VIEW k1low_posts AS (SELECT * FROM posts WHERE user_id IN (SELECT id FROM users WHERE email = 'k1lowxb@gmail.com'))",
+			[]string{"posts", "users"},
+		},
+		{
+			`CREATE VIEW k1low_posts AS (
+WITH k1low AS (SELECT * FROM users WHERE email = 'k1lowxb@gmail.com')
+SELECT * FROM posts WHERE user_id IN (SELECT id FROM k1low)
+)
+`,
+			[]string{"users", "posts"},
+		},
 	}
 	for _, tt := range tests {
 		got := ParseReferencedTables(tt.in)

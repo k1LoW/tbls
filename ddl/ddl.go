@@ -53,8 +53,10 @@ func ParseReferencedTables(src string) []string {
 	})
 
 	tables := []string{}
+	with := []string{}
 	tFrom := false
 	tJoin := false
+	tWith := false
 	for scanner.Scan() {
 		token := scanner.Text()
 		switch strings.ToUpper(token) {
@@ -62,9 +64,12 @@ func ParseReferencedTables(src string) []string {
 			tFrom = true
 		case "JOIN":
 			tJoin = true
+		case "WITH":
+			tWith = true
 		case "SELECT":
 			tFrom = false
 			tJoin = false
+			tWith = false
 		default:
 			if tFrom == true {
 				tables = append(tables, strings.Replace(token, "`", "", -1))
@@ -72,11 +77,23 @@ func ParseReferencedTables(src string) []string {
 			if tJoin == true {
 				tables = append(tables, strings.Replace(token, "`", "", -1))
 			}
+			if tWith == true {
+				with = append(with, strings.Replace(token, "`", "", -1))
+			}
 			tFrom = false
 			tJoin = false
+			tWith = false
 		}
 	}
-	return unique(tables)
+
+	result := []string{}
+	for _, t := range tables {
+		if contains(with, t) {
+			continue
+		}
+		result = append(result, t)
+	}
+	return unique(result)
 }
 
 func isSkipSymbol(r rune) bool {
@@ -99,6 +116,15 @@ func isSpace(r rune) bool {
 	switch r {
 	case ' ', '\t', '\n', '\r':
 		return true
+	}
+	return false
+}
+
+func contains(s []string, e string) bool {
+	for _, v := range s {
+		if e == v {
+			return true
+		}
 	}
 	return false
 }
