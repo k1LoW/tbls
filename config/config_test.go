@@ -1,6 +1,7 @@
 package config
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -612,5 +613,29 @@ func Test_mergeDetectedRelations(t *testing.T) {
 				t.Errorf("got: %#v\nwant: %#v", tt.args.s.Relations, tt.want.r)
 			}
 		})
+	}
+}
+
+func TestCheckVersion(t *testing.T) {
+	tests := []struct {
+		v    string
+		c    string
+		want error
+	}{
+		{"1.42.3", ">= 1.42", nil},
+		{"1.42.3", ">= 1.42, < 2", nil},
+		{"1.42.3", "> 1.42", nil},
+		{"1.42.3", "1.42.3", nil},
+		{"1.42.3", "1.42.4", errors.New("the required tbls version for the configuration is '1.42.4'. however, the running tbls version is '1.42.3'")},
+	}
+	for _, tt := range tests {
+		cfg, err := New()
+		if err != nil {
+			t.Fatal(err)
+		}
+		cfg.RequiredVersion = tt.c
+		if got := cfg.checkVersion(tt.v); fmt.Sprintf("%s", got) != fmt.Sprintf("%s", tt.want) {
+			t.Errorf("got %v\nwant %v", got, tt.want)
+		}
 	}
 }
