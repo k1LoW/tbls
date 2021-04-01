@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.50.0](https://github.com/k1LoW/tbls/compare/v1.49.7...v1.50.0) (2021-04-01)
+
+* Add requiredVersion to define a version constraint [#303](https://github.com/k1LoW/tbls/pull/303) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.49.7](https://github.com/k1LoW/tbls/compare/v1.49.6...v1.49.7) (2021-03-06)
 
 * Add Dockerfile for ghcr.io [#301](https://github.com/k1LoW/tbls/pull/301) ([k1LoW](https://github.com/k1LoW))
