@@ -40,6 +40,7 @@ Key features of `tbls` are:
     - [Relations](#relations)
     - [Dictionary](#dictionary)
     - [Personalized Templates](#personalized-templates)
+    - [Required Version](#required-version)
   - [Output formats](#output-formats)
   - [Command arguments](#command-arguments)
   - [Environment variables](#environment-variables)
@@ -859,6 +860,14 @@ templates:
 ```
 
 A good starting point to design your own template is to modify a copy the default ones for [Dot](output/dot/templates), [PlantUML](output/plantuml/templates) and [markdown](output/md/templates).
+
+## Required Version
+
+The `requiredVersion` setting defines a version constraint string. This defines which version of tbls can be used in the configuration.
+
+```yaml
+requiredVersion: '>= 1.42, < 2'
+```
 
 ## Output formats
 

@@ -11,9 +11,11 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/aquasecurity/go-version/pkg/version"
 	"github.com/goccy/go-yaml"
 	"github.com/k1LoW/tbls/dict"
 	"github.com/k1LoW/tbls/schema"
+	ver "github.com/k1LoW/tbls/version"
 	"github.com/minio/minio/pkg/wildcard"
 	"github.com/pkg/errors"
 )
@@ -46,10 +48,11 @@ type Config struct {
 	Dict                   dict.Dict              `yaml:"dict,omitempty"`
 	Templates              Templates              `yaml:"templates,omitempty"`
 	DetectVirtualRelations DetectVirtualRelations `yaml:"detectVirtualRelations,omitempty"`
+	BaseUrl                string                 `yaml:"baseUrl,omitempty"`
+	RequiredVersion        string                 `yaml:"requiredVersion,omitempty"`
 	MergedDict             dict.Dict              `yaml:"-"`
 	Path                   string                 `yaml:"-"`
 	root                   string                 `yaml:"-"`
-	BaseUrl                string                 `yaml:"baseUrl,omitempty"`
 }
 
 type DSN struct {
@@ -200,6 +203,10 @@ func (c *Config) Load(configPath string, options ...Option) error {
 		return err
 	}
 
+	if err := c.checkVersion(ver.Version); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -225,6 +232,28 @@ func (c *Config) setDefault() error {
 
 	if c.ER.Distance == nil {
 		c.ER.Distance = &DefaultDistance
+	}
+
+	return nil
+}
+
+func (c *Config) checkVersion(sv string) error {
+	if sv == "dev" {
+		return nil
+	}
+	if c.RequiredVersion == "" {
+		return nil
+	}
+	cons, err := version.NewConstraints(c.RequiredVersion)
+	if err != nil {
+		return err
+	}
+	v, err := version.Parse(sv)
+	if err != nil {
+		return err
+	}
+	if !cons.Check(v) {
+		return fmt.Errorf("the required tbls version for the configuration is '%s'. however, the running tbls version is '%s'", c.RequiredVersion, sv)
 	}
 
 	return nil
