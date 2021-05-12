@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"cloud.google.com/go/bigquery"
+	"github.com/k1LoW/tbls/ddl"
 	"github.com/k1LoW/tbls/dict"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/pkg/errors"
@@ -82,6 +83,25 @@ func (b *Bigquery) Analyze(s *schema.Schema) error {
 		tables = append(tables, table)
 	}
 	s.Tables = tables
+
+	// referenced tables of view
+	for _, t := range s.Tables {
+		if t.Type != "VIEW" {
+			continue
+		}
+		for _, rts := range ddl.ParseReferencedTables(t.Def) {
+			splitted := strings.Split(rts, ".")
+			rt, err := s.FindTableByName(splitted[len(splitted)-1])
+			if err != nil {
+				rt = &schema.Table{
+					Name:     rts,
+					External: true,
+				}
+			}
+			t.ReferencedTables = append(t.ReferencedTables, rt)
+		}
+	}
+
 	return nil
 }
 

@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/k1LoW/tbls/ddl"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/pkg/errors"
 )
@@ -253,13 +254,13 @@ GROUP BY f.name, f.parent_object_id, f.referenced_object_id, delete_referential_
 			}
 			fkDef := fmt.Sprintf("FOREIGN KEY(%s) REFERENCES %s(%s) ON UPDATE %s ON DELETE %s", fkColumnNames, fkParentTableName, fkParentColumnNames, fkUpdateAction, fkDeleteAction) // #nosec
 			constraint := &schema.Constraint{
-				Name:             convertSystemNamed(fkName, fkIsSystemNamed),
-				Type:             typeFk,
-				Def:              fkDef,
-				Table:            &table.Name,
-				Columns:          strings.Split(fkColumnNames, ", "),
-				ReferenceTable:   &fkParentTableName,
-				ReferenceColumns: strings.Split(fkParentColumnNames, ", "),
+				Name:              convertSystemNamed(fkName, fkIsSystemNamed),
+				Type:              typeFk,
+				Def:               fkDef,
+				Table:             &table.Name,
+				Columns:           strings.Split(fkColumnNames, ", "),
+				ReferencedTable:   &fkParentTableName,
+				ReferencedColumns: strings.Split(fkParentColumnNames, ", "),
 			}
 			links = append(links, relationLink{
 				table:         table.Name,
@@ -437,6 +438,23 @@ ORDER BY i.index_id
 	}
 
 	s.Relations = relations
+
+	// referenced tables of view
+	for _, t := range s.Tables {
+		if t.Type != "VIEW" {
+			continue
+		}
+		for _, rts := range ddl.ParseReferencedTables(t.Def) {
+			rt, err := s.FindTableByName(rts)
+			if err != nil {
+				rt = &schema.Table{
+					Name:     rts,
+					External: true,
+				}
+			}
+			t.ReferencedTables = append(t.ReferencedTables, rt)
+		}
+	}
 
 	return nil
 }

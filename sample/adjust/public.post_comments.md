@@ -25,6 +25,12 @@ CREATE VIEW post_comments AS (
 
 </details>
 
+## Referenced Tables
+
+- [public.posts](public.posts.md)
+- [public.comments](public.comments.md)
+- [public.users](public.users.md)
+
 ## Columns
 
 | Name         | Type                        | Default | Nullable | Children | Parents | Comment                 |

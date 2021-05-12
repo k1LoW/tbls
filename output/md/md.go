@@ -628,22 +628,34 @@ func (m *Md) makeTableTemplateData(t *schema.Table, adjust bool) map[string]inte
 		triggersData = append(triggersData, data)
 	}
 
+	// Referenced Tables
+	referencedTables := []string{}
+	for _, rt := range t.ReferencedTables {
+		if rt.External {
+			referencedTables = append(referencedTables, rt.Name)
+			continue
+		}
+		referencedTables = append(referencedTables, fmt.Sprintf("[%s](%s%s.md)", rt.Name, m.config.BaseUrl, rt.Name))
+	}
+
 	if adjust {
 		return map[string]interface{}{
-			"Table":       t,
-			"Columns":     adjustTable(columnsData),
-			"Constraints": adjustTable(constraintsData),
-			"Indexes":     adjustTable(indexesData),
-			"Triggers":    adjustTable(triggersData),
+			"Table":            t,
+			"Columns":          adjustTable(columnsData),
+			"Constraints":      adjustTable(constraintsData),
+			"Indexes":          adjustTable(indexesData),
+			"Triggers":         adjustTable(triggersData),
+			"ReferencedTables": referencedTables,
 		}
 	}
 
 	return map[string]interface{}{
-		"Table":       t,
-		"Columns":     columnsData,
-		"Constraints": constraintsData,
-		"Indexes":     indexesData,
-		"Triggers":    triggersData,
+		"Table":            t,
+		"Columns":          columnsData,
+		"Constraints":      constraintsData,
+		"Indexes":          indexesData,
+		"Triggers":         triggersData,
+		"ReferencedTables": referencedTables,
 	}
 }
 

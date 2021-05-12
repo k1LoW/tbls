@@ -8,6 +8,7 @@ import (
 
 	"regexp"
 
+	"github.com/k1LoW/tbls/ddl"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/pkg/errors"
 )
@@ -198,13 +199,13 @@ WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
 			foreignKeyDef := fmt.Sprintf("FOREIGN KEY (%s) REFERENCES %s (%s) ON UPDATE %s ON DELETE %s MATCH %s",
 				strings.Join(f.ColumnNames, ", "), f.ForeignTableName, strings.Join(f.ForeignColumnNames, ", "), f.OnUpdate, f.OnDelete, f.Match) // #nosec
 			constraint := &schema.Constraint{
-				Name:             fmt.Sprintf("- (Foreign key ID: %s)", f.ID),
-				Type:             schema.TypeFK,
-				Def:              foreignKeyDef,
-				Table:            &table.Name,
-				Columns:          f.ColumnNames,
-				ReferenceTable:   &f.ForeignTableName,
-				ReferenceColumns: f.ForeignColumnNames,
+				Name:              fmt.Sprintf("- (Foreign key ID: %s)", f.ID),
+				Type:              schema.TypeFK,
+				Def:               foreignKeyDef,
+				Table:             &table.Name,
+				Columns:           f.ColumnNames,
+				ReferencedTable:   &f.ForeignTableName,
+				ReferencedColumns: f.ForeignColumnNames,
 			}
 			relation := &schema.Relation{
 				Table: table,
@@ -394,6 +395,23 @@ SELECT name, sql FROM sqlite_master WHERE type = 'trigger' AND tbl_name = ?;
 	}
 
 	s.Relations = relations
+
+	// referenced tables of view
+	for _, t := range s.Tables {
+		if t.Type != "view" {
+			continue
+		}
+		for _, rts := range ddl.ParseReferencedTables(t.Def) {
+			rt, err := s.FindTableByName(rts)
+			if err != nil {
+				rt = &schema.Table{
+					Name:     rts,
+					External: true,
+				}
+			}
+			t.ReferencedTables = append(t.ReferencedTables, rt)
+		}
+	}
 
 	return nil
 }

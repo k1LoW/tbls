@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/aquasecurity/go-version/pkg/version"
+	"github.com/k1LoW/tbls/ddl"
 	"github.com/k1LoW/tbls/drivers"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/pkg/errors"
@@ -303,8 +304,8 @@ GROUP BY kcu.constraint_name, sub.costraint_type, kcu.referenced_table_name`, ta
 				Columns: strings.Split(constraintColumnName, ", "),
 			}
 			if constraintRefTableName.String != "" {
-				constraint.ReferenceTable = &constraintRefTableName.String
-				constraint.ReferenceColumns = strings.Split(constraintRefColumnName.String, ", ")
+				constraint.ReferencedTable = &constraintRefTableName.String
+				constraint.ReferencedColumns = strings.Split(constraintRefColumnName.String, ", ")
 			}
 
 			constraints = append(constraints, constraint)
@@ -451,6 +452,23 @@ WHERE table_schema = ? AND table_name = ? ORDER BY ordinal_position`
 		}
 	}
 	s.Relations = relations
+
+	// referenced tables of view
+	for _, t := range s.Tables {
+		if t.Type != "VIEW" {
+			continue
+		}
+		for _, rts := range ddl.ParseReferencedTables(t.Def) {
+			rt, err := s.FindTableByName(strings.TrimPrefix(rts, fmt.Sprintf("%s.", s.Name)))
+			if err != nil {
+				rt = &schema.Table{
+					Name:     rts,
+					External: true,
+				}
+			}
+			t.ReferencedTables = append(t.ReferencedTables, rt)
+		}
+	}
 
 	return nil
 }

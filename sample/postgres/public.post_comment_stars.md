@@ -21,6 +21,12 @@ CREATE MATERIALIZED VIEW post_comment_stars AS (
 
 </details>
 
+## Referenced Tables
+
+- [public.comments](public.comments.md)
+- [public.comment_stars](public.comment_stars.md)
+- [public.users](public.users.md)
+
 ## Columns
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |

@@ -41,14 +41,14 @@ type Index struct {
 
 // Constraint is the struct for database constraint
 type Constraint struct {
-	Name             string   `json:"name"`
-	Type             string   `json:"type"`
-	Def              string   `json:"def"`
-	Table            *string  `json:"table"`
-	ReferenceTable   *string  `json:"reference_table" yaml:"referenceTable"`
-	Columns          []string `json:"columns"`
-	ReferenceColumns []string `json:"reference_columns" yaml:"referenceColumns"`
-	Comment          string   `json:"comment"`
+	Name              string   `json:"name"`
+	Type              string   `json:"type"`
+	Def               string   `json:"def"`
+	Table             *string  `json:"table"`
+	ReferencedTable   *string  `json:"referenced_table" yaml:"referencedTable"`
+	Columns           []string `json:"columns"`
+	ReferencedColumns []string `json:"referenced_columns" yaml:"referencedColumns"`
+	Comment           string   `json:"comment"`
 }
 
 // Trigger is the struct for database trigger
@@ -72,15 +72,17 @@ type Column struct {
 
 // Table is the struct for database table
 type Table struct {
-	Name        string        `json:"name"`
-	Type        string        `json:"type"`
-	Comment     string        `json:"comment"`
-	Columns     []*Column     `json:"columns"`
-	Indexes     []*Index      `json:"indexes"`
-	Constraints []*Constraint `json:"constraints"`
-	Triggers    []*Trigger    `json:"triggers"`
-	Def         string        `json:"def"`
-	Labels      Labels        `json:"labels,omitempty"`
+	Name             string        `json:"name"`
+	Type             string        `json:"type"`
+	Comment          string        `json:"comment"`
+	Columns          []*Column     `json:"columns"`
+	Indexes          []*Index      `json:"indexes"`
+	Constraints      []*Constraint `json:"constraints"`
+	Triggers         []*Trigger    `json:"triggers"`
+	Def              string        `json:"def"`
+	Labels           Labels        `json:"labels,omitempty"`
+	ReferencedTables []*Table      `json:"referenced_tables,omitempty" yaml:"referencedTables,omitempty"`
+	External         bool          `json:"-"` // Table external to the schema
 }
 
 // Relation is the struct for table relation
@@ -284,6 +286,14 @@ func (s *Schema) Repair() error {
 		if len(t.Triggers) == 0 {
 			t.Triggers = nil
 		}
+		for i, rt := range t.ReferencedTables {
+			tt, err := s.FindTableByName(rt.Name)
+			if err != nil {
+				rt.External = true
+				tt = rt
+			}
+			t.ReferencedTables[i] = tt
+		}
 	}
 
 	for _, r := range s.Relations {
@@ -314,6 +324,7 @@ func (s *Schema) Repair() error {
 		}
 		r.ParentTable = pt
 	}
+
 	return nil
 }
 

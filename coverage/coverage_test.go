@@ -140,19 +140,19 @@ func newTestSchema() *schema.Schema {
 
 	ta.Constraints = []*schema.Constraint{
 		&schema.Constraint{
-			Name:             "a1_b1_fk",
-			Type:             schema.TypeFK,
-			Table:            &ta.Name,
-			ReferenceTable:   &tb.Name,
-			Columns:          []string{"column_a1"},
-			ReferenceColumns: []string{"column_b1"},
+			Name:              "a1_b1_fk",
+			Type:              schema.TypeFK,
+			Table:             &ta.Name,
+			ReferencedTable:   &tb.Name,
+			Columns:           []string{"column_a1"},
+			ReferencedColumns: []string{"column_b1"},
 		},
 		&schema.Constraint{
-			Name:           "a1_unique",
-			Type:           "UNIQUE",
-			Table:          &ta.Name,
-			ReferenceTable: nil,
-			Columns:        []string{"column_a1"},
+			Name:            "a1_unique",
+			Type:            "UNIQUE",
+			Table:           &ta.Name,
+			ReferencedTable: nil,
+			Columns:         []string{"column_a1"},
 		},
 	}
 

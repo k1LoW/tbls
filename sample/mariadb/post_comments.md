@@ -13,6 +13,12 @@ CREATE VIEW post_comments AS ((select `c`.`id` AS `id`,`p`.`title` AS `title`,`u
 
 </details>
 
+## Referenced Tables
+
+- [posts](posts.md)
+- [comments](comments.md)
+- [users](users.md)
+
 ## Columns
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |

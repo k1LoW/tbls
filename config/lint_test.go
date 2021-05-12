@@ -564,21 +564,21 @@ func newTestSchema() *schema.Schema {
 
 	ta.Constraints = []*schema.Constraint{
 		&schema.Constraint{
-			Name:             "a1_b1_fk",
-			Type:             schema.TypeFK,
-			Table:            &ta.Name,
-			ReferenceTable:   &tb.Name,
-			Columns:          []string{"column_a1"},
-			ReferenceColumns: []string{"column_b1"},
-			Comment:          "a1_b1_fk comment",
+			Name:              "a1_b1_fk",
+			Type:              schema.TypeFK,
+			Table:             &ta.Name,
+			ReferencedTable:   &tb.Name,
+			Columns:           []string{"column_a1"},
+			ReferencedColumns: []string{"column_b1"},
+			Comment:           "a1_b1_fk comment",
 		},
 		&schema.Constraint{
-			Name:           "a1_unique",
-			Type:           "UNIQUE",
-			Table:          &ta.Name,
-			ReferenceTable: nil,
-			Columns:        []string{"column_a1"},
-			Comment:        "", // empty comment
+			Name:            "a1_unique",
+			Type:            "UNIQUE",
+			Table:           &ta.Name,
+			ReferencedTable: nil,
+			Columns:         []string{"column_a1"},
+			Comment:         "", // empty comment
 		},
 	}
 

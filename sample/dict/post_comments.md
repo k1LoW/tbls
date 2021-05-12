@@ -13,6 +13,12 @@ CREATE VIEW post_comments AS (select `c`.`id` AS `id`,`p`.`title` AS `title`,`u2
 
 </details>
 
+## Referenced Tables
+
+- [posts](posts.md)
+- [comments](comments.md)
+- [users](users.md)
+
 ## カラム一覧
 
 | 名前           | タイプ          | デフォルト値       | Nullable | 子テーブル      | 親テーブル      | コメント                                       |
