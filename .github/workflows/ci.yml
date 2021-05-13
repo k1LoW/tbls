@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         platform: [ubuntu-latest]
-        go_version: [1.14, 1.15]
+        go_version: [1.16]
     runs-on: ${{ matrix.platform }}
     steps:
       - name: Set up Go ${{ matrix.go_version }} on ${{ matrix.platform }}
@@ -61,7 +61,7 @@ jobs:
     strategy:
       matrix:
         platform: [windows-latest]
-        go_version: [1.15]
+        go_version: [1.16]
     runs-on: ${{ matrix.platform }}
     steps:
       - name: Set up Go ${{ matrix.go_version }} on ${{ matrix.platform }}
