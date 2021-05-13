@@ -61,6 +61,12 @@ Using docker image.
 $ docker run --rm -v $PWD:/work k1low/tbls doc postgres://dbuser:dbpass@hostname:5432/dbname
 ```
 
+In SSL mode, add "?sslmode=disable"
+For example:
+```console
+$ docker run --rm -v $PWD:/work k1low/tbls doc postgres://dbuser:dbpass@hostname:5432/dbname?sslmode=disable
+```
+
 ## Install
 
 **deb:**
