@@ -156,21 +156,32 @@ ORDER BY c.column_id
 		constraints := []*schema.Constraint{}
 		/// key constraints
 		keyRows, err := m.db.Query(`
-SELECT
-  c.name,
-  i.type_desc,
-  i.is_unique,
-  i.is_primary_key,
-  i.is_unique_constraint,
-  STRING_AGG(COL_NAME(ic.object_id, ic.column_id), ', ') WITHIN GROUP ( ORDER BY ic.key_ordinal ),
-  c.is_system_named
-FROM sys.key_constraints AS c
-LEFT JOIN sys.indexes AS i ON i.object_id = c.parent_object_id AND i.index_id = c.unique_index_id
-INNER JOIN sys.index_columns AS ic
-ON i.object_id = ic.object_id AND i.index_id = ic.index_id
-WHERE i.object_id = object_id($1)
-GROUP BY c.name, i.index_id, i.type_desc, i.is_unique, i.is_primary_key, i.is_unique_constraint, c.is_system_named
-ORDER BY i.index_id
+		SELECT
+		c.name,
+		i.type_desc,
+		i.is_unique,
+		i.is_primary_key,
+		i.is_unique_constraint,
+		STUFF((
+			Select ', ' + COL_NAME(i.object_id, column_id)
+			FROM sys.indexes AS x
+		   INNER JOIN sys.index_columns AS xic
+		   ON x.object_id = xic.object_id AND x.index_id = xic.index_id
+		   LEFT JOIN sys.key_constraints AS xc
+		   ON x.object_id = xc.parent_object_id AND x.index_id = xc.unique_index_id
+			WHERE x.object_id=i.object_id AND x.index_id = x.index_id
+			GROUP BY x.object_id,column_id,key_ordinal
+			ORDER BY key_ordinal
+			FOR XML PATH('')
+			),1,1,'') as idx_Columns,
+		c.is_system_named
+	  FROM sys.key_constraints AS c
+	  LEFT JOIN sys.indexes AS i ON i.object_id = c.parent_object_id AND i.index_id = c.unique_index_id
+	  INNER JOIN sys.index_columns AS ic
+	  ON i.object_id = ic.object_id AND i.index_id = ic.index_id
+	  WHERE i.object_id = object_id($1)
+	  GROUP BY c.name,i.object_id, i.index_id, i.type_desc, i.is_unique, i.is_primary_key, i.is_unique_constraint,c.is_system_named
+	  ORDER BY i.index_id
 `, fmt.Sprintf("%s.%s", tableSchema, tableName))
 		if err != nil {
 			return errors.WithStack(err)
@@ -223,15 +234,33 @@ SELECT
   f.name AS f_name,
   object_name(f.parent_object_id) AS table_name,
   object_name(f.referenced_object_id) AS parent_table_name,
-  STRING_AGG(COL_NAME(fc.parent_object_id, fc.parent_column_id), ', ') AS column_names,
-  STRING_AGG(COL_NAME(fc.referenced_object_id, fc.referenced_column_id), ', ') AS parent_column_names,
+  (   STUFF(
+	( 
+		Select ', ' + COL_NAME(xc.parent_object_id, xc.parent_column_id)
+		FROM sys.foreign_keys x
+		LEFT JOIN sys.foreign_key_columns AS xc  ON x.object_id = xc.constraint_object_id
+		WHERE x.object_id = f.object_id
+		FOR XML PATH('')
+	  )
+   ,1,1,'') 
+) as column_names,
+(   STUFF(
+	( 
+		Select ', ' + COL_NAME(xc.referenced_object_id, xc.referenced_column_id)
+		FROM sys.foreign_keys x
+		LEFT JOIN sys.foreign_key_columns AS xc  ON x.object_id = xc.constraint_object_id
+		WHERE x.object_id = f.object_id
+		FOR XML PATH('')
+	  )
+  ,1,1,'') 
+) as parent_column_names,
   update_referential_action_desc,
   delete_referential_action_desc,
   f.is_system_named
 FROM sys.foreign_keys AS f
 LEFT JOIN sys.foreign_key_columns AS fc ON f.object_id = fc.constraint_object_id
 WHERE f.parent_object_id = object_id($1)
-GROUP BY f.name, f.parent_object_id, f.referenced_object_id, delete_referential_action_desc, update_referential_action_desc, f.is_system_named
+GROUP BY f.object_id, f.name, f.parent_object_id, f.referenced_object_id, delete_referential_action_desc, update_referential_action_desc, f.is_system_named
 `, fmt.Sprintf("%s.%s", tableSchema, tableName))
 		if err != nil {
 			return errors.WithStack(err)
@@ -343,7 +372,18 @@ SELECT
   i.is_unique,
   i.is_primary_key,
   i.is_unique_constraint,
-  STRING_AGG(COL_NAME(ic.object_id, ic.column_id), ', ') WITHIN GROUP ( ORDER BY ic.key_ordinal ),
+  STUFF((
+	Select ',' + COL_NAME(xi.object_id, xic.column_id)
+	FROM sys.indexes AS xi
+   INNER JOIN sys.index_columns AS xic
+   ON xi.object_id = xic.object_id AND xi.index_id = xic.index_id
+   LEFT JOIN sys.key_constraints AS xc
+   ON xi.object_id = xc.parent_object_id AND xi.index_id = xc.unique_index_id
+	WHERE xi.object_id=i.object_id and xi.index_id = Min(ic.index_id)
+	GROUP BY xi.object_id, xi.index_id,xic.column_id,key_ordinal
+	ORDER BY key_ordinal
+	FOR XML PATH('')
+	),1,1,'') as idx_Columns,
   c.is_system_named
 FROM sys.indexes AS i
 INNER JOIN sys.index_columns AS ic
@@ -351,7 +391,7 @@ ON i.object_id = ic.object_id AND i.index_id = ic.index_id
 LEFT JOIN sys.key_constraints AS c
 ON i.object_id = c.parent_object_id AND i.index_id = c.unique_index_id
 WHERE i.object_id = object_id($1)
-GROUP BY i.name, i.index_id, i.type_desc, i.is_unique, i.is_primary_key, i.is_unique_constraint, c.is_system_named
+GROUP BY i.name, i.object_id, i.index_id, i.type_desc, i.is_unique, i.is_primary_key, i.is_unique_constraint, c.is_system_named
 ORDER BY i.index_id
 `, fmt.Sprintf("%s.%s", tableSchema, tableName))
 		if err != nil {
@@ -414,7 +454,7 @@ ORDER BY i.index_id
 		}
 		r.Table = table
 		for _, c := range l.columns {
-			column, err := table.FindColumnByName(c)
+			column, err := table.FindColumnByName(strings.TrimSpace(c))
 			if err != nil {
 				return err
 			}
@@ -427,7 +467,7 @@ ORDER BY i.index_id
 		}
 		r.ParentTable = parentTable
 		for _, c := range l.parentColumns {
-			column, err := parentTable.FindColumnByName(c)
+			column, err := parentTable.FindColumnByName(strings.TrimSpace(c))
 			if err != nil {
 				return err
 			}
