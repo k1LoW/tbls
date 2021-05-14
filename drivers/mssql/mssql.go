@@ -468,7 +468,7 @@ func (m *Mssql) Info() (*schema.Driver, error) {
 	}
 
 	d := &schema.Driver{
-		Name:            "mssql",
+		Name:            "sqlserver",
 		DatabaseVersion: v,
 	}
 	return d, nil
