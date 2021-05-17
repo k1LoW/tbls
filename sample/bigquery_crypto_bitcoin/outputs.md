@@ -27,6 +27,10 @@ FROM `bigquery-public-data.crypto_bitcoin.transactions` as transactions,
 
 </details>
 
+## Referenced Tables
+
+- [transactions](transactions.md)
+
 ## Columns
 
 | Name | Type | Default | Nullable | Children | Parents | Description |
