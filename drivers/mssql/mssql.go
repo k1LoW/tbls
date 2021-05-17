@@ -87,7 +87,7 @@ WHERE type IN ('U', 'V')  ORDER BY OBJECT_ID
 		// view definition
 		if tableType == "VIEW" {
 			viewDefRows, err := m.db.Query(`
-SELECT definition FROM sys.sql_modules WHERE object_id = $1
+SELECT definition FROM sys.sql_modules WHERE object_id = @p1
 `, tableOid)
 			if err != nil {
 				return errors.WithStack(err)
@@ -117,7 +117,7 @@ FROM sys.columns AS c
 LEFT JOIN sys.types AS t ON c.system_type_id = t.system_type_id
 LEFT JOIN sys.extended_properties AS e ON
 e.major_id = c.object_id AND e.name = 'MS_Description' AND e.minor_id = c.column_id
-WHERE c.object_id = $1
+WHERE c.object_id = @p1
 and t.name != 'sysname'
 ORDER BY c.column_id
 `, tableOid)
@@ -168,7 +168,7 @@ FROM sys.key_constraints AS c
 LEFT JOIN sys.indexes AS i ON i.object_id = c.parent_object_id AND i.index_id = c.unique_index_id
 INNER JOIN sys.index_columns AS ic
 ON i.object_id = ic.object_id AND i.index_id = ic.index_id
-WHERE i.object_id = object_id($1)
+WHERE i.object_id = object_id(@p1)
 GROUP BY c.name, i.index_id, i.type_desc, i.is_unique, i.is_primary_key, i.is_unique_constraint, c.is_system_named
 ORDER BY i.index_id
 `, fmt.Sprintf("%s.%s", tableSchema, tableName))
@@ -230,7 +230,7 @@ SELECT
   f.is_system_named
 FROM sys.foreign_keys AS f
 LEFT JOIN sys.foreign_key_columns AS fc ON f.object_id = fc.constraint_object_id
-WHERE f.parent_object_id = object_id($1)
+WHERE f.parent_object_id = object_id(@p1)
 GROUP BY f.name, f.parent_object_id, f.referenced_object_id, delete_referential_action_desc, update_referential_action_desc, f.is_system_named
 `, fmt.Sprintf("%s.%s", tableSchema, tableName))
 		if err != nil {
@@ -276,7 +276,7 @@ GROUP BY f.name, f.parent_object_id, f.referenced_object_id, delete_referential_
 		checkRows, err := m.db.Query(`
 SELECT name, definition, is_system_named
 FROM sys.check_constraints
-WHERE parent_object_id = object_id($1)
+WHERE parent_object_id = object_id(@p1)
 `, fmt.Sprintf("%s.%s", tableSchema, tableName))
 		if err != nil {
 			return errors.WithStack(err)
@@ -310,7 +310,7 @@ FROM sys.triggers AS t
 INNER JOIN sys.sql_modules AS sm
 ON sm.object_id = t.object_id
 WHERE type = 'TR'
-AND parent_id = object_id($1)
+AND parent_id = object_id(@p1)
 `, fmt.Sprintf("%s.%s", tableSchema, tableName))
 		if err != nil {
 			return errors.WithStack(err)
@@ -350,7 +350,7 @@ INNER JOIN sys.index_columns AS ic
 ON i.object_id = ic.object_id AND i.index_id = ic.index_id
 LEFT JOIN sys.key_constraints AS c
 ON i.object_id = c.parent_object_id AND i.index_id = c.unique_index_id
-WHERE i.object_id = object_id($1)
+WHERE i.object_id = object_id(@p1)
 GROUP BY i.name, i.index_id, i.type_desc, i.is_unique, i.is_primary_key, i.is_unique_constraint, c.is_system_named
 ORDER BY i.index_id
 `, fmt.Sprintf("%s.%s", tableSchema, tableName))
