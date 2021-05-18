@@ -101,7 +101,7 @@ func Analyze(dsn config.DSN) (*schema.Schema, error) {
 	case "sqlite3":
 		s.Name = splitted[len(splitted)-1]
 		driver = sqlite.New(db)
-	case "mssql":
+	case "sqlserver":
 		s.Name = splitted[1]
 		driver = mssql.New(db)
 	case "snowflake":

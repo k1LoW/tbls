@@ -44,8 +44,8 @@ func TestInfo(t *testing.T) {
 	if err != nil {
 		t.Errorf("%v", err)
 	}
-	if d.Name != "mssql" {
-		t.Errorf("got %v\nwant %v", d.Name, "mssql")
+	if d.Name != "sqlserver" {
+		t.Errorf("got %v\nwant %v", d.Name, "sqlserver")
 	}
 	if d.DatabaseVersion == "" {
 		t.Errorf("got not empty string.")
