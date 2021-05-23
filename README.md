@@ -379,6 +379,12 @@ dsn: postgres://dbuser:dbpass@hostname:5432/dbname
 dsn: pg://dbuser:dbpass@hostname:5432/dbname
 ```
 
+When you want to disable SSL mode, add "?sslmode=disable"
+For example:
+``` yaml
+dsn: pg://dbuser:dbpass@hostname:5432/dbname?sslmode=disable
+```
+
 **MySQL:**
 
 ``` yaml
