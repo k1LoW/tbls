@@ -16,10 +16,12 @@ var tests = []struct {
 	gotFile  string
 	wantFile string
 	adjust   bool
+	number   bool
 }{
-	{"README.md", "README.md", "md_test_README.md.golden", false},
-	{"a.md", "a.md", "md_test_a.md.golden", false},
-	{"--adjust option", "README.md", "md_test_README.md.adjust.golden", true},
+	{"README.md", "README.md", "md_test_README.md.golden", false, false},
+	{"a.md", "a.md", "md_test_a.md.golden", false, false},
+	{"--adjust option", "README.md", "md_test_README.md.adjust.golden", true, false},
+	{"number", "README.md", "md_test_README.md.number.golden", false, true},
 }
 
 var testsTemplate = []struct {
@@ -27,10 +29,12 @@ var testsTemplate = []struct {
 	gotFile  string
 	wantFile string
 	adjust   bool
+	number   bool
 }{
-	{"README.md", "README.md", "md_template_test_README.md.golden", false},
-	{"a.md", "a.md", "md_template_test_a.md.golden", false},
-	{"--adjust option", "README.md", "md_template_test_README.md.adjust.golden", true},
+	{"README.md", "README.md", "md_template_test_README.md.golden", false, false},
+	{"a.md", "a.md", "md_template_test_a.md.golden", false, false},
+	{"--adjust option", "README.md", "md_template_test_README.md.adjust.golden", true, false},
+	{"number", "README.md", "md_template_test_README.md.number.golden", false, true},
 }
 
 func TestOutput(t *testing.T) {
@@ -40,15 +44,15 @@ func TestOutput(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-		tempDir, _ := ioutil.TempDir("", "tbls")
+		tempDir := t.TempDir()
 		force := true
 		adjust := tt.adjust
 		erFormat := "png"
-		defer os.RemoveAll(tempDir)
 		err = c.Load(filepath.Join(testdataDir(), "out_test_tbls.yml"), config.DocPath(tempDir), config.Adjust(adjust), config.ERFormat(erFormat))
 		if err != nil {
 			t.Error(err)
 		}
+		c.Format.Number = tt.number
 		err = c.MergeAdditionalData(s)
 		if err != nil {
 			t.Error(err)
@@ -78,19 +82,18 @@ func TestOutputTemplate(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-		tempDir, _ := ioutil.TempDir("", "tbls")
+		tempDir := t.TempDir()
 		force := true
 		adjust := tt.adjust
 		erFormat := "png"
-		defer os.RemoveAll(tempDir)
 		err = c.Load(filepath.Join(testdataDir(), "out_templates_test_tbls.yml"), config.DocPath(tempDir), config.Adjust(adjust), config.ERFormat(erFormat))
 		if err != nil {
 			t.Error(err)
 		}
+		c.Format.Number = tt.number
 		// use the templates in the testdata directory
 		c.Templates.MD.Table = filepath.Join(testdataDir(), c.Templates.MD.Table)
 		c.Templates.MD.Index = filepath.Join(testdataDir(), c.Templates.MD.Index)
-
 		err = c.MergeAdditionalData(s)
 		if err != nil {
 			t.Error(err)
@@ -121,15 +124,15 @@ func TestDiffSchemaAndDocs(t *testing.T) {
 			if err != nil {
 				t.Error(err)
 			}
-			docPath, _ := ioutil.TempDir("", "tbls")
+			docPath := t.TempDir()
 			force := true
 			adjust := tt.adjust
 			erFormat := "png"
-			defer os.RemoveAll(docPath)
 			err = c.Load(filepath.Join(testdataDir(), "out_test_tbls.yml"), config.DocPath(docPath), config.Adjust(adjust), config.ERFormat(erFormat))
 			if err != nil {
 				t.Error(err)
 			}
+			c.Format.Number = tt.number
 			err = c.MergeAdditionalData(s)
 			if err != nil {
 				t.Error(err)

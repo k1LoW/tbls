@@ -64,6 +64,7 @@ type DSN struct {
 type Format struct {
 	Adjust bool `yaml:"adjust,omitempty"`
 	Sort   bool `yaml:"sort,omitempty"`
+	Number bool `yaml:"number,omitempty"`
 }
 
 // ER is er setting

@@ -569,9 +569,12 @@ format:
   # Adjust the column width of Markdown format table
   # Default is false
   adjust: true
-  # Sort the order of table list and  columns
+  # Sort the order of table list and columns
   # Default is false
   sort: false
+  # Display sequential numbers in table rows
+  # Default is false
+  number: false
 ```
 
 ### ER diagram
