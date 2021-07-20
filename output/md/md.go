@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"text/template"
 
@@ -431,6 +432,7 @@ func outputExists(s *schema.Schema, path string) bool {
 }
 
 func (m *Md) makeSchemaTemplateData(s *schema.Schema) map[string]interface{} {
+	number := m.config.Format.Number
 	adjust := m.config.Format.Adjust
 
 	tablesData := [][]string{}
@@ -456,6 +458,10 @@ func (m *Md) makeSchemaTemplateData(s *schema.Schema) map[string]interface{} {
 		)
 	}
 
+	if number {
+		tablesData = m.addNumberToTable(tablesData)
+	}
+
 	if adjust {
 		return map[string]interface{}{
 			"Schema": s,
@@ -470,7 +476,9 @@ func (m *Md) makeSchemaTemplateData(s *schema.Schema) map[string]interface{} {
 }
 
 func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
+	number := m.config.Format.Number
 	adjust := m.config.Format.Adjust
+
 	// Columns
 	columnsData := [][]string{}
 	if t.HasColumnWithExtraDef() {
@@ -645,6 +653,13 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 		referencedTables = append(referencedTables, fmt.Sprintf("[%s](%s%s.md)", rt.Name, m.config.BaseUrl, rt.Name))
 	}
 
+	if number {
+		columnsData = m.addNumberToTable(columnsData)
+		constraintsData = m.addNumberToTable(constraintsData)
+		indexesData = m.addNumberToTable(indexesData)
+		triggersData = m.addNumberToTable(triggersData)
+	}
+
 	if adjust {
 		return map[string]interface{}{
 			"Table":            t,
@@ -685,6 +700,24 @@ func adjustTable(data [][]string) [][]string {
 				data[i][j] = fmt.Sprintf(fmt.Sprintf("%%-%ds", w[j]), r.Replace(data[i][j]))
 			}
 		}
+	}
+
+	return data
+}
+
+func (m *Md) addNumberToTable(data [][]string) [][]string {
+	w := len(data[0])/10 + 1
+
+	for i, r := range data {
+		switch {
+		case i == 0:
+			r = append([]string{m.config.MergedDict.Lookup("#")}, r...)
+		case i == 1:
+			r = append([]string{strings.Repeat("-", w)}, r...)
+		default:
+			r = append([]string{strconv.Itoa(i - 1)}, r...)
+		}
+		data[i] = r
 	}
 
 	return data
