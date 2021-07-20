@@ -76,7 +76,7 @@ func (m *Md) OutputSchema(wr io.Writer, s *schema.Schema) error {
 		return errors.WithStack(err)
 	}
 	tmpl := template.Must(template.New("index").Funcs(output.Funcs(&m.config.MergedDict)).Parse(ts))
-	templateData := m.makeSchemaTemplateData(s, m.config.Format.Adjust)
+	templateData := m.makeSchemaTemplateData(s)
 	templateData["er"] = m.er
 	templateData["erFormat"] = m.config.ER.Format
 	templateData["baseUrl"] = m.config.BaseUrl
@@ -94,7 +94,7 @@ func (m *Md) OutputTable(wr io.Writer, t *schema.Table) error {
 		return errors.WithStack(err)
 	}
 	tmpl := template.Must(template.New(t.Name).Funcs(output.Funcs(&m.config.MergedDict)).Parse(ts))
-	templateData := m.makeTableTemplateData(t, m.config.Format.Adjust)
+	templateData := m.makeTableTemplateData(t)
 	templateData["er"] = m.er
 	templateData["erFormat"] = m.config.ER.Format
 	templateData["baseUrl"] = m.config.BaseUrl
@@ -430,8 +430,12 @@ func outputExists(s *schema.Schema, path string) bool {
 	return false
 }
 
-func (m *Md) makeSchemaTemplateData(s *schema.Schema, adjust bool) map[string]interface{} {
-	tablesData := [][]string{
+func (m *Md) makeSchemaTemplateData(s *schema.Schema) map[string]interface{} {
+	adjust := m.config.Format.Adjust
+
+	tablesData := [][]string{}
+
+	tablesData = append(tablesData,
 		[]string{
 			m.config.MergedDict.Lookup("Name"),
 			m.config.MergedDict.Lookup("Columns"),
@@ -439,15 +443,17 @@ func (m *Md) makeSchemaTemplateData(s *schema.Schema, adjust bool) map[string]in
 			m.config.MergedDict.Lookup("Type"),
 		},
 		[]string{"----", "-------", "-------", "----"},
-	}
+	)
+
 	for _, t := range s.Tables {
-		data := []string{
-			fmt.Sprintf("[%s](%s%s.md)", t.Name, m.config.BaseUrl, t.Name),
-			fmt.Sprintf("%d", len(t.Columns)),
-			t.Comment,
-			t.Type,
-		}
-		tablesData = append(tablesData, data)
+		tablesData = append(tablesData,
+			[]string{
+				fmt.Sprintf("[%s](%s%s.md)", t.Name, m.config.BaseUrl, t.Name),
+				fmt.Sprintf("%d", len(t.Columns)),
+				t.Comment,
+				t.Type,
+			},
+		)
 	}
 
 	if adjust {
@@ -463,7 +469,8 @@ func (m *Md) makeSchemaTemplateData(s *schema.Schema, adjust bool) map[string]in
 	}
 }
 
-func (m *Md) makeTableTemplateData(t *schema.Table, adjust bool) map[string]interface{} {
+func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
+	adjust := m.config.Format.Adjust
 	// Columns
 	columnsData := [][]string{}
 	if t.HasColumnWithExtraDef() {
