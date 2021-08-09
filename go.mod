@@ -32,3 +32,5 @@ require (
 	golang.org/x/image v0.0.0-20210504121937-7319ad40d33e
 	google.golang.org/api v0.46.0
 )
+
+replace github.com/miekg/dns => github.com/miekg/dns v1.1.43
