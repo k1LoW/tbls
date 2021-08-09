@@ -27,7 +27,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/pmezard/go-difflib v1.0.0
 	github.com/snowflakedb/gosnowflake v1.4.3
-	github.com/spf13/cobra v1.1.3
+	github.com/spf13/cobra v1.2.1
 	github.com/xo/dburl v0.7.0
 	golang.org/x/image v0.0.0-20210504121937-7319ad40d33e
 	google.golang.org/api v0.46.0
