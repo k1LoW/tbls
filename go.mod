@@ -23,7 +23,7 @@ require (
 	github.com/loadoff/excl v0.0.0-20171207172601-c6a9e4c4b4c4
 	github.com/mattn/go-runewidth v0.0.12
 	github.com/mattn/go-sqlite3 v1.14.7
-	github.com/minio/minio v0.0.0-20210512150702-57aed841dd24
+	github.com/minio/pkg v1.0.11
 	github.com/pkg/errors v0.9.1
 	github.com/pmezard/go-difflib v1.0.0
 	github.com/snowflakedb/gosnowflake v1.4.3
