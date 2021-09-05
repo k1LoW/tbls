@@ -33,4 +33,7 @@ require (
 	google.golang.org/api v0.46.0
 )
 
-replace github.com/miekg/dns => github.com/miekg/dns v1.1.43
+replace (
+	github.com/dgrijalva/jwt-go => github.com/golang-jwt/jwt v3.2.2+incompatible
+	github.com/miekg/dns => github.com/miekg/dns v1.1.43
+)
