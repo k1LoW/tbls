@@ -25,7 +25,7 @@ Key features of `tbls` are:
     - [Lint a database](#lint-a-database)
     - [Measure document coverage](#measure-document-coverage)
     - [Continuous Integration](#continuous-integration)
-  - [Configuration](#configration)
+  - [Configuration](#configuration)
     - [Name](#name)
     - [Description](#description)
     - [Labels](#labels)
