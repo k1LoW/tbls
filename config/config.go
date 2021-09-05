@@ -16,7 +16,7 @@ import (
 	"github.com/k1LoW/tbls/dict"
 	"github.com/k1LoW/tbls/schema"
 	ver "github.com/k1LoW/tbls/version"
-	"github.com/minio/minio/pkg/wildcard"
+	"github.com/minio/pkg/wildcard"
 	"github.com/pkg/errors"
 )
 

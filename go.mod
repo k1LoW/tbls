@@ -23,12 +23,18 @@ require (
 	github.com/loadoff/excl v0.0.0-20171207172601-c6a9e4c4b4c4
 	github.com/mattn/go-runewidth v0.0.12
 	github.com/mattn/go-sqlite3 v1.14.7
-	github.com/minio/minio v0.0.0-20210512150702-57aed841dd24
+	github.com/minio/pkg v1.0.11
 	github.com/pkg/errors v0.9.1
 	github.com/pmezard/go-difflib v1.0.0
 	github.com/snowflakedb/gosnowflake v1.4.3
-	github.com/spf13/cobra v1.1.3
+	github.com/spf13/cobra v1.2.1
 	github.com/xo/dburl v0.7.0
 	golang.org/x/image v0.0.0-20210504121937-7319ad40d33e
 	google.golang.org/api v0.46.0
+)
+
+replace (
+	github.com/dgrijalva/jwt-go => github.com/golang-jwt/jwt v3.2.2+incompatible
+	github.com/miekg/dns => github.com/miekg/dns v1.1.43
+	github.com/spf13/viper => github.com/spf13/viper v1.8.1
 )
