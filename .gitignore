@@ -1,7 +1,7 @@
 tbls
 dist/
 dbdoc/
-coverage.txt
+coverage.out
 *-packr.go
 testdb.sqlite3
 .envrc

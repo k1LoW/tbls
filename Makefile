@@ -40,7 +40,7 @@ db_sqlite:
 	sqlite3 $(PWD)/testdata/testdb.sqlite3 < testdata/ddl/sqlite.sql
 
 test:
-	go test ./... -v -coverprofile=coverage.txt -covermode=count
+	go test ./... -v -coverprofile=coverage.out -covermode=count
 	$(MAKE) testdoc
 
 doc: build doc_sqlite
