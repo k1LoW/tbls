@@ -17,6 +17,20 @@ builds:
   goarch:
     - amd64
 -
+  id: tbls-darwin-arm64
+  hooks:
+    pre: packr2
+    post: packr2 clean
+  ldflags:
+    - -s -w -X github.com/k1LoW/tbls.version={{.Version}} -X github.com/k1LoW/tbls.commit={{.FullCommit}} -X github.com/k1LoW/tbls.date={{.Date}} -X github.com/k1LoW/tbls/version.Version={{.Version}}
+  env:
+    - CGO_ENABLED=1
+    - SDKROOT=/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk
+  goos:
+    - darwin
+  goarch:
+    - arm64
+-
   id: tbls-linux
   hooks:
     pre: packr2
