@@ -2,7 +2,7 @@
 
 # Usage:
 #
-#   source <(curl https://raw.githubusercontent.com/k1LoW/tbls/master/use)
+#   source <(curl https://raw.githubusercontent.com/k1LoW/tbls/main/use)
 #
 # Reference:
 #   https://github.com/goreleaser/get

@@ -3,7 +3,7 @@ name: build
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
 
 jobs:
@@ -34,7 +34,7 @@ jobs:
 
       - name: Decrypt secrets
         run: gpg --quiet --batch --yes --decrypt --passphrase="$GCP_CLIENT_SECRETS_PASSPHRASE" --output $GITHUB_WORKSPACE/client_secrets.json $GITHUB_WORKSPACE/client_secrets.json.gpg
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/main'
         env:
           GCP_CLIENT_SECRETS_PASSPHRASE: ${{ secrets.GCP_CLIENT_SECRETS_PASSPHRASE }}
 
@@ -50,7 +50,7 @@ jobs:
 
       - name: Run BigQuery integration
         run: make test_bigquery
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/main'
 
       - name: Run Trivy vulnerability scanner in repo mode
         uses: aquasecurity/trivy-action@master

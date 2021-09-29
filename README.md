@@ -1,6 +1,6 @@
 <p align="center">
 <br>
-<img src="https://github.com/k1LoW/tbls/raw/master/img/logo.png" width="200" alt="tbls">
+<img src="https://github.com/k1LoW/tbls/raw/main/img/logo.png" width="200" alt="tbls">
 <br><br>
 </p>
 
@@ -141,7 +141,7 @@ Commit `.tbls.yml` and the document.
 ``` console
 $ git add .tbls.yml doc/schema
 $ git commit -m 'Add database document'
-$ git push origin master
+$ git push origin main
 ```
 
 View the document on GitHub.
