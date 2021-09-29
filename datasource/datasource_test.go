@@ -1,7 +1,6 @@
 package datasource
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -88,7 +87,7 @@ func TestAnalyzeRelations(t *testing.T) {
 }
 
 func TestAnalyzeJSONString(t *testing.T) {
-	b, err := ioutil.ReadFile(filepath.Join(testdataDir(), "testdb.json"))
+	b, err := os.ReadFile(filepath.Join(testdataDir(), "testdb.json"))
 	if err != nil {
 		t.Fatal(err)
 	}

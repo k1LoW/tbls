@@ -22,7 +22,6 @@ package cmd
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 
@@ -79,7 +78,7 @@ var docCmd = &cobra.Command{
 
 		if rmDist && c.DocPath != "" {
 			if _, err := os.Lstat(c.DocPath); err == nil {
-				docs, err := ioutil.ReadDir(c.DocPath)
+				docs, err := os.ReadDir(c.DocPath)
 				if err != nil {
 					return errors.WithStack(err)
 				}

@@ -1,7 +1,6 @@
 package md
 
 import (
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -61,11 +60,11 @@ func TestOutput(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-		want, err := ioutil.ReadFile(filepath.Join(testdataDir(), tt.wantFile))
+		want, err := os.ReadFile(filepath.Join(testdataDir(), tt.wantFile))
 		if err != nil {
 			t.Error(err)
 		}
-		got, err := ioutil.ReadFile(filepath.Join(tempDir, tt.gotFile))
+		got, err := os.ReadFile(filepath.Join(tempDir, tt.gotFile))
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -102,11 +101,11 @@ func TestOutputTemplate(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-		want, err := ioutil.ReadFile(filepath.Join(testdataDir(), tt.wantFile))
+		want, err := os.ReadFile(filepath.Join(testdataDir(), tt.wantFile))
 		if err != nil {
 			t.Error(err)
 		}
-		got, err := ioutil.ReadFile(filepath.Join(tempDir, tt.gotFile))
+		got, err := os.ReadFile(filepath.Join(tempDir, tt.gotFile))
 		if err != nil {
 			log.Fatal(err)
 		}

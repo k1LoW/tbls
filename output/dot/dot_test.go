@@ -2,7 +2,6 @@ package dot
 
 import (
 	"bytes"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -31,7 +30,7 @@ func TestOutputSchema(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	want, _ := ioutil.ReadFile(filepath.Join(testdataDir(), "dot_test_schema.dot.golden"))
+	want, _ := os.ReadFile(filepath.Join(testdataDir(), "dot_test_schema.dot.golden"))
 	got := buf.String()
 	if got != string(want) {
 		t.Errorf("got %v\nwant %v", got, string(want))
@@ -62,7 +61,7 @@ func TestOutputSchemaTemplate(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	want, _ := ioutil.ReadFile(filepath.Join(testdataDir(), "dot_template_test_schema.dot.golden"))
+	want, _ := os.ReadFile(filepath.Join(testdataDir(), "dot_template_test_schema.dot.golden"))
 	got := buf.String()
 	if got != string(want) {
 		t.Errorf("got %v\nwant %v", got, string(want))
@@ -88,7 +87,7 @@ func TestOutputTable(t *testing.T) {
 	o := New(c)
 	buf := &bytes.Buffer{}
 	_ = o.OutputTable(buf, ta)
-	want, _ := ioutil.ReadFile(filepath.Join(testdataDir(), "dot_test_a.dot.golden"))
+	want, _ := os.ReadFile(filepath.Join(testdataDir(), "dot_test_a.dot.golden"))
 	got := buf.String()
 	if got != string(want) {
 		t.Errorf("got %v\nwant %v", got, string(want))
@@ -117,7 +116,7 @@ func TestOutputTableTemplate(t *testing.T) {
 	o := New(c)
 	buf := &bytes.Buffer{}
 	_ = o.OutputTable(buf, ta)
-	want, _ := ioutil.ReadFile(filepath.Join(testdataDir(), "dot_template_test_a.dot.golden"))
+	want, _ := os.ReadFile(filepath.Join(testdataDir(), "dot_template_test_a.dot.golden"))
 	got := buf.String()
 	if got != string(want) {
 		t.Errorf("got %v\nwant %v", got, string(want))

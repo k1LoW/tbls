@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"html/template"
-	"io/ioutil"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -294,7 +293,7 @@ func (c *Config) LoadConfigFile(path string) error {
 		return errors.Wrap(errors.WithStack(err), "failed to load config file")
 	}
 
-	buf, err := ioutil.ReadFile(filepath.Clean(fullPath))
+	buf, err := os.ReadFile(filepath.Clean(fullPath))
 	if err != nil {
 		return errors.Wrap(errors.WithStack(err), "failed to load config file")
 	}

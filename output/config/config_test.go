@@ -2,7 +2,6 @@ package config
 
 import (
 	"bytes"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -23,7 +22,7 @@ func TestOutputSchema(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	want, err := ioutil.ReadFile(filepath.Join(testdataDir(), "config_test.yml.golden"))
+	want, err := os.ReadFile(filepath.Join(testdataDir(), "config_test.yml.golden"))
 	if err != nil {
 		t.Error(err)
 	}

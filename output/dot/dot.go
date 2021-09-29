@@ -2,7 +2,7 @@ package dot
 
 import (
 	"io"
-	"io/ioutil"
+	"os"
 	"text/template"
 
 	"github.com/gobuffalo/packr/v2"
@@ -28,7 +28,7 @@ func New(c *config.Config) *Dot {
 
 func (d *Dot) schemaTemplate() (string, error) {
 	if len(d.config.Templates.Dot.Schema) > 0 {
-		tb, err := ioutil.ReadFile(d.config.Templates.Dot.Schema)
+		tb, err := os.ReadFile(d.config.Templates.Dot.Schema)
 		if err != nil {
 			return string(tb), errors.WithStack(err)
 		}
@@ -44,7 +44,7 @@ func (d *Dot) schemaTemplate() (string, error) {
 
 func (d *Dot) tableTemplate() (string, error) {
 	if len(d.config.Templates.Dot.Table) > 0 {
-		tb, err := ioutil.ReadFile(d.config.Templates.Dot.Table)
+		tb, err := os.ReadFile(d.config.Templates.Dot.Table)
 		if err != nil {
 			return string(tb), errors.WithStack(err)
 		}
