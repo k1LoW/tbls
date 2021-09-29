@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -40,7 +39,7 @@ func New(c *config.Config, er bool) *Md {
 
 func (m *Md) indexTemplate() (string, error) {
 	if len(m.config.Templates.MD.Index) > 0 {
-		tb, err := ioutil.ReadFile(m.config.Templates.MD.Index)
+		tb, err := os.ReadFile(m.config.Templates.MD.Index)
 		if err != nil {
 			return string(tb), errors.WithStack(err)
 		}
@@ -56,7 +55,7 @@ func (m *Md) indexTemplate() (string, error) {
 
 func (m *Md) tableTemplate() (string, error) {
 	if len(m.config.Templates.MD.Table) > 0 {
-		tb, err := ioutil.ReadFile(m.config.Templates.MD.Table)
+		tb, err := os.ReadFile(m.config.Templates.MD.Table)
 		if err != nil {
 			return string(tb), errors.WithStack(err)
 		}
@@ -312,7 +311,7 @@ func DiffSchemaAndDocs(docPath string, s *schema.Schema, c *config.Config) (stri
 	}
 
 	targetPath := filepath.Join(fullPath, "README.md")
-	a, err := ioutil.ReadFile(filepath.Clean(targetPath))
+	a, err := os.ReadFile(filepath.Clean(targetPath))
 	if err != nil {
 		a = []byte{}
 	}
@@ -359,7 +358,7 @@ func DiffSchemaAndDocs(docPath string, s *schema.Schema, c *config.Config) (stri
 		}
 		targetPath := filepath.Join(fullPath, fmt.Sprintf("%s.md", t.Name))
 		diffed[fmt.Sprintf("%s.md", t.Name)] = struct{}{}
-		a, err := ioutil.ReadFile(filepath.Clean(targetPath))
+		a, err := os.ReadFile(filepath.Clean(targetPath))
 		if err != nil {
 			a = []byte{}
 		}
@@ -379,8 +378,7 @@ func DiffSchemaAndDocs(docPath string, s *schema.Schema, c *config.Config) (stri
 			diff += text
 		}
 	}
-	files := []os.FileInfo{}
-	files, _ = ioutil.ReadDir(fullPath)
+	files, _ := os.ReadDir(fullPath)
 	for _, f := range files {
 		if _, ok := diffed[f.Name()]; ok {
 			continue
@@ -391,7 +389,7 @@ func DiffSchemaAndDocs(docPath string, s *schema.Schema, c *config.Config) (stri
 
 		fname := f.Name()
 		targetPath := filepath.Join(fullPath, fname)
-		a, err := ioutil.ReadFile(filepath.Clean(targetPath))
+		a, err := os.ReadFile(filepath.Clean(targetPath))
 		if err != nil {
 			return "", errors.WithStack(err)
 		}

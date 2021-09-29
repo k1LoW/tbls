@@ -2,7 +2,6 @@ package plantuml
 
 import (
 	"bytes"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -31,7 +30,7 @@ func TestOutputSchema(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	want, _ := ioutil.ReadFile(filepath.Join(testdataDir(), "plantuml_test_schema.puml.golden"))
+	want, _ := os.ReadFile(filepath.Join(testdataDir(), "plantuml_test_schema.puml.golden"))
 	got := buf.String()
 	if got != string(want) {
 		t.Errorf("got %v\nwant %v", got, string(want))
@@ -60,7 +59,7 @@ func TestOutputSchemaTemplate(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	want, _ := ioutil.ReadFile(filepath.Join(testdataDir(), "plantuml_template_test_schema.puml.golden"))
+	want, _ := os.ReadFile(filepath.Join(testdataDir(), "plantuml_template_test_schema.puml.golden"))
 	got := buf.String()
 	if got != string(want) {
 		t.Errorf("got %v\nwant %v", got, string(want))
@@ -86,7 +85,7 @@ func TestOutputTable(t *testing.T) {
 	o := New(c)
 	buf := &bytes.Buffer{}
 	_ = o.OutputTable(buf, ta)
-	want, _ := ioutil.ReadFile(filepath.Join(testdataDir(), "plantuml_test_a.puml.golden"))
+	want, _ := os.ReadFile(filepath.Join(testdataDir(), "plantuml_test_a.puml.golden"))
 	got := buf.String()
 	if got != string(want) {
 		t.Errorf("got %v\nwant %v", got, string(want))
@@ -114,7 +113,7 @@ func TestOutputTableTemplate(t *testing.T) {
 	o := New(c)
 	buf := &bytes.Buffer{}
 	_ = o.OutputTable(buf, ta)
-	want, _ := ioutil.ReadFile(filepath.Join(testdataDir(), "plantuml_template_test_a.puml.golden"))
+	want, _ := os.ReadFile(filepath.Join(testdataDir(), "plantuml_template_test_a.puml.golden"))
 	got := buf.String()
 	if got != string(want) {
 		t.Errorf("got %v\nwant %v", got, string(want))

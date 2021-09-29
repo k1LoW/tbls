@@ -3,7 +3,7 @@ package plantuml
 import (
 	"fmt"
 	"io"
-	"io/ioutil"
+	"os"
 	"strings"
 	"text/template"
 
@@ -30,7 +30,7 @@ func New(c *config.Config) *PlantUML {
 
 func (p *PlantUML) schemaTemplate() (string, error) {
 	if len(p.config.Templates.PUML.Schema) > 0 {
-		tb, err := ioutil.ReadFile(p.config.Templates.PUML.Schema)
+		tb, err := os.ReadFile(p.config.Templates.PUML.Schema)
 		if err != nil {
 			return string(tb), errors.WithStack(err)
 		}
@@ -46,7 +46,7 @@ func (p *PlantUML) schemaTemplate() (string, error) {
 
 func (p *PlantUML) tableTemplate() (string, error) {
 	if len(p.config.Templates.PUML.Table) > 0 {
-		tb, err := ioutil.ReadFile(p.config.Templates.PUML.Table)
+		tb, err := os.ReadFile(p.config.Templates.PUML.Table)
 		if err != nil {
 			return string(tb), errors.WithStack(err)
 		}

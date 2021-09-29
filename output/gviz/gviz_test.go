@@ -2,7 +2,6 @@ package gviz
 
 import (
 	"bytes"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -35,7 +34,7 @@ func TestOutputSchema(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	want, _ := ioutil.ReadFile(filepath.Join(testdataDir(), "svg_test_schema.svg.golden"))
+	want, _ := os.ReadFile(filepath.Join(testdataDir(), "svg_test_schema.svg.golden"))
 	got := buf.String()
 	if got != string(want) {
 		t.Errorf("got %v\nwant %v", got, string(want))
@@ -64,7 +63,7 @@ func TestOutputTable(t *testing.T) {
 	o := New(c)
 	buf := &bytes.Buffer{}
 	_ = o.OutputTable(buf, ta)
-	want, _ := ioutil.ReadFile(filepath.Join(testdataDir(), "svg_test_a.svg.golden"))
+	want, _ := os.ReadFile(filepath.Join(testdataDir(), "svg_test_a.svg.golden"))
 	got := buf.String()
 	if got != string(want) {
 		t.Errorf("got %v\nwant %v", got, string(want))

@@ -22,7 +22,6 @@ package cmd
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -147,7 +146,7 @@ var rootCmd = &cobra.Command{
 			envs = append(envs, fmt.Sprintf("TBLS_DSN=%s", cfg.DSN.URL))
 			envs = append(envs, fmt.Sprintf("TBLS_CONFIG_PATH=%s", cfg.Path))
 			o := json.New(true)
-			tmpfile, err := ioutil.TempFile("", "TBLS_SCHEMA")
+			tmpfile, err := os.CreateTemp("", "TBLS_SCHEMA")
 			if err != nil {
 				return err
 			}
@@ -231,22 +230,26 @@ func getExtSubCmds(prefix string) ([]string, error) {
 		if strings.TrimSpace(p) == "" {
 			continue
 		}
-		files, err := ioutil.ReadDir(p)
+		entries, err := os.ReadDir(p)
 		if err != nil {
 			continue
 		}
-		for _, f := range files {
-			if f.IsDir() {
+		for _, e := range entries {
+			if e.IsDir() {
 				continue
 			}
-			if !strings.HasPrefix(f.Name(), fmt.Sprintf("%s-", prefix)) {
+			if !strings.HasPrefix(e.Name(), fmt.Sprintf("%s-", prefix)) {
 				continue
 			}
-			mode := f.Mode()
+			fi, err := e.Info()
+			if err != nil {
+				continue
+			}
+			mode := fi.Mode()
 			if mode&0111 == 0 {
 				continue
 			}
-			subCmds = append(subCmds, f.Name())
+			subCmds = append(subCmds, e.Name())
 		}
 	}
 	sortpkg.Strings(subCmds)

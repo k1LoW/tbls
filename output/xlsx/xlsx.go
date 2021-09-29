@@ -3,7 +3,7 @@ package xlsx
 import (
 	"fmt"
 	"io"
-	"io/ioutil"
+	"os"
 	"path/filepath"
 	"strings"
 	"unicode/utf8"
@@ -42,7 +42,7 @@ func (x *Xlsx) OutputSchema(wr io.Writer, s *schema.Schema) (e error) {
 			return err
 		}
 	}
-	tf, _ := ioutil.TempFile("", "tbls.xlsx")
+	tf, _ := os.CreateTemp("", "tbls.xlsx")
 	path := tf.Name()
 	defer func() {
 		err := tf.Close()
@@ -54,7 +54,7 @@ func (x *Xlsx) OutputSchema(wr io.Writer, s *schema.Schema) (e error) {
 	if err != nil {
 		return err
 	}
-	b, err := ioutil.ReadFile(filepath.Clean(path))
+	b, err := os.ReadFile(filepath.Clean(path))
 	if err != nil {
 		return err
 	}
@@ -75,7 +75,7 @@ func (x *Xlsx) OutputTable(wr io.Writer, t *schema.Table) (e error) {
 	if err != nil {
 		return err
 	}
-	tf, _ := ioutil.TempFile("", "tbls.xlsx")
+	tf, _ := os.CreateTemp("", "tbls.xlsx")
 	path := tf.Name()
 	defer func() {
 		err := tf.Close()
@@ -87,7 +87,7 @@ func (x *Xlsx) OutputTable(wr io.Writer, t *schema.Table) (e error) {
 	if err != nil {
 		return err
 	}
-	b, err := ioutil.ReadFile(filepath.Clean(path))
+	b, err := os.ReadFile(filepath.Clean(path))
 	if err != nil {
 		return err
 	}

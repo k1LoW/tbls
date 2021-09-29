@@ -3,7 +3,6 @@ package gviz
 import (
 	"bytes"
 	"io"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -97,7 +96,7 @@ func getFaceFunc(keyword string) (func(size float64) (font.Face, error), error) 
 		}
 	}
 
-	fb, err := ioutil.ReadFile(filepath.Clean(path))
+	fb, err := os.ReadFile(filepath.Clean(path))
 	if err != nil {
 		return faceFunc, errors.WithStack(err)
 	}

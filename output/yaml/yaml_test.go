@@ -3,7 +3,6 @@ package yaml
 import (
 	"bytes"
 	"database/sql"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -23,7 +22,7 @@ func TestOutputSchema(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	want, _ := ioutil.ReadFile(filepath.Join(testdataDir(), "yaml_test_schema.yaml.golden"))
+	want, _ := os.ReadFile(filepath.Join(testdataDir(), "yaml_test_schema.yaml.golden"))
 	got := buf.String()
 	if got != string(want) {
 		t.Errorf("got\n%v\nwant\n%v", got, string(want))
