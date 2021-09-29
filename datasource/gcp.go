@@ -12,6 +12,7 @@ import (
 	"github.com/k1LoW/tbls/drivers/bq"
 	"github.com/k1LoW/tbls/drivers/spanner"
 	"github.com/k1LoW/tbls/schema"
+	"google.golang.org/api/option"
 )
 
 // AnalyzeBigquery analyze `bq://`
@@ -42,49 +43,32 @@ func NewBigqueryClient(ctx context.Context, urlstr string) (*bigquery.Client, st
 	if err != nil {
 		return nil, "", "", err
 	}
-	values := u.Query()
-	err = setEnvGoogleApplicationCredentials(values)
-	if err != nil {
-		return nil, "", "", err
-	}
 
 	splitted := strings.Split(u.Path, "/")
-
 	projectID := u.Host
 	datasetID := splitted[1]
 
-	client, err := bigquery.NewClient(ctx, projectID)
+	values := u.Query()
+	if err := setEnvGoogleApplicationCredentials(values); err != nil {
+		return nil, "", "", err
+	}
+	var client *bigquery.Client
+	if os.Getenv("GOOGLE_APPLICATION_CREDENTIALS") == "" && os.Getenv("GOOGLE_APPLICATION_CREDENTIALS_JSON") != "" {
+		client, err = bigquery.NewClient(ctx, projectID, option.WithCredentialsJSON([]byte(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS_JSON"))))
+	} else {
+		client, err = bigquery.NewClient(ctx, projectID)
+	}
 	return client, projectID, datasetID, err
 }
 
 // AnalyzeSpanner analyze `spanner://`
 func AnalyzeSpanner(urlstr string) (*schema.Schema, error) {
 	s := &schema.Schema{}
-	u, err := url.Parse(urlstr)
-	if err != nil {
-		return s, err
-	}
-
-	values := u.Query()
-	err = setEnvGoogleApplicationCredentials(values)
-	if err != nil {
-		return s, err
-	}
-
-	splitted := strings.Split(u.Path, "/")
-	projectID := u.Host
-	instanceID := splitted[1]
-	databaseID := splitted[2]
-
-	db := fmt.Sprintf("projects/%s/instances/%s/databases/%s", projectID, instanceID, databaseID)
 	ctx := context.Background()
-	client, err := cloudspanner.NewClient(ctx, db)
-	if err != nil {
-		return s, err
-	}
+	client, db, err := NewSpannerClient(ctx, urlstr)
 	defer client.Close()
-	s.Name = db
 
+	s.Name = db
 	driver, err := spanner.New(ctx, client)
 	if err != nil {
 		return s, err
@@ -94,6 +78,35 @@ func AnalyzeSpanner(urlstr string) (*schema.Schema, error) {
 		return s, err
 	}
 	return s, nil
+}
+
+// NewSpannerClient returns new cloudspanner.Client
+func NewSpannerClient(ctx context.Context, urlstr string) (*cloudspanner.Client, string, error) {
+	u, err := url.Parse(urlstr)
+	if err != nil {
+		return nil, "", err
+	}
+
+	splitted := strings.Split(u.Path, "/")
+	projectID := u.Host
+	instanceID := splitted[1]
+	databaseID := splitted[2]
+	db := fmt.Sprintf("projects/%s/instances/%s/databases/%s", projectID, instanceID, databaseID)
+
+	values := u.Query()
+	if err := setEnvGoogleApplicationCredentials(values); err != nil {
+		return nil, "", err
+	}
+	var client *cloudspanner.Client
+	if os.Getenv("GOOGLE_APPLICATION_CREDENTIALS") == "" && os.Getenv("GOOGLE_APPLICATION_CREDENTIALS_JSON") != "" {
+		client, err = cloudspanner.NewClient(ctx, db, option.WithCredentialsJSON([]byte(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS_JSON"))))
+	} else {
+		client, err = cloudspanner.NewClient(ctx, db)
+	}
+	if err != nil {
+		return nil, "", err
+	}
+	return client, db, nil
 }
 
 func setEnvGoogleApplicationCredentials(values url.Values) error {

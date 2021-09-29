@@ -435,7 +435,7 @@ dsn: bq://project-id/dataset-id?creds=/path/to/google_application_credentials.js
 
 To set `GOOGLE_APPLICATION_CREDENTIALS` environment variable, you can use
 
-1. `export GOOGLE_APPLICATION_CREDENTIALS` or `env GOOGLE_APPLICATION_CREDENTIALS`
+1. `export GOOGLE_APPLICATION_CREDENTIALS` or `export GOOGLE_APPLICATION_CREDENTIALS_JSON`
 2. Add query to DSN
     - `?google_application_credentials=/path/to/client_secrets.json`
     - `?credentials=/path/to/client_secrets.json`
@@ -452,7 +452,7 @@ dsn: spanner://project-id/instance-id/dbname?creds=/path/to/google_application_c
 
 To set `GOOGLE_APPLICATION_CREDENTIALS` environment variable, you can use
 
-1. `export GOOGLE_APPLICATION_CREDENTIALS` or `env GOOGLE_APPLICATION_CREDENTIALS`
+1. `export GOOGLE_APPLICATION_CREDENTIALS` or `export GOOGLE_APPLICATION_CREDENTIALS_JSON`
 2. Add query to DSN
     - `?google_application_credentials=/path/to/client_secrets.json`
     - `?credentials=/path/to/client_secrets.json`
