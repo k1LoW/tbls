@@ -2,7 +2,6 @@ tbls
 dist/
 dbdoc/
 coverage.out
-*-packr.go
 testdb.sqlite3
 .envrc
 .go-version

@@ -139,15 +139,12 @@ sec:
 	gosec ./...
 
 build:
-	packr2
 	go build -ldflags="$(BUILD_LDFLAGS)"
-	packr2 clean
 
 depsdev:
 	go install github.com/linyows/git-semv/cmd/git-semv@v1.2.0
 	go install github.com/Songmu/ghch/cmd/ghch@v0.10.2
 	go get github.com/xo/usql@v0.9.3
-	go install github.com/gobuffalo/packr/v2/packr2@v2.8.1
 	go install github.com/Songmu/gocredits/cmd/gocredits@v0.2.0
 	go install github.com/securego/gosec/cmd/gosec@master
 
