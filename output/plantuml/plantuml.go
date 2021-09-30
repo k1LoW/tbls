@@ -1,30 +1,33 @@
 package plantuml
 
 import (
+	"embed"
 	"fmt"
 	"io"
 	"os"
 	"strings"
 	"text/template"
 
-	"github.com/gobuffalo/packr/v2"
 	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/output"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/pkg/errors"
 )
 
+//go:embed templates/*
+var tmpl embed.FS
+
 // PlantUML struct
 type PlantUML struct {
 	config *config.Config
-	box    *packr.Box
+	tmpl   embed.FS
 }
 
 // New return PlantUML
 func New(c *config.Config) *PlantUML {
 	return &PlantUML{
 		config: c,
-		box:    packr.New("plantuml", "./templates"),
+		tmpl:   tmpl,
 	}
 }
 
@@ -32,15 +35,15 @@ func (p *PlantUML) schemaTemplate() (string, error) {
 	if len(p.config.Templates.PUML.Schema) > 0 {
 		tb, err := os.ReadFile(p.config.Templates.PUML.Schema)
 		if err != nil {
-			return string(tb), errors.WithStack(err)
+			return "", errors.WithStack(err)
 		}
 		return string(tb), nil
 	} else {
-		ts, err := p.box.FindString("schema.puml.tmpl")
+		tb, err := p.tmpl.ReadFile("templates/schema.puml.tmpl")
 		if err != nil {
-			return ts, errors.WithStack(err)
+			return "", errors.WithStack(err)
 		}
-		return ts, nil
+		return string(tb), nil
 	}
 }
 
@@ -48,15 +51,15 @@ func (p *PlantUML) tableTemplate() (string, error) {
 	if len(p.config.Templates.PUML.Table) > 0 {
 		tb, err := os.ReadFile(p.config.Templates.PUML.Table)
 		if err != nil {
-			return string(tb), errors.WithStack(err)
+			return "", errors.WithStack(err)
 		}
 		return string(tb), nil
 	} else {
-		ts, err := p.box.FindString("table.puml.tmpl")
+		tb, err := p.tmpl.ReadFile("templates/table.puml.tmpl")
 		if err != nil {
-			return ts, errors.WithStack(err)
+			return "", errors.WithStack(err)
 		}
-		return ts, nil
+		return string(tb), nil
 	}
 }
 

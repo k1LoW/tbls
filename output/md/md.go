@@ -2,6 +2,7 @@ package md
 
 import (
 	"bytes"
+	"embed"
 	"fmt"
 	"io"
 	"os"
@@ -10,7 +11,6 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/gobuffalo/packr/v2"
 	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/output"
 	"github.com/k1LoW/tbls/schema"
@@ -21,11 +21,14 @@ import (
 
 var mdEscRep = strings.NewReplacer("`", "\\`")
 
+//go:embed templates/*
+var tmpl embed.FS
+
 // Md struct
 type Md struct {
 	config *config.Config
 	er     bool
-	box    *packr.Box
+	tmpl   embed.FS
 }
 
 // New return Md
@@ -33,7 +36,7 @@ func New(c *config.Config, er bool) *Md {
 	return &Md{
 		config: c,
 		er:     er,
-		box:    packr.New("md", "./templates"),
+		tmpl:   tmpl,
 	}
 }
 
@@ -41,15 +44,15 @@ func (m *Md) indexTemplate() (string, error) {
 	if len(m.config.Templates.MD.Index) > 0 {
 		tb, err := os.ReadFile(m.config.Templates.MD.Index)
 		if err != nil {
-			return string(tb), errors.WithStack(err)
+			return "", errors.WithStack(err)
 		}
 		return string(tb), nil
 	} else {
-		ts, err := m.box.FindString("index.md.tmpl")
+		tb, err := m.tmpl.ReadFile("templates/index.md.tmpl")
 		if err != nil {
-			return ts, errors.WithStack(err)
+			return "", errors.WithStack(err)
 		}
-		return ts, nil
+		return string(tb), nil
 	}
 }
 
@@ -57,15 +60,15 @@ func (m *Md) tableTemplate() (string, error) {
 	if len(m.config.Templates.MD.Table) > 0 {
 		tb, err := os.ReadFile(m.config.Templates.MD.Table)
 		if err != nil {
-			return string(tb), errors.WithStack(err)
+			return "", errors.WithStack(err)
 		}
 		return string(tb), nil
 	} else {
-		ts, err := m.box.FindString("table.md.tmpl")
+		tb, err := m.tmpl.ReadFile("templates/table.md.tmpl")
 		if err != nil {
-			return ts, errors.WithStack(err)
+			return "", errors.WithStack(err)
 		}
-		return ts, nil
+		return string(tb), nil
 	}
 }
 

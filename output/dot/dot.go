@@ -1,28 +1,31 @@
 package dot
 
 import (
+	"embed"
 	"io"
 	"os"
 	"text/template"
 
-	"github.com/gobuffalo/packr/v2"
 	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/output"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/pkg/errors"
 )
 
+//go:embed templates/*
+var tmpl embed.FS
+
 // Dot struct
 type Dot struct {
 	config *config.Config
-	box    *packr.Box
+	tmpl   embed.FS
 }
 
 // New return Dot
 func New(c *config.Config) *Dot {
 	return &Dot{
 		config: c,
-		box:    packr.New("dot", "./templates"),
+		tmpl:   tmpl,
 	}
 }
 
@@ -30,15 +33,15 @@ func (d *Dot) schemaTemplate() (string, error) {
 	if len(d.config.Templates.Dot.Schema) > 0 {
 		tb, err := os.ReadFile(d.config.Templates.Dot.Schema)
 		if err != nil {
-			return string(tb), errors.WithStack(err)
+			return "", errors.WithStack(err)
 		}
 		return string(tb), nil
 	} else {
-		ts, err := d.box.FindString("schema.dot.tmpl")
+		tb, err := d.tmpl.ReadFile("templates/schema.dot.tmpl")
 		if err != nil {
-			return ts, errors.WithStack(err)
+			return "", errors.WithStack(err)
 		}
-		return ts, nil
+		return string(tb), nil
 	}
 }
 
@@ -46,15 +49,15 @@ func (d *Dot) tableTemplate() (string, error) {
 	if len(d.config.Templates.Dot.Table) > 0 {
 		tb, err := os.ReadFile(d.config.Templates.Dot.Table)
 		if err != nil {
-			return string(tb), errors.WithStack(err)
+			return "", errors.WithStack(err)
 		}
 		return string(tb), nil
 	} else {
-		ts, err := d.box.FindString("table.dot.tmpl")
+		tb, err := d.tmpl.ReadFile("templates/table.dot.tmpl")
 		if err != nil {
-			return ts, errors.WithStack(err)
+			return "", errors.WithStack(err)
 		}
-		return ts, nil
+		return string(tb), nil
 	}
 }
 
