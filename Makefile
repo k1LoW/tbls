@@ -31,6 +31,8 @@ db: db_sqlite
 	usql my://root:mypass@localhost:33308/testdb -f testdata/ddl/mysql.sql
 	usql my://root:mypass@localhost:33308/testdb -c "CREATE DATABASE IF NOT EXISTS relations;"
 	usql my://root:mypass@localhost:33308/relations -f testdata/ddl/detect_relations.sql
+	usql my://root:mypass@localhost:33308/testdb -c "CREATE DATABASE IF NOT EXISTS relations_singular;"
+	usql my://root:mypass@localhost:33308/relations_singular -f testdata/ddl/detect_relations_singular.sql
 	usql maria://root:mypass@localhost:33309/testdb -f testdata/ddl/maria.sql
 	usql ms://SA:MSSQLServer-Passw0rd@localhost:11433/master -c "IF NOT EXISTS (SELECT * FROM sys.databases WHERE NAME = 'testdb') CREATE DATABASE testdb;"
 	usql ms://SA:MSSQLServer-Passw0rd@localhost:11433/testdb -f testdata/ddl/mssql.sql || true
@@ -49,6 +51,7 @@ doc: build doc_sqlite
 	./tbls doc my://root:mypass@localhost:33306/testdb -c testdata/test_tbls.yml -f sample/mysql56
 	./tbls doc my://root:mypass@localhost:33308/testdb -c testdata/test_tbls.yml -f sample/mysql
 	./tbls doc my://root:mypass@localhost:33308/relations -c testdata/test_tbls_detect_relations.yml -f sample/detect_relations
+	./tbls doc my://root:mypass@localhost:33308/relations_singular -c testdata/test_tbls_detect_relations_singular.yml -f sample/detect_relations_singular
 	./tbls doc maria://root:mypass@localhost:33309/testdb -c testdata/test_tbls.yml -f sample/mariadb
 	./tbls doc ms://SA:MSSQLServer-Passw0rd@localhost:11433/testdb -c testdata/test_tbls_mssql.yml -f sample/mssql
 	env AWS_ENDPOINT_URL=http://localhost:18000 ./tbls doc dynamodb://ap-northeast-1 -c testdata/test_tbls_dynamodb.yml -f sample/dynamodb
@@ -68,6 +71,7 @@ testdoc: build testdoc_sqlite
 	./tbls diff my://root:mypass@localhost:33306/testdb -c testdata/test_tbls.yml sample/mysql56
 	./tbls diff my://root:mypass@localhost:33308/testdb -c testdata/test_tbls.yml sample/mysql
 	./tbls diff my://root:mypass@localhost:33308/relations -c testdata/test_tbls_detect_relations.yml sample/detect_relations
+	./tbls diff my://root:mypass@localhost:33308/relations_singular -c testdata/test_tbls_detect_relations_singular.yml sample/detect_relations_singular
 	./tbls diff maria://root:mypass@localhost:33309/testdb -c testdata/test_tbls.yml sample/mariadb
 	./tbls diff ms://SA:MSSQLServer-Passw0rd@localhost:11433/testdb -c testdata/test_tbls_mssql.yml sample/mssql
 	env AWS_ENDPOINT_URL=http://localhost:18000 ./tbls diff dynamodb://ap-northeast-1 -c testdata/test_tbls_dynamodb.yml sample/dynamodb
