@@ -2,8 +2,9 @@ package config
 
 import (
 	"fmt"
-	"github.com/gertd/go-pluralize"
 	"strings"
+
+	"github.com/gertd/go-pluralize"
 )
 
 var (
@@ -28,6 +29,12 @@ func SelectNamingStrategy(name string) bool {
 	switch name {
 	case "":
 	// TODO: Add case if added naming strategy
+
+	case "singularTableName":
+		namingStrategy.ParentTable = singularTableParentTableNamer
+		namingStrategy.ParentColumn = singularTableParentColumnNamer
+		return true
+
 	default:
 		fmt.Printf("Naming strategy does not exist. strategy: %s\n", name)
 		return false
@@ -66,5 +73,18 @@ func defaultParentTableNamer(name string) string {
 }
 
 func defaultParentColumnNamer(name string) string {
+	return "id"
+}
+
+func singularTableParentTableNamer(name string) string {
+	index := strings.LastIndex(name, "_")
+
+	if index == -1 || name[index+1:] != "id" {
+		return ""
+	}
+	return pluralizeClient.Singular(name[:index])
+}
+
+func singularTableParentColumnNamer(name string) string {
 	return "id"
 }
