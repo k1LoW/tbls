@@ -348,8 +348,12 @@ func (c *Config) ModifySchema(s *schema.Schema) error {
 			return err
 		}
 	}
-	if c.DetectVirtualRelations.Enabled && SelectNamingStrategy(c.DetectVirtualRelations.Strategy) {
-		mergeDetectedRelations(s)
+	if c.DetectVirtualRelations.Enabled {
+		strategy, err := SelectNamingStrategy(c.DetectVirtualRelations.Strategy)
+		if err != nil {
+			return err
+		}
+		mergeDetectedRelations(s, strategy)
 	}
 	c.mergeDictFromSchema(s)
 	return nil
@@ -539,7 +543,7 @@ func mergeAdditionalComments(s *schema.Schema, comments []AdditionalComment) err
 	return nil
 }
 
-func mergeDetectedRelations(s *schema.Schema) {
+func mergeDetectedRelations(s *schema.Schema, strategy *NamingStrategy) {
 	var (
 		err          error
 		parentColumn *schema.Column
@@ -553,10 +557,10 @@ func mergeDetectedRelations(s *schema.Schema) {
 				Table:   t,
 			}
 
-			if relation.ParentTable, err = s.FindTableByName(ToParentTableName(c.Name)); err != nil {
+			if relation.ParentTable, err = s.FindTableByName(strategy.ParentTableName(c.Name)); err != nil {
 				continue
 			}
-			if parentColumn, err = relation.ParentTable.FindColumnByName(ToParentColumnName(c.Name)); err != nil {
+			if parentColumn, err = relation.ParentTable.FindColumnByName(strategy.ParentColumnName(c.Name)); err != nil {
 				continue
 			}
 

@@ -9,10 +9,6 @@ import (
 
 var (
 	pluralizeClient = pluralize.NewClient()
-	namingStrategy  = &NamingStrategy{
-		ParentTable:  defaultParentTableNamer,
-		ParentColumn: defaultParentColumnNamer,
-	}
 )
 
 // Namer is a function type which is given a string and return a string
@@ -25,22 +21,24 @@ type NamingStrategy struct {
 }
 
 // SelectNamingStrategy sets the naming strategy
-func SelectNamingStrategy(name string) bool {
+func SelectNamingStrategy(name string) (*NamingStrategy, error) {
 	switch name {
-	case "":
-	// TODO: Add case if added naming strategy
+	case "", "default":
+		// default
+		return &NamingStrategy{
+			ParentTable:  defaultParentTableNamer,
+			ParentColumn: defaultParentColumnNamer,
+		}, nil
 
 	case "singularTableName":
-		namingStrategy.ParentTable = singularTableParentTableNamer
-		namingStrategy.ParentColumn = singularTableParentColumnNamer
-		return true
+		return &NamingStrategy{
+			ParentTable:  singularTableParentTableNamer,
+			ParentColumn: singularTableParentColumnNamer,
+		}, nil
 
 	default:
-		fmt.Printf("Naming strategy does not exist. strategy: %s\n", name)
-		return false
+		return nil, fmt.Errorf("Naming strategy does not exist. strategy: %s\n", name)
 	}
-
-	return true
 }
 
 // ParentTableName alters the given name by Table
@@ -51,16 +49,6 @@ func (ns *NamingStrategy) ParentTableName(name string) string {
 // ParentColumnName alters the given name by Column
 func (ns *NamingStrategy) ParentColumnName(name string) string {
 	return ns.ParentColumn(name)
-}
-
-// ToParentTableName convert string to table name
-func ToParentTableName(name string) string {
-	return namingStrategy.ParentTableName(name)
-}
-
-// ToParentColumnName convert string to column name
-func ToParentColumnName(name string) string {
-	return namingStrategy.ParentColumnName(name)
 }
 
 func defaultParentTableNamer(name string) string {

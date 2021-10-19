@@ -562,10 +562,14 @@ func Test_mergeDetectedRelations(t *testing.T) {
 		Def:     "Detected Relation",
 		Table:   table,
 	}
-	if relation.ParentTable, err = s1.FindTableByName(ToParentTableName("user_id")); err != nil {
+	strategy, err := SelectNamingStrategy("default")
+	if err != nil {
 		t.Fatal(err)
 	}
-	if parentColumn, err = relation.ParentTable.FindColumnByName(ToParentColumnName("users")); err != nil {
+	if relation.ParentTable, err = s1.FindTableByName(strategy.ParentTableName("user_id")); err != nil {
+		t.Fatal(err)
+	}
+	if parentColumn, err = relation.ParentTable.FindColumnByName(strategy.ParentColumnName("users")); err != nil {
 		t.Fatal(err)
 	}
 	relation.Columns = append(relation.Columns, column)
@@ -608,7 +612,7 @@ func Test_mergeDetectedRelations(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			mergeDetectedRelations(tt.args.s)
+			mergeDetectedRelations(tt.args.s, strategy)
 			if !reflect.DeepEqual(tt.args.s.Relations, tt.want.r) {
 				t.Errorf("got: %#v\nwant: %#v", tt.args.s.Relations, tt.want.r)
 			}
