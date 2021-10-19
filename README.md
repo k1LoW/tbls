@@ -823,7 +823,30 @@ relations:
 ``` yaml
 detectVirtualRelations:
   enabled: true
+  strategy: default
 ```
+
+**`default` strategy:**
+
+``` yaml
+detectVirtualRelations:
+  enabled: true
+  strategy: default
+```
+
+- some_table.user_id -> users.id
+- some_table.post_id -> posts.id
+
+**`singularTableName` strategy:**
+
+``` yaml
+detectVirtualRelations:
+  enabled: true
+  strategy: singularTableName
+```
+
+- some_table.user_id -> user.id
+- some_table.post_id -> post.id
 
 ### Dictionary
 
