@@ -1,5 +1,18 @@
 # Changelog
 
+## [v1.51.0](https://github.com/k1LoW/tbls/compare/v1.50.0...v1.51.0) (2021-10-19)
+
+* Add new auto detection strategy for singular table name [#320](https://github.com/k1LoW/tbls/pull/320) ([suzuki](https://github.com/suzuki))
+* Replace packr2 to embed [#318](https://github.com/k1LoW/tbls/pull/318) ([k1LoW](https://github.com/k1LoW))
+* Support GOOGLE_APPLICATION_CREDENTIALS_JSON [#317](https://github.com/k1LoW/tbls/pull/317) ([k1LoW](https://github.com/k1LoW))
+* Replace io/ioutil [#316](https://github.com/k1LoW/tbls/pull/316) ([k1LoW](https://github.com/k1LoW))
+* Support darwin arm64 [#315](https://github.com/k1LoW/tbls/pull/315) ([k1LoW](https://github.com/k1LoW))
+* Fix pkg vulnerability [#313](https://github.com/k1LoW/tbls/pull/313) ([k1LoW](https://github.com/k1LoW))
+* Add config `format.number:` for display sequential numbers in table rows [#312](https://github.com/k1LoW/tbls/pull/312) ([k1LoW](https://github.com/k1LoW))
+* Add PostgreSQL SSL mode in README.md [#309](https://github.com/k1LoW/tbls/pull/309) ([kakisoft](https://github.com/kakisoft))
+* Bump up go and pkg version [#308](https://github.com/k1LoW/tbls/pull/308) ([k1LoW](https://github.com/k1LoW))
+* [BREAKING]Add a list of tables referenced by the view table. [#302](https://github.com/k1LoW/tbls/pull/302) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.50.0](https://github.com/k1LoW/tbls/compare/v1.49.7...v1.50.0) (2021-04-01)
 
 * Add requiredVersion to define a version constraint [#303](https://github.com/k1LoW/tbls/pull/303) ([k1LoW](https://github.com/k1LoW))
