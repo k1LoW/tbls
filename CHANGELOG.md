@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.52.0](https://github.com/k1LoW/tbls/compare/v1.51.0...v1.52.0) (2021-10-22)
+
+* [BREAKING] Use github.com/k1LoW/expand to expand environment variables [#324](https://github.com/k1LoW/tbls/pull/324) ([k1LoW](https://github.com/k1LoW))
+* Update Dockerfile [#323](https://github.com/k1LoW/tbls/pull/323) ([k1LoW](https://github.com/k1LoW))
+* Use "ghcr.io/k1low/tbls" instead of "k1low/tbls" [#322](https://github.com/k1LoW/tbls/pull/322) ([suzuki](https://github.com/suzuki))
+
 ## [v1.51.0](https://github.com/k1LoW/tbls/compare/v1.50.0...v1.51.0) (2021-10-19)
 
 * Add new auto detection strategy for singular table name [#320](https://github.com/k1LoW/tbls/pull/320) ([suzuki](https://github.com/suzuki))
