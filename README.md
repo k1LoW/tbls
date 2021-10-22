@@ -58,7 +58,7 @@ $ tbls doc postgres://dbuser:dbpass@hostname:5432/dbname
 Using docker image.
 
 ```console
-$ docker run --rm -v $PWD:/work k1low/tbls doc postgres://dbuser:dbpass@hostname:5432/dbname
+$ docker run --rm -v $PWD:/work ghcr.io/k1low/tbls doc postgres://dbuser:dbpass@hostname:5432/dbname
 ```
 
 ## Install
