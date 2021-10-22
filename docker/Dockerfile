@@ -1,16 +1,9 @@
 FROM alpine:latest
 
+RUN apk add --no-cache bash curl git
+
 ENTRYPOINT ["tbls"]
-WORKDIR /work
-VOLUME ["/work"]
+CMD [ "-h" ]
 
-RUN apk add bash curl
-
-SHELL ["/bin/bash", "-c"]
-
-RUN set -x \
-        && source <(curl -sL https://git.io/use-tbls) \
-        && which tbls | xargs -I{} mv {} /usr/local/bin/tbls \
-        && apk del bash curl
-
-SHELL ["/bin/sh", "-c"]
+COPY tbls_*.apk /tmp/
+RUN apk add --allow-untrusted /tmp/tbls_*.apk
