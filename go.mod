@@ -13,8 +13,9 @@ require (
 	github.com/gertd/go-pluralize v0.1.7
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/goccy/go-graphviz v0.0.9
-	github.com/goccy/go-yaml v1.8.9
+	github.com/goccy/go-yaml v1.9.3
 	github.com/google/go-cmp v0.5.5
+	github.com/k1LoW/expand v0.1.0
 	github.com/k1LoW/ffff v0.2.0
 	github.com/kylelemons/godebug v1.1.0 // indirect
 	github.com/labstack/gommon v0.3.0
