@@ -356,13 +356,6 @@ comments:
 dsn: my://dbuser:dbpass@hostname:3306/dbname
 ```
 
-`dsn:` can expand environment variables.
-
-``` yaml
-# .tbls.yml
-dsn: my://${MYSQL_USER}:${MYSQL_PASSWORD}@hostname:3306/${MYSQL_DATABASE}
-```
-
 #### Support Datasource
 
 tbls support following databases/datasources.
@@ -550,13 +543,6 @@ dsn:
 # .tbls.yml
 # Default is `dbdoc`
 docPath: doc/schema
-```
-
-`docPath:` can expand environment variables.
-
-``` yaml
-# .tbls.yml
-docPath: ${DOC_PATH}
 ```
 
 ### Table format
@@ -899,6 +885,15 @@ The `requiredVersion` setting defines a version constraint string. This defines 
 
 ```yaml
 requiredVersion: '>= 1.42, < 2'
+```
+
+## Expand environment variables
+
+All configuration values can be set by expanding the environment variables.
+
+``` yaml
+# .tbls.yml
+dsn: my://${MYSQL_USER}:${MYSQL_PASSWORD}@hostname:3306/${MYSQL_DATABASE}
 ```
 
 ## Output formats

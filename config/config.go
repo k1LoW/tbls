@@ -1,17 +1,15 @@
 package config
 
 import (
-	"bytes"
 	"fmt"
-	"html/template"
 	"net/url"
 	"os"
 	"path/filepath"
-	"regexp"
 	"strings"
 
 	"github.com/aquasecurity/go-version/pkg/version"
 	"github.com/goccy/go-yaml"
+	"github.com/k1LoW/expand"
 	"github.com/k1LoW/tbls/dict"
 	"github.com/k1LoW/tbls/schema"
 	ver "github.com/k1LoW/tbls/version"
@@ -304,19 +302,10 @@ func (c *Config) LoadConfigFile(path string) error {
 
 // LoadConfig load config from []byte
 func (c *Config) LoadConfig(in []byte) error {
-	err := yaml.Unmarshal(in, c)
+	err := yaml.Unmarshal(expand.ExpandenvYAMLBytes(in), c)
 	if err != nil {
 		return errors.Wrap(errors.WithStack(err), "failed to load config file")
 	}
-	c.DSN.URL, err = parseWithEnviron(c.DSN.URL)
-	if err != nil {
-		return errors.Wrap(errors.WithStack(err), "failed to load config file")
-	}
-	c.DocPath, err = parseWithEnviron(c.DocPath)
-	if err != nil {
-		return errors.Wrap(errors.WithStack(err), "failed to load config file")
-	}
-
 	c.MergedDict.Merge(c.Dict.Dump())
 	return nil
 }
@@ -577,27 +566,6 @@ func mergeDetectedRelations(s *schema.Schema, strategy *NamingStrategy) {
 			s.Relations = append(s.Relations, relation)
 		}
 	}
-}
-
-var (
-	re  = regexp.MustCompile(`\${\s*([^{}]+)\s*}`)
-	re2 = regexp.MustCompile(`{{([^\.])`)
-	re3 = regexp.MustCompile(`__TBLS__(.)`)
-)
-
-func parseWithEnviron(v string) (string, error) {
-	replaced := re.ReplaceAllString(v, "{{.$1}}")
-	replaced2 := re2.ReplaceAllString(replaced, "__TBLS__$1")
-	tmpl, err := template.New("config").Parse(replaced2)
-	if err != nil {
-		return "", err
-	}
-	buf := &bytes.Buffer{}
-	err = tmpl.Execute(buf, envMap())
-	if err != nil {
-		return "", err
-	}
-	return re3.ReplaceAllString(buf.String(), "{{$1"), nil
 }
 
 func envMap() map[string]string {
