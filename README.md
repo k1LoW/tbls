@@ -32,7 +32,7 @@ Key features of `tbls` are:
     - [DSN](#dsn)
       - [Support Datasource](#support-datasource)
     - [Document path](#document-path)
-    - [Table format](#table-format)
+    - [Document format](#document-format)
     - [ER diagram](#er-diagram)
     - [Filter tables](#filter-tables)
     - [Lint](#lint)
@@ -546,7 +546,7 @@ dsn:
 docPath: doc/schema
 ```
 
-### Table format
+### Document format
 
 `format:` is used to change the document format.
 
