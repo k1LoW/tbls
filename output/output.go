@@ -38,6 +38,7 @@ func Funcs(d *dict.Dict) map[string]interface{} {
 			r := strings.NewReplacer("\r\n", "\\n", "\n", "\\n", "\r", "\\n")
 			return r.Replace(text)
 		},
+		"show_only_first_paragraph": ShowOnlyFirstParagraph,
 		"lookup": func(text string) string {
 			return d.Lookup(text)
 		},
@@ -49,4 +50,17 @@ func Funcs(d *dict.Dict) map[string]interface{} {
 			return fmt.Sprintf("`%s`", strings.Join(m, "` `"))
 		},
 	}
+}
+
+func ShowOnlyFirstParagraph(text string) string {
+	if strings.Contains(text, "\r\n\r\n") {
+		splitted := strings.SplitN(text, "\r\n\r\n", 2)
+		return splitted[0]
+	}
+	if strings.Contains(text, "\r\r") {
+		splitted := strings.SplitN(text, "\r\r", 2)
+		return splitted[0]
+	}
+	splitted := strings.SplitN(text, "\n\n", 2)
+	return splitted[0]
 }

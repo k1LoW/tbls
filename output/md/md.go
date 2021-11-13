@@ -83,6 +83,7 @@ func (m *Md) OutputSchema(wr io.Writer, s *schema.Schema) error {
 	templateData["er"] = m.er
 	templateData["erFormat"] = m.config.ER.Format
 	templateData["baseUrl"] = m.config.BaseUrl
+	templateData["showOnlyFirstParagraph"] = m.config.Format.ShowOnlyFirstParagraph
 	err = tmpl.Execute(wr, templateData)
 	if err != nil {
 		return errors.WithStack(err)
@@ -449,11 +450,15 @@ func (m *Md) makeSchemaTemplateData(s *schema.Schema) map[string]interface{} {
 	)
 
 	for _, t := range s.Tables {
+		comment := t.Comment
+		if m.config.Format.ShowOnlyFirstParagraph {
+			comment = output.ShowOnlyFirstParagraph(comment)
+		}
 		tablesData = append(tablesData,
 			[]string{
 				fmt.Sprintf("[%s](%s%s.md)", t.Name, m.config.BaseUrl, t.Name),
 				fmt.Sprintf("%d", len(t.Columns)),
-				t.Comment,
+				comment,
 				t.Type,
 			},
 		)
