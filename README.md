@@ -562,6 +562,9 @@ format:
   # Display sequential numbers in table rows
   # Default is false
   number: false
+  # The comments for each table in the Tables section of the index page will display the text up to the first double newline (first paragraph).
+  # Default is false
+  showOnlyFirstParagraph: true
 ```
 
 ### ER diagram
