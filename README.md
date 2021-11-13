@@ -32,7 +32,7 @@ Key features of `tbls` are:
     - [DSN](#dsn)
       - [Support Datasource](#support-datasource)
     - [Document path](#document-path)
-    - [Table format](#table-format)
+    - [Document format](#document-format)
     - [ER diagram](#er-diagram)
     - [Filter tables](#filter-tables)
     - [Lint](#lint)
@@ -546,7 +546,7 @@ dsn:
 docPath: doc/schema
 ```
 
-### Table format
+### Document format
 
 `format:` is used to change the document format.
 
@@ -562,6 +562,9 @@ format:
   # Display sequential numbers in table rows
   # Default is false
   number: false
+  # The comments for each table in the Tables section of the index page will display the text up to the first double newline (first paragraph).
+  # Default is false
+  showOnlyFirstParagraph: true
 ```
 
 ### ER diagram

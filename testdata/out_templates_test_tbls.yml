@@ -2,7 +2,10 @@
 comments:
   -
     table: a
-    tableComment: TABLE A
+    tableComment: |-
+      TABLE A
+
+      THIS IS TABLE A
     columnComments:
       a: COLUMN A
     indexComments:

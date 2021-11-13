@@ -6,34 +6,38 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/google/go-cmp/cmp"
 	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/schema"
 )
 
 var tests = []struct {
-	name     string
-	gotFile  string
-	wantFile string
-	adjust   bool
-	number   bool
+	name                   string
+	adjust                 bool
+	number                 bool
+	showOnlyFirstParagraph bool
+	gotFile                string
+	wantFile               string
 }{
-	{"README.md", "README.md", "md_test_README.md.golden", false, false},
-	{"a.md", "a.md", "md_test_a.md.golden", false, false},
-	{"--adjust option", "README.md", "md_test_README.md.adjust.golden", true, false},
-	{"number", "README.md", "md_test_README.md.number.golden", false, true},
+	{"README.md", false, false, false, "README.md", "md_test_README.md.golden"},
+	{"a.md", false, false, false, "a.md", "md_test_a.md.golden"},
+	{"--adjust option", true, false, false, "README.md", "md_test_README.md.adjust.golden"},
+	{"number", false, true, false, "README.md", "md_test_README.md.number.golden"},
 }
 
 var testsTemplate = []struct {
-	name     string
-	gotFile  string
-	wantFile string
-	adjust   bool
-	number   bool
+	name                   string
+	adjust                 bool
+	number                 bool
+	showOnlyFirstParagraph bool
+	gotFile                string
+	wantFile               string
 }{
-	{"README.md", "README.md", "md_template_test_README.md.golden", false, false},
-	{"a.md", "a.md", "md_template_test_a.md.golden", false, false},
-	{"--adjust option", "README.md", "md_template_test_README.md.adjust.golden", true, false},
-	{"number", "README.md", "md_template_test_README.md.number.golden", false, true},
+	{"README.md", false, false, false, "README.md", "md_template_test_README.md.golden"},
+	{"a.md", false, false, false, "a.md", "md_template_test_a.md.golden"},
+	{"--adjust option", true, false, false, "README.md", "md_template_test_README.md.adjust.golden"},
+	{"number", false, true, false, "README.md", "md_template_test_README.md.number.golden"},
+	{"showOnlyFirstParagraph", false, true, true, "README.md", "md_template_test_README.md.first_para.golden"},
 }
 
 func TestOutput(t *testing.T) {
@@ -56,6 +60,7 @@ func TestOutput(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
+		c.Format.ShowOnlyFirstParagraph = tt.showOnlyFirstParagraph
 		err = Output(s, c, force)
 		if err != nil {
 			t.Error(err)
@@ -68,8 +73,8 @@ func TestOutput(t *testing.T) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		if string(got) != string(want) {
-			t.Errorf("got %v\nwant %v", string(got), string(want))
+		if diff := cmp.Diff(string(got), string(want), nil); diff != "" {
+			t.Errorf("diff with %s:\n %s", tt.wantFile, diff)
 		}
 	}
 }
@@ -97,6 +102,7 @@ func TestOutputTemplate(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
+		c.Format.ShowOnlyFirstParagraph = tt.showOnlyFirstParagraph
 		err = Output(s, c, force)
 		if err != nil {
 			t.Error(err)
@@ -109,8 +115,8 @@ func TestOutputTemplate(t *testing.T) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		if string(got) != string(want) {
-			t.Errorf("got %v\nwant %v", string(got), string(want))
+		if diff := cmp.Diff(string(got), string(want), nil); diff != "" {
+			t.Errorf("diff with %s:\n %s", tt.wantFile, diff)
 		}
 	}
 }
