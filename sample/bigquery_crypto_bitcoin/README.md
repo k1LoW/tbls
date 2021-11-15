@@ -12,6 +12,7 @@
 | [inputs](inputs.md) | 14 | Inputs from all transactions.<br>Data is exported using https://github.com/blockchain-etl/bitcoin-etl | VIEW |
 | [outputs](outputs.md) | 11 | Outputs from all transactions.<br>Data is exported using https://github.com/blockchain-etl/bitcoin-etl | VIEW |
 | [transactions](transactions.md) | 34 | All transactions.<br>Data is exported using https://github.com/blockchain-etl/bitcoin-etl<br> | TABLE |
+| [transactions-2021-10-28T23_18_45](transactions-2021-10-28T23_18_45.md) | 34 |  | SNAPSHOT |
 
 ## Relations
 
