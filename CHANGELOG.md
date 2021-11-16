@@ -1,5 +1,10 @@
 # Changelog
 
+## [v1.53.0](https://github.com/k1LoW/tbls/compare/v1.52.0...v1.53.0) (2021-11-16)
+
+* Update packages and Go [#326](https://github.com/k1LoW/tbls/pull/326) ([k1LoW](https://github.com/k1LoW))
+* Add `format.showOnlyFirstParagraph:` [#325](https://github.com/k1LoW/tbls/pull/325) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.52.0](https://github.com/k1LoW/tbls/compare/v1.51.0...v1.52.0) (2021-10-22)
 
 * [BREAKING] Use github.com/k1LoW/expand to expand environment variables [#324](https://github.com/k1LoW/tbls/pull/324) ([k1LoW](https://github.com/k1LoW))
