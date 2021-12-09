@@ -85,13 +85,14 @@ type AdditionalRelation struct {
 
 // AdditionalComment is the struct for table relation from yaml
 type AdditionalComment struct {
-	Table              string            `yaml:"table"`
-	TableComment       string            `yaml:"tableComment,omitempty"`
-	ColumnComments     map[string]string `yaml:"columnComments,omitempty"`
-	IndexComments      map[string]string `yaml:"indexComments,omitempty"`
-	ConstraintComments map[string]string `yaml:"constraintComments,omitempty"`
-	TriggerComments    map[string]string `yaml:"triggerComments,omitempty"`
-	Labels             []string          `yaml:"labels,omitempty"`
+	Table              string              `yaml:"table"`
+	TableComment       string              `yaml:"tableComment,omitempty"`
+	ColumnComments     map[string]string   `yaml:"columnComments,omitempty"`
+	ColumnLabels       map[string][]string `yaml:"columnLabels,omitempty"`
+	IndexComments      map[string]string   `yaml:"indexComments,omitempty"`
+	ConstraintComments map[string]string   `yaml:"constraintComments,omitempty"`
+	TriggerComments    map[string]string   `yaml:"triggerComments,omitempty"`
+	Labels             []string            `yaml:"labels,omitempty"`
 }
 
 type DetectVirtualRelations struct {
@@ -507,6 +508,15 @@ func mergeAdditionalComments(s *schema.Schema, comments []AdditionalComment) err
 				return errors.Wrap(err, "failed to add column comment")
 			}
 			column.Comment = comment
+		}
+		for c, labels := range c.ColumnLabels {
+			column, err := table.FindColumnByName(c)
+			if err != nil {
+				return errors.Wrap(err, "failed to add column comment")
+			}
+			for _, l := range labels {
+				column.Labels = column.Labels.Merge(l)
+			}
 		}
 		for i, comment := range c.IndexComments {
 			index, err := table.FindIndexByName(i)

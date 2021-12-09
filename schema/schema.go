@@ -66,6 +66,7 @@ type Column struct {
 	Default         sql.NullString `json:"default"`
 	Comment         string         `json:"comment"`
 	ExtraDef        string         `json:"extra_def,omitempty" yaml:"extraDef,omitempty"`
+	Labels          Labels         `json:"labels,omitempty"`
 	ParentRelations []*Relation    `json:"-"`
 	ChildRelations  []*Relation    `json:"-"`
 }

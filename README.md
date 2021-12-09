@@ -348,6 +348,19 @@ comments:
       - privacy data
 ```
 
+**label columns:**
+
+``` yaml
+# .tbls.yml
+comments:
+  -
+    table: users
+    columnLabels:
+      email:
+        - secure
+        - encrypted
+```
+
 ### DSN
 
 `dsn:` (Data Source Name) is used to connect to database.
