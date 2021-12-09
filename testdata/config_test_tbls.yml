@@ -26,5 +26,9 @@ comments:
     table: posts
     columnComments:
       title: post title
+    columnLabels:
+      title:
+        - string
+        - required
     triggerComments:
       update_posts_title: update posts title

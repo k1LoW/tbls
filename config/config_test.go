@@ -37,8 +37,8 @@ func TestLoadDefault(t *testing.T) {
 }
 
 func TestLoadConfigFile(t *testing.T) {
-	_ = os.Setenv("TBLS_TEST_PG_PASS", "pgpass")
-	_ = os.Setenv("TBLS_TEST_PG_DOC_PATH", "sample/pg")
+	t.Setenv("TBLS_TEST_PG_PASS", "pgpass")
+	t.Setenv("TBLS_TEST_PG_DOC_PATH", "sample/pg")
 	configFilepath := filepath.Join(testdataDir(), "config_test_tbls_2.yml")
 	config, err := New()
 	if err != nil {
@@ -392,6 +392,9 @@ func TestModifySchema(t *testing.T) {
 	title, _ := posts.FindColumnByName("title")
 	if want := "post title"; title.Comment != want {
 		t.Errorf("got %v\nwant %v", title.Comment, want)
+	}
+	if want := 2; len(title.Labels) != want {
+		t.Errorf("got %v\nwant %v", len(title.Labels), want)
 	}
 	if want := 2; len(s.Tables) != want {
 		t.Errorf("got %v\nwant %v", len(s.Tables), want)
