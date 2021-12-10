@@ -1,5 +1,10 @@
 # Changelog
 
+## [v1.54.0](https://github.com/k1LoW/tbls/compare/v1.53.0...v1.54.0) (2021-12-10)
+
+* [BREAKING] If it has labels, show the labels in the markdown table [#328](https://github.com/k1LoW/tbls/pull/328) ([k1LoW](https://github.com/k1LoW))
+* Add `comments.ColumnLabels:` [#327](https://github.com/k1LoW/tbls/pull/327) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.53.0](https://github.com/k1LoW/tbls/compare/v1.52.0...v1.53.0) (2021-11-16)
 
 * Update packages and Go [#326](https://github.com/k1LoW/tbls/pull/326) ([k1LoW](https://github.com/k1LoW))
