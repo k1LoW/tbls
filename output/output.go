@@ -42,13 +42,7 @@ func Funcs(d *dict.Dict) map[string]interface{} {
 		"lookup": func(text string) string {
 			return d.Lookup(text)
 		},
-		"label_join": func(labels schema.Labels) string {
-			m := []string{}
-			for _, l := range labels {
-				m = append(m, l.Name)
-			}
-			return fmt.Sprintf("`%s`", strings.Join(m, "` `"))
-		},
+		"label_join": LabelJoin,
 	}
 }
 
@@ -63,4 +57,15 @@ func ShowOnlyFirstParagraph(text string) string {
 	}
 	splitted := strings.SplitN(text, "\n\n", 2)
 	return splitted[0]
+}
+
+func LabelJoin(labels schema.Labels) string {
+	if len(labels) == 0 {
+		return ""
+	}
+	m := []string{}
+	for _, l := range labels {
+		m = append(m, l.Name)
+	}
+	return fmt.Sprintf("`%s`", strings.Join(m, "` `"))
 }

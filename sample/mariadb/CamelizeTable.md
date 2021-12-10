@@ -18,7 +18,7 @@ CREATE TABLE `CamelizeTable` (
 ## Columns
 
 | Name | Type | Default | Nullable | Extra Definition | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | --------------- | -------- | ------- | ------- |
+| ---- | ---- | ------- | -------- | ---------------- | -------- | ------- | ------- |
 | id | bigint(20) |  | false | auto_increment |  |  |  |
 | created | datetime |  | false |  |  |  |  |
 

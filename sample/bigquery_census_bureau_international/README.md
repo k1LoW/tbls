@@ -18,16 +18,16 @@ See the GCP Marketplace listing for more details and sample queries: https://con
 
 ## Tables
 
-| Name | Columns | Description | Type |
-| ---- | ------- | ------- | ---- |
-| [age_specific_fertility_rates](age_specific_fertility_rates.md) | 13 |  | TABLE |
-| [birth_death_growth_rates](birth_death_growth_rates.md) | 8 |  | TABLE |
-| [country_names_area](country_names_area.md) | 3 |  | TABLE |
-| [midyear_population](midyear_population.md) | 4 |  | TABLE |
-| [midyear_population_5yr_age_sex](midyear_population_5yr_age_sex.md) | 10 |  | TABLE |
-| [midyear_population_age_sex](midyear_population_age_sex.md) | 106 |  | TABLE |
-| [midyear_population_agespecific](midyear_population_agespecific.md) | 6 |  | TABLE |
-| [mortality_life_expectancy](mortality_life_expectancy.md) | 15 |  | TABLE |
+| Name | Columns | Description | Type | Labels |
+| ---- | ------- | ------- | ---- | ------ |
+| [age_specific_fertility_rates](age_specific_fertility_rates.md) | 13 |  | TABLE | `freebqcovid:` |
+| [birth_death_growth_rates](birth_death_growth_rates.md) | 8 |  | TABLE | `freebqcovid:` |
+| [country_names_area](country_names_area.md) | 3 |  | TABLE | `freebqcovid:` |
+| [midyear_population](midyear_population.md) | 4 |  | TABLE | `freebqcovid:` |
+| [midyear_population_5yr_age_sex](midyear_population_5yr_age_sex.md) | 10 |  | TABLE | `freebqcovid:` |
+| [midyear_population_age_sex](midyear_population_age_sex.md) | 106 |  | TABLE | `freebqcovid:` |
+| [midyear_population_agespecific](midyear_population_agespecific.md) | 6 |  | TABLE | `freebqcovid:` |
+| [mortality_life_expectancy](mortality_life_expectancy.md) | 15 |  | TABLE | `freebqcovid:` |
 
 ## Relations
 

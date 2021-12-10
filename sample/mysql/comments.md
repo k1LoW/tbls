@@ -33,7 +33,7 @@ CREATE TABLE `comments` (
 ## Columns
 
 | Name | Type | Default | Nullable | Extra Definition | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | --------------- | -------- | ------- | ------- |
+| ---- | ---- | ------- | -------- | ---------------- | -------- | ------- | ------- |
 | id | bigint |  | false | auto_increment | [logs](logs.md) |  |  |
 | post_id | bigint |  | false |  | [comment_stars](comment_stars.md) | [posts](posts.md) |  |
 | user_id | int |  | false |  | [comment_stars](comment_stars.md) | [users](users.md) |  |

@@ -64,3 +64,11 @@ comments:
       comment_user: comments.users.username
       created: comments.created
       updated: comments.updated
+  -
+    table: users
+    columnLabels:
+      email:
+        - secure
+      password:
+        - secure
+        - encrypted

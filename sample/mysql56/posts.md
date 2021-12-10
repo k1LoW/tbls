@@ -32,7 +32,7 @@ CREATE TABLE `posts` (
 ## Columns
 
 | Name | Type | Default | Nullable | Extra Definition | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | --------------- | -------- | ------- | ------- |
+| ---- | ---- | ------- | -------- | ---------------- | -------- | ------- | ------- |
 | id | bigint(20) |  | false | auto_increment | [comments](comments.md) [logs](logs.md) |  |  |
 | user_id | int(11) |  | false |  |  | [users](users.md) |  |
 | title | varchar(255) | Untitled | false |  |  |  |  |

@@ -58,6 +58,7 @@ func (c Column) MarshalYAML() ([]byte, error) {
 			Nullable        bool        `yaml:"nullable"`
 			Default         string      `yaml:"default"`
 			ExtraDef        string      `yaml:"extraDef,omitempty"`
+			Labels          Labels      `yaml:"labels,omitempty"`
 			Comment         string      `yaml:"comment"`
 			ParentRelations []*Relation `yaml:"-"`
 			ChildRelations  []*Relation `yaml:"-"`
@@ -68,6 +69,7 @@ func (c Column) MarshalYAML() ([]byte, error) {
 			Default:         c.Default.String,
 			Comment:         c.Comment,
 			ExtraDef:        c.ExtraDef,
+			Labels:          c.Labels,
 			ParentRelations: c.ParentRelations,
 			ChildRelations:  c.ChildRelations,
 		})
@@ -78,6 +80,7 @@ func (c Column) MarshalYAML() ([]byte, error) {
 		Nullable        bool        `yaml:"nullable"`
 		Default         *string     `yaml:"default"`
 		ExtraDef        string      `yaml:"extraDef,omitempty"`
+		Labels          Labels      `yaml:"labels,omitempty"`
 		Comment         string      `yaml:"comment"`
 		ParentRelations []*Relation `yaml:"-"`
 		ChildRelations  []*Relation `yaml:"-"`
@@ -87,6 +90,7 @@ func (c Column) MarshalYAML() ([]byte, error) {
 		Nullable:        c.Nullable,
 		Default:         nil,
 		ExtraDef:        c.ExtraDef,
+		Labels:          c.Labels,
 		Comment:         c.Comment,
 		ParentRelations: c.ParentRelations,
 		ChildRelations:  c.ChildRelations,
@@ -165,6 +169,7 @@ func (c *Column) UnmarshalYAML(data []byte) error {
 		Default         *string     `yaml:"default"`
 		Comment         string      `yaml:"comment"`
 		ExtraDef        string      `yaml:"extraDef,omitempty"`
+		Labels          Labels      `yaml:"labels,omitempty"`
 		ParentRelations []*Relation `yaml:"-"`
 		ChildRelations  []*Relation `yaml:"-"`
 	}{}
@@ -184,6 +189,7 @@ func (c *Column) UnmarshalYAML(data []byte) error {
 		c.Default.String = ""
 	}
 	c.ExtraDef = s.ExtraDef
+	c.Labels = s.Labels
 	c.Comment = s.Comment
 	return nil
 }

@@ -23,7 +23,7 @@ CREATE TABLE `comment_stars` (
 ## Columns
 
 | Name | Type | Default | Nullable | Extra Definition | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | --------------- | -------- | ------- | ------- |
+| ---- | ---- | ------- | -------- | ---------------- | -------- | ------- | ------- |
 | id | bigint |  | false | auto_increment | [logs](logs.md) |  |  |
 | user_id | int |  | false |  |  | [users](users.md) |  |
 | comment_post_id | bigint |  | false |  |  |  |  |
