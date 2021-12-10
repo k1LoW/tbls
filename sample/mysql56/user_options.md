@@ -24,7 +24,7 @@ CREATE TABLE `user_options` (
 ## Columns
 
 | Name | Type | Default | Nullable | Extra Definition | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | --------------- | -------- | ------- | ------- |
+| ---- | ---- | ------- | -------- | ---------------- | -------- | ------- | ------- |
 | user_id | int(11) |  | false |  |  | [users](users.md) |  |
 | show_email | tinyint(1) | 0 | false |  |  |  |  |
 | created | timestamp | CURRENT_TIMESTAMP | false | on update CURRENT_TIMESTAMP |  |  |  |

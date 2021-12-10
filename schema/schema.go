@@ -177,6 +177,15 @@ L:
 	return nil, errors.Errorf("not found relation '%v, %v'", cs, pcs)
 }
 
+func (s *Schema) HasTableWithLabels() bool {
+	for _, t := range s.Tables {
+		if len(t.Labels) > 0 {
+			return true
+		}
+	}
+	return false
+}
+
 // FindColumnByName find column by column name
 func (t *Table) FindColumnByName(name string) (*Column, error) {
 	for _, c := range t.Columns {
@@ -233,6 +242,15 @@ func (t *Table) FindConstrainsByColumnName(name string) []*Constraint {
 func (t *Table) HasColumnWithExtraDef() bool {
 	for _, c := range t.Columns {
 		if c.ExtraDef != "" {
+			return true
+		}
+	}
+	return false
+}
+
+func (t *Table) HasColumnWithLabels() bool {
+	for _, c := range t.Columns {
+		if len(c.Labels) > 0 {
 			return true
 		}
 	}

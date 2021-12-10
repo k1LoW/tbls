@@ -19,7 +19,7 @@ CREATE TABLE `hyphen-table` (
 ## Columns
 
 | Name | Type | Default | Nullable | Extra Definition | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | --------------- | -------- | ------- | ------- |
+| ---- | ---- | ------- | -------- | ---------------- | -------- | ------- | ------- |
 | id | bigint(20) |  | false | auto_increment |  |  |  |
 | hyphen-column | text |  | false |  |  |  |  |
 | created | datetime |  | false |  |  |  |  |

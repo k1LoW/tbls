@@ -438,15 +438,22 @@ func (m *Md) makeSchemaTemplateData(s *schema.Schema) map[string]interface{} {
 	adjust := m.config.Format.Adjust
 
 	tablesData := [][]string{}
+	tablesHeader := []string{
+		m.config.MergedDict.Lookup("Name"),
+		m.config.MergedDict.Lookup("Columns"),
+		m.config.MergedDict.Lookup("Comment"),
+		m.config.MergedDict.Lookup("Type"),
+	}
+	tablesHeaderLine := []string{"----", "-------", "-------", "----"}
+
+	if s.HasTableWithLabels() {
+		tablesHeader = append(tablesHeader, m.config.MergedDict.Lookup("Labels"))
+		tablesHeaderLine = append(tablesHeaderLine, "------")
+	}
 
 	tablesData = append(tablesData,
-		[]string{
-			m.config.MergedDict.Lookup("Name"),
-			m.config.MergedDict.Lookup("Columns"),
-			m.config.MergedDict.Lookup("Comment"),
-			m.config.MergedDict.Lookup("Type"),
-		},
-		[]string{"----", "-------", "-------", "----"},
+		tablesHeader,
+		tablesHeaderLine,
 	)
 
 	for _, t := range s.Tables {
@@ -454,14 +461,16 @@ func (m *Md) makeSchemaTemplateData(s *schema.Schema) map[string]interface{} {
 		if m.config.Format.ShowOnlyFirstParagraph {
 			comment = output.ShowOnlyFirstParagraph(comment)
 		}
-		tablesData = append(tablesData,
-			[]string{
-				fmt.Sprintf("[%s](%s%s.md)", t.Name, m.config.BaseUrl, t.Name),
-				fmt.Sprintf("%d", len(t.Columns)),
-				comment,
-				t.Type,
-			},
-		)
+		data := []string{
+			fmt.Sprintf("[%s](%s%s.md)", t.Name, m.config.BaseUrl, t.Name),
+			fmt.Sprintf("%d", len(t.Columns)),
+			comment,
+			t.Type,
+		}
+		if s.HasTableWithLabels() {
+			data = append(data, output.LabelJoin(t.Labels))
+		}
+		tablesData = append(tablesData, data)
 	}
 
 	if number {
@@ -487,34 +496,32 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 
 	// Columns
 	columnsData := [][]string{}
-	if t.HasColumnWithExtraDef() {
-		columnsData = append(columnsData,
-			[]string{
-				m.config.MergedDict.Lookup("Name"),
-				m.config.MergedDict.Lookup("Type"),
-				m.config.MergedDict.Lookup("Default"),
-				m.config.MergedDict.Lookup("Nullable"),
-				m.config.MergedDict.Lookup("Extra Definition"),
-				m.config.MergedDict.Lookup("Children"),
-				m.config.MergedDict.Lookup("Parents"),
-				m.config.MergedDict.Lookup("Comment"),
-			},
-			[]string{"----", "----", "-------", "--------", "---------------", "--------", "-------", "-------"},
-		)
-	} else {
-		columnsData = append(columnsData,
-			[]string{
-				m.config.MergedDict.Lookup("Name"),
-				m.config.MergedDict.Lookup("Type"),
-				m.config.MergedDict.Lookup("Default"),
-				m.config.MergedDict.Lookup("Nullable"),
-				m.config.MergedDict.Lookup("Children"),
-				m.config.MergedDict.Lookup("Parents"),
-				m.config.MergedDict.Lookup("Comment"),
-			},
-			[]string{"----", "----", "-------", "--------", "--------", "-------", "-------"},
-		)
+	columnsHeader := []string{
+		m.config.MergedDict.Lookup("Name"),
+		m.config.MergedDict.Lookup("Type"),
+		m.config.MergedDict.Lookup("Default"),
+		m.config.MergedDict.Lookup("Nullable"),
 	}
+	columnsHeaderLine := []string{
+		"----", "----", "-------", "--------",
+	}
+	if t.HasColumnWithExtraDef() {
+		columnsHeader = append(columnsHeader, m.config.MergedDict.Lookup("Extra Definition"))
+		columnsHeaderLine = append(columnsHeaderLine, "----------------")
+	}
+	columnsHeader = append(columnsHeader,
+		m.config.MergedDict.Lookup("Children"),
+		m.config.MergedDict.Lookup("Parents"),
+		m.config.MergedDict.Lookup("Comment"),
+	)
+	columnsHeaderLine = append(columnsHeaderLine, "--------", "-------", "-------")
+	if t.HasColumnWithLabels() {
+		columnsHeader = append(columnsHeader, m.config.MergedDict.Lookup("Labels"))
+		columnsHeaderLine = append(columnsHeaderLine, "------")
+	}
+
+	columnsData = append(columnsData, columnsHeader, columnsHeaderLine)
+
 	for _, c := range t.Columns {
 		childRelations := []string{}
 		cEncountered := map[string]bool{}
@@ -534,30 +541,25 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 			parentRelations = append(parentRelations, fmt.Sprintf("[%s](%s%s.md)", r.ParentTable.Name, m.config.BaseUrl, r.ParentTable.Name))
 			pEncountered[r.ParentTable.Name] = true
 		}
-		if t.HasColumnWithExtraDef() {
-			data := []string{
-				c.Name,
-				c.Type,
-				c.Default.String,
-				fmt.Sprintf("%v", c.Nullable),
-				mdEscRep.Replace(c.ExtraDef),
-				strings.Join(childRelations, " "),
-				strings.Join(parentRelations, " "),
-				c.Comment,
-			}
-			columnsData = append(columnsData, data)
-		} else {
-			data := []string{
-				c.Name,
-				c.Type,
-				c.Default.String,
-				fmt.Sprintf("%v", c.Nullable),
-				strings.Join(childRelations, " "),
-				strings.Join(parentRelations, " "),
-				c.Comment,
-			}
-			columnsData = append(columnsData, data)
+
+		data := []string{
+			c.Name,
+			c.Type,
+			c.Default.String,
+			fmt.Sprintf("%v", c.Nullable),
 		}
+		if t.HasColumnWithExtraDef() {
+			data = append(data, mdEscRep.Replace(c.ExtraDef))
+		}
+		if t.HasColumnWithLabels() {
+			data = append(data, output.LabelJoin(c.Labels))
+		}
+		data = append(data,
+			strings.Join(childRelations, " "),
+			strings.Join(parentRelations, " "),
+			c.Comment,
+		)
+		columnsData = append(columnsData, data)
 	}
 
 	// Constraints

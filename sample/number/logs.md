@@ -25,7 +25,7 @@ CREATE TABLE `logs` (
 ## Columns
 
 | # | Name | Type | Default | Nullable | Extra Definition | Children | Parents | Comment |
-| - | ---- | ---- | ------- | -------- | --------------- | -------- | ------- | ------- |
+| - | ---- | ---- | ------- | -------- | ---------------- | -------- | ------- | ------- |
 | 1 | id | bigint |  | false | auto_increment |  |  |  |
 | 2 | user_id | int |  | false |  |  |  |  |
 | 3 | post_id | bigint |  | true |  |  |  |  |

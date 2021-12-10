@@ -29,7 +29,7 @@ CREATE TABLE `comment` (
 ## Columns
 
 | Name | Type | Default | Nullable | Extra Definition | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | --------------- | -------- | ------- | ------- |
+| ---- | ---- | ------- | -------- | ---------------- | -------- | ------- | ------- |
 | id | bigint |  | false | auto_increment | [log](log.md) |  |  |
 | post_id | bigint |  | false |  |  | [post](post.md) |  |
 | user_id | int |  | false |  |  | [user](user.md) |  |

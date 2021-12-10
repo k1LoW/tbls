@@ -26,7 +26,7 @@ CREATE TABLE `users` (
 ## Columns
 
 | Name | Type | Default | Nullable | Extra Definition | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | --------------- | -------- | ------- | ------- |
+| ---- | ---- | ------- | -------- | ---------------- | -------- | ------- | ------- |
 | id | int |  | false | auto_increment | [user_options](user_options.md) [comment_stars](comment_stars.md) [comments](comments.md) [logs](logs.md) [posts](posts.md) |  |  |
 | username | varchar(50) |  | false |  |  |  |  |
 | password | varchar(50) |  | false |  |  |  |  |
