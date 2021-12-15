@@ -90,10 +90,10 @@ $ brew install k1LoW/tap/tbls
 
 Download binary from [releases page](https://github.com/k1LoW/tbls/releases)
 
-**go get:**
+**go insall:**
 
 ```console
-$ go get github.com/k1LoW/tbls
+$ go insall github.com/k1LoW/tbls@main
 ```
 
 **docker:**
