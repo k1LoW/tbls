@@ -1,5 +1,10 @@
 # Changelog
 
+## [v1.54.1](https://github.com/k1LoW/tbls/compare/v1.54.0...v1.54.1) (2021-12-15)
+
+* Update pkgs [#330](https://github.com/k1LoW/tbls/pull/330) ([k1LoW](https://github.com/k1LoW))
+* Update available commands for tbls [#329](https://github.com/k1LoW/tbls/pull/329) ([omuomugin](https://github.com/omuomugin))
+
 ## [v1.54.0](https://github.com/k1LoW/tbls/compare/v1.53.0...v1.54.0) (2021-12-10)
 
 * [BREAKING] If it has labels, show the labels in the markdown table [#328](https://github.com/k1LoW/tbls/pull/328) ([k1LoW](https://github.com/k1LoW))
