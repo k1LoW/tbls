@@ -27,10 +27,10 @@ CREATE TABLE `users` (
 
 | Name | Type | Default | Nullable | Extra Definition | Children | Parents | Comment | Labels |
 | ---- | ---- | ------- | -------- | ---------------- | -------- | ------- | ------- | ------ |
-| id | int |  | false | auto_increment |  | [comment_stars](comment_stars.md) [comments](comments.md) [posts](posts.md) [user_options](user_options.md) [logs](logs.md) |  |  |
+| id | int |  | false | auto_increment | [comment_stars](comment_stars.md) [comments](comments.md) [posts](posts.md) [user_options](user_options.md) [logs](logs.md) |  |  |  |
 | username | varchar(50) |  | false |  |  |  |  |  |
-| password | varchar(50) |  | false |  | `secure` `encrypted` |  |  |  |
-| email | varchar(355) |  | false |  | `secure` |  |  | ex. user@example.com |
+| password | varchar(50) |  | false |  |  |  |  | `secure` `encrypted` |
+| email | varchar(355) |  | false |  |  |  | ex. user@example.com | `secure` |
 | created | timestamp |  | false |  |  |  |  |  |
 | updated | timestamp |  | true |  |  |  |  |  |
 
