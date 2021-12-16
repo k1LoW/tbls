@@ -551,14 +551,14 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 		if t.HasColumnWithExtraDef() {
 			data = append(data, mdEscRep.Replace(c.ExtraDef))
 		}
-		if t.HasColumnWithLabels() {
-			data = append(data, output.LabelJoin(c.Labels))
-		}
 		data = append(data,
 			strings.Join(childRelations, " "),
 			strings.Join(parentRelations, " "),
 			c.Comment,
 		)
+		if t.HasColumnWithLabels() {
+			data = append(data, output.LabelJoin(c.Labels))
+		}
 		columnsData = append(columnsData, data)
 	}
 
