@@ -57,11 +57,6 @@ jobs:
         with:
           scan-type: 'fs'
 
-      - name: Run codecov
-        run: codecov
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-
       - name: Run octocov
         uses: k1LoW/octocov-action@v0
   windows-test:
