@@ -61,6 +61,9 @@ jobs:
         run: codecov
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Run octocov
+        uses: k1LoW/octocov-action@v0
   windows-test:
     name: Test
     strategy:
