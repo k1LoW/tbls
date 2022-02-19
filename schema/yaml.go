@@ -125,8 +125,8 @@ func (r Relation) MarshalYAML() ([]byte, error) {
 	})
 }
 
-// UnMarshalYAML unmarshal JSON to schema.Table
-func (t *Table) UnMarshalYAML(data []byte) error {
+// UnmarshalYAML unmarshal YAML to schema.Table
+func (t *Table) UnmarshalYAML(data []byte) error {
 	s := struct {
 		Name             string        `yaml:"name"`
 		Type             string        `yaml:"type"`
