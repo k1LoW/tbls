@@ -462,7 +462,7 @@ func (m *Md) makeSchemaTemplateData(s *schema.Schema) map[string]interface{} {
 			comment = output.ShowOnlyFirstParagraph(comment)
 		}
 		data := []string{
-			fmt.Sprintf("[%s](%s%s.md)", t.Name, m.config.BaseUrl, t.Name),
+			fmt.Sprintf("[%s](%s%s.md)", t.Name, m.config.BaseUrl, normalizeMdLink(t.Name)),
 			fmt.Sprintf("%d", len(t.Columns)),
 			comment,
 			t.Type,
@@ -529,7 +529,7 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 			if _, ok := cEncountered[r.Table.Name]; ok {
 				continue
 			}
-			childRelations = append(childRelations, fmt.Sprintf("[%s](%s%s.md)", r.Table.Name, m.config.BaseUrl, r.Table.Name))
+			childRelations = append(childRelations, fmt.Sprintf("[%s](%s%s.md)", r.Table.Name, m.config.BaseUrl, normalizeMdLink(r.Table.Name)))
 			cEncountered[r.Table.Name] = true
 		}
 		parentRelations := []string{}
@@ -538,7 +538,7 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 			if _, ok := pEncountered[r.ParentTable.Name]; ok {
 				continue
 			}
-			parentRelations = append(parentRelations, fmt.Sprintf("[%s](%s%s.md)", r.ParentTable.Name, m.config.BaseUrl, r.ParentTable.Name))
+			parentRelations = append(parentRelations, fmt.Sprintf("[%s](%s%s.md)", r.ParentTable.Name, m.config.BaseUrl, normalizeMdLink(r.ParentTable.Name)))
 			pEncountered[r.ParentTable.Name] = true
 		}
 
@@ -658,7 +658,7 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 			referencedTables = append(referencedTables, rt.Name)
 			continue
 		}
-		referencedTables = append(referencedTables, fmt.Sprintf("[%s](%s%s.md)", rt.Name, m.config.BaseUrl, rt.Name))
+		referencedTables = append(referencedTables, fmt.Sprintf("[%s](%s%s.md)", rt.Name, m.config.BaseUrl, normalizeMdLink(rt.Name)))
 	}
 
 	if number {
@@ -729,4 +729,9 @@ func (m *Md) addNumberToTable(data [][]string) [][]string {
 	}
 
 	return data
+}
+
+// replace space by %20 in markdown links (https://spec.commonmark.org/0.30/#link-destination)
+func normalizeMdLink(name string) string {
+	return strings.Replace(name, " ", "%20", -1)
 }
