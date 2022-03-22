@@ -15,6 +15,9 @@ func AnalyzeMongodb(urlstr string) (*schema.Schema, error) {
 
 	ctx := context.Background()
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(urlstr))
+	if err != nil {
+		return s, err
+	}
 
 	defer func() {
 		if err = client.Disconnect(ctx); err != nil {

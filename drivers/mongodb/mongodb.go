@@ -34,28 +34,34 @@ func (d *Mongodb) Analyze(s *schema.Schema) error {
 	s.Driver = drv
 
 	tables := []*schema.Table{}
-	dbValue := d.client.Database("test")
-	colls, err := dbValue.ListCollectionSpecifications(d.ctx, bson.D{})
+	dbNames, err := d.client.ListDatabaseNames(d.ctx, bson.D{})
 	if err != nil {
 		return err
 	}
-	for _, coll := range colls {
-		colVal := dbValue.Collection(coll.Name)
-		indexes, err := d.listIndexes(colVal)
+	for _, dbName := range dbNames {
+		dbValue := d.client.Database(dbName)
+		colls, err := dbValue.ListCollectionSpecifications(d.ctx, bson.D{})
 		if err != nil {
 			return err
 		}
-		estimated, err := colVal.EstimatedDocumentCount(d.ctx)
-		if err != nil {
-			return err
+		for _, coll := range colls {
+			colVal := dbValue.Collection(coll.Name)
+			indexes, err := d.listIndexes(colVal)
+			if err != nil {
+				return err
+			}
+			estimated, err := colVal.EstimatedDocumentCount(d.ctx)
+			if err != nil {
+				return err
+			}
+			table := &schema.Table{
+				Name:    fmt.Sprintf("%s.%s", dbName, coll.Name),
+				Type:    coll.Type,
+				Indexes: indexes,
+				Comment: fmt.Sprintf("Estimated count of document is %d", estimated),
+			}
+			tables = append(tables, table)
 		}
-		table := &schema.Table{
-			Name:    coll.Name,
-			Type:    coll.Type,
-			Indexes: indexes,
-			Comment: fmt.Sprintf("Estimated count of document is %d", estimated),
-		}
-		tables = append(tables, table)
 	}
 	s.Tables = tables
 
