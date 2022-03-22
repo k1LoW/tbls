@@ -522,6 +522,18 @@ dsn: snowflake://user:password@myaccount/mydb/myschema
 
 See also: https://pkg.go.dev/github.com/snowflakedb/gosnowflake
 
+**MongoDB:**
+
+``` yaml
+# .tbls.yml
+dsn: mongodb://localhost:27017/
+```
+
+``` yaml
+# .tbls.yml
+dsn: mongo://localhost:27017/?dbName=test
+```
+
 **JSON:**
 
 The JSON file output by the `tbls out -t json` command can be read as a datasource.
