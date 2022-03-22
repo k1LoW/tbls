@@ -2,6 +2,7 @@ package datasource
 
 import (
 	"context"
+	"net/url"
 
 	"github.com/k1LoW/tbls/drivers/mongodb"
 	"github.com/k1LoW/tbls/schema"
@@ -12,6 +13,11 @@ import (
 // AnalyzeMongodb analyze `mongodb://`
 func AnalyzeMongodb(urlstr string) (*schema.Schema, error) {
 	s := &schema.Schema{}
+	u, err := url.Parse(urlstr)
+	if err != nil {
+		return s, err
+	}
+	values := u.Query()
 
 	ctx := context.Background()
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(urlstr))
@@ -25,7 +31,7 @@ func AnalyzeMongodb(urlstr string) (*schema.Schema, error) {
 		}
 	}()
 
-	driver, err := mongodb.New(ctx, client)
+	driver, err := mongodb.New(ctx, client, values.Get("dbName"))
 	if err != nil {
 		return s, err
 	}

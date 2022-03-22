@@ -3,7 +3,6 @@ package mongodb
 import (
 	"context"
 	"fmt"
-	"regexp"
 
 	"github.com/k1LoW/tbls/dict"
 	"github.com/k1LoW/tbls/schema"
@@ -12,18 +11,30 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-var re = regexp.MustCompile(`(?s)\n\s*`)
-
 type Mongodb struct {
 	ctx    context.Context
 	client *mongo.Client
+	dbName string
 }
 
-func New(ctx context.Context, client *mongo.Client) (*Mongodb, error) {
+func New(ctx context.Context, client *mongo.Client, dbName string) (*Mongodb, error) {
 	return &Mongodb{
 		ctx:    ctx,
 		client: client,
+		dbName: dbName,
 	}, nil
+}
+
+func (d *Mongodb) getDatabaseNames() ([]string, error) {
+	if d.dbName != "" {
+		return []string{d.dbName}, nil
+	} else {
+		dbNames, err := d.client.ListDatabaseNames(d.ctx, bson.D{})
+		if err != nil {
+			return nil, err
+		}
+		return dbNames, nil
+	}
 }
 
 func (d *Mongodb) Analyze(s *schema.Schema) error {
@@ -34,10 +45,7 @@ func (d *Mongodb) Analyze(s *schema.Schema) error {
 	s.Driver = drv
 
 	tables := []*schema.Table{}
-	dbNames, err := d.client.ListDatabaseNames(d.ctx, bson.D{})
-	if err != nil {
-		return err
-	}
+	dbNames, err := d.getDatabaseNames()
 	for _, dbName := range dbNames {
 		dbValue := d.client.Database(dbName)
 		colls, err := dbValue.ListCollectionSpecifications(d.ctx, bson.D{})
@@ -58,7 +66,7 @@ func (d *Mongodb) Analyze(s *schema.Schema) error {
 				Name:    fmt.Sprintf("%s.%s", dbName, coll.Name),
 				Type:    coll.Type,
 				Indexes: indexes,
-				Comment: fmt.Sprintf("Estimated count of document is %d", estimated),
+				Comment: fmt.Sprintf("Estimated count of documents is %d", estimated),
 			}
 			tables = append(tables, table)
 		}

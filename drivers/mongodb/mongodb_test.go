@@ -24,7 +24,7 @@ func TestAnalyze(t *testing.T) {
 	s := &schema.Schema{
 		Name: "MongoDB local `docker-mongo-sample-datasets`",
 	}
-	driver, err := New(ctx, client)
+	driver, err := New(ctx, client, "test")
 	if err != nil {
 		t.Errorf("%v", err)
 	}
