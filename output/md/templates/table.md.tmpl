@@ -29,11 +29,13 @@
 
 {{- end }}
 
+{{ $len := len .Columns }}{{ if ne $len 2 -}}
 ## {{ "Columns" | lookup }}
 {{ range $l := .Columns }}
 |{{ range $d := $l }} {{ $d | nl2br }} |{{ end }}
 {{- end }}
 
+{{ end -}}
 {{ $len := len .Constraints }}{{ if ne $len 2 -}}
 ## {{ "Constraints" | lookup }}
 {{ range $l := .Constraints }}
