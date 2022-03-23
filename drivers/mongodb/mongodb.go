@@ -13,16 +13,18 @@ import (
 )
 
 type Mongodb struct {
-	ctx    context.Context
-	client *mongo.Client
-	dbName string
+	ctx        context.Context
+	client     *mongo.Client
+	dbName     string
+	sampleSize int64
 }
 
-func New(ctx context.Context, client *mongo.Client, dbName string) (*Mongodb, error) {
+func New(ctx context.Context, client *mongo.Client, dbName string, sampleSize int64) (*Mongodb, error) {
 	return &Mongodb{
-		ctx:    ctx,
-		client: client,
-		dbName: dbName,
+		ctx:        ctx,
+		client:     client,
+		dbName:     dbName,
+		sampleSize: sampleSize,
 	}, nil
 }
 
@@ -83,7 +85,7 @@ func (d *Mongodb) Analyze(s *schema.Schema) error {
 }
 
 func (d *Mongodb) listFields(collection *mongo.Collection) ([]*schema.Column, error) {
-	pipeline := []bson.D{{{"$sample", bson.D{{"size", 10}}}}}
+	pipeline := []bson.D{{{Key: "$sample", Value: bson.D{{Key: "size", Value: d.sampleSize}}}}}
 	cursor, err := collection.Aggregate(d.ctx, pipeline)
 	if err != nil {
 		return nil, err
