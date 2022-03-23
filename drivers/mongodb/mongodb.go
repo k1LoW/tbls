@@ -8,6 +8,7 @@ import (
 	"github.com/k1LoW/tbls/schema"
 	"github.com/pkg/errors"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -62,9 +63,14 @@ func (d *Mongodb) Analyze(s *schema.Schema) error {
 			if err != nil {
 				return err
 			}
+			columns, err := d.listFields(colVal)
+			if err != nil {
+				return err
+			}
 			table := &schema.Table{
 				Name:    fmt.Sprintf("%s.%s", dbName, coll.Name),
 				Type:    coll.Type,
+				Columns: columns,
 				Indexes: indexes,
 				Comment: fmt.Sprintf("Estimated count of documents is %d", estimated),
 			}
@@ -74,6 +80,62 @@ func (d *Mongodb) Analyze(s *schema.Schema) error {
 	s.Tables = tables
 
 	return nil
+}
+
+func (d *Mongodb) listFields(collection *mongo.Collection) ([]*schema.Column, error) {
+	pipeline := []bson.D{{{"$sample", bson.D{{"size", 10}}}}}
+	cursor, err := collection.Aggregate(d.ctx, pipeline)
+	if err != nil {
+		return nil, err
+	}
+	columns := []*schema.Column{}
+	for cursor.Next(d.ctx) {
+		var result bson.D
+		if err := cursor.Decode(&result); err != nil {
+			return columns, err
+		}
+		for key, value := range result.Map() {
+			var valueType string
+			//fmt.Printf("%T", value)
+			switch value.(type) {
+			case string:
+				valueType = "string"
+			case int64:
+				valueType = "int64"
+			case primitive.D:
+				valueType = "document"
+			case primitive.DateTime:
+				valueType = "datetime"
+			case primitive.A:
+				valueType = "array"
+			case primitive.ObjectID:
+				valueType = "objectId"
+			default:
+				valueType = ""
+			}
+			column := &schema.Column{
+				Name:     key,
+				Type:     valueType,
+				Nullable: false,
+			}
+			if !columnInColumns(column, columns) {
+				columns = append(columns, column)
+			}
+		}
+	}
+	if err := cursor.Err(); err != nil {
+		return nil, err
+	}
+	return columns, nil
+}
+
+func columnInColumns(a *schema.Column, list []*schema.Column) bool {
+	for _, b := range list {
+		if b.Name == a.Name {
+			return true
+		}
+	}
+	return false
 }
 
 func (d *Mongodb) listIndexes(collection *mongo.Collection) ([]*schema.Index, error) {
