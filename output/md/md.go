@@ -10,7 +10,6 @@ import (
 	"strconv"
 	"strings"
 	"text/template"
-	"unicode/utf8"
 
 	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/output"
@@ -18,6 +17,7 @@ import (
 	"github.com/mattn/go-runewidth"
 	"github.com/pkg/errors"
 	"github.com/pmezard/go-difflib/difflib"
+	"gitlab.com/golang-commonmark/mdurl"
 )
 
 var mdEscRep = strings.NewReplacer("`", "\\`")
@@ -463,7 +463,7 @@ func (m *Md) makeSchemaTemplateData(s *schema.Schema) map[string]interface{} {
 			comment = output.ShowOnlyFirstParagraph(comment)
 		}
 		data := []string{
-			fmt.Sprintf("[%s](%s%s.md)", t.Name, m.config.BaseUrl, encode(t.Name)),
+			fmt.Sprintf("[%s](%s%s.md)", t.Name, m.config.BaseUrl, mdurl.Encode(t.Name)),
 			fmt.Sprintf("%d", len(t.Columns)),
 			comment,
 			t.Type,
@@ -530,7 +530,7 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 			if _, ok := cEncountered[r.Table.Name]; ok {
 				continue
 			}
-			childRelations = append(childRelations, fmt.Sprintf("[%s](%s%s.md)", r.Table.Name, m.config.BaseUrl, encode(r.Table.Name)))
+			childRelations = append(childRelations, fmt.Sprintf("[%s](%s%s.md)", r.Table.Name, m.config.BaseUrl, mdurl.Encode(r.Table.Name)))
 			cEncountered[r.Table.Name] = true
 		}
 		parentRelations := []string{}
@@ -539,7 +539,7 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 			if _, ok := pEncountered[r.ParentTable.Name]; ok {
 				continue
 			}
-			parentRelations = append(parentRelations, fmt.Sprintf("[%s](%s%s.md)", r.ParentTable.Name, m.config.BaseUrl, encode(r.ParentTable.Name)))
+			parentRelations = append(parentRelations, fmt.Sprintf("[%s](%s%s.md)", r.ParentTable.Name, m.config.BaseUrl, mdurl.Encode(r.ParentTable.Name)))
 			pEncountered[r.ParentTable.Name] = true
 		}
 
@@ -659,7 +659,7 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 			referencedTables = append(referencedTables, rt.Name)
 			continue
 		}
-		referencedTables = append(referencedTables, fmt.Sprintf("[%s](%s%s.md)", rt.Name, m.config.BaseUrl, encode(rt.Name)))
+		referencedTables = append(referencedTables, fmt.Sprintf("[%s](%s%s.md)", rt.Name, m.config.BaseUrl, mdurl.Encode(rt.Name)))
 	}
 
 	if number {
@@ -730,56 +730,4 @@ func (m *Md) addNumberToTable(data [][]string) [][]string {
 	}
 
 	return data
-}
-
-// https://github.com/golang-commonmark/mdurl/blob/master/encode.go
-func encode(rawurl string) string {
-	const hexdigit = "0123456789ABCDEF"
-	var buf bytes.Buffer
-	i := 0
-	for i < len(rawurl) {
-		r, rlen := utf8.DecodeRuneInString(rawurl[i:])
-		if r >= 0x80 {
-			for j, n := i, i+rlen; j < n; j++ {
-				b := rawurl[j]
-				buf.WriteByte('%')
-				buf.WriteByte(hexdigit[(b>>4)&0xf])
-				buf.WriteByte(hexdigit[b&0xf])
-			}
-		} else if r == '%' {
-			if i+2 < len(rawurl) &&
-				hexDigit(rawurl[i+1]) &&
-				hexDigit(rawurl[i+2]) {
-				buf.WriteByte('%')
-				buf.WriteByte(byteToUpper(rawurl[i+1]))
-				buf.WriteByte(byteToUpper(rawurl[i+2]))
-				i += 2
-			} else {
-				buf.WriteString("%25")
-			}
-		} else if strings.IndexByte("!#$&'()*+,-./0123456789:;=?@ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz~", byte(r)) == -1 {
-			buf.WriteByte('%')
-			buf.WriteByte(hexdigit[(r>>4)&0xf])
-			buf.WriteByte(hexdigit[r&0xf])
-		} else {
-			buf.WriteByte(byte(r))
-		}
-		i += rlen
-	}
-	return buf.String()
-}
-
-func hexDigit(b byte) bool {
-	return digit(b) || b >= 'a' && b <= 'f' || b >= 'A' && b <= 'F'
-}
-
-func digit(b byte) bool {
-	return b >= '0' && b <= '9'
-}
-
-func byteToUpper(b byte) byte {
-	if b >= 'a' && b <= 'z' {
-		return b - 'a' + 'A'
-	}
-	return b
 }
