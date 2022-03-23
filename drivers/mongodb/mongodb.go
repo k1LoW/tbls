@@ -96,7 +96,6 @@ func (d *Mongodb) listFields(collection *mongo.Collection) ([]*schema.Column, er
 		}
 		for key, value := range result.Map() {
 			var valueType string
-			//fmt.Printf("%T", value)
 			switch value.(type) {
 			case string:
 				valueType = "string"
@@ -111,7 +110,7 @@ func (d *Mongodb) listFields(collection *mongo.Collection) ([]*schema.Column, er
 			case primitive.ObjectID:
 				valueType = "objectId"
 			default:
-				valueType = ""
+				valueType = fmt.Sprintf("%T", value)
 			}
 			column := &schema.Column{
 				Name:     key,
