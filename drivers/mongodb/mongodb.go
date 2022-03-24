@@ -74,7 +74,7 @@ func (d *Mongodb) Analyze(s *schema.Schema) error {
 				Type:    coll.Type,
 				Columns: columns,
 				Indexes: indexes,
-				Comment: fmt.Sprintf("Estimated count of documents is %d", estimated),
+				Comment: fmt.Sprintf("Count of documents is %d", estimated),
 			}
 			tables = append(tables, table)
 		}

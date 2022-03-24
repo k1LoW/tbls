@@ -12,7 +12,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-const defaultSampleSize = 10
+const defaultSampleSize = 1000
 
 // AnalyzeMongodb analyze `mongodb://`
 func AnalyzeMongodb(urlstr string) (*schema.Schema, error) {
