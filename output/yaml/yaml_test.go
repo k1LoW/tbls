@@ -92,7 +92,7 @@ func newTestSchema() *schema.Schema {
 		Comment: "table a",
 		Columns: []*schema.Column{
 			ca,
-			&schema.Column{
+			{
 				Name:     "a2",
 				Type:     "datetime",
 				Comment:  "column a2",
@@ -110,7 +110,7 @@ func newTestSchema() *schema.Schema {
 		Comment: "table b",
 		Columns: []*schema.Column{
 			cb,
-			&schema.Column{
+			{
 				Name:     "b2",
 				Comment:  "column b2",
 				Type:     "text",
@@ -136,6 +136,7 @@ func newTestSchema() *schema.Schema {
 		Relations: []*schema.Relation{
 			r,
 		},
+		Subroutines: []*schema.Subroutine{},
 		Driver: &schema.Driver{
 			Name:            "testdriver",
 			DatabaseVersion: "1.0.0",

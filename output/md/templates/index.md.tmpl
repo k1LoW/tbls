@@ -17,6 +17,13 @@
 {{ range $t := .Tables }}
 |{{ range $d := $t }} {{ $d | nl2br }} |{{ end }}
 {{- end -}}
+{{- if .Schema.Subroutines }}
+
+## {{ "Subroutines" | lookup }}
+{{ range $t := .Subroutines }}
+|{{ range $d := $t }} {{ $d | nl2br }} |{{ end }}
+{{- end -}}
+{{- end -}}
 {{- if .er }}
 
 ## {{ "Relations" | lookup }}

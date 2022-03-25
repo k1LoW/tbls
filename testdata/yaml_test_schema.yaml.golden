@@ -46,6 +46,7 @@ relations:
   - b
   def: ""
   virtual: false
+subroutines: []
 driver:
   name: testdriver
   databaseVersion: 1.0.0
