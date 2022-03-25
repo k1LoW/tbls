@@ -56,3 +56,8 @@ services:
     restart: always
     ports:
       - "18000:8000"
+  mongo:
+    image: weshigbee/docker-mongo-sample-datasets@sha256:db0324e7b3a49096d10f4062bedc6120a258bfb0483fffb8de8a687d419d15dc
+    restart: always
+    ports:
+      - "27017:27017"
