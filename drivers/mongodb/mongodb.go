@@ -40,6 +40,17 @@ func (d *Mongodb) getDatabaseNames() ([]string, error) {
 	}
 }
 
+var skipTables = []string{"local", "admin", "config"}
+
+func contains(a string, list []string) bool {
+	for _, b := range list {
+		if b == a {
+			return true
+		}
+	}
+	return false
+}
+
 func (d *Mongodb) Analyze(s *schema.Schema) error {
 	drv, err := d.Info()
 	if err != nil {
@@ -50,6 +61,9 @@ func (d *Mongodb) Analyze(s *schema.Schema) error {
 	tables := []*schema.Table{}
 	dbNames, err := d.getDatabaseNames()
 	for _, dbName := range dbNames {
+		if contains(dbName, skipTables) {
+			continue
+		}
 		dbValue := d.client.Database(dbName)
 		colls, err := dbValue.ListCollectionSpecifications(d.ctx, bson.D{})
 		if err != nil {
