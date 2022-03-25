@@ -39,11 +39,11 @@ func AnalyzeMongodb(urlstr string) (*schema.Schema, error) {
 			panic(err)
 		}
 	}()
-	smapleSize, err := strconv.ParseInt(values.Get("sampleSize"), 10, 0)
+	sampleSize, err := strconv.ParseInt(values.Get("sampleSize"), 10, 0)
 	if err != nil {
-		smapleSize = defaultSampleSize
+		sampleSize = defaultSampleSize
 	}
-	driver, err := mongodb.New(ctx, client, values.Get("dbName"), smapleSize)
+	driver, err := mongodb.New(ctx, client, values.Get("dbName"), sampleSize)
 	if err != nil {
 		return s, err
 	}
