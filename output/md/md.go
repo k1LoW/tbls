@@ -17,6 +17,7 @@ import (
 	"github.com/mattn/go-runewidth"
 	"github.com/pkg/errors"
 	"github.com/pmezard/go-difflib/difflib"
+	"gitlab.com/golang-commonmark/mdurl"
 )
 
 var mdEscRep = strings.NewReplacer("`", "\\`")
@@ -462,7 +463,7 @@ func (m *Md) makeSchemaTemplateData(s *schema.Schema) map[string]interface{} {
 			comment = output.ShowOnlyFirstParagraph(comment)
 		}
 		data := []string{
-			fmt.Sprintf("[%s](%s%s.md)", t.Name, m.config.BaseUrl, t.Name),
+			fmt.Sprintf("[%s](%s%s.md)", t.Name, m.config.BaseUrl, mdurl.Encode(t.Name)),
 			fmt.Sprintf("%d", len(t.Columns)),
 			comment,
 			t.Type,
@@ -529,7 +530,7 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 			if _, ok := cEncountered[r.Table.Name]; ok {
 				continue
 			}
-			childRelations = append(childRelations, fmt.Sprintf("[%s](%s%s.md)", r.Table.Name, m.config.BaseUrl, r.Table.Name))
+			childRelations = append(childRelations, fmt.Sprintf("[%s](%s%s.md)", r.Table.Name, m.config.BaseUrl, mdurl.Encode(r.Table.Name)))
 			cEncountered[r.Table.Name] = true
 		}
 		parentRelations := []string{}
@@ -538,7 +539,7 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 			if _, ok := pEncountered[r.ParentTable.Name]; ok {
 				continue
 			}
-			parentRelations = append(parentRelations, fmt.Sprintf("[%s](%s%s.md)", r.ParentTable.Name, m.config.BaseUrl, r.ParentTable.Name))
+			parentRelations = append(parentRelations, fmt.Sprintf("[%s](%s%s.md)", r.ParentTable.Name, m.config.BaseUrl, mdurl.Encode(r.ParentTable.Name)))
 			pEncountered[r.ParentTable.Name] = true
 		}
 
@@ -624,11 +625,11 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 
 	// Triggers
 	triggersData := [][]string{
-		[]string{
+		{
 			m.config.MergedDict.Lookup("Name"),
 			m.config.MergedDict.Lookup("Definition"),
 		},
-		[]string{"----", "----------"},
+		{"----", "----------"},
 	}
 	tComment := false
 	for _, t := range t.Triggers {
@@ -658,7 +659,7 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 			referencedTables = append(referencedTables, rt.Name)
 			continue
 		}
-		referencedTables = append(referencedTables, fmt.Sprintf("[%s](%s%s.md)", rt.Name, m.config.BaseUrl, rt.Name))
+		referencedTables = append(referencedTables, fmt.Sprintf("[%s](%s%s.md)", rt.Name, m.config.BaseUrl, mdurl.Encode(rt.Name)))
 	}
 
 	if number {

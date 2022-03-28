@@ -16,13 +16,15 @@ var tests = []struct {
 	adjust                 bool
 	number                 bool
 	showOnlyFirstParagraph bool
+	tableBName             string
 	gotFile                string
 	wantFile               string
 }{
-	{"README.md", false, false, false, "README.md", "md_test_README.md.golden"},
-	{"a.md", false, false, false, "a.md", "md_test_a.md.golden"},
-	{"--adjust option", true, false, false, "README.md", "md_test_README.md.adjust.golden"},
-	{"number", false, true, false, "README.md", "md_test_README.md.number.golden"},
+	{"README.md", false, false, false, "b", "README.md", "md_test_README.md.golden"},
+	{"a.md", false, false, false, "b", "a.md", "md_test_a.md.golden"},
+	{"--adjust option", true, false, false, "b", "README.md", "md_test_README.md.adjust.golden"},
+	{"number", false, true, false, "b", "README.md", "md_test_README.md.number.golden"},
+	{"spaceInTableName", false, false, false, "a b", "README.md", "md_test_README.md.space_in_table_name.golden"},
 }
 
 var testsTemplate = []struct {
@@ -42,7 +44,7 @@ var testsTemplate = []struct {
 
 func TestOutput(t *testing.T) {
 	for _, tt := range tests {
-		s := newTestSchema()
+		s := newTestSchema(tt.tableBName)
 		c, err := config.New()
 		if err != nil {
 			t.Error(err)
@@ -81,7 +83,7 @@ func TestOutput(t *testing.T) {
 
 func TestOutputTemplate(t *testing.T) {
 	for _, tt := range testsTemplate {
-		s := newTestSchema()
+		s := newTestSchema("b")
 		c, err := config.New()
 		if err != nil {
 			t.Error(err)
@@ -124,7 +126,7 @@ func TestOutputTemplate(t *testing.T) {
 func TestDiffSchemaAndDocs(t *testing.T) {
 	for _, tt := range tests {
 		func() {
-			s := newTestSchema()
+			s := newTestSchema("b")
 			c, err := config.New()
 			if err != nil {
 				t.Error(err)
@@ -160,8 +162,8 @@ func TestDiffSchemaAndDocs(t *testing.T) {
 
 func TestDiffSchemas(t *testing.T) {
 	testData := func() (s, s2 *schema.Schema, c *config.Config) {
-		s = newTestSchema()
-		s2 = newTestSchema()
+		s = newTestSchema("b")
+		s2 = newTestSchema("b")
 		c, _ = config.New()
 		return
 	}
@@ -213,7 +215,6 @@ func TestDiffSchemas(t *testing.T) {
 			t.Error("diff should not be empty")
 		}
 	}
-
 }
 
 func testdataDir() string {
@@ -222,7 +223,7 @@ func testdataDir() string {
 	return dir
 }
 
-func newTestSchema() *schema.Schema {
+func newTestSchema(tableBName string) *schema.Schema {
 	ca := &schema.Column{
 		Name:    "a",
 		Comment: "column a",
@@ -237,14 +238,14 @@ func newTestSchema() *schema.Schema {
 		Comment: "table a",
 		Columns: []*schema.Column{
 			ca,
-			&schema.Column{
+			{
 				Name:    "a2",
 				Comment: "column a2",
 			},
 		},
 	}
 	ta.Indexes = []*schema.Index{
-		&schema.Index{
+		{
 			Name:    "PRIMARY KEY",
 			Def:     "PRIMARY KEY(a)",
 			Table:   &ta.Name,
@@ -252,24 +253,24 @@ func newTestSchema() *schema.Schema {
 		},
 	}
 	ta.Constraints = []*schema.Constraint{
-		&schema.Constraint{
+		{
 			Name:  "PRIMARY",
 			Table: &ta.Name,
 			Def:   "PRIMARY KEY (a)",
 		},
 	}
 	ta.Triggers = []*schema.Trigger{
-		&schema.Trigger{
+		{
 			Name: "update_a_a2",
 			Def:  "CREATE CONSTRAINT TRIGGER update_a_a2 AFTER INSERT OR UPDATE ON a",
 		},
 	}
 	tb := &schema.Table{
-		Name:    "b",
+		Name:    tableBName,
 		Comment: "table b",
 		Columns: []*schema.Column{
 			cb,
-			&schema.Column{
+			{
 				Name:    "b2",
 				Comment: "column b2",
 			},
