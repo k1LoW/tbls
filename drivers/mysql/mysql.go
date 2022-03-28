@@ -483,7 +483,6 @@ const querySubroutines = `select r.routine_schema as database_name,
 r.routine_name,
 r.routine_type as type,
 r.data_type as return_type,
-r.routine_definition as definition,
 group_concat(CONCAT(p.parameter_name, ' ', p.data_type) separator '; ') as parameter
 from information_schema.routines r
 left join information_schema.parameters p
@@ -508,10 +507,9 @@ func (m *Mysql) getSubroutines() ([]*schema.Subroutine, error) {
 			name         string
 			typeValue    string
 			returnType   string
-			definition   string
 			arguments    sql.NullString
 		)
-		err := subroutinesResult.Scan(&databaseName, &name, &typeValue, &returnType, &definition, &arguments)
+		err := subroutinesResult.Scan(&databaseName, &name, &typeValue, &returnType, &arguments)
 		if err != nil {
 			return subroutines, errors.WithStack(err)
 		}
