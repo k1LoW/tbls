@@ -105,11 +105,14 @@ func (d *Mongodb) listFields(collection *mongo.Collection) ([]*schema.Column, er
 		return nil, err
 	}
 	columns := []*schema.Column{}
+	total := 0.0
+	occurrences := map[string]float64{}
 	for cursor.Next(d.ctx) {
 		var result bson.D
 		if err := cursor.Decode(&result); err != nil {
 			return columns, err
 		}
+		total += 1
 		for key, value := range result.Map() {
 			var valueType string
 			switch value.(type) {
@@ -133,9 +136,21 @@ func (d *Mongodb) listFields(collection *mongo.Collection) ([]*schema.Column, er
 				Type:     valueType,
 				Nullable: false,
 			}
+			if val, ok := occurrences[key]; ok {
+				occurrences[key] = val + 1
+			} else {
+				occurrences[key] = 1
+			}
 			if !columnInColumns(column, columns) {
 				columns = append(columns, column)
 			}
+		}
+	}
+	for _, col := range columns {
+		if stat, ok := occurrences[col.Name]; ok {
+			col.Comment = fmt.Sprintf("Occurrences: %d; Percents: %.1f", int(stat), stat/total*100)
+		} else {
+			return columns, errors.New(fmt.Sprintf("Not able find %s in occurancies", col.Name))
 		}
 	}
 	if err := cursor.Err(); err != nil {
