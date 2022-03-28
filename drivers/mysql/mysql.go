@@ -418,6 +418,12 @@ WHERE table_schema = ? AND table_name = ? ORDER BY ordinal_position`
 		tables = append(tables, table)
 	}
 
+	subroutines, err := m.getSubroutines()
+	if err != nil {
+		return err
+	}
+	s.Subroutines = subroutines
+
 	s.Tables = tables
 
 	// Relations
@@ -471,6 +477,58 @@ WHERE table_schema = ? AND table_name = ? ORDER BY ordinal_position`
 	}
 
 	return nil
+}
+
+const querySubroutines = `select r.routine_schema as database_name,
+r.routine_name,
+r.routine_type as type,
+r.data_type as return_type,
+r.routine_definition as definition,
+group_concat(CONCAT(p.parameter_name, ' ', p.data_type) separator '; ') as parameter
+from information_schema.routines r
+left join information_schema.parameters p
+	 on p.specific_schema = r.routine_schema
+	 and p.specific_name = r.specific_name
+where routine_schema not in ('sys', 'information_schema',
+											'mysql', 'performance_schema')
+group by r.routine_schema, r.routine_name,
+r.routine_type, r.data_type, r.routine_definition`
+
+func (m *Mysql) getSubroutines() ([]*schema.Subroutine, error) {
+	subroutines := []*schema.Subroutine{}
+	subroutinesResult, err := m.db.Query(querySubroutines)
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+	defer subroutinesResult.Close()
+
+	for subroutinesResult.Next() {
+		var (
+			databaseName string
+			name         string
+			typeValue    string
+			returnType   string
+			definition   string
+			arguments    sql.NullString
+		)
+		err := subroutinesResult.Scan(&databaseName, &name, &typeValue, &returnType, &definition, &arguments)
+		if err != nil {
+			return subroutines, errors.WithStack(err)
+		}
+		subroutine := &schema.Subroutine{
+			Name:       name,
+			Type:       typeValue,
+			ReturnType: returnType,
+			Arguments:  arguments.String,
+		}
+
+		subroutines = append(subroutines, subroutine)
+	}
+	return subroutines, nil
+}
+
+func fullTableName(owner string, tableName string) string {
+	return fmt.Sprintf("%s.%s", owner, tableName)
 }
 
 // Info return schema.Driver

@@ -8,6 +8,8 @@ DROP TABLE IF EXISTS comments;
 DROP TABLE IF EXISTS posts;
 DROP TABLE IF EXISTS user_options;
 DROP TABLE IF EXISTS users;
+DROP PROCEDURE IF EXISTS GetAllComments;
+DROP FUNCTION IF EXISTS CustomerLevel;
 
 CREATE TABLE users (
   id int PRIMARY KEY AUTO_INCREMENT,
@@ -101,3 +103,35 @@ CREATE TABLE `hyphen-table` (
 CREATE TRIGGER update_posts_updated BEFORE UPDATE ON posts
   FOR EACH ROW
   SET NEW.updated = CURRENT_TIMESTAMP();
+
+DELIMITER //
+
+CREATE PROCEDURE GetAllComments()
+BEGIN
+	SELECT * FROM comments;
+END //
+
+DELIMITER ;
+
+DELIMITER $$
+
+CREATE FUNCTION CustomerLevel(
+	credit DECIMAL(10,2)
+) 
+RETURNS VARCHAR(20)
+DETERMINISTIC
+BEGIN
+    DECLARE customerLevel VARCHAR(20);
+
+    IF credit > 50000 THEN
+		SET customerLevel = 'PLATINUM';
+    ELSEIF (credit >= 50000 AND 
+			credit <= 10000) THEN
+        SET customerLevel = 'GOLD';
+    ELSEIF credit < 10000 THEN
+        SET customerLevel = 'SILVER';
+    END IF;
+	-- return the customer level
+	RETURN (customerLevel);
+END$$
+DELIMITER ;
