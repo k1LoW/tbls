@@ -105,16 +105,13 @@ CREATE TRIGGER update_posts_updated BEFORE UPDATE ON posts
   SET NEW.updated = CURRENT_TIMESTAMP();
 
 DELIMITER //
-
 CREATE PROCEDURE GetAllComments()
 BEGIN
 	SELECT * FROM comments;
-END //
-
+END//
 DELIMITER ;
 
 DELIMITER $$
-
 CREATE FUNCTION CustomerLevel(
 	credit DECIMAL(10,2)
 ) 
