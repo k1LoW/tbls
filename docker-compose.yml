@@ -36,7 +36,7 @@ services:
       - MYSQL_DATABASE=testdb
       - MYSQL_ROOT_PASSWORD=mypass
     volumes:
-      - ./docker-entrypoint-initdb.d/:/testdata/ddl/mysql/
+      - ./testdata/ddl/mysql:/docker-entrypoint-initdb.d
   mariadb:
     image: mariadb:10.5
     restart: always
