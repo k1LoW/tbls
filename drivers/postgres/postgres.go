@@ -370,9 +370,9 @@ ORDER BY tgrelid
 	return nil
 }
 
-const querySubroutines = `select n.nspname as schema_name,
+const querySubroutinesFunctions = `select n.nspname as schema_name,
 p.proname as specific_name,
-case when p.prokind = 'p' then TEXT 'PROCEDURE' else case when p.prokind = 'f' then TEXT 'FUNCTION' else p.prokind end end,
+TEXT 'PROCEDURE',
 t.typname as return_type,
 pg_get_function_arguments(p.oid) as arguments
 from pg_proc p
@@ -380,9 +380,64 @@ left join pg_namespace n on p.pronamespace = n.oid
 left join pg_type t on t.oid = p.prorettype 
 where n.nspname not in ('pg_catalog', 'information_schema')`
 
+const querySubroutinesStoredProcedures = `select n.nspname as schema_name,
+p.proname as specific_name,
+TEXT 'PROCEDURE',
+t.typname as return_type,
+pg_get_function_arguments(p.oid) as arguments
+from pg_proc p
+left join pg_namespace n on p.pronamespace = n.oid
+left join pg_type t on t.oid = p.prorettype 
+where n.nspname not in ('pg_catalog', 'information_schema')`
+
+const queryStoredProcedureSupported = `SELECT column_name 
+FROM information_schema.columns 
+WHERE table_name='pg_proc' and column_name='prokind';`
+
+func (p *Postgres) isProceduresSupported() (bool, error) {
+	result, err := p.db.Query(queryStoredProcedureSupported)
+	if err != nil {
+		return false, errors.WithStack(err)
+	}
+	defer result.Close()
+
+	for result.Next() {
+		var (
+			name sql.NullString
+		)
+		err := result.Scan(&name)
+		if err != nil {
+			return false, errors.WithStack(err)
+		}
+		return true, nil
+	}
+	return false, nil
+}
+
 func (p *Postgres) getSubroutines() ([]*schema.Subroutine, error) {
 	subroutines := []*schema.Subroutine{}
-	subroutinesResult, err := p.db.Query(querySubroutines)
+	functions, err := p.getSubroutinesByQuery(querySubroutinesFunctions)
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+	subroutines = append(subroutines, functions...)
+	storedProcedureSupported, err := p.isProceduresSupported()
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+	if storedProcedureSupported {
+		procedures, err := p.getSubroutinesByQuery(querySubroutinesStoredProcedures)
+		if err != nil {
+			return nil, errors.WithStack(err)
+		}
+		subroutines = append(subroutines, procedures...)
+	}
+	return subroutines, nil
+}
+
+func (p *Postgres) getSubroutinesByQuery(query string) ([]*schema.Subroutine, error) {
+	subroutines := []*schema.Subroutine{}
+	subroutinesResult, err := p.db.Query(query)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
