@@ -40,7 +40,6 @@ Sample PostgreSQL database document.
 | public.uuid_generate_v4 | uuid |  | FUNCTION |
 | public.uuid_generate_v5 | uuid | namespace uuid, name text | FUNCTION |
 | public.update_updated | trigger |  | FUNCTION |
-| public.reset_comment | void | comment_id integer | PROCEDURE |
 
 ## Relations
 

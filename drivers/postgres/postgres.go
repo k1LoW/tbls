@@ -372,7 +372,7 @@ ORDER BY tgrelid
 
 const querySubroutinesFunctions = `select n.nspname as schema_name,
 p.proname as specific_name,
-TEXT 'PROCEDURE',
+TEXT 'FUNCTION',
 t.typname as return_type,
 pg_get_function_arguments(p.oid) as arguments
 from pg_proc p
