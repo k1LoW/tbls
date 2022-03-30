@@ -12,6 +12,13 @@
 | [user_options](user_options.md) | 4 | User options table | BASE TABLE |
 | [users](users.md) | 6 | Users table | BASE TABLE |
 
+## Subroutines
+
+| Name | ReturnType | Arguments | Type |
+| ---- | ------- | ------- | ---- |
+| CustomerLevel | varchar | credit decimal | FUNCTION |
+| GetAllComments |  |  | PROCEDURE |
+
 ## Relations
 
 ![er](schema.svg)
