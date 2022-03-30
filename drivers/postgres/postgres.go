@@ -372,7 +372,7 @@ ORDER BY tgrelid
 
 const querySubroutines = `select n.nspname as schema_name,
 p.proname as specific_name,
-case when p.prokind = 'p' then TEXT 'PROCEDURE' else case when p.prokind = 'f' then TEXT 'FUNCTION' else p.prokind end end as type_value,
+case when p.prokind = 'p' then TEXT 'PROCEDURE' else case when p.prokind = 'f' then TEXT 'FUNCTION' else p.prokind end end,
 t.typname as return_type,
 pg_get_function_arguments(p.oid) as arguments
 from pg_proc p
