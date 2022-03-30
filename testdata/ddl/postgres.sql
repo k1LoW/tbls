@@ -219,3 +219,13 @@ CREATE TABLE time.referencing (
   CONSTRAINT referencing_bar_id FOREIGN KEY(bar_id) REFERENCES time.bar(id),
   CONSTRAINT referencing_ht_id FOREIGN KEY(ht_id) REFERENCES time."hyphenated-table"(id)
 );
+
+CREATE OR REPLACE PROCEDURE reset_comment (comment_id int) AS '
+  begin
+    update comments 
+    set comment = "updated" 
+    where id = comment_id;
+
+    commit;
+  end;
+' LANGUAGE plpgsql;

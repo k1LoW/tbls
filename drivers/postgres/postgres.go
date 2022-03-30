@@ -296,6 +296,12 @@ ORDER BY tgrelid
 		tables = append(tables, table)
 	}
 
+	subroutines, err := p.getSubroutines()
+	if err != nil {
+		return err
+	}
+	s.Subroutines = subroutines
+
 	s.Tables = tables
 
 	// Relations
@@ -362,6 +368,52 @@ ORDER BY tgrelid
 	}
 
 	return nil
+}
+
+const querySubroutines = `select n.nspname as schema_name,
+p.proname as specific_name,
+case when p.prokind = 'p' then TEXT 'PROCEDURE' else case when p.prokind = 'f' then TEXT 'FUNCTION' else p.prokind end end as type_value,
+t.typname as return_type,
+pg_get_function_arguments(p.oid) as arguments
+from pg_proc p
+left join pg_namespace n on p.pronamespace = n.oid
+left join pg_type t on t.oid = p.prorettype 
+where n.nspname not in ('pg_catalog', 'information_schema')`
+
+func (p *Postgres) getSubroutines() ([]*schema.Subroutine, error) {
+	subroutines := []*schema.Subroutine{}
+	subroutinesResult, err := p.db.Query(querySubroutines)
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+	defer subroutinesResult.Close()
+
+	for subroutinesResult.Next() {
+		var (
+			schemaName string
+			name       string
+			typeValue  string
+			returnType string
+			arguments  sql.NullString
+		)
+		err := subroutinesResult.Scan(&schemaName, &name, &typeValue, &returnType, &arguments)
+		if err != nil {
+			return subroutines, errors.WithStack(err)
+		}
+		subroutine := &schema.Subroutine{
+			Name:       fullTableName(schemaName, name),
+			Type:       typeValue,
+			ReturnType: returnType,
+			Arguments:  arguments.String,
+		}
+
+		subroutines = append(subroutines, subroutine)
+	}
+	return subroutines, nil
+}
+
+func fullTableName(owner string, tableName string) string {
+	return fmt.Sprintf("%s.%s", owner, tableName)
 }
 
 // Info return schema.Driver
