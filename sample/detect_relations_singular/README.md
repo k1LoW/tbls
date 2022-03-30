@@ -22,6 +22,13 @@ Sample database document.
 | [user](user.md) | 6 | User table | BASE TABLE |  |
 | [user_option](user_option.md) | 4 | User option table | BASE TABLE |  |
 
+## Subroutines
+
+| Name | ReturnType | Arguments | Type |
+| ---- | ------- | ------- | ---- |
+| CustomerLevel | varchar | credit decimal | FUNCTION |
+| GetAllComments |  |  | PROCEDURE |
+
 ## Relations
 
 ![er](schema.svg)
