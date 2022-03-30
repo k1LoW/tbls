@@ -16,10 +16,10 @@
 
 ## Subroutines
 
-| Name | ReturnType | Arguments | Type |
-| ---- | ------- | ------- | ---- |
-| CustomerLevel | varchar | credit decimal | FUNCTION |
-| GetAllComments |  |  | PROCEDURE |
+| 名前             | ReturnType | Arguments      | タイプ       |
+| -------------- | ---------- | -------------- | --------- |
+| CustomerLevel  | varchar    | credit decimal | FUNCTION  |
+| GetAllComments |            |                | PROCEDURE |
 
 ## ER図
 
