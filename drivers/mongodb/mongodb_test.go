@@ -12,7 +12,7 @@ import (
 // it is expected to have running https://hub.docker.com/r/weshigbee/docker-mongo-sample-datasets
 func TestAnalyze(t *testing.T) {
 	ctx := context.Background()
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost:27017"))
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://mongoadmin:secret@localhost:27017"))
 	if err != nil {
 		t.Errorf("%v", err)
 	}

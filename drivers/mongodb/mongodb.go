@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"sort"
 
 	"github.com/k1LoW/tbls/dict"
 	"github.com/k1LoW/tbls/schema"
@@ -84,6 +85,9 @@ func (d *Mongodb) Analyze(s *schema.Schema) error {
 			if err != nil {
 				return err
 			}
+			sort.Slice(columns, func(i, j int) bool {
+				return columns[i].Name < columns[j].Name
+			})
 			table := &schema.Table{
 				Name:    fmt.Sprintf("%s.%s", dbName, coll.Name),
 				Type:    coll.Type,
