@@ -526,12 +526,12 @@ See also: https://pkg.go.dev/github.com/snowflakedb/gosnowflake
 
 ``` yaml
 # .tbls.yml
-dsn: mongodb://localhost:27017/
+dsn: mongodb://mongoadmin:secret@localhost:27017/test
 ```
 
 ``` yaml
 # .tbls.yml
-dsn: mongo://localhost:27017/?dbName=test
+dsn: mongodb://mongoadmin:secret@localhost:27017/test?sampleSize=20
 ```
 
 **JSON:**

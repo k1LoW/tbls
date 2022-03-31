@@ -2,8 +2,10 @@ package datasource
 
 import (
 	"context"
+	"errors"
 	"net/url"
 	"strconv"
+	"strings"
 
 	"github.com/k1LoW/tbls/drivers/mongodb"
 	"github.com/k1LoW/tbls/schema"
@@ -22,6 +24,11 @@ func AnalyzeMongodb(urlstr string) (*schema.Schema, error) {
 		return s, err
 	}
 	values := u.Query()
+	parsedPath := strings.Split(u.Path, "/")
+	if len(parsedPath) != 2 {
+		return nil, errors.New("No database name in the connection string")
+	}
+	dbName := parsedPath[1]
 
 	ctx := context.Background()
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(urlstr))
@@ -43,7 +50,7 @@ func AnalyzeMongodb(urlstr string) (*schema.Schema, error) {
 	if err != nil {
 		sampleSize = defaultSampleSize
 	}
-	driver, err := mongodb.New(ctx, client, values.Get("dbName"), sampleSize)
+	driver, err := mongodb.New(ctx, client, dbName, sampleSize)
 	if err != nil {
 		return s, err
 	}

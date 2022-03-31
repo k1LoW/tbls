@@ -2,6 +2,8 @@ package mongodb
 
 import (
 	"context"
+	"net/url"
+	"strings"
 	"testing"
 
 	"github.com/k1LoW/tbls/schema"
@@ -12,7 +14,17 @@ import (
 // it is expected to have running https://hub.docker.com/r/weshigbee/docker-mongo-sample-datasets
 func TestAnalyze(t *testing.T) {
 	ctx := context.Background()
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://mongoadmin:secret@localhost:27017"))
+	urlstr := "mongodb://mongoadmin:secret@localhost:27017/test?authSource=admin"
+	u, err := url.Parse(urlstr)
+	if err != nil {
+		t.Errorf("%v", err)
+	}
+	parsedPath := strings.Split(u.Path, "/")
+	if len(parsedPath) != 2 {
+		t.Error("No database name in the connection string")
+	}
+	dbName := parsedPath[1]
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI(urlstr))
 	if err != nil {
 		t.Errorf("%v", err)
 	}
@@ -24,7 +36,7 @@ func TestAnalyze(t *testing.T) {
 	s := &schema.Schema{
 		Name: "MongoDB local `docker-mongo-sample-datasets`",
 	}
-	driver, err := New(ctx, client, "test", 10)
+	driver, err := New(ctx, client, dbName, 10)
 	if err != nil {
 		t.Errorf("%v", err)
 	}

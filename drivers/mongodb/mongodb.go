@@ -30,29 +30,6 @@ func New(ctx context.Context, client *mongo.Client, dbName string, sampleSize in
 	}, nil
 }
 
-func (d *Mongodb) getDatabaseNames() ([]string, error) {
-	if d.dbName != "" {
-		return []string{d.dbName}, nil
-	} else {
-		dbNames, err := d.client.ListDatabaseNames(d.ctx, bson.D{})
-		if err != nil {
-			return nil, err
-		}
-		return dbNames, nil
-	}
-}
-
-var skipTables = []string{"local", "admin", "config"}
-
-func contains(a string, list []string) bool {
-	for _, b := range list {
-		if b == a {
-			return true
-		}
-	}
-	return false
-}
-
 func (d *Mongodb) Analyze(s *schema.Schema) error {
 	drv, err := d.Info()
 	if err != nil {
@@ -61,42 +38,36 @@ func (d *Mongodb) Analyze(s *schema.Schema) error {
 	s.Driver = drv
 
 	tables := []*schema.Table{}
-	dbNames, err := d.getDatabaseNames()
-	for _, dbName := range dbNames {
-		if contains(dbName, skipTables) {
-			continue
-		}
-		dbValue := d.client.Database(dbName)
-		colls, err := dbValue.ListCollectionSpecifications(d.ctx, bson.D{})
+	dbValue := d.client.Database(d.dbName)
+	colls, err := dbValue.ListCollectionSpecifications(d.ctx, bson.D{})
+	if err != nil {
+		return err
+	}
+	for _, coll := range colls {
+		colVal := dbValue.Collection(coll.Name)
+		indexes, err := d.listIndexes(colVal)
 		if err != nil {
 			return err
 		}
-		for _, coll := range colls {
-			colVal := dbValue.Collection(coll.Name)
-			indexes, err := d.listIndexes(colVal)
-			if err != nil {
-				return err
-			}
-			estimated, err := colVal.EstimatedDocumentCount(d.ctx)
-			if err != nil {
-				return err
-			}
-			columns, err := d.listFields(colVal)
-			if err != nil {
-				return err
-			}
-			sort.Slice(columns, func(i, j int) bool {
-				return columns[i].Name < columns[j].Name
-			})
-			table := &schema.Table{
-				Name:    fmt.Sprintf("%s.%s", dbName, coll.Name),
-				Type:    coll.Type,
-				Columns: columns,
-				Indexes: indexes,
-				Comment: fmt.Sprintf("Count of documents is %d", estimated),
-			}
-			tables = append(tables, table)
+		estimated, err := colVal.EstimatedDocumentCount(d.ctx)
+		if err != nil {
+			return err
 		}
+		columns, err := d.listFields(colVal)
+		if err != nil {
+			return err
+		}
+		sort.Slice(columns, func(i, j int) bool {
+			return columns[i].Name < columns[j].Name
+		})
+		table := &schema.Table{
+			Name:    fmt.Sprintf("%s.%s", d.dbName, coll.Name),
+			Type:    coll.Type,
+			Columns: columns,
+			Indexes: indexes,
+			Comment: fmt.Sprintf("Count of documents is %d", estimated),
+		}
+		tables = append(tables, table)
 	}
 	s.Tables = tables
 
