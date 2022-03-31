@@ -23,6 +23,13 @@ Sample database document.
 | [hyphen-table](hyphen-table.md) | 3 |  | BASIC TABLE |  |
 | [administrator.blogs](administrator.blogs.md) | 6 | admin blogs | BASIC TABLE |  |
 
+## Subroutines
+
+| Name | ReturnType | Arguments | Type |
+| ---- | ------- | ------- | ---- |
+| dbo.get_user |  | @userid int | SQL inline table-valued function |
+| dbo.What_DB_is_that |  | @ID int | SQL Stored Procedure |
+
 ## Relations
 
 ![er](schema.svg)

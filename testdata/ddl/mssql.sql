@@ -12,6 +12,8 @@ DROP TYPE IF EXISTS post_types;
 DROP TABLE IF EXISTS user_options;
 DROP TABLE IF EXISTS users;
 DROP SCHEMA IF EXISTS administrator;
+DROP FUNCTION IF EXISTS get_user;
+DROP PROC IF EXISTS What_DB_is_that;
 
 CREATE TABLE users (
   id int NOT NULL IDENTITY(1,1) PRIMARY KEY,
@@ -165,3 +167,17 @@ BEGIN
   UPDATE users SET updated = GETDATE()
   WHERE id = ( SELECT user_id FROM deleted)
 END;
+
+CREATE FUNCTION get_user (@userid int)
+RETURNS TABLE
+AS
+RETURN
+(
+  SELECT u.username, u.email
+  FROM users AS u
+  WHERE u.id = @userid
+);
+
+CREATE PROC What_DB_is_that @ID INT
+AS
+SELECT DB_NAME(@ID) AS ThatDB;

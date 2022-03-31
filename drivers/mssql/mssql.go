@@ -402,6 +402,12 @@ ORDER BY i.index_id
 		tables = append(tables, table)
 	}
 
+	subroutines, err := m.getSubroutines()
+	if err != nil {
+		return err
+	}
+	s.Subroutines = subroutines
+
 	s.Tables = tables
 
 	// relations
@@ -457,6 +463,68 @@ ORDER BY i.index_id
 	}
 
 	return nil
+}
+
+const query = `select schema_name(obj.schema_id) as schema_name,
+	obj.name as name,
+	case type
+		when 'FN' then 'SQL scalar function'
+		when 'TF' then 'SQL table-valued-function'
+		when 'IF' then 'SQL inline table-valued function'
+		when 'P' then 'SQL Stored Procedure'
+		when 'X' then 'Extended stored procedure'
+	end as type,
+	TYPE_NAME(ret.user_type_id) as return_type,
+	substring(par.parameters, 0, len(par.parameters)) as parameters
+from sys.objects obj
+join sys.sql_modules mod
+on mod.object_id = obj.object_id
+cross apply (select p.name + ' ' + TYPE_NAME(p.user_type_id) + ', ' 
+			from sys.parameters p
+			where p.object_id = obj.object_id 
+						and p.parameter_id != 0 
+		 for xml path ('') ) par (parameters)
+left join sys.parameters ret
+	 on obj.object_id = ret.object_id
+	 and ret.parameter_id = 0
+where obj.type in ('FN', 'TF', 'IF', 'P', 'X')
+order by schema_name,
+	name;`
+
+func (m *Mssql) getSubroutines() ([]*schema.Subroutine, error) {
+	subroutines := []*schema.Subroutine{}
+	subroutinesResult, err := m.db.Query(query)
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+	defer subroutinesResult.Close()
+
+	for subroutinesResult.Next() {
+		var (
+			schemaName string
+			name       string
+			typeValue  string
+			returnType sql.NullString
+			arguments  sql.NullString
+		)
+		err := subroutinesResult.Scan(&schemaName, &name, &typeValue, &returnType, &arguments)
+		if err != nil {
+			return subroutines, errors.WithStack(err)
+		}
+		subroutine := &schema.Subroutine{
+			Name:       fullTableName(schemaName, name),
+			Type:       typeValue,
+			ReturnType: returnType.String,
+			Arguments:  arguments.String,
+		}
+
+		subroutines = append(subroutines, subroutine)
+	}
+	return subroutines, nil
+}
+
+func fullTableName(owner string, tableName string) string {
+	return fmt.Sprintf("%s.%s", owner, tableName)
 }
 
 func (m *Mssql) Info() (*schema.Driver, error) {
