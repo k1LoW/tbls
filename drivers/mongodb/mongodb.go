@@ -2,6 +2,7 @@ package mongodb
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 
 	"github.com/k1LoW/tbls/dict"
@@ -148,7 +149,8 @@ func (d *Mongodb) listFields(collection *mongo.Collection) ([]*schema.Column, er
 	}
 	for _, col := range columns {
 		if stat, ok := occurrences[col.Name]; ok {
-			col.Comment = fmt.Sprintf("Occurrences: %d; Percents: %.1f", int(stat), stat/total*100)
+			col.Occurrences = sql.NullInt32{int32(stat), true}
+			col.Percents = sql.NullFloat64{stat / total * 100, true}
 		} else {
 			return columns, errors.New(fmt.Sprintf("Not able find %s in occurancies", col.Name))
 		}
