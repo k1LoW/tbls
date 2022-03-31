@@ -30,30 +30,30 @@ func New(ctx context.Context, client *mongo.Client, dbName string, sampleSize in
 	}, nil
 }
 
-func (d *Mongodb) Analyze(s *schema.Schema) error {
-	drv, err := d.Info()
+func (m *Mongodb) Analyze(s *schema.Schema) error {
+	drv, err := m.Info()
 	if err != nil {
 		return errors.WithStack(err)
 	}
 	s.Driver = drv
 
 	tables := []*schema.Table{}
-	dbValue := d.client.Database(d.dbName)
-	colls, err := dbValue.ListCollectionSpecifications(d.ctx, bson.D{})
+	dbValue := m.client.Database(m.dbName)
+	colls, err := dbValue.ListCollectionSpecifications(m.ctx, bson.D{})
 	if err != nil {
 		return err
 	}
 	for _, coll := range colls {
 		colVal := dbValue.Collection(coll.Name)
-		indexes, err := d.listIndexes(colVal)
+		indexes, err := m.listIndexes(colVal)
 		if err != nil {
 			return err
 		}
-		estimated, err := colVal.EstimatedDocumentCount(d.ctx)
+		estimated, err := colVal.EstimatedDocumentCount(m.ctx)
 		if err != nil {
 			return err
 		}
-		columns, err := d.listFields(colVal)
+		columns, err := m.listFields(colVal)
 		if err != nil {
 			return err
 		}
@@ -61,7 +61,7 @@ func (d *Mongodb) Analyze(s *schema.Schema) error {
 			return columns[i].Name < columns[j].Name
 		})
 		table := &schema.Table{
-			Name:    fmt.Sprintf("%s.%s", d.dbName, coll.Name),
+			Name:    fmt.Sprintf("%s.%s", m.dbName, coll.Name),
 			Type:    coll.Type,
 			Columns: columns,
 			Indexes: indexes,
@@ -124,8 +124,8 @@ func (d *Mongodb) listFields(collection *mongo.Collection) ([]*schema.Column, er
 	}
 	for _, col := range columns {
 		if stat, ok := occurrences[col.Name]; ok {
-			col.Occurrences = sql.NullInt32{int32(stat), true}
-			col.Percents = sql.NullFloat64{stat / total * 100, true}
+			col.Occurrences = sql.NullInt32{Int32: int32(stat), Valid: true}
+			col.Percents = sql.NullFloat64{Float64: stat / total * 100, Valid: true}
 		} else {
 			return columns, errors.New(fmt.Sprintf("Not able find %s in occurancies", col.Name))
 		}
