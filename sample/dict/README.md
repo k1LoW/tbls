@@ -14,7 +14,7 @@
 | [user_options](user_options.md)   | 4          | User options table                         | BASE TABLE |
 | [users](users.md)                 | 6          | Users table                                | BASE TABLE |
 
-## Subroutines
+## Stored procedures and functions
 
 | 名前             | ReturnType | Arguments      | タイプ       |
 | -------------- | ---------- | -------------- | --------- |

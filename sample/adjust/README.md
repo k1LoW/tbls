@@ -25,7 +25,7 @@ Sample PostgreSQL database document.
 | [time.hyphenated-table](time.hyphenated-table.md)         | 1       |                                            | BASE TABLE        |
 | [time.referencing](time.referencing.md)                   | 3       |                                            | BASE TABLE        |
 
-## Subroutines
+## Stored procedures and functions
 
 | Name                      | ReturnType | Arguments                 | Type      |
 | ------------------------- | ---------- | ------------------------- | --------- |

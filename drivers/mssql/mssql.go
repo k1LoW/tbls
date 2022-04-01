@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/k1LoW/tbls/ddl"
+	"github.com/k1LoW/tbls/dict"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/pkg/errors"
 )
@@ -535,9 +536,17 @@ func (m *Mssql) Info() (*schema.Driver, error) {
 		return nil, err
 	}
 
+	dct := dict.New()
+	dct.Merge(map[string]string{
+		"Subroutines": "Stored procedures and functions",
+	})
+
 	d := &schema.Driver{
 		Name:            "sqlserver",
 		DatabaseVersion: v,
+		Meta: &schema.DriverMeta{
+			Dict: &dct,
+		},
 	}
 	return d, nil
 }

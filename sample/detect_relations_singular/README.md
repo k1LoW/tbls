@@ -22,7 +22,7 @@ Sample database document.
 | [user](user.md) | 6 | User table | BASE TABLE |  |
 | [user_option](user_option.md) | 4 | User option table | BASE TABLE |  |
 
-## Subroutines
+## Stored procedures and functions
 
 | Name | ReturnType | Arguments | Type |
 | ---- | ------- | ------- | ---- |

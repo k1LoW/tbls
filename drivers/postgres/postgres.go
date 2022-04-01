@@ -8,6 +8,7 @@ import (
 
 	"github.com/aquasecurity/go-version/pkg/version"
 	"github.com/k1LoW/tbls/ddl"
+	"github.com/k1LoW/tbls/dict"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/lib/pq"
 	"github.com/pkg/errors"
@@ -484,10 +485,17 @@ func (p *Postgres) Info() (*schema.Driver, error) {
 		name = "redshift"
 	}
 
+	dct := dict.New()
+	dct.Merge(map[string]string{
+		"Subroutines": "Stored procedures and functions",
+	})
+
 	d := &schema.Driver{
 		Name:            name,
 		DatabaseVersion: v,
-		Meta:            &schema.DriverMeta{},
+		Meta: &schema.DriverMeta{
+			Dict: &dct,
+		},
 	}
 	return d, nil
 }

@@ -8,6 +8,7 @@ import (
 
 	"github.com/aquasecurity/go-version/pkg/version"
 	"github.com/k1LoW/tbls/ddl"
+	"github.com/k1LoW/tbls/dict"
 	"github.com/k1LoW/tbls/drivers"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/pkg/errors"
@@ -543,9 +544,17 @@ func (m *Mysql) Info() (*schema.Driver, error) {
 		name = "mariadb"
 	}
 
+	dct := dict.New()
+	dct.Merge(map[string]string{
+		"Subroutines": "Stored procedures and functions",
+	})
+
 	d := &schema.Driver{
 		Name:            name,
 		DatabaseVersion: v,
+		Meta: &schema.DriverMeta{
+			Dict: &dct,
+		},
 	}
 	return d, nil
 }

@@ -23,7 +23,7 @@ Sample database document.
 | [hyphen-table](hyphen-table.md) | 3 |  | BASIC TABLE |  |
 | [administrator.blogs](administrator.blogs.md) | 6 | admin blogs | BASIC TABLE |  |
 
-## Subroutines
+## Stored procedures and functions
 
 | Name | ReturnType | Arguments | Type |
 | ---- | ------- | ------- | ---- |
