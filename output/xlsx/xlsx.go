@@ -149,28 +149,27 @@ func (x *Xlsx) createTableSheet(w *excl.Workbook, t *schema.Table) (e error) {
 	setString(sheet, 2, 1, t.Comment)
 
 	setString(sheet, 4, 1, x.config.MergedDict.Lookup("Columns")).SetFont(excl.Font{Bold: true})
-	if t.HasColumnWithExtraDef() {
-		setHeader(sheet, 5, []string{
-			x.config.MergedDict.Lookup("Name"),
-			x.config.MergedDict.Lookup("Type"),
-			x.config.MergedDict.Lookup("Default"),
-			x.config.MergedDict.Lookup("Nullable"),
-			x.config.MergedDict.Lookup("Extra Definition"),
-			x.config.MergedDict.Lookup("Children"),
-			x.config.MergedDict.Lookup("Parents"),
-			x.config.MergedDict.Lookup("Comment"),
-		})
-	} else {
-		setHeader(sheet, 5, []string{
-			x.config.MergedDict.Lookup("Name"),
-			x.config.MergedDict.Lookup("Type"),
-			x.config.MergedDict.Lookup("Default"),
-			x.config.MergedDict.Lookup("Nullable"),
-			x.config.MergedDict.Lookup("Children"),
-			x.config.MergedDict.Lookup("Parents"),
-			x.config.MergedDict.Lookup("Comment"),
-		})
+	columnValues := []string{
+		x.config.MergedDict.Lookup("Name"),
+		x.config.MergedDict.Lookup("Type"),
+		x.config.MergedDict.Lookup("Default"),
+		x.config.MergedDict.Lookup("Nullable"),
 	}
+	if t.HasColumnWithExtraDef() {
+		columnValues = append(columnValues, x.config.MergedDict.Lookup("Extra Definition"))
+	}
+	if t.HasColumnWithOccurrences() {
+		columnValues = append(columnValues, x.config.MergedDict.Lookup("Occurrences"))
+	}
+	if t.HasColumnWithPercents() {
+		columnValues = append(columnValues, x.config.MergedDict.Lookup("Percents"))
+	}
+	columnValues = append(columnValues, []string{
+		x.config.MergedDict.Lookup("Children"),
+		x.config.MergedDict.Lookup("Parents"),
+		x.config.MergedDict.Lookup("Comment"),
+	}...)
+	setHeader(sheet, 5, columnValues)
 	r := 6
 	for i, c := range t.Columns {
 		setStringWithBorder(sheet, r+i, 1, c.Name)
@@ -180,7 +179,15 @@ func (x *Xlsx) createTableSheet(w *excl.Workbook, t *schema.Table) (e error) {
 		ci := 5
 		if t.HasColumnWithExtraDef() {
 			setStringWithBorder(sheet, r+i, ci, fmt.Sprintf("%v", c.ExtraDef))
-			ci = 6
+			ci = ci + 1
+		}
+		if t.HasColumnWithOccurrences() {
+			setStringWithBorder(sheet, r+i, ci, fmt.Sprintf("%d", c.Occurrences.Int32))
+			ci = ci + 1
+		}
+		if t.HasColumnWithPercents() {
+			setStringWithBorder(sheet, r+i, ci, fmt.Sprintf("%.1f", c.Percents.Float64))
+			ci = ci + 1
 		}
 		children := []string{}
 		for _, child := range c.ChildRelations {

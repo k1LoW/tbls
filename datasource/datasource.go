@@ -42,6 +42,9 @@ func Analyze(dsn config.DSN) (*schema.Schema, error) {
 	if strings.Index(urlstr, "dynamodb://") == 0 || strings.Index(urlstr, "dynamo://") == 0 {
 		return AnalyzeDynamodb(urlstr)
 	}
+	if strings.Index(urlstr, "mongodb://") == 0 || strings.Index(urlstr, "mongo://") == 0 {
+		return AnalyzeMongodb(urlstr)
+	}
 	s := &schema.Schema{}
 	u, err := dburl.Parse(urlstr)
 	if err != nil {
