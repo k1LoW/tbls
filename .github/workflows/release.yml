@@ -2,6 +2,8 @@ name: release
 
 on:
   push:
+    tags:
+      - v*.*.*
 
 jobs:
   linux-release:
@@ -42,7 +44,7 @@ jobs:
         with:
           distribution: goreleaser
           version: latest
-          args: --config .goreleaser/linux.yml --snapshot --skip-publish --rm-dist
+          args: --config .goreleaser/linux.yml --rm-dist
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}        
 
@@ -85,6 +87,6 @@ jobs:
         with:
           distribution: goreleaser
           version: latest
-          args: --config .goreleaser/windows.yml --snapshot --skip-publish --rm-dist
+          args: --config .goreleaser/windows.yml --rm-dist
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
