@@ -1,5 +1,13 @@
 # Changelog
 
+## [v1.55.0](https://github.com/k1LoW/tbls/compare/v1.54.2...v1.55.0) (2022-04-04)
+
+* Fix release flow [#343](https://github.com/k1LoW/tbls/pull/343) ([k1LoW](https://github.com/k1LoW))
+* Mongo basic support [#339](https://github.com/k1LoW/tbls/pull/339) ([YauhenPylAurea](https://github.com/YauhenPylAurea))
+* Mdlink encoding [#340](https://github.com/k1LoW/tbls/pull/340) ([YauhenPylAurea](https://github.com/YauhenPylAurea))
+* Use octocov [#333](https://github.com/k1LoW/tbls/pull/333) ([k1LoW](https://github.com/k1LoW))
+* Fix typo on go install command [#332](https://github.com/k1LoW/tbls/pull/332) ([HMasataka](https://github.com/HMasataka))
+
 ## [v1.54.2](https://github.com/k1LoW/tbls/compare/v1.54.1...v1.54.2) (2021-12-16)
 
 * Fix the order of table columns including columnLabels [#331](https://github.com/k1LoW/tbls/pull/331) ([kymmt90](https://github.com/kymmt90))

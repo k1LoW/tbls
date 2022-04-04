@@ -44,8 +44,8 @@ dockers:
     goos: linux
     goarch: amd64
     image_templates:
-      - 'k1low/tbls:v{{ .Version }}'
-      - 'k1low/tbls:latest'
+      # - 'k1low/tbls:v{{ .Version }}'
+      # - 'k1low/tbls:latest'
       - 'ghcr.io/k1low/tbls:v{{ .Version }}'
       - 'ghcr.io/k1low/tbls:latest'
     dockerfile: docker/Dockerfile
