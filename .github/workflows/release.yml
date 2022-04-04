@@ -4,6 +4,48 @@ on:
   push:
 
 jobs:
+  linux-release:
+    name: Release assets for Linux
+    strategy:
+      matrix:
+        go_version: [1.17]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Go ${{ matrix.go_version }} on Ubuntu
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.go_version }}
+
+      - name: Install packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install sqlite3
+ 
+      - name: Install aws-cli
+        uses: isbang/setup-awscli@v0.1.0
+
+      - name: Check out source code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Start databases
+        run: |
+          docker-compose up -d
+          sleep 20s
+
+      - name: Run tests
+        run: make ci
+
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v2
+        with:
+          distribution: goreleaser
+          version: latest
+          args: --config .goreleaser/linux.yml --snapshot --skip-publish --rm-dist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}        
+
   windows-release:
     name: Release assets for Windows
     strategy:
@@ -11,7 +53,7 @@ jobs:
         go_version: [1.17]
     runs-on: windows-latest
     steps:
-      - name: Set up Go ${{ matrix.go_version }} on ${{ matrix.platform }}
+      - name: Set up Go ${{ matrix.go_version }} on Windows
         uses: actions/setup-go@v2
         with:
           go-version: ${{ matrix.go_version }}
@@ -37,8 +79,6 @@ jobs:
         run: |
           make ci_windows
         shell: bash
-        env:
-          DEBUG: "true"
 
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v2
@@ -48,6 +88,3 @@ jobs:
           args: --config .goreleaser/windows.yml --snapshot --skip-publish --rm-dist
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - run: ls -la dist/
-        shell: bash
