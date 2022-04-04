@@ -24,8 +24,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install sqlite3
-          sudo pip install codecov
-
+ 
       - name: Install aws-cli
         uses: isbang/setup-awscli@v0.1.0
 

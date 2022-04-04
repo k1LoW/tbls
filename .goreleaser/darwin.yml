@@ -1,0 +1,58 @@
+before:
+  hooks:
+    - go mod download
+    - go mod tidy
+builds:
+-
+  id: tbls-darwin
+  ldflags:
+    - -s -w -X github.com/k1LoW/tbls.version={{.Version}} -X github.com/k1LoW/tbls.commit={{.FullCommit}} -X github.com/k1LoW/tbls.date={{.Date}} -X github.com/k1LoW/tbls/version.Version={{.Version}}
+  env:
+    - CGO_ENABLED=1
+  goos:
+    - darwin
+  goarch:
+    - amd64
+    - arm64
+archives:
+-
+  id: tbls-archive
+  name_template: '{{ .ProjectName }}_v{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
+  format_overrides:
+    - goos: windows
+      format: zip
+    - goos: darwin
+      format: zip
+  files:
+    - CREDITS
+    - README.md
+    - CHANGELOG.md
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  name_template: "{{ .Version }}-next"
+changelog:
+  skip: true
+  sort: asc
+  filters:
+    exclude:
+    - '^docs:'
+    - '^test:'
+brews:
+  -
+    name: tbls
+    tap:
+      owner: k1LoW
+      name: homebrew-tap
+    commit_author:
+      name: k1LoW
+      email: k1lowxb@gmail.com
+    homepage: https://github.com/k1LoW/tbls
+    description: 'tbls is a CI-Friendly tool for document a database, written in Go.'
+    license: MIT
+    install: |
+      system './tbls', 'completion', 'bash', '--out', 'tbls.bash'
+      system './tbls', 'completion', 'zsh', '--out', 'tbls.zsh'
+      bin.install 'tbls'
+      bash_completion.install 'tbls.bash' => 'tbls'
+      zsh_completion.install 'tbls.zsh' => '_tbls'

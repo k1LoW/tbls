@@ -1,0 +1,42 @@
+before:
+  hooks:
+    - go mod download
+    - go mod tidy
+builds:
+-  
+  id: tbls-windows
+  ldflags:
+    - -s -w -X github.com/k1LoW/tbls.version={{.Version}} -X github.com/k1LoW/tbls.commit={{.FullCommit}} -X github.com/k1LoW/tbls.date={{.Date}} -X github.com/k1LoW/tbls/version.Version={{.Version}}
+    - -extldflags '-static'
+    - -extldflags '-Wl,--allow-multiple-definition'
+  env:
+    - CGO_ENABLED=1
+    - CFLAGS=-fcommon
+  goos:
+    - windows
+  goarch:
+    - amd64  
+archives:
+-
+  id: tbls-archive
+  name_template: '{{ .ProjectName }}_v{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
+  format_overrides:
+    - goos: windows
+      format: zip
+    - goos: darwin
+      format: zip
+  files:
+    - CREDITS
+    - README.md
+    - CHANGELOG.md
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  name_template: "{{ .Version }}-next"
+changelog:
+  skip: true
+  sort: asc
+  filters:
+    exclude:
+    - '^docs:'
+    - '^test:'
