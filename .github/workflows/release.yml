@@ -8,21 +8,30 @@ jobs:
     name: Release assets for Windows
     strategy:
       matrix:
-        platform: [windows-latest]
         go_version: [1.17]
+    runs-on: windows-latest
     steps:
       - name: Set up Go ${{ matrix.go_version }} on ${{ matrix.platform }}
         uses: actions/setup-go@v2
         with:
           go-version: ${{ matrix.go_version }}
 
+      - name: Install packages
+        run: |
+          choco install sqlite
+
+      - name: Install aws-cli
+        uses: isbang/setup-awscli@v0.1.0
+
       - name: Use LF
         run: |
           git config --global core.autocrlf false
           git config --global core.eol lf
-          
+
       - name: Check out source code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Run tests
         run: |
@@ -41,3 +50,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - run: ls -la dist/
+        shell: bash
