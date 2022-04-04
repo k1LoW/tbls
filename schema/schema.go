@@ -273,6 +273,18 @@ func (t *Table) HasColumnWithPercents() bool {
 	return t.hasColumnWithName("Percents")
 }
 
+func (t *Table) HasColumnWithChildren() bool {
+	return t.hasColumnWithName("Children")
+}
+
+func (t *Table) HasColumnWithParents() bool {
+	return t.hasColumnWithName("Parents")
+}
+
+func (t *Table) HasColumnWithComment() bool {
+	return t.hasColumnWithName("Comment")
+}
+
 func (t *Table) HasColumnWithLabels() bool {
 	for _, c := range t.Columns {
 		if len(c.Labels) > 0 {
