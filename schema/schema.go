@@ -256,6 +256,18 @@ func (t *Table) hasColumnWithName(name string) bool {
 			if c.Percents.Valid {
 				return true
 			}
+		case "Children":
+			if len(c.ChildRelations) > 0 {
+				return true
+			}
+		case "Parents":
+			if len(c.ParentRelations) > 0 {
+				return true
+			}
+		case "Comment":
+			if c.Comment != "" {
+				return true
+			}
 		}
 	}
 	return false
