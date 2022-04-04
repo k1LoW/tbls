@@ -13,15 +13,6 @@ builds:
     - darwin
   goarch:
     - amd64
--
-  id: tbls-darwin-arm64
-  ldflags:
-    - -s -w -X github.com/k1LoW/tbls.version={{.Version}} -X github.com/k1LoW/tbls.commit={{.FullCommit}} -X github.com/k1LoW/tbls.date={{.Date}} -X github.com/k1LoW/tbls/version.Version={{.Version}}
-  env:
-    - CGO_ENABLED=1
-  goos:
-    - darwin
-  goarch:
     - arm64
 archives:
 -
