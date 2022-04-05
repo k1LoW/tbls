@@ -6,14 +6,14 @@ admin blogs
 
 ## Columns
 
-| Name | Type | Default | Nullable | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | integer | nextval('administrator.blogs_id_seq'::regclass) | false |  |  |  |
-| user_id | integer |  | false |  | [public.users](public.users.md) |  |
-| name | text |  | false |  |  |  |
-| description | text |  | true |  |  |  |
-| created | timestamp without time zone |  | false |  |  |  |
-| updated | timestamp without time zone |  | true |  |  |  |
+| Name | Type | Default | Nullable | Parents |
+| ---- | ---- | ------- | -------- | ------- |
+| id | integer | nextval('administrator.blogs_id_seq'::regclass) | false |  |
+| user_id | integer |  | false | [public.users](public.users.md) |
+| name | text |  | false |  |
+| description | text |  | true |  |
+| created | timestamp without time zone |  | false |  |
+| updated | timestamp without time zone |  | true |  |
 
 ## Constraints
 

@@ -4,11 +4,11 @@
 
 ## Columns
 
-| Name | Type | Default | Nullable | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | integer |  | false |  |  |  |
-| bar_id | integer |  | false |  | [time.bar](time.bar.md) |  |
-| ht_id | integer |  | false |  | [time.hyphenated-table](time.hyphenated-table.md) |  |
+| Name | Type | Default | Nullable | Parents |
+| ---- | ---- | ------- | -------- | ------- |
+| id | integer |  | false |  |
+| bar_id | integer |  | false | [time.bar](time.bar.md) |
+| ht_id | integer |  | false | [time.hyphenated-table](time.hyphenated-table.md) |
 
 ## Constraints
 

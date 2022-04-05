@@ -4,10 +4,10 @@
 
 ## Columns
 
-| Name | Type | Default | Nullable | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | uuid | uuid_generate_v4() | false | [public.hyphen-table](public.hyphen-table.md) |  |  |
-| created | timestamp without time zone |  | false |  |  |  |
+| Name | Type | Default | Nullable | Children |
+| ---- | ---- | ------- | -------- | -------- |
+| id | uuid | uuid_generate_v4() | false | [public.hyphen-table](public.hyphen-table.md) |
+| created | timestamp without time zone |  | false |  |
 
 ## Constraints
 

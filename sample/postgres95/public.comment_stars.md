@@ -4,14 +4,14 @@
 
 ## Columns
 
-| Name | Type | Default | Nullable | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | uuid | uuid_generate_v4() | false | [public.logs](public.logs.md) |  |  |
-| user_id | integer |  | false |  |  |  |
-| comment_post_id | bigint |  | false |  | [public.comments](public.comments.md) |  |
-| comment_user_id | integer |  | false |  | [public.users](public.users.md) [public.comments](public.comments.md) |  |
-| created | timestamp without time zone |  | false |  |  |  |
-| updated | timestamp without time zone |  | true |  |  |  |
+| Name | Type | Default | Nullable | Children | Parents |
+| ---- | ---- | ------- | -------- | -------- | ------- |
+| id | uuid | uuid_generate_v4() | false | [public.logs](public.logs.md) |  |
+| user_id | integer |  | false |  |  |
+| comment_post_id | bigint |  | false |  | [public.comments](public.comments.md) |
+| comment_user_id | integer |  | false |  | [public.users](public.users.md) [public.comments](public.comments.md) |
+| created | timestamp without time zone |  | false |  |  |
+| updated | timestamp without time zone |  | true |  |  |
 
 ## Constraints
 
