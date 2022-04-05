@@ -21,15 +21,15 @@ CREATE TABLE logs (
 
 ## Columns
 
-| Name | Type | Default | Nullable | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | INTEGER |  | true |  |  |  |
-| user_id | INTEGER |  | false |  | [users](users.md) |  |
-| post_id | INTEGER |  | true |  | [posts](posts.md) |  |
-| comment_id | INTEGER |  | true |  | [comments](comments.md) |  |
-| comment_star_id | INTEGER |  | true |  | [comment_stars](comment_stars.md) |  |
-| payload | TEXT |  | true |  |  |  |
-| created | NUMERIC |  | false |  |  |  |
+| Name | Type | Default | Nullable | Children | Parents |
+| ---- | ---- | ------- | -------- | -------- | ------- |
+| id | INTEGER |  | true |  |  |
+| user_id | INTEGER |  | false |  | [users](users.md) |
+| post_id | INTEGER |  | true |  | [posts](posts.md) |
+| comment_id | INTEGER |  | true |  | [comments](comments.md) |
+| comment_star_id | INTEGER |  | true |  | [comment_stars](comment_stars.md) |
+| payload | TEXT |  | true |  |  |
+| created | NUMERIC |  | false |  |  |
 
 ## Constraints
 

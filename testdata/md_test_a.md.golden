@@ -6,10 +6,10 @@ TABLE A
 
 ## Columns
 
-| Name | Type | Default | Nullable | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| a |  |  | false |  | [b](b.md) | COLUMN A |
-| a2 |  |  | false |  |  | column a2 |
+| Name | Type | Default | Nullable | Parents | Comment |
+| ---- | ---- | ------- | -------- | ------- | ------- |
+| a |  |  | false | [b](b.md) | COLUMN A |
+| a2 |  |  | false |  | column a2 |
 
 ## Constraints
 

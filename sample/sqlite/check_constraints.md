@@ -22,14 +22,14 @@ CREATE TABLE check_constraints (
 
 ## Columns
 
-| Name | Type | Default | Nullable | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | INTEGER |  | true |  |  |  |
-| col | TEXT |  | true |  |  |  |
-| brackets | TEXT |  | false |  |  |  |
-| checkcheck | TEXT |  | false |  |  |  |
-| downcase | TEXT |  | false |  |  |  |
-| nl | TEXT |  | false |  |  |  |
+| Name | Type | Default | Nullable |
+| ---- | ---- | ------- | -------- |
+| id | INTEGER |  | true |
+| col | TEXT |  | true |
+| brackets | TEXT |  | false |
+| checkcheck | TEXT |  | false |
+| downcase | TEXT |  | false |
+| nl | TEXT |  | false |
 
 ## Constraints
 

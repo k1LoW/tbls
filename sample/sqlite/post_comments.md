@@ -26,15 +26,15 @@ CREATE VIEW post_comments AS
 
 ## Columns
 
-| Name | Type | Default | Nullable | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | INTEGER |  | true |  |  | comments.id |
-| title | TEXT |  | true |  |  | posts.title |
-| post_user | TEXT |  | true |  |  | posts.users.username |
-| comment | TEXT |  | true |  |  |  |
-| comment_user | TEXT |  | true |  |  | comments.users.username |
-| created | NUMERIC |  | true |  |  | comments.created |
-| updated | NUMERIC |  | true |  |  | comments.updated |
+| Name | Type | Default | Nullable | Comment |
+| ---- | ---- | ------- | -------- | ------- |
+| id | INTEGER |  | true | comments.id |
+| title | TEXT |  | true | posts.title |
+| post_user | TEXT |  | true | posts.users.username |
+| comment | TEXT |  | true |  |
+| comment_user | TEXT |  | true | comments.users.username |
+| created | NUMERIC |  | true | comments.created |
+| updated | NUMERIC |  | true | comments.updated |
 
 ## Relations
 

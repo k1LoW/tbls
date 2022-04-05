@@ -17,11 +17,11 @@ CREATE TABLE 'hyphen-table' (
 
 ## Columns
 
-| Name | Type | Default | Nullable | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | INTEGER |  | true |  |  |  |
-| hyphen-column | TEXT |  | false |  |  |  |
-| created | NUMERIC |  | false |  |  |  |
+| Name | Type | Default | Nullable |
+| ---- | ---- | ------- | -------- |
+| id | INTEGER |  | true |
+| hyphen-column | TEXT |  | false |
+| created | NUMERIC |  | false |
 
 ## Constraints
 

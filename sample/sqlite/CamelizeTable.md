@@ -16,10 +16,10 @@ CREATE TABLE CamelizeTable (
 
 ## Columns
 
-| Name | Type | Default | Nullable | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | INTEGER |  | true |  |  |  |
-| created | NUMERIC |  | false |  |  |  |
+| Name | Type | Default | Nullable |
+| ---- | ---- | ------- | -------- |
+| id | INTEGER |  | true |
+| created | NUMERIC |  | false |
 
 ## Constraints
 

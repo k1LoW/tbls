@@ -23,14 +23,14 @@ CREATE TABLE comment_stars (
 
 ## Columns
 
-| Name | Type | Default | Nullable | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | INTEGER |  | true | [logs](logs.md) |  |  |
-| user_id | INTEGER |  | false |  |  |  |
-| comment_post_id | INTEGER |  | false |  | [comments](comments.md) |  |
-| comment_user_id | INTEGER |  | false |  | [users](users.md) [comments](comments.md) |  |
-| created | NUMERIC |  | false |  |  |  |
-| updated | NUMERIC |  | true |  |  |  |
+| Name | Type | Default | Nullable | Children | Parents |
+| ---- | ---- | ------- | -------- | -------- | ------- |
+| id | INTEGER |  | true | [logs](logs.md) |  |
+| user_id | INTEGER |  | false |  |  |
+| comment_post_id | INTEGER |  | false |  | [comments](comments.md) |
+| comment_user_id | INTEGER |  | false |  | [users](users.md) [comments](comments.md) |
+| created | NUMERIC |  | false |  |  |
+| updated | NUMERIC |  | true |  |  |
 
 ## Constraints
 

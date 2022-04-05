@@ -13,9 +13,9 @@ CREATE VIRTUAL TABLE syslog USING fts3(logs)
 
 ## Columns
 
-| Name | Type | Default | Nullable | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| logs |  |  | true |  |  |  |
+| Name | Type | Default | Nullable |
+| ---- | ---- | ------- | -------- |
+| logs |  |  | true |
 
 ## Relations
 

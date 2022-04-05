@@ -19,12 +19,12 @@ CREATE TABLE user_options (
 
 ## Columns
 
-| Name | Type | Default | Nullable | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| user_id | INTEGER |  | true |  | [users](users.md) |  |
-| show_email | INTEGER | 0 | false |  |  |  |
-| created | NUMERIC |  | false |  |  |  |
-| updated | NUMERIC |  | true |  |  |  |
+| Name | Type | Default | Nullable | Children | Parents |
+| ---- | ---- | ------- | -------- | -------- | ------- |
+| user_id | INTEGER |  | true |  | [users](users.md) |
+| show_email | INTEGER | 0 | false |  |  |
+| created | NUMERIC |  | false |  |  |
+| updated | NUMERIC |  | true |  |  |
 
 ## Constraints
 
