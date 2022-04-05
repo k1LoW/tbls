@@ -682,7 +682,7 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 func (m *Md) adjustColumnHeader(columnsHeader *[]string, columnsHeaderLine *[]string, hasColumn bool, name string) {
 	if hasColumn {
 		*columnsHeader = append(*columnsHeader, m.config.MergedDict.Lookup(name))
-		*columnsHeaderLine = append(*columnsHeaderLine, "-------")
+		*columnsHeaderLine = append(*columnsHeaderLine, strings.Repeat("-", len(m.config.MergedDict.Lookup(name))))
 	}
 }
 
