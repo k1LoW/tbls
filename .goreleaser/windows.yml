@@ -5,13 +5,17 @@ before:
 builds:
 -  
   id: tbls-windows
+  flags:
+    - -a
+    - -tags
+    - netgo
+    - -installsuffix
+    - netgo
   ldflags:
     - -s -w -X github.com/k1LoW/tbls.version={{.Version}} -X github.com/k1LoW/tbls.commit={{.FullCommit}} -X github.com/k1LoW/tbls.date={{.Date}} -X github.com/k1LoW/tbls/version.Version={{.Version}}
     - -extldflags '-static'
-    - -extldflags '-Wl,--allow-multiple-definition'
   env:
     - CGO_ENABLED=1
-    - CFLAGS=-fcommon
   goos:
     - windows
   goarch:
