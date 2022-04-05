@@ -19,8 +19,8 @@ CREATE TABLE user_options (
 
 ## Columns
 
-| Name | Type | Default | Nullable |  Parents |
-| ---- | ---- | ------- | -------- | -------- | ------- |
+| Name | Type | Default | Nullable | Parents |
+| ---- | ---- | ------- | -------- | ------- |
 | user_id | INTEGER |  | true | [users](users.md) |
 | show_email | INTEGER | 0 | false |  |
 | created | NUMERIC |  | false |  |

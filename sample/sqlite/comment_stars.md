@@ -24,7 +24,7 @@ CREATE TABLE comment_stars (
 ## Columns
 
 | Name | Type | Default | Nullable | Children | Parents |
-| ---- | ---- | ------- | -------- | -------- | ------- |
+| ---- | ---- | ------- | -------- | ------- | ------- |
 | id | INTEGER |  | true | [logs](logs.md) |  |
 | user_id | INTEGER |  | false |  |  |
 | comment_post_id | INTEGER |  | false |  | [comments](comments.md) |
