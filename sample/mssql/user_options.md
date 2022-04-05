@@ -6,12 +6,12 @@ User options table
 
 ## Columns
 
-| Name | Type | Default | Nullable | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| user_id | int |  | false |  | [users](users.md) |  |
-| show_email | bit | ((0)) | false |  |  |  |
-| created | date |  | false |  |  |  |
-| updated | date |  | true |  |  |  |
+| Name | Type | Default | Nullable | Parents |
+| ---- | ---- | ------- | -------- | ------- |
+| user_id | int |  | false | [users](users.md) |
+| show_email | bit | ((0)) | false |  |
+| created | date |  | false |  |
+| updated | date |  | true |  |
 
 ## Constraints
 

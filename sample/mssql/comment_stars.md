@@ -4,14 +4,14 @@
 
 ## Columns
 
-| Name | Type | Default | Nullable | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | int |  | false | [logs](logs.md) |  |  |
-| user_id | int |  | false |  |  |  |
-| comment_post_id | int |  | false |  | [comments](comments.md) |  |
-| comment_user_id | int |  | false |  | [users](users.md) [comments](comments.md) |  |
-| created | date |  | false |  |  |  |
-| updated | date |  | true |  |  |  |
+| Name | Type | Default | Nullable | Children | Parents |
+| ---- | ---- | ------- | -------- | -------- | ------- |
+| id | int |  | false | [logs](logs.md) |  |
+| user_id | int |  | false |  |  |
+| comment_post_id | int |  | false |  | [comments](comments.md) |
+| comment_user_id | int |  | false |  | [users](users.md) [comments](comments.md) |
+| created | date |  | false |  |  |
+| updated | date |  | true |  |  |
 
 ## Constraints
 

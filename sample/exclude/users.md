@@ -25,14 +25,14 @@ CREATE TABLE `users` (
 
 ## Columns
 
-| Name | Type | Default | Nullable | Extra Definition | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | ---------------- | -------- | ------- | ------- |
-| id | int |  | false | auto_increment | [comment_stars](comment_stars.md) [comments](comments.md) [posts](posts.md) [user_options](user_options.md) |  |  |
-| username | varchar(50) |  | false |  |  |  |  |
-| password | varchar(50) |  | false |  |  |  |  |
-| email | varchar(355) |  | false |  |  |  | ex. user@example.com |
-| created | timestamp |  | false |  |  |  |  |
-| updated | timestamp |  | true |  |  |  |  |
+| Name | Type | Default | Nullable | Extra Definition | Children | Comment |
+| ---- | ---- | ------- | -------- | ---------------- | -------- | ------- |
+| id | int |  | false | auto_increment | [comment_stars](comment_stars.md) [comments](comments.md) [posts](posts.md) [user_options](user_options.md) |  |
+| username | varchar(50) |  | false |  |  |  |
+| password | varchar(50) |  | false |  |  |  |
+| email | varchar(355) |  | false |  |  | ex. user@example.com |
+| created | timestamp |  | false |  |  |  |
+| updated | timestamp |  | true |  |  |  |
 
 ## Constraints
 

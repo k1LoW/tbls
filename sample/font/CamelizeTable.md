@@ -17,10 +17,10 @@ CREATE TABLE `CamelizeTable` (
 
 ## Columns
 
-| Name | Type | Default | Nullable | Extra Definition | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | ---------------- | -------- | ------- | ------- |
-| id | bigint |  | false | auto_increment |  |  |  |
-| created | datetime |  | false |  |  |  |  |
+| Name | Type | Default | Nullable | Extra Definition |
+| ---- | ---- | ------- | -------- | ---------------- |
+| id | bigint |  | false | auto_increment |
+| created | datetime |  | false |  |
 
 ## Constraints
 

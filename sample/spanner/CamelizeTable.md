@@ -4,10 +4,10 @@
 
 ## Columns
 
-| Name | Type | Default | Nullable | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| CamelizeTableId | INT64 |  | false |  |  |  |
-| created | TIMESTAMP |  | false |  |  |  |
+| Name | Type | Default | Nullable |
+| ---- | ---- | ------- | -------- |
+| CamelizeTableId | INT64 |  | false |
+| created | TIMESTAMP |  | false |
 
 ## Constraints
 

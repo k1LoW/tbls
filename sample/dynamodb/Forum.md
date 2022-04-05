@@ -4,9 +4,9 @@
 
 ## Attributes
 
-| Name | Type | Default | Nullable | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| Name | S |  | false | [Thread](Thread.md) |  |  |
+| Name | Type | Default | Nullable | Children |
+| ---- | ---- | ------- | -------- | -------- |
+| Name | S |  | false | [Thread](Thread.md) |
 
 ## Primary Key
 

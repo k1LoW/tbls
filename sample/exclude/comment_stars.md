@@ -26,14 +26,14 @@ CREATE TABLE `comment_stars` (
 
 ## Columns
 
-| Name | Type | Default | Nullable | Extra Definition | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | ---------------- | -------- | ------- | ------- |
-| id | bigint |  | false | auto_increment |  |  |  |
-| user_id | int |  | false |  |  |  |  |
-| comment_post_id | bigint |  | false |  |  | [comments](comments.md) |  |
-| comment_user_id | int |  | false |  |  | [users](users.md) [comments](comments.md) |  |
-| created | timestamp |  | false |  |  |  |  |
-| updated | timestamp |  | true |  |  |  |  |
+| Name | Type | Default | Nullable | Extra Definition | Parents |
+| ---- | ---- | ------- | -------- | ---------------- | ------- |
+| id | bigint |  | false | auto_increment |  |
+| user_id | int |  | false |  |  |
+| comment_post_id | bigint |  | false |  | [comments](comments.md) |
+| comment_user_id | int |  | false |  | [users](users.md) [comments](comments.md) |
+| created | timestamp |  | false |  |  |
+| updated | timestamp |  | true |  |  |
 
 ## Constraints
 

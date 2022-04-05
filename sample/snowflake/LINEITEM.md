@@ -30,24 +30,24 @@ create or replace TABLE LINEITEM (
 
 ## Columns
 
-| Name | Type | Default | Nullable | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| L_ORDERKEY | NUMBER |  | false |  | [ORDERS](ORDERS.md) |  |
-| L_PARTKEY | NUMBER |  | false |  | [PARTSUPP](PARTSUPP.md) |  |
-| L_SUPPKEY | NUMBER |  | false |  | [PARTSUPP](PARTSUPP.md) |  |
-| L_LINENUMBER | NUMBER |  | false |  |  |  |
-| L_QUANTITY | NUMBER |  | false |  |  |  |
-| L_EXTENDEDPRICE | NUMBER |  | false |  |  |  |
-| L_DISCOUNT | NUMBER |  | false |  |  |  |
-| L_TAX | NUMBER |  | false |  |  |  |
-| L_RETURNFLAG | TEXT |  | false |  |  |  |
-| L_LINESTATUS | TEXT |  | false |  |  |  |
-| L_SHIPDATE | DATE |  | false |  |  |  |
-| L_COMMITDATE | DATE |  | false |  |  |  |
-| L_RECEIPTDATE | DATE |  | false |  |  |  |
-| L_SHIPINSTRUCT | TEXT |  | false |  |  |  |
-| L_SHIPMODE | TEXT |  | false |  |  |  |
-| L_COMMENT | TEXT |  | false |  |  |  |
+| Name | Type | Default | Nullable | Parents |
+| ---- | ---- | ------- | -------- | ------- |
+| L_ORDERKEY | NUMBER |  | false | [ORDERS](ORDERS.md) |
+| L_PARTKEY | NUMBER |  | false | [PARTSUPP](PARTSUPP.md) |
+| L_SUPPKEY | NUMBER |  | false | [PARTSUPP](PARTSUPP.md) |
+| L_LINENUMBER | NUMBER |  | false |  |
+| L_QUANTITY | NUMBER |  | false |  |
+| L_EXTENDEDPRICE | NUMBER |  | false |  |
+| L_DISCOUNT | NUMBER |  | false |  |
+| L_TAX | NUMBER |  | false |  |
+| L_RETURNFLAG | TEXT |  | false |  |
+| L_LINESTATUS | TEXT |  | false |  |
+| L_SHIPDATE | DATE |  | false |  |
+| L_COMMITDATE | DATE |  | false |  |
+| L_RECEIPTDATE | DATE |  | false |  |
+| L_SHIPINSTRUCT | TEXT |  | false |  |
+| L_SHIPMODE | TEXT |  | false |  |
+| L_COMMENT | TEXT |  | false |  |
 
 ## Relations
 

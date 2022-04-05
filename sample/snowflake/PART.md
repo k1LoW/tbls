@@ -23,17 +23,17 @@ create or replace TABLE PART (
 
 ## Columns
 
-| Name | Type | Default | Nullable | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| P_PARTKEY | NUMBER |  | false | [PARTSUPP](PARTSUPP.md) |  |  |
-| P_NAME | TEXT |  | false |  |  |  |
-| P_MFGR | TEXT |  | false |  |  |  |
-| P_BRAND | TEXT |  | false |  |  |  |
-| P_TYPE | TEXT |  | false |  |  |  |
-| P_SIZE | NUMBER |  | false |  |  |  |
-| P_CONTAINER | TEXT |  | false |  |  |  |
-| P_RETAILPRICE | NUMBER |  | false |  |  |  |
-| P_COMMENT | TEXT |  | true |  |  |  |
+| Name | Type | Default | Nullable | Children |
+| ---- | ---- | ------- | -------- | -------- |
+| P_PARTKEY | NUMBER |  | false | [PARTSUPP](PARTSUPP.md) |
+| P_NAME | TEXT |  | false |  |
+| P_MFGR | TEXT |  | false |  |
+| P_BRAND | TEXT |  | false |  |
+| P_TYPE | TEXT |  | false |  |
+| P_SIZE | NUMBER |  | false |  |
+| P_CONTAINER | TEXT |  | false |  |
+| P_RETAILPRICE | NUMBER |  | false |  |
+| P_COMMENT | TEXT |  | true |  |
 
 ## Relations
 

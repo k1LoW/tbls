@@ -6,12 +6,12 @@ User options table
 
 ## Columns
 
-| Name       | Type                        | Default | Nullable | Children | Parents                         | Comment |
-| ---------- | --------------------------- | ------- | -------- | -------- | ------------------------------- | ------- |
-| user_id    | integer                     |         | false    |          | [public.users](public.users.md) |         |
-| show_email | boolean                     | false   | false    |          |                                 |         |
-| created    | timestamp without time zone |         | false    |          |                                 |         |
-| updated    | timestamp without time zone |         | true     |          |                                 |         |
+| Name       | Type                        | Default | Nullable | Parents                         |
+| ---------- | --------------------------- | ------- | -------- | ------------------------------- |
+| user_id    | integer                     |         | false    | [public.users](public.users.md) |
+| show_email | boolean                     | false   | false    |                                 |
+| created    | timestamp without time zone |         | false    |                                 |
+| updated    | timestamp without time zone |         | true     |                                 |
 
 ## Constraints
 

@@ -4,10 +4,10 @@
 
 ## Attributes
 
-| Name | Type | Default | Nullable | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| ForumName | S |  | false |  | [Forum](Forum.md) |  |
-| Subject | S |  | false |  |  |  |
+| Name | Type | Default | Nullable | Parents |
+| ---- | ---- | ------- | -------- | ------- |
+| ForumName | S |  | false | [Forum](Forum.md) |
+| Subject | S |  | false |  |
 
 ## Primary Key
 

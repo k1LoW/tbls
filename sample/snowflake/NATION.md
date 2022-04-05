@@ -18,12 +18,12 @@ create or replace TABLE NATION (
 
 ## Columns
 
-| Name | Type | Default | Nullable | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| N_NATIONKEY | NUMBER |  | false | [CUSTOMER](CUSTOMER.md) [SUPPLIER](SUPPLIER.md) |  |  |
-| N_NAME | TEXT |  | false |  |  |  |
-| N_REGIONKEY | NUMBER |  | false |  | [REGION](REGION.md) |  |
-| N_COMMENT | TEXT |  | true |  |  |  |
+| Name | Type | Default | Nullable | Children | Parents |
+| ---- | ---- | ------- | -------- | -------- | ------- |
+| N_NATIONKEY | NUMBER |  | false | [CUSTOMER](CUSTOMER.md) [SUPPLIER](SUPPLIER.md) |  |
+| N_NAME | TEXT |  | false |  |  |
+| N_REGIONKEY | NUMBER |  | false |  | [REGION](REGION.md) |
+| N_COMMENT | TEXT |  | true |  |  |
 
 ## Relations
 

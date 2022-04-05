@@ -22,16 +22,16 @@ create or replace TABLE CUSTOMER (
 
 ## Columns
 
-| Name | Type | Default | Nullable | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| C_CUSTKEY | NUMBER |  | false | [ORDERS](ORDERS.md) |  |  |
-| C_NAME | TEXT |  | false |  |  |  |
-| C_ADDRESS | TEXT |  | false |  |  |  |
-| C_NATIONKEY | NUMBER |  | false |  | [NATION](NATION.md) |  |
-| C_PHONE | TEXT |  | false |  |  |  |
-| C_ACCTBAL | NUMBER |  | false |  |  |  |
-| C_MKTSEGMENT | TEXT |  | true |  |  |  |
-| C_COMMENT | TEXT |  | true |  |  |  |
+| Name | Type | Default | Nullable | Children | Parents |
+| ---- | ---- | ------- | -------- | -------- | ------- |
+| C_CUSTKEY | NUMBER |  | false | [ORDERS](ORDERS.md) |  |
+| C_NAME | TEXT |  | false |  |  |
+| C_ADDRESS | TEXT |  | false |  |  |
+| C_NATIONKEY | NUMBER |  | false |  | [NATION](NATION.md) |
+| C_PHONE | TEXT |  | false |  |  |
+| C_ACCTBAL | NUMBER |  | false |  |  |
+| C_MKTSEGMENT | TEXT |  | true |  |  |
+| C_COMMENT | TEXT |  | true |  |  |
 
 ## Relations
 

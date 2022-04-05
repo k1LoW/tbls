@@ -33,15 +33,15 @@ CREATE VIEW post_comments AS (
 
 ## Columns
 
-| Name         | Type                        | Default | Nullable | Children | Parents | Comment                 |
-| ------------ | --------------------------- | ------- | -------- | -------- | ------- | ----------------------- |
-| id           | bigint                      |         | true     |          |         | comments.id             |
-| title        | varchar(255)                |         | true     |          |         | posts.title             |
-| post_user    | varchar(50)                 |         | true     |          |         | posts.users.username    |
-| comment      | text                        |         | true     |          |         |                         |
-| comment_user | varchar(50)                 |         | true     |          |         | comments.users.username |
-| created      | timestamp without time zone |         | true     |          |         | comments.created        |
-| updated      | timestamp without time zone |         | true     |          |         | comments.updated        |
+| Name         | Type                        | Default | Nullable | Comment                 |
+| ------------ | --------------------------- | ------- | -------- | ----------------------- |
+| id           | bigint                      |         | true     | comments.id             |
+| title        | varchar(255)                |         | true     | posts.title             |
+| post_user    | varchar(50)                 |         | true     | posts.users.username    |
+| comment      | text                        |         | true     |                         |
+| comment_user | varchar(50)                 |         | true     | comments.users.username |
+| created      | timestamp without time zone |         | true     | comments.created        |
+| updated      | timestamp without time zone |         | true     | comments.updated        |
 
 ## Relations
 

@@ -21,15 +21,15 @@ CREATE VIEW post_comments AS (select `c`.`id` AS `id`,`p`.`title` AS `title`,`u2
 
 ## Columns
 
-| Name | Type | Default | Nullable | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | bigint | 0 | true |  |  | comments.id |
-| title | varchar(255) | Untitled | false |  |  | posts.title |
-| post_user | varchar(50) |  | true |  |  | posts.users.username |
-| comment | text |  | true |  |  | Comment<br>Multi-line<br>column<br>comment |
-| comment_user | varchar(50) |  | true |  |  | comments.users.username |
-| created | datetime |  | true |  |  | comments.created |
-| updated | datetime |  | true |  |  | comments.updated |
+| Name | Type | Default | Nullable | Comment |
+| ---- | ---- | ------- | -------- | ------- |
+| id | bigint | 0 | true | comments.id |
+| title | varchar(255) | Untitled | false | posts.title |
+| post_user | varchar(50) |  | true | posts.users.username |
+| comment | text |  | true | Comment<br>Multi-line<br>column<br>comment |
+| comment_user | varchar(50) |  | true | comments.users.username |
+| created | datetime |  | true | comments.created |
+| updated | datetime |  | true | comments.updated |
 
 ## Relations
 

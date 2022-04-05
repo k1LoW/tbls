@@ -23,12 +23,12 @@ CREATE TABLE `user_option` (
 
 ## Columns
 
-| Name | Type | Default | Nullable | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| user_id | int |  | false |  | [user](user.md) |  |
-| show_email | tinyint(1) | 0 | false |  |  |  |
-| created | timestamp |  | false |  |  |  |
-| updated | timestamp |  | true |  |  |  |
+| Name | Type | Default | Nullable | Parents |
+| ---- | ---- | ------- | -------- | ------- |
+| user_id | int |  | false | [user](user.md) |
+| show_email | tinyint(1) | 0 | false |  |
+| created | timestamp |  | false |  |
+| updated | timestamp |  | true |  |
 
 ## Constraints
 

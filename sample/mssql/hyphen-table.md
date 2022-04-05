@@ -4,11 +4,11 @@
 
 ## Columns
 
-| Name | Type | Default | Nullable | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | int |  | false |  |  |  |
-| hyphen-column | text |  | false |  |  |  |
-| created | date |  | false |  |  |  |
+| Name | Type | Default | Nullable |
+| ---- | ---- | ------- | -------- |
+| id | int |  | false |
+| hyphen-column | text |  | false |
+| created | date |  | false |
 
 ## Relations
 

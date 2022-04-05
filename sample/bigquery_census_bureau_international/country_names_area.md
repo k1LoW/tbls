@@ -8,11 +8,11 @@
 
 ## Columns
 
-| Name | Type | Default | Nullable | Children | Parents | Description |
-| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| country_code | STRING |  | false |  |  | Federal Information Processing Standard (FIPS) country/area code |
-| country_name | STRING |  | true |  |  | Country or area name |
-| country_area | FLOAT |  | true |  |  | Area in square kilometers |
+| Name | Type | Default | Nullable | Description |
+| ---- | ---- | ------- | -------- | ------- |
+| country_code | STRING |  | false | Federal Information Processing Standard (FIPS) country/area code |
+| country_name | STRING |  | true | Country or area name |
+| country_area | FLOAT |  | true | Area in square kilometers |
 
 ## Relations
 

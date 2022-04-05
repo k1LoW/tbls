@@ -4,12 +4,12 @@
 
 ## Columns
 
-| Name | Type | Default | Nullable | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | integer | nextval('blog_options_id_seq'::regclass) | false |  |  |  |
-| blog_id | integer |  | false |  | [backup.blogs](backup.blogs.md) |  |
-| label | text |  | true |  |  |  |
-| updated | timestamp without time zone |  | true |  |  |  |
+| Name | Type | Default | Nullable | Parents |
+| ---- | ---- | ------- | -------- | ------- |
+| id | integer | nextval('blog_options_id_seq'::regclass) | false |  |
+| blog_id | integer |  | false | [backup.blogs](backup.blogs.md) |
+| label | text |  | true |  |
+| updated | timestamp without time zone |  | true |  |
 
 ## Constraints
 

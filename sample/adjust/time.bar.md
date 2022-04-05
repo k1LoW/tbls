@@ -4,9 +4,9 @@
 
 ## Columns
 
-| Name | Type    | Default | Nullable | Children                                | Parents | Comment |
-| ---- | ------- | ------- | -------- | --------------------------------------- | ------- | ------- |
-| id   | integer |         | false    | [time.referencing](time.referencing.md) |         |         |
+| Name | Type    | Default | Nullable | Children                                |
+| ---- | ------- | ------- | -------- | --------------------------------------- |
+| id   | integer |         | false    | [time.referencing](time.referencing.md) |
 
 ## Constraints
 

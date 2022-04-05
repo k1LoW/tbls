@@ -18,10 +18,10 @@ CREATE TABLE `same_name_constraints` (
 
 ## Columns
 
-| Name | Type | Default | Nullable | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | bigint(20) | NULL | true |  |  |  |
-| user_id | int(11) |  | false |  | [users](users.md) |  |
+| Name | Type | Default | Nullable | Parents |
+| ---- | ---- | ------- | -------- | ------- |
+| id | bigint(20) | NULL | true |  |
+| user_id | int(11) |  | false | [users](users.md) |
 
 ## Constraints
 

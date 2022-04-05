@@ -29,13 +29,13 @@ CREATE MATERIALIZED VIEW post_comment_stars AS (
 
 ## Columns
 
-| Name              | Type                        | Default | Nullable | Children | Parents | Comment |
-| ----------------- | --------------------------- | ------- | -------- | -------- | ------- | ------- |
-| id                | uuid                        |         | true     |          |         |         |
-| comment_user      | varchar(50)                 |         | true     |          |         |         |
-| comment_star_user | varchar(50)                 |         | true     |          |         |         |
-| created           | timestamp without time zone |         | true     |          |         |         |
-| updated           | timestamp without time zone |         | true     |          |         |         |
+| Name              | Type                        | Default | Nullable |
+| ----------------- | --------------------------- | ------- | -------- |
+| id                | uuid                        |         | true     |
+| comment_user      | varchar(50)                 |         | true     |
+| comment_star_user | varchar(50)                 |         | true     |
+| created           | timestamp without time zone |         | true     |
+| updated           | timestamp without time zone |         | true     |
 
 ## Relations
 

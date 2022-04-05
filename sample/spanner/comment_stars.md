@@ -6,14 +6,14 @@ Stars of Blog comments
 
 ## Columns
 
-| Name | Type | Default | Nullable | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| user_id | INT64 |  | false |  | [users](users.md) |  |
-| comment_star_id | INT64 |  | false |  | [users](users.md) |  |
-| comment_post_id | INT64 |  | false |  | [comments](comments.md) |  |
-| comment_user_id | INT64 |  | false |  | [comments](comments.md) |  |
-| created | TIMESTAMP |  | false |  |  |  |
-| updated | TIMESTAMP (allow_commit_timestamp=TRUE) |  | true |  |  |  |
+| Name | Type | Default | Nullable | Parents |
+| ---- | ---- | ------- | -------- | ------- |
+| user_id | INT64 |  | false | [users](users.md) |
+| comment_star_id | INT64 |  | false | [users](users.md) |
+| comment_post_id | INT64 |  | false | [comments](comments.md) |
+| comment_user_id | INT64 |  | false | [comments](comments.md) |
+| created | TIMESTAMP |  | false |  |
+| updated | TIMESTAMP (allow_commit_timestamp=TRUE) |  | true |  |
 
 ## Constraints
 

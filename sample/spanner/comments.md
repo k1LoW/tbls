@@ -6,14 +6,14 @@ Blog comments
 
 ## Columns
 
-| Name | Type | Default | Nullable | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| user_id | INT64 |  | false | [comment_stars](comment_stars.md) | [posts](posts.md) [users](users.md) |  |
-| post_id | INT64 |  | false | [comment_stars](comment_stars.md) | [posts](posts.md) |  |
-| comment_id | INT64 |  | false |  | [posts](posts.md) |  |
-| comment | STRING(MAX) |  | false |  |  |  |
-| created | TIMESTAMP |  | false |  |  |  |
-| updated | TIMESTAMP (allow_commit_timestamp=TRUE) |  | true |  |  |  |
+| Name | Type | Default | Nullable | Children | Parents |
+| ---- | ---- | ------- | -------- | -------- | ------- |
+| user_id | INT64 |  | false | [comment_stars](comment_stars.md) | [posts](posts.md) [users](users.md) |
+| post_id | INT64 |  | false | [comment_stars](comment_stars.md) | [posts](posts.md) |
+| comment_id | INT64 |  | false |  | [posts](posts.md) |
+| comment | STRING(MAX) |  | false |  |  |
+| created | TIMESTAMP |  | false |  |  |
+| updated | TIMESTAMP (allow_commit_timestamp=TRUE) |  | true |  |  |
 
 ## Constraints
 

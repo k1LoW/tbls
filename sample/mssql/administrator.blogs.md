@@ -6,14 +6,14 @@ admin blogs
 
 ## Columns
 
-| Name | Type | Default | Nullable | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | int |  | false |  |  |  |
-| user_id | int |  | false |  | [users](users.md) |  |
-| name | text |  | false |  |  |  |
-| description | text |  | true |  |  |  |
-| created | date |  | false |  |  |  |
-| updated | date |  | true |  |  |  |
+| Name | Type | Default | Nullable | Parents |
+| ---- | ---- | ------- | -------- | ------- |
+| id | int |  | false |  |
+| user_id | int |  | false | [users](users.md) | 
+| name | text |  | false |  |
+| description | text |  | true |  |
+| created | date |  | false |  |
+| updated | date |  | true |  |
 
 ## Constraints
 

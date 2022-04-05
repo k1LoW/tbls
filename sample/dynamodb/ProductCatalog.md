@@ -4,9 +4,9 @@
 
 ## Attributes
 
-| Name | Type | Default | Nullable | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| Id | N |  | false |  |  |  |
+| Name | Type | Default | Nullable |
+| ---- | ---- | ------- | -------- |
+| Id | N |  | false |
 
 ## Primary Key
 

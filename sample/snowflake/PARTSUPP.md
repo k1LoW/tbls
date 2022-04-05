@@ -19,13 +19,13 @@ create or replace TABLE PARTSUPP (
 
 ## Columns
 
-| Name | Type | Default | Nullable | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| PS_PARTKEY | NUMBER |  | false | [LINEITEM](LINEITEM.md) | [PART](PART.md) |  |
-| PS_SUPPKEY | NUMBER |  | false | [LINEITEM](LINEITEM.md) | [SUPPLIER](SUPPLIER.md) |  |
-| PS_AVAILQTY | NUMBER |  | false |  |  |  |
-| PS_SUPPLYCOST | NUMBER |  | false |  |  |  |
-| PS_COMMENT | TEXT |  | true |  |  |  |
+| Name | Type | Default | Nullable | Children | Parents |
+| ---- | ---- | ------- | -------- | -------- | ------- |
+| PS_PARTKEY | NUMBER |  | false | [LINEITEM](LINEITEM.md) | [PART](PART.md) |
+| PS_SUPPKEY | NUMBER |  | false | [LINEITEM](LINEITEM.md) | [SUPPLIER](SUPPLIER.md) |
+| PS_AVAILQTY | NUMBER |  | false |  |  |
+| PS_SUPPLYCOST | NUMBER |  | false |  |  |
+| PS_COMMENT | TEXT |  | true |  |  |
 
 ## Relations
 

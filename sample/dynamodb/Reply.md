@@ -4,11 +4,11 @@
 
 ## Attributes
 
-| Name | Type | Default | Nullable | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| Id | S |  | false |  |  |  |
-| ReplyDateTime | S |  | false |  |  |  |
-| PostedBy | S |  | false |  |  |  |
+| Name | Type | Default | Nullable |
+| ---- | ---- | ------- | -------- |
+| Id | S |  | false |
+| ReplyDateTime | S |  | false |
+| PostedBy | S |  | false |
 
 ## Primary Key
 

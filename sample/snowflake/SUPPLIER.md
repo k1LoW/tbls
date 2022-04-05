@@ -21,15 +21,15 @@ create or replace TABLE SUPPLIER (
 
 ## Columns
 
-| Name | Type | Default | Nullable | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| S_SUPPKEY | NUMBER |  | false | [PARTSUPP](PARTSUPP.md) |  |  |
-| S_NAME | TEXT |  | false |  |  |  |
-| S_ADDRESS | TEXT |  | false |  |  |  |
-| S_NATIONKEY | NUMBER |  | false |  | [NATION](NATION.md) |  |
-| S_PHONE | TEXT |  | false |  |  |  |
-| S_ACCTBAL | NUMBER |  | false |  |  |  |
-| S_COMMENT | TEXT |  | true |  |  |  |
+| Name | Type | Default | Nullable | Children | Parents |
+| ---- | ---- | ------- | -------- | -------- | ------- |
+| S_SUPPKEY | NUMBER |  | false | [PARTSUPP](PARTSUPP.md) |  |
+| S_NAME | TEXT |  | false |  |  |
+| S_ADDRESS | TEXT |  | false |  |  |
+| S_NATIONKEY | NUMBER |  | false |  | [NATION](NATION.md) |
+| S_PHONE | TEXT |  | false |  |  |
+| S_ACCTBAL | NUMBER |  | false |  |  |
+| S_COMMENT | TEXT |  | true |  |  |
 
 ## Relations
 

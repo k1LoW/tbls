@@ -27,15 +27,15 @@ CREATE VIEW post_comments AS (
 
 ## Columns
 
-| Name | Type | Default | Nullable | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | int |  | true |  |  | comments.id |
-| title | varchar(255) |  | false |  |  | posts.title |
-| post_user | varchar(50) |  | true |  |  | posts.users.username |
-| comment | text |  | true |  |  |  |
-| comment_user | varchar(50) |  | true |  |  | comments.users.username |
-| created | date |  | true |  |  | comments.created |
-| updated | date |  | true |  |  | comments.updated |
+| Name | Type | Default | Nullable | Comment |
+| ---- | ---- | ------- | -------- | ------- |
+| id | int |  | true | comments.id |
+| title | varchar(255) |  | false | posts.title |
+| post_user | varchar(50) |  | true | posts.users.username |
+| comment | text |  | true |  |
+| comment_user | varchar(50) |  | true | comments.users.username |
+| created | date |  | true | comments.created |
+| updated | date |  | true | comments.updated |
 
 ## Relations
 

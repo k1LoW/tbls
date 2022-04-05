@@ -4,12 +4,12 @@
 
 ## Columns
 
-| Name | Type | Default | Nullable | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| id | uuid | uuid_generate_v4() | false |  |  |  |
-| hyphen-column | text |  | false |  |  |  |
-| CamelizeTableId | uuid |  | false |  | [public.CamelizeTable](public.CamelizeTable.md) |  |
-| created | timestamp without time zone |  | false |  |  |  |
+| Name | Type | Default | Nullable | Parents |
+| ---- | ---- | ------- | -------- | ------- |
+| id | uuid | uuid_generate_v4() | false |  |
+| hyphen-column | text |  | false |  |
+| CamelizeTableId | uuid |  | false | [public.CamelizeTable](public.CamelizeTable.md) |
+| created | timestamp without time zone |  | false |  |
 
 ## Constraints
 

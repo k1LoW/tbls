@@ -17,11 +17,11 @@ create or replace TABLE REGION (
 
 ## Columns
 
-| Name | Type | Default | Nullable | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| R_REGIONKEY | NUMBER |  | false | [NATION](NATION.md) |  |  |
-| R_NAME | TEXT |  | false |  |  |  |
-| R_COMMENT | TEXT |  | true |  |  |  |
+| Name | Type | Default | Nullable | Children |
+| ---- | ---- | ------- | -------- | -------- |
+| R_REGIONKEY | NUMBER |  | false | [NATION](NATION.md) |
+| R_NAME | TEXT |  | false |  |
+| R_COMMENT | TEXT |  | true |  |
 
 ## Relations
 

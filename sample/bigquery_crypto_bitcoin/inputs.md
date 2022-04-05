@@ -36,22 +36,22 @@ FROM `bigquery-public-data.crypto_bitcoin.transactions` as transactions,
 
 ## Columns
 
-| Name | Type | Default | Nullable | Children | Parents | Description |
-| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| transaction_hash | STRING |  | true |  | [transactions](transactions.md) |  |
-| block_hash | STRING |  | true |  | [blocks](blocks.md) |  |
-| block_number | INTEGER |  | true |  |  |  |
-| block_timestamp | TIMESTAMP |  | true |  |  |  |
-| index | INTEGER |  | true |  |  |  |
-| spent_transaction_hash | STRING |  | true |  | [transactions](transactions.md) |  |
-| spent_output_index | INTEGER |  | true |  |  |  |
-| script_asm | STRING |  | true |  |  |  |
-| script_hex | STRING |  | true |  |  |  |
-| sequence | INTEGER |  | true |  |  |  |
-| required_signatures | INTEGER |  | true |  |  |  |
-| type | STRING |  | true |  |  |  |
-| addresses | STRING |  | true |  |  |  |
-| value | NUMERIC |  | true |  |  |  |
+| Name | Type | Default | Nullable | Parents |
+| ---- | ---- | ------- | -------- | ------- |
+| transaction_hash | STRING |  | true | [transactions](transactions.md) |
+| block_hash | STRING |  | true | [blocks](blocks.md) |
+| block_number | INTEGER |  | true |  |
+| block_timestamp | TIMESTAMP |  | true |  |
+| index | INTEGER |  | true |  |
+| spent_transaction_hash | STRING |  | true | [transactions](transactions.md) |
+| spent_output_index | INTEGER |  | true |  |
+| script_asm | STRING |  | true |  |
+| script_hex | STRING |  | true |  |
+| sequence | INTEGER |  | true |  |
+| required_signatures | INTEGER |  | true |  |
+| type | STRING |  | true |  |
+| addresses | STRING |  | true |  |
+| value | NUMERIC |  | true |  |
 
 ## Relations
 

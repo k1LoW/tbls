@@ -23,17 +23,17 @@ create or replace TABLE ORDERS (
 
 ## Columns
 
-| Name | Type | Default | Nullable | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| O_ORDERKEY | NUMBER |  | false | [LINEITEM](LINEITEM.md) |  |  |
-| O_CUSTKEY | NUMBER |  | false |  | [CUSTOMER](CUSTOMER.md) |  |
-| O_ORDERSTATUS | TEXT |  | false |  |  |  |
-| O_TOTALPRICE | NUMBER |  | false |  |  |  |
-| O_ORDERDATE | DATE |  | false |  |  |  |
-| O_ORDERPRIORITY | TEXT |  | false |  |  |  |
-| O_CLERK | TEXT |  | false |  |  |  |
-| O_SHIPPRIORITY | NUMBER |  | false |  |  |  |
-| O_COMMENT | TEXT |  | false |  |  |  |
+| Name | Type | Default | Nullable | Children | Parents |
+| ---- | ---- | ------- | -------- | -------- | ------- |
+| O_ORDERKEY | NUMBER |  | false | [LINEITEM](LINEITEM.md) |  |
+| O_CUSTKEY | NUMBER |  | false |  | [CUSTOMER](CUSTOMER.md) |
+| O_ORDERSTATUS | TEXT |  | false |  |  |
+| O_TOTALPRICE | NUMBER |  | false |  |  |
+| O_ORDERDATE | DATE |  | false |  |  |
+| O_ORDERPRIORITY | TEXT |  | false |  |  |
+| O_CLERK | TEXT |  | false |  |  |
+| O_SHIPPRIORITY | NUMBER |  | false |  |  |
+| O_COMMENT | TEXT |  | false |  |  |
 
 ## Relations
 

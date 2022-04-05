@@ -25,14 +25,14 @@ CREATE TABLE `users` (
 
 ## Columns
 
-| Name | Type | Default | Nullable | Extra Definition | Children | Parents | Comment | Labels |
-| ---- | ---- | ------- | -------- | ---------------- | -------- | ------- | ------- | ------ |
-| id | int(11) |  | false | auto_increment | [comment_stars](comment_stars.md) [comments](comments.md) [posts](posts.md) [user_options](user_options.md) [logs](logs.md) |  |  |  |
-| username | varchar(50) |  | false |  |  |  |  |  |
-| password | varchar(50) |  | false |  |  |  |  | `secure` `encrypted` |
-| email | varchar(355) |  | false |  |  |  | ex. user@example.com | `secure` |
-| created | timestamp | CURRENT_TIMESTAMP | false | on update CURRENT_TIMESTAMP |  |  |  |  |
-| updated | timestamp | 0000-00-00 00:00:00 | false |  |  |  |  |  |
+| Name | Type | Default | Nullable | Extra Definition | Children | Comment | Labels |
+| ---- | ---- | ------- | -------- | ---------------- | -------- | ------- | ------ |
+| id | int(11) |  | false | auto_increment | [comment_stars](comment_stars.md) [comments](comments.md) [posts](posts.md) [user_options](user_options.md) [logs](logs.md) |  |  |
+| username | varchar(50) |  | false |  |  |  |  |
+| password | varchar(50) |  | false |  |  |  | `secure` `encrypted` |
+| email | varchar(355) |  | false |  |  | ex. user@example.com | `secure` |
+| created | timestamp | CURRENT_TIMESTAMP | false | on update CURRENT_TIMESTAMP |  |  |  |
+| updated | timestamp | 0000-00-00 00:00:00 | false |  |  |  |  |
 
 ## Constraints
 

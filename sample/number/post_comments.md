@@ -21,15 +21,15 @@ CREATE VIEW post_comments AS (select `c`.`id` AS `id`,`p`.`title` AS `title`,`u2
 
 ## Columns
 
-| # | Name | Type | Default | Nullable | Children | Parents | Comment |
-| - | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| 1 | id | bigint | 0 | true |  |  | comments.id |
-| 2 | title | varchar(255) | Untitled | false |  |  | posts.title |
-| 3 | post_user | varchar(50) |  | true |  |  | posts.users.username |
-| 4 | comment | text |  | true |  |  | Comment<br>Multi-line<br>column<br>comment |
-| 5 | comment_user | varchar(50) |  | true |  |  | comments.users.username |
-| 6 | created | datetime |  | true |  |  | comments.created |
-| 7 | updated | datetime |  | true |  |  | comments.updated |
+| # | Name | Type | Default | Nullable | Comment |
+| - | ---- | ---- | ------- | -------- | ------- |
+| 1 | id | bigint | 0 | true | comments.id |
+| 2 | title | varchar(255) | Untitled | false | posts.title |
+| 3 | post_user | varchar(50) |  | true | posts.users.username |
+| 4 | comment | text |  | true | Comment<br>Multi-line<br>column<br>comment |
+| 5 | comment_user | varchar(50) |  | true | comments.users.username |
+| 6 | created | datetime |  | true | comments.created |
+| 7 | updated | datetime |  | true | comments.updated |
 
 ## Relations
 
