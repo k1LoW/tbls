@@ -26,14 +26,14 @@ CREATE TABLE `comment_stars` (
 
 ## カラム一覧
 
-| 名前              | タイプ       | デフォルト値       | Nullable | Extra Definition | 親テーブル                                     |
-| --------------- | --------- | ------------ | -------- | ---------------- | ----------------------------------------- |
-| id              | bigint    |              | false    | auto_increment   |                                           |
-| user_id         | int       |              | false    |                  |                                           |
-| comment_post_id | bigint    |              | false    |                  | [comments](comments.md)                   |
-| comment_user_id | int       |              | false    |                  | [users](users.md) [comments](comments.md) |
-| created         | timestamp |              | false    |                  |                                           |
-| updated         | timestamp |              | true     |                  |                                           |
+| 名前              | タイプ       | デフォルト値             | Nullable | Extra Definition | 親テーブル                                     |
+| --------------- | --------- | ------------------ | -------- | ---------------- | ----------------------------------------- |
+| id              | bigint    |                    | false    | auto_increment   |                                           |
+| user_id         | int       |                    | false    |                  |                                           |
+| comment_post_id | bigint    |                    | false    |                  | [comments](comments.md)                   |
+| comment_user_id | int       |                    | false    |                  | [users](users.md) [comments](comments.md) |
+| created         | timestamp |                    | false    |                  |                                           |
+| updated         | timestamp |                    | true     |                  |                                           |
 
 ## 制約一覧
 

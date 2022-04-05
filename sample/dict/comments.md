@@ -32,15 +32,15 @@ CREATE TABLE `comments` (
 
 ## カラム一覧
 
-| 名前           | タイプ      | デフォルト値       | Nullable | Extra Definition                                 | 子テーブル                             | 親テーブル             | コメント                                       |
-| ------------ | -------- | ------------ | -------- | ------------------------------------------------ | --------------------------------- | ----------------- | ------------------------------------------ |
-| id           | bigint   |              | false    | auto_increment                                   |                                   |                   |                                            |
-| post_id      | bigint   |              | false    |                                                  | [comment_stars](comment_stars.md) | [posts](posts.md) |                                            |
-| user_id      | int      |              | false    |                                                  | [comment_stars](comment_stars.md) | [users](users.md) |                                            |
-| comment      | text     |              | false    |                                                  |                                   |                   | Comment<br>Multi-line<br>column<br>comment |
-| post_id_desc | bigint   |              | true     | GENERATED ALWAYS AS (\`post_id\` * -(1)) VIRTUAL |                                   |                   |                                            |
-| created      | datetime |              | false    |                                                  |                                   |                   |                                            |
-| updated      | datetime |              | true     |                                                  |                                   |                   |                                            |
+| 名前           | タイプ       | デフォルト値             | Nullable | Extra Definition                                 | 子テーブル                             | 親テーブル             | コメント                                       |
+| ------------ | --------- | ------------------ | -------- | ------------------------------------------------ | --------------------------------- | ----------------- | ------------------------------------------ |
+| id           | bigint    |                    | false    | auto_increment                                   |                                   |                   |                                            |
+| post_id      | bigint    |                    | false    |                                                  | [comment_stars](comment_stars.md) | [posts](posts.md) |                                            |
+| user_id      | int       |                    | false    |                                                  | [comment_stars](comment_stars.md) | [users](users.md) |                                            |
+| comment      | text      |                    | false    |                                                  |                                   |                   | Comment<br>Multi-line<br>column<br>comment |
+| post_id_desc | bigint    |                    | true     | GENERATED ALWAYS AS (\`post_id\` * -(1)) VIRTUAL |                                   |                   |                                            |
+| created      | datetime  |                    | false    |                                                  |                                   |                   |                                            |
+| updated      | datetime  |                    | true     |                                                  |                                   |                   |                                            |
 
 ## 制約一覧
 

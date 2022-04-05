@@ -27,15 +27,15 @@ CREATE TABLE `posts` (
 
 ## カラム一覧
 
-| 名前        | タイプ                              | デフォルト値       | Nullable | Extra Definition | 子テーブル                   | 親テーブル             | コメント                 |
-| --------- | -------------------------------- | ------------ | -------- | ---------------- | ----------------------- | ----------------- | -------------------- |
-| id        | bigint                           |              | false    | auto_increment   | [comments](comments.md) |                   |                      |
-| user_id   | int                              |              | false    |                  |                         | [users](users.md) |                      |
-| title     | varchar(255)                     | Untitled     | false    |                  |                         |                   |                      |
-| body      | text                             |              | false    |                  |                         |                   |                      |
-| post_type | enum('public','private','draft') |              | false    |                  |                         |                   | public/private/draft |
-| created   | datetime                         |              | false    |                  |                         |                   |                      |
-| updated   | datetime                         |              | true     |                  |                         |                   |                      |
+| 名前        | タイプ                              | デフォルト値             | Nullable | Extra Definition | 子テーブル                   | 親テーブル             | コメント                 |
+| --------- | -------------------------------- | ------------------ | -------- | ---------------- | ----------------------- | ----------------- | -------------------- |
+| id        | bigint                           |                    | false    | auto_increment   | [comments](comments.md) |                   |                      |
+| user_id   | int                              |                    | false    |                  |                         | [users](users.md) |                      |
+| title     | varchar(255)                     | Untitled           | false    |                  |                         |                   |                      |
+| body      | text                             |                    | false    |                  |                         |                   |                      |
+| post_type | enum('public','private','draft') |                    | false    |                  |                         |                   | public/private/draft |
+| created   | datetime                         |                    | false    |                  |                         |                   |                      |
+| updated   | datetime                         |                    | true     |                  |                         |                   |                      |
 
 ## 制約一覧
 

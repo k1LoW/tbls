@@ -18,11 +18,11 @@ CREATE TABLE `hyphen-table` (
 
 ## カラム一覧
 
-| 名前            | タイプ      | デフォルト値       | Nullable | Extra Definition |
-| ------------- | -------- | ------------ | -------- | ---------------- |
-| id            | bigint   |              | false    | auto_increment   |
-| hyphen-column | text     |              | false    |                  |
-| created       | datetime |              | false    |                  |
+| 名前            | タイプ       | デフォルト値             | Nullable | Extra Definition |
+| ------------- | --------- | ------------------ | -------- | ---------------- |
+| id            | bigint    |                    | false    | auto_increment   |
+| hyphen-column | text      |                    | false    |                  |
+| created       | datetime  |                    | false    |                  |
 
 ## 制約一覧
 
