@@ -25,14 +25,14 @@ CREATE TABLE `users` (
 
 ## カラム一覧
 
-| 名前       | タイプ          | デフォルト値       | Nullable | Extra Definition | 子テーブル                                                                                                       | 親テーブル      | コメント                 |
-| -------- | ------------ | ------------ | -------- | ---------------- | ----------------------------------------------------------------------------------------------------------- | ---------- | -------------------- |
-| id       | int          |              | false    | auto_increment   | [comment_stars](comment_stars.md) [comments](comments.md) [posts](posts.md) [user_options](user_options.md) |            |                      |
-| username | varchar(50)  |              | false    |                  |                                                                                                             |            |                      |
-| password | varchar(50)  |              | false    |                  |                                                                                                             |            |                      |
-| email    | varchar(355) |              | false    |                  |                                                                                                             |            | ex. user@example.com |
-| created  | timestamp    |              | false    |                  |                                                                                                             |            |                      |
-| updated  | timestamp    |              | true     |                  |                                                                                                             |            |                      |
+| 名前       | タイプ          | デフォルト値       | Nullable | Extra Definition | 子テーブル                                                                                                       | コメント                 |
+| -------- | ------------ | ------------ | -------- | ---------------- | ----------------------------------------------------------------------------------------------------------- | -------------------- |
+| id       | int          |              | false    | auto_increment   | [comment_stars](comment_stars.md) [comments](comments.md) [posts](posts.md) [user_options](user_options.md) |                      |
+| username | varchar(50)  |              | false    |                  |                                                                                                             |                      |
+| password | varchar(50)  |              | false    |                  |                                                                                                             |                      |
+| email    | varchar(355) |              | false    |                  |                                                                                                             | ex. user@example.com |
+| created  | timestamp    |              | false    |                  |                                                                                                             |                      |
+| updated  | timestamp    |              | true     |                  |                                                                                                             |                      |
 
 ## 制約一覧
 

@@ -21,15 +21,15 @@ CREATE VIEW post_comments AS (select `c`.`id` AS `id`,`p`.`title` AS `title`,`u2
 
 ## カラム一覧
 
-| 名前           | タイプ          | デフォルト値       | Nullable | 子テーブル      | 親テーブル      | コメント                                       |
-| ------------ | ------------ | ------------ | -------- | ---------- | ---------- | ------------------------------------------ |
-| id           | bigint       | 0            | true     |            |            |                                            |
-| title        | varchar(255) | Untitled     | false    |            |            |                                            |
-| post_user    | varchar(50)  |              | true     |            |            |                                            |
-| comment      | text         |              | true     |            |            | Comment<br>Multi-line<br>column<br>comment |
-| comment_user | varchar(50)  |              | true     |            |            |                                            |
-| created      | datetime     |              | true     |            |            |                                            |
-| updated      | datetime     |              | true     |            |            |                                            |
+| 名前           | タイプ          | デフォルト値       | Nullable | コメント                                       |
+| ------------ | ------------ | ------------ | -------- | ------------------------------------------ |
+| id           | bigint       | 0            | true     |                                            |
+| title        | varchar(255) | Untitled     | false    |                                            |
+| post_user    | varchar(50)  |              | true     |                                            |
+| comment      | text         |              | true     | Comment<br>Multi-line<br>column<br>comment |
+| comment_user | varchar(50)  |              | true     |                                            |
+| created      | datetime     |              | true     |                                            |
+| updated      | datetime     |              | true     |                                            |
 
 ## ER図
 
