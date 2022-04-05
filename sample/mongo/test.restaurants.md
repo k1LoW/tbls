@@ -7,7 +7,7 @@ Count of documents is 149
 ## Attributes
 
 | Name | Type | Default | Nullable | Occurrences | Percents |
-| ---- | ---- | ------- | -------- | ---------------- | ---------------- |
+| ---- | ---- | ------- | -------- | ----------- | -------- |
 | _id | objectId |  | false | 149 | 100.0 |
 | address | document |  | false | 149 | 100.0 |
 | borough | string |  | false | 149 | 100.0 |
