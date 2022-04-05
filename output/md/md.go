@@ -497,15 +497,12 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 
 	// Columns
 	columnsData := [][]string{}
-	columnsHeader := []string{
-		m.config.MergedDict.Lookup("Name"),
-		m.config.MergedDict.Lookup("Type"),
-		m.config.MergedDict.Lookup("Default"),
-		m.config.MergedDict.Lookup("Nullable"),
-	}
-	columnsHeaderLine := []string{
-		"----", "----", "-------", "--------",
-	}
+	columnsHeader := []string{}
+	columnsHeaderLine := []string{}
+	m.adjustColumnHeader(&columnsHeader, &columnsHeaderLine, true, "Name")
+	m.adjustColumnHeader(&columnsHeader, &columnsHeaderLine, true, "Type")
+	m.adjustColumnHeader(&columnsHeader, &columnsHeaderLine, true, "Default")
+	m.adjustColumnHeader(&columnsHeader, &columnsHeaderLine, true, "Nullable")
 	m.adjustColumnHeader(&columnsHeader, &columnsHeaderLine, t.HasColumnWithExtraDef(), "Extra Definition")
 	m.adjustColumnHeader(&columnsHeader, &columnsHeaderLine, t.HasColumnWithOccurrences(), "Occurrences")
 	m.adjustColumnHeader(&columnsHeader, &columnsHeaderLine, t.HasColumnWithPercents(), "Percents")
