@@ -26,7 +26,7 @@ CREATE TABLE posts (
 ## Columns
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
-| ---- | ---- | ------- | -------- | ------- | ------- | ------- |
+| ---- | ---- | ------- | -------- | -------- | ------- | ------- |
 | id | INTEGER |  | true | [comments](comments.md) [logs](logs.md) |  |  |
 | user_id | INTEGER |  | false |  | [users](users.md) |  |
 | title | TEXT |  | false |  |  |  |

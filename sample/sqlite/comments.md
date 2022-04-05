@@ -24,7 +24,7 @@ CREATE TABLE comments (
 ## Columns
 
 | Name | Type | Default | Nullable | Children | Parents |
-| ---- | ---- | ------- | -------- | ------- | ------- |
+| ---- | ---- | ------- | -------- | -------- | ------- |
 | id | INTEGER |  | true | [logs](logs.md) |  |
 | post_id | INTEGER |  | false | [comment_stars](comment_stars.md) | [posts](posts.md) |
 | user_id | INTEGER |  | false | [comment_stars](comment_stars.md) | [users](users.md) |
