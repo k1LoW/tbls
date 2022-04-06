@@ -30,7 +30,7 @@ archives:
     - README.md
     - CHANGELOG.md
 checksum:
-  name_template: 'checksums.txt'
+  name_template: 'checksums-windows.txt'
 snapshot:
   name_template: "{{ .Version }}-next"
 changelog:

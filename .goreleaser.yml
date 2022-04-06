@@ -4,6 +4,27 @@ before:
     - go mod tidy
 builds:
 -
+  id: tbls-darwin
+  ldflags:
+    - -s -w -X github.com/k1LoW/tbls.version={{.Version}} -X github.com/k1LoW/tbls.commit={{.FullCommit}} -X github.com/k1LoW/tbls.date={{.Date}} -X github.com/k1LoW/tbls/version.Version={{.Version}}
+  env:
+    - CGO_ENABLED=1
+  goos:
+    - darwin
+  goarch:
+    - amd64
+-
+  id: tbls-darwin-arm64
+  ldflags:
+    - -s -w -X github.com/k1LoW/tbls.version={{.Version}} -X github.com/k1LoW/tbls.commit={{.FullCommit}} -X github.com/k1LoW/tbls.date={{.Date}} -X github.com/k1LoW/tbls/version.Version={{.Version}}
+  env:
+    - CGO_ENABLED=1
+    - SDKROOT=/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk
+  goos:
+    - darwin
+  goarch:
+    - arm64
+-
   id: tbls-linux
   ldflags:
     - -s -w -X github.com/k1LoW/tbls.version={{.Version}} -X github.com/k1LoW/tbls.commit={{.FullCommit}} -X github.com/k1LoW/tbls.date={{.Date}} -X github.com/k1LoW/tbls/version.Version={{.Version}}
@@ -11,8 +32,21 @@ builds:
     - -extldflags '-static'
   env:
     - CGO_ENABLED=1
+    - CC=/usr/local/bin/x86_64-linux-musl-cc # brew install FiloSottile/musl-cross/musl-cross
   goos:
     - linux
+  goarch:
+    - amd64
+-
+  id: tbls-windows
+  ldflags:
+    - -s -w -X github.com/k1LoW/tbls.version={{.Version}} -X github.com/k1LoW/tbls.commit={{.FullCommit}} -X github.com/k1LoW/tbls.date={{.Date}} -X github.com/k1LoW/tbls/version.Version={{.Version}}
+    - -extldflags '-static'
+  env:
+    - CGO_ENABLED=1
+    - CC=x86_64-w64-mingw32-gcc # brew install mingw-w64
+  goos:
+    - windows
   goarch:
     - amd64
 archives:
@@ -29,7 +63,7 @@ archives:
     - README.md
     - CHANGELOG.md
 checksum:
-  name_template: 'checksums-linux.txt'
+  name_template: 'checksums.txt'
 snapshot:
   name_template: "{{ .Version }}-next"
 changelog:
@@ -44,8 +78,8 @@ dockers:
     goos: linux
     goarch: amd64
     image_templates:
-      # - 'k1low/tbls:v{{ .Version }}'
-      # - 'k1low/tbls:latest'
+      - 'k1low/tbls:v{{ .Version }}'
+      - 'k1low/tbls:latest'
       - 'ghcr.io/k1low/tbls:v{{ .Version }}'
       - 'ghcr.io/k1low/tbls:latest'
     dockerfile: docker/Dockerfile
@@ -56,6 +90,24 @@ dockers:
       - "--label=org.opencontainers.image.revision={{.FullCommit}}"
       - "--label=org.opencontainers.image.version={{.Version}}"
       - "--label=org.opencontainers.image.source=https://github.com/k1LoW/tbls"
+brews:
+  -
+    name: tbls
+    tap:
+      owner: k1LoW
+      name: homebrew-tap
+    commit_author:
+      name: k1LoW
+      email: k1lowxb@gmail.com
+    homepage: https://github.com/k1LoW/tbls
+    description: 'tbls is a CI-Friendly tool for document a database, written in Go.'
+    license: MIT
+    install: |
+      system './tbls', 'completion', 'bash', '--out', 'tbls.bash'
+      system './tbls', 'completion', 'zsh', '--out', 'tbls.zsh'
+      bin.install 'tbls'
+      bash_completion.install 'tbls.bash' => 'tbls'
+      zsh_completion.install 'tbls.zsh' => '_tbls'
 nfpms:
   -
     id: tbls-nfpms

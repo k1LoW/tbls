@@ -1,9 +1,10 @@
 name: release
 
 on:
-  push:
-    tags:
-      - v*.*.*
+  workflow_dispatch:
+  # push:
+  #   tags:
+  #     - v*.*.*
 
 jobs:
   linux-release:
@@ -46,14 +47,14 @@ jobs:
       - name: Run tests
         run: make ci
 
-      - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v2
-        with:
-          distribution: goreleaser
-          version: latest
-          args: --config .goreleaser/linux.yml --rm-dist
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Run GoReleaser
+      #   uses: goreleaser/goreleaser-action@v2
+      #   with:
+      #     distribution: goreleaser
+      #     version: latest
+      #     args: --config .goreleaser/linux.yml --rm-dist
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   windows-release:
     name: Release assets for Windows
@@ -90,11 +91,11 @@ jobs:
           rm -f tbls.exe
         shell: bash
 
-      - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v2
-        with:
-          distribution: goreleaser
-          version: latest
-          args: --config .goreleaser/windows.yml --rm-dist
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Run GoReleaser
+      #   uses: goreleaser/goreleaser-action@v2
+      #   with:
+      #     distribution: goreleaser
+      #     version: latest
+      #     args: --config .goreleaser/windows.yml --rm-dist
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

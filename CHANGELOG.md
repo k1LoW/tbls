@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.55.1](https://github.com/k1LoW/tbls/compare/v1.55.0...v1.55.1) (2022-04-05)
+
+* Revert build env [#345](https://github.com/k1LoW/tbls/pull/345) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.55.0](https://github.com/k1LoW/tbls/compare/v1.54.2...v1.55.0) (2022-04-04)
 
 * Fix release flow [#343](https://github.com/k1LoW/tbls/pull/343) ([k1LoW](https://github.com/k1LoW))
