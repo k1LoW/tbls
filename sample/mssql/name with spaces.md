@@ -9,7 +9,7 @@
 CREATE VIEW "name with spaces" AS (
   SELECT TOP 1 p.title
   FROM posts AS p
-)
+);
 ```
 
 </details>
