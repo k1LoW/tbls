@@ -12,6 +12,7 @@ DROP TYPE IF EXISTS post_types;
 DROP TABLE IF EXISTS user_options;
 DROP TABLE IF EXISTS users;
 DROP SCHEMA IF EXISTS administrator;
+DROP VIEW IF EXISTS "name with spaces";
 
 CREATE TABLE users (
   id int NOT NULL IDENTITY(1,1) PRIMARY KEY,
@@ -165,3 +166,8 @@ BEGIN
   UPDATE users SET updated = GETDATE()
   WHERE id = ( SELECT user_id FROM deleted)
 END;
+
+CREATE VIEW "name with spaces" AS (
+  SELECT TOP 1 p.title
+  FROM posts AS p
+);
