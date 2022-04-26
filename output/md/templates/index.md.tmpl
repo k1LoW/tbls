@@ -17,10 +17,10 @@
 {{ range $t := .Tables }}
 |{{ range $d := $t }} {{ $d | nl2br }} |{{ end }}
 {{- end -}}
-{{- if .Schema.Subroutines }}
+{{- if .Schema.Functions }}
 
-## {{ "Subroutines" | lookup }}
-{{ range $t := .Subroutines }}
+## {{ "Functions" | lookup }}
+{{ range $t := .Functions }}
 |{{ range $d := $t }} {{ $d | nl2br }} |{{ end }}
 {{- end -}}
 {{- end -}}
