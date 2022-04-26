@@ -169,7 +169,7 @@ BEGIN
   WHERE id = ( SELECT user_id FROM deleted)
 END;
 
-CREATE VIEW "view name with spaces" AS (
+CREATE VIEW "name with spaces" AS (
   SELECT TOP 1 p.title
   FROM posts AS p
 );
