@@ -59,3 +59,14 @@ services:
     restart: always
     ports:
       - "18000:8000"
+  mongo:
+    image: mongo:5.0.6
+    restart: always
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=mongoadmin
+      - MONGO_INITDB_ROOT_PASSWORD=secret
+      - MONGO_INITDB_DATABASE=test
+    volumes:
+      - ./testdata/ddl/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    ports:
+      - "27017:27017"

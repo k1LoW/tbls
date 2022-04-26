@@ -535,6 +535,14 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 		columnsHeader = append(columnsHeader, m.config.MergedDict.Lookup("Extra Definition"))
 		columnsHeaderLine = append(columnsHeaderLine, "----------------")
 	}
+	if t.HasColumnWithOccurrences() {
+		columnsHeader = append(columnsHeader, m.config.MergedDict.Lookup("Occurrences"))
+		columnsHeaderLine = append(columnsHeaderLine, "----------------")
+	}
+	if t.HasColumnWithPercents() {
+		columnsHeader = append(columnsHeader, m.config.MergedDict.Lookup("Percents"))
+		columnsHeaderLine = append(columnsHeaderLine, "----------------")
+	}
 	columnsHeader = append(columnsHeader,
 		m.config.MergedDict.Lookup("Children"),
 		m.config.MergedDict.Lookup("Parents"),
@@ -576,6 +584,12 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 		}
 		if t.HasColumnWithExtraDef() {
 			data = append(data, mdEscRep.Replace(c.ExtraDef))
+		}
+		if t.HasColumnWithOccurrences() {
+			data = append(data, fmt.Sprint(c.Occurrences.Int32))
+		}
+		if t.HasColumnWithPercents() {
+			data = append(data, fmt.Sprintf("%.1f", c.Percents.Float64))
 		}
 		data = append(data,
 			strings.Join(childRelations, " "),

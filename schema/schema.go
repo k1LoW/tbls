@@ -60,15 +60,17 @@ type Trigger struct {
 
 // Column is the struct for table column
 type Column struct {
-	Name            string         `json:"name"`
-	Type            string         `json:"type"`
-	Nullable        bool           `json:"nullable"`
-	Default         sql.NullString `json:"default"`
-	Comment         string         `json:"comment"`
-	ExtraDef        string         `json:"extra_def,omitempty" yaml:"extraDef,omitempty"`
-	Labels          Labels         `json:"labels,omitempty"`
-	ParentRelations []*Relation    `json:"-"`
-	ChildRelations  []*Relation    `json:"-"`
+	Name            string          `json:"name"`
+	Type            string          `json:"type"`
+	Nullable        bool            `json:"nullable"`
+	Default         sql.NullString  `json:"default"`
+	Comment         string          `json:"comment"`
+	ExtraDef        string          `json:"extra_def,omitempty" yaml:"extraDef,omitempty"`
+	Occurrences     sql.NullInt32   `json:"occurrences,omitempty" yaml:"occurrences,omitempty"`
+	Percents        sql.NullFloat64 `json:"percents,omitempty" yaml:"percents,omitempty"`
+	Labels          Labels          `json:"labels,omitempty"`
+	ParentRelations []*Relation     `json:"-"`
+	ChildRelations  []*Relation     `json:"-"`
 }
 
 // Table is the struct for database table
@@ -248,13 +250,36 @@ func (t *Table) FindConstrainsByColumnName(name string) []*Constraint {
 	return cts
 }
 
-func (t *Table) HasColumnWithExtraDef() bool {
+func (t *Table) hasColumnWithName(name string) bool {
 	for _, c := range t.Columns {
-		if c.ExtraDef != "" {
-			return true
+		switch name {
+		case "ExtraDef":
+			if c.ExtraDef != "" {
+				return true
+			}
+		case "Occurrences":
+			if c.Occurrences.Valid {
+				return true
+			}
+		case "Percents":
+			if c.Percents.Valid {
+				return true
+			}
 		}
 	}
 	return false
+}
+
+func (t *Table) HasColumnWithExtraDef() bool {
+	return t.hasColumnWithName("ExtraDef")
+}
+
+func (t *Table) HasColumnWithOccurrences() bool {
+	return t.hasColumnWithName("Occurrences")
+}
+
+func (t *Table) HasColumnWithPercents() bool {
+	return t.hasColumnWithName("Percents")
 }
 
 func (t *Table) HasColumnWithLabels() bool {

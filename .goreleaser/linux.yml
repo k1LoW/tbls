@@ -1,0 +1,74 @@
+before:
+  hooks:
+    - go mod download
+    - go mod tidy
+builds:
+-
+  id: tbls-linux
+  ldflags:
+    - -s -w -X github.com/k1LoW/tbls.version={{.Version}} -X github.com/k1LoW/tbls.commit={{.FullCommit}} -X github.com/k1LoW/tbls.date={{.Date}} -X github.com/k1LoW/tbls/version.Version={{.Version}}
+    - -linkmode external
+    - -extldflags '-static'
+  env:
+    - CGO_ENABLED=1
+  goos:
+    - linux
+  goarch:
+    - amd64
+archives:
+-
+  id: tbls-archive
+  name_template: '{{ .ProjectName }}_v{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
+  format_overrides:
+    - goos: windows
+      format: zip
+    - goos: darwin
+      format: zip
+  files:
+    - CREDITS
+    - README.md
+    - CHANGELOG.md
+checksum:
+  name_template: 'checksums-linux.txt'
+snapshot:
+  name_template: "{{ .Version }}-next"
+changelog:
+  skip: true
+  sort: asc
+  filters:
+    exclude:
+    - '^docs:'
+    - '^test:'
+dockers:
+  -
+    goos: linux
+    goarch: amd64
+    image_templates:
+      # - 'k1low/tbls:v{{ .Version }}'
+      # - 'k1low/tbls:latest'
+      - 'ghcr.io/k1low/tbls:v{{ .Version }}'
+      - 'ghcr.io/k1low/tbls:latest'
+    dockerfile: docker/Dockerfile
+    build_flag_templates:
+      - "--pull"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.name={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+      - "--label=org.opencontainers.image.source=https://github.com/k1LoW/tbls"
+nfpms:
+  -
+    id: tbls-nfpms
+    file_name_template: "{{ .ProjectName }}_{{ .Version }}-1_{{ .Arch }}"
+    builds:
+    - tbls-linux
+    homepage: https://github.com/k1LoW/tbls
+    maintainer: Ken'ichiro Oyama <k1lowxb@gmail.com>
+    description: tbls is a CI-Friendly tool for document a database, written in Go.
+    license: MIT
+    formats:
+      - deb
+      - rpm
+      - apk
+    bindir: /usr/bin
+    epoch: 1

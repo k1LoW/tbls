@@ -80,6 +80,7 @@ testdoc: build testdoc_sqlite
 	./tbls diff my://root:mypass@localhost:33308/testdb -c testdata/dict_test_tbls.yml sample/dict
 	./tbls diff my://root:mypass@localhost:33308/testdb -c testdata/font_test_tbls.yml sample/font
 	./tbls diff my://root:mypass@localhost:33308/testdb -c testdata/number_test_tbls.yml sample/number
+	./tbls diff mongodb://mongoadmin:secret@localhost:27017/test?authSource=admin sample/mongo
 
 testdoc_sqlite: build
 	./tbls diff sq://$(PWD)/testdata/testdb.sqlite3 -c testdata/test_tbls.yml sample/sqlite
@@ -162,6 +163,7 @@ prerelease:
 
 release:
 	git push origin main --tag
+	# goreleaser --config .goreleaser/darwin.yml --rm-dist
 	goreleaser --rm-dist
 
 .PHONY: default test
