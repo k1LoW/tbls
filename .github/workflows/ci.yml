@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - sp_and_functions
   pull_request:
 
 jobs:
