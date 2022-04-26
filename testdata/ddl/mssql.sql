@@ -12,7 +12,6 @@ DROP TYPE IF EXISTS post_types;
 DROP TABLE IF EXISTS user_options;
 DROP TABLE IF EXISTS users;
 DROP SCHEMA IF EXISTS administrator;
-DROP FUNCTION IF EXISTS get_user;
 DROP PROC IF EXISTS "name with spaces";
 
 CREATE TABLE users (
@@ -167,16 +166,6 @@ BEGIN
   UPDATE users SET updated = GETDATE()
   WHERE id = ( SELECT user_id FROM deleted)
 END;
-
-CREATE FUNCTION get_user (@userid int)
-RETURNS TABLE
-AS
-RETURN
-(
-  SELECT u.username, u.email
-  FROM users AS u
-  WHERE u.id = @userid
-);
 
 CREATE PROC "name with spaces" @ID INT
 AS
