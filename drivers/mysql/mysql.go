@@ -419,11 +419,11 @@ WHERE table_schema = ? AND table_name = ? ORDER BY ordinal_position`
 		tables = append(tables, table)
 	}
 
-	subroutines, err := m.getSubroutines()
+	functions, err := m.getFunctions()
 	if err != nil {
 		return err
 	}
-	s.Subroutines = subroutines
+	s.Functions = functions
 
 	s.Tables = tables
 
@@ -480,7 +480,7 @@ WHERE table_schema = ? AND table_name = ? ORDER BY ordinal_position`
 	return nil
 }
 
-const querySubroutines = `select r.routine_schema as database_name,
+const queryFunctions = `select r.routine_schema as database_name,
 r.routine_name,
 r.routine_type as type,
 r.data_type as return_type,
@@ -494,15 +494,15 @@ where routine_schema not in ('sys', 'information_schema',
 group by r.routine_schema, r.routine_name,
 r.routine_type, r.data_type, r.routine_definition`
 
-func (m *Mysql) getSubroutines() ([]*schema.Subroutine, error) {
-	subroutines := []*schema.Subroutine{}
-	subroutinesResult, err := m.db.Query(querySubroutines)
+func (m *Mysql) getFunctions() ([]*schema.Function, error) {
+	functions := []*schema.Function{}
+	functionsResult, err := m.db.Query(queryFunctions)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
-	defer subroutinesResult.Close()
+	defer functionsResult.Close()
 
-	for subroutinesResult.Next() {
+	for functionsResult.Next() {
 		var (
 			databaseName string
 			name         string
@@ -510,20 +510,20 @@ func (m *Mysql) getSubroutines() ([]*schema.Subroutine, error) {
 			returnType   string
 			arguments    sql.NullString
 		)
-		err := subroutinesResult.Scan(&databaseName, &name, &typeValue, &returnType, &arguments)
+		err := functionsResult.Scan(&databaseName, &name, &typeValue, &returnType, &arguments)
 		if err != nil {
-			return subroutines, errors.WithStack(err)
+			return functions, errors.WithStack(err)
 		}
-		subroutine := &schema.Subroutine{
+		subroutine := &schema.Function{
 			Name:       name,
 			Type:       typeValue,
 			ReturnType: returnType,
 			Arguments:  arguments.String,
 		}
 
-		subroutines = append(subroutines, subroutine)
+		functions = append(functions, subroutine)
 	}
-	return subroutines, nil
+	return functions, nil
 }
 
 func fullTableName(owner string, tableName string) string {
@@ -546,7 +546,7 @@ func (m *Mysql) Info() (*schema.Driver, error) {
 
 	dct := dict.New()
 	dct.Merge(map[string]string{
-		"Subroutines": "Stored procedures and functions",
+		"Functions": "Stored procedures and functions",
 	})
 
 	d := &schema.Driver{

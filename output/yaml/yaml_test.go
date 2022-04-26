@@ -136,7 +136,7 @@ func newTestSchema() *schema.Schema {
 		Relations: []*schema.Relation{
 			r,
 		},
-		Subroutines: []*schema.Subroutine{},
+		Functions: []*schema.Function{},
 		Driver: &schema.Driver{
 			Name:            "testdriver",
 			DatabaseVersion: "1.0.0",

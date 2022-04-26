@@ -491,7 +491,7 @@ func (m *Md) makeSchemaTemplateData(s *schema.Schema) map[string]interface{} {
 		tablesSubroutineHeaderLine,
 	)
 
-	for _, t := range s.Subroutines {
+	for _, t := range s.Functions {
 		data := []string{
 			t.Name,
 			t.ReturnType,
@@ -503,16 +503,16 @@ func (m *Md) makeSchemaTemplateData(s *schema.Schema) map[string]interface{} {
 
 	if adjust {
 		return map[string]interface{}{
-			"Schema":      s,
-			"Tables":      adjustTable(tablesData),
-			"Subroutines": adjustTable(tablesSubroutineData),
+			"Schema":    s,
+			"Tables":    adjustTable(tablesData),
+			"Functions": adjustTable(tablesSubroutineData),
 		}
 	}
 
 	return map[string]interface{}{
-		"Schema":      s,
-		"Tables":      tablesData,
-		"Subroutines": tablesSubroutineData,
+		"Schema":    s,
+		"Tables":    tablesData,
+		"Functions": tablesSubroutineData,
 	}
 }
 

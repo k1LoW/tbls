@@ -403,11 +403,11 @@ ORDER BY i.index_id
 		tables = append(tables, table)
 	}
 
-	subroutines, err := m.getSubroutines()
+	functions, err := m.getFunctions()
 	if err != nil {
 		return err
 	}
-	s.Subroutines = subroutines
+	s.Functions = functions
 
 	s.Tables = tables
 
@@ -492,15 +492,15 @@ where obj.type in ('FN', 'TF', 'IF', 'P', 'X')
 order by schema_name,
 	name;`
 
-func (m *Mssql) getSubroutines() ([]*schema.Subroutine, error) {
-	subroutines := []*schema.Subroutine{}
-	subroutinesResult, err := m.db.Query(query)
+func (m *Mssql) getFunctions() ([]*schema.Function, error) {
+	functions := []*schema.Function{}
+	functionsResult, err := m.db.Query(query)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
-	defer subroutinesResult.Close()
+	defer functionsResult.Close()
 
-	for subroutinesResult.Next() {
+	for functionsResult.Next() {
 		var (
 			schemaName string
 			name       string
@@ -508,20 +508,20 @@ func (m *Mssql) getSubroutines() ([]*schema.Subroutine, error) {
 			returnType sql.NullString
 			arguments  sql.NullString
 		)
-		err := subroutinesResult.Scan(&schemaName, &name, &typeValue, &returnType, &arguments)
+		err := functionsResult.Scan(&schemaName, &name, &typeValue, &returnType, &arguments)
 		if err != nil {
-			return subroutines, errors.WithStack(err)
+			return functions, errors.WithStack(err)
 		}
-		subroutine := &schema.Subroutine{
+		function := &schema.Function{
 			Name:       fullTableName(schemaName, name),
 			Type:       typeValue,
 			ReturnType: returnType.String,
 			Arguments:  arguments.String,
 		}
 
-		subroutines = append(subroutines, subroutine)
+		functions = append(functions, function)
 	}
-	return subroutines, nil
+	return functions, nil
 }
 
 func fullTableName(owner string, tableName string) string {
@@ -538,7 +538,7 @@ func (m *Mssql) Info() (*schema.Driver, error) {
 
 	dct := dict.New()
 	dct.Merge(map[string]string{
-		"Subroutines": "Stored procedures and functions",
+		"Functions": "Stored procedures and functions",
 	})
 
 	d := &schema.Driver{

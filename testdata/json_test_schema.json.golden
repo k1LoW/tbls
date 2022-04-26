@@ -67,7 +67,7 @@
       "virtual": false
     }
   ],
-  "subroutines": null,
+  "functions": null,
   "driver": {
     "name": "testdriver",
     "database_version": "1.0.0",

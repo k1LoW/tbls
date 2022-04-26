@@ -102,8 +102,8 @@ type DriverMeta struct {
 	Dict          *dict.Dict `json:"dict,omitempty"`
 }
 
-// Subroutine is the struct for tbls stored procedure/function information
-type Subroutine struct {
+// Function is the struct for tbls stored procedure/function information
+type Function struct {
 	Name       string `json:"name"`
 	ReturnType string `json:"return_type" yaml:"returnType"`
 	Arguments  string `json:"arguments"`
@@ -119,13 +119,13 @@ type Driver struct {
 
 // Schema is the struct for database schema
 type Schema struct {
-	Name        string        `json:"name"`
-	Desc        string        `json:"desc"`
-	Tables      []*Table      `json:"tables"`
-	Relations   []*Relation   `json:"relations"`
-	Subroutines []*Subroutine `json:"subroutines"`
-	Driver      *Driver       `json:"driver"`
-	Labels      Labels        `json:"labels,omitempty"`
+	Name      string      `json:"name"`
+	Desc      string      `json:"desc"`
+	Tables    []*Table    `json:"tables"`
+	Relations []*Relation `json:"relations"`
+	Functions []*Function `json:"functions"`
+	Driver    *Driver     `json:"driver"`
+	Labels    Labels      `json:"labels,omitempty"`
 }
 
 func (s *Schema) NormalizeTableName(name string) string {

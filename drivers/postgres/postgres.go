@@ -297,11 +297,11 @@ ORDER BY tgrelid
 		tables = append(tables, table)
 	}
 
-	subroutines, err := p.getSubroutines()
+	functions, err := p.getFunctions()
 	if err != nil {
 		return err
 	}
-	s.Subroutines = subroutines
+	s.Functions = functions
 
 	s.Tables = tables
 
@@ -371,7 +371,7 @@ ORDER BY tgrelid
 	return nil
 }
 
-const querySubroutines95 = `select n.nspname as schema_name,
+const queryFunctions95 = `select n.nspname as schema_name,
 p.proname as specific_name,
 TEXT 'FUNCTION',
 t.typname as return_type,
@@ -381,7 +381,7 @@ left join pg_namespace n on p.pronamespace = n.oid
 left join pg_type t on t.oid = p.prorettype 
 where n.nspname not in ('pg_catalog', 'information_schema')`
 
-const querySubroutines = `select n.nspname as schema_name,
+const queryFunctions = `select n.nspname as schema_name,
 p.proname as specific_name,
 case when p.prokind = 'p' then TEXT 'PROCEDURE' else case when p.prokind = 'f' then TEXT 'FUNCTION' else p.prokind end end,
 t.typname as return_type,
@@ -415,35 +415,35 @@ func (p *Postgres) isProceduresSupported() (bool, error) {
 	return false, nil
 }
 
-func (p *Postgres) getSubroutines() ([]*schema.Subroutine, error) {
-	var subroutines []*schema.Subroutine
+func (p *Postgres) getFunctions() ([]*schema.Function, error) {
+	var functions []*schema.Function
 	storedProcedureSupported, err := p.isProceduresSupported()
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
 	if storedProcedureSupported {
-		subroutines, err = p.getSubroutinesByQuery(querySubroutines)
+		functions, err = p.getFunctionsByQuery(queryFunctions)
 		if err != nil {
 			return nil, errors.WithStack(err)
 		}
 	} else {
-		subroutines, err = p.getSubroutinesByQuery(querySubroutines95)
+		functions, err = p.getFunctionsByQuery(queryFunctions95)
 		if err != nil {
 			return nil, errors.WithStack(err)
 		}
 	}
-	return subroutines, nil
+	return functions, nil
 }
 
-func (p *Postgres) getSubroutinesByQuery(query string) ([]*schema.Subroutine, error) {
-	subroutines := []*schema.Subroutine{}
-	subroutinesResult, err := p.db.Query(query)
+func (p *Postgres) getFunctionsByQuery(query string) ([]*schema.Function, error) {
+	functions := []*schema.Function{}
+	functionsResult, err := p.db.Query(query)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
-	defer subroutinesResult.Close()
+	defer functionsResult.Close()
 
-	for subroutinesResult.Next() {
+	for functionsResult.Next() {
 		var (
 			schemaName string
 			name       string
@@ -451,20 +451,20 @@ func (p *Postgres) getSubroutinesByQuery(query string) ([]*schema.Subroutine, er
 			returnType string
 			arguments  sql.NullString
 		)
-		err := subroutinesResult.Scan(&schemaName, &name, &typeValue, &returnType, &arguments)
+		err := functionsResult.Scan(&schemaName, &name, &typeValue, &returnType, &arguments)
 		if err != nil {
-			return subroutines, errors.WithStack(err)
+			return functions, errors.WithStack(err)
 		}
-		subroutine := &schema.Subroutine{
+		function := &schema.Function{
 			Name:       fullTableName(schemaName, name),
 			Type:       typeValue,
 			ReturnType: returnType,
 			Arguments:  arguments.String,
 		}
 
-		subroutines = append(subroutines, subroutine)
+		functions = append(functions, function)
 	}
-	return subroutines, nil
+	return functions, nil
 }
 
 func fullTableName(owner string, tableName string) string {
@@ -487,7 +487,7 @@ func (p *Postgres) Info() (*schema.Driver, error) {
 
 	dct := dict.New()
 	dct.Merge(map[string]string{
-		"Subroutines": "Stored procedures and functions",
+		"Functions": "Stored procedures and functions",
 	})
 
 	d := &schema.Driver{
