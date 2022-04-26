@@ -12,9 +12,9 @@ DROP TYPE IF EXISTS post_types;
 DROP TABLE IF EXISTS user_options;
 DROP TABLE IF EXISTS users;
 DROP SCHEMA IF EXISTS administrator;
-DROP VIEW IF EXISTS "view name with spaces";
+DROP VIEW IF EXISTS "name with spaces";
 DROP FUNCTION IF EXISTS get_user;
-DROP PROC IF EXISTS "name with spaces";
+DROP PROC IF EXISTS What_DB_is_that;
 
 CREATE TABLE users (
   id int NOT NULL IDENTITY(1,1) PRIMARY KEY,
@@ -184,6 +184,6 @@ RETURN
   WHERE u.id = @userid
 );
 
-CREATE PROC "name with spaces" @ID INT
+CREATE PROC What_DB_is_that @ID INT
 AS
 SELECT DB_NAME(@ID) AS ThatDB;
