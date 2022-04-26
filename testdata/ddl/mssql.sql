@@ -13,7 +13,7 @@ DROP TABLE IF EXISTS user_options;
 DROP TABLE IF EXISTS users;
 DROP SCHEMA IF EXISTS administrator;
 DROP FUNCTION IF EXISTS get_user;
-DROP PROC IF EXISTS What_DB_is_that;
+DROP PROC IF EXISTS "name with spaces";
 
 CREATE TABLE users (
   id int NOT NULL IDENTITY(1,1) PRIMARY KEY,
@@ -178,6 +178,6 @@ RETURN
   WHERE u.id = @userid
 );
 
-CREATE PROC What_DB_is_that @ID INT
+CREATE PROC "name with spaces" @ID INT
 AS
 SELECT DB_NAME(@ID) AS ThatDB;
