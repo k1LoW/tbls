@@ -466,31 +466,30 @@ ORDER BY i.index_id
 	return nil
 }
 
-const query = `select schema_name(obj.schema_id) as schema_name,
+const query = `SELECT SCHEMA_NAME(obj.schema_id) AS schema_name,
 	obj.name as name,
-	case type
-		when 'FN' then 'SQL scalar function'
-		when 'TF' then 'SQL table-valued-function'
-		when 'IF' then 'SQL inline table-valued function'
-		when 'P' then 'SQL Stored Procedure'
-		when 'X' then 'Extended stored procedure'
-	end as type,
-	TYPE_NAME(ret.user_type_id) as return_type,
-	substring(par.parameters, 0, len(par.parameters)) as parameters
-from sys.objects obj
-join sys.sql_modules mod
-on mod.object_id = obj.object_id
-cross apply (select p.name + ' ' + TYPE_NAME(p.user_type_id) + ', ' 
-			from sys.parameters p
-			where p.object_id = obj.object_id 
-						and p.parameter_id != 0 
-		 for xml path ('') ) par (parameters)
-left join sys.parameters ret
-	 on obj.object_id = ret.object_id
-	 and ret.parameter_id = 0
-where obj.type in ('FN', 'TF', 'IF', 'P', 'X')
-order by schema_name,
-	name;`
+	CASE type
+		WHEN 'FN' THEN 'SQL scalar function'
+		WHEN 'TF' THEN 'SQL table-valued-function'
+		WHEN 'IF' THEN 'SQL inline table-valued function'
+		WHEN 'P' THEN 'SQL Stored Procedure'
+		WHEN 'X' THEN 'Extended stored procedure'
+	END AS type,
+	TYPE_NAME(ret.user_type_id) AS return_type,
+	SUBSTRING(par.parameters, 0, LEN(par.parameters)) AS parameters
+FROM sys.objects obj
+JOIN sys.sql_modules mod
+ON mod.object_id = obj.object_id
+CROSS APPLY (select p.name + ' ' + TYPE_NAME(p.user_type_id) + ', ' 
+			FROM sys.parameters p
+			WHERE p.object_id = obj.object_id 
+						AND p.parameter_id != 0 
+		 FOR XML PATH ('') ) par (parameters)
+LEFT JOIN sys.parameters ret
+	 ON obj.object_id = ret.object_id
+	 AND ret.parameter_id = 0
+WHERE obj.type in ('FN', 'TF', 'IF', 'P', 'X')
+OREDER BY schema_name, name;`
 
 func (m *Mssql) getFunctions() ([]*schema.Function, error) {
 	functions := []*schema.Function{}

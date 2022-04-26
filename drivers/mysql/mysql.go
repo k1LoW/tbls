@@ -480,19 +480,17 @@ WHERE table_schema = ? AND table_name = ? ORDER BY ordinal_position`
 	return nil
 }
 
-const queryFunctions = `select r.routine_schema as database_name,
+const queryFunctions = `SELECT r.routine_schema as database_name,
 r.routine_name,
-r.routine_type as type,
-r.data_type as return_type,
-group_concat(CONCAT(p.parameter_name, ' ', p.data_type) separator '; ') as parameter
-from information_schema.routines r
-left join information_schema.parameters p
-	 on p.specific_schema = r.routine_schema
-	 and p.specific_name = r.specific_name
-where routine_schema not in ('sys', 'information_schema',
-											'mysql', 'performance_schema')
-group by r.routine_schema, r.routine_name,
-r.routine_type, r.data_type, r.routine_definition`
+r.routine_type AS type,
+r.data_type AS return_type,
+GROUP_CONCAT(CONCAT(p.parameter_name, ' ', p.data_type) SEPARATOR '; ') AAS parameter
+FROM information_schema.routines r
+LEFT JOIN information_schema.parameters p
+	 ON p.specific_schema = r.routine_schema
+	 AND p.specific_name = r.specific_name
+WHERE routine_schema NOT IN ('sys', 'information_schema', 'mysql', 'performance_schema')
+GROUP BY r.routine_schema, r.routine_name, r.routine_type, r.data_type, r.routine_definition`
 
 func (m *Mysql) getFunctions() ([]*schema.Function, error) {
 	functions := []*schema.Function{}
@@ -524,10 +522,6 @@ func (m *Mysql) getFunctions() ([]*schema.Function, error) {
 		functions = append(functions, subroutine)
 	}
 	return functions, nil
-}
-
-func fullTableName(owner string, tableName string) string {
-	return fmt.Sprintf("%s.%s", owner, tableName)
 }
 
 // Info return schema.Driver
@@ -574,8 +568,5 @@ SELECT table_name, table_type, table_comment FROM information_schema.tables WHER
 }
 
 func convertColumnNullable(str string) bool {
-	if str == "NO" {
-		return false
-	}
-	return true
+	return str != "NO"
 }

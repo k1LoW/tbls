@@ -371,25 +371,25 @@ ORDER BY tgrelid
 	return nil
 }
 
-const queryFunctions95 = `select n.nspname as schema_name,
-p.proname as specific_name,
+const queryFunctions95 = `SELECT n.nspname AS schema_name,
+p.proname AS specific_name,
 TEXT 'FUNCTION',
-t.typname as return_type,
-pg_get_function_arguments(p.oid) as arguments
+t.typname AS return_type,
+pg_get_function_arguments(p.oid) AS arguments
 from pg_proc p
-left join pg_namespace n on p.pronamespace = n.oid
-left join pg_type t on t.oid = p.prorettype 
-where n.nspname not in ('pg_catalog', 'information_schema')`
+LEFT JOIN pg_namespace n ON p.pronamespace = n.oid
+LEFT JOIN pg_type t ON t.oid = p.prorettype 
+WHERE n.nspname NOT IN ('pg_catalog', 'information_schema')`
 
-const queryFunctions = `select n.nspname as schema_name,
-p.proname as specific_name,
-case when p.prokind = 'p' then TEXT 'PROCEDURE' else case when p.prokind = 'f' then TEXT 'FUNCTION' else p.prokind end end,
-t.typname as return_type,
-pg_get_function_arguments(p.oid) as arguments
-from pg_proc p
-left join pg_namespace n on p.pronamespace = n.oid
-left join pg_type t on t.oid = p.prorettype 
-where n.nspname not in ('pg_catalog', 'information_schema')`
+const queryFunctions = `SELECT n.nspname AS schema_name,
+p.proname AS specific_name,
+CASE WHEN p.prokind = 'p' THEN TEXT 'PROCEDURE' ELSE CASE WHEN p.prokind = 'f' THEN TEXT 'FUNCTION' ELSE p.prokind END END,
+t.typname AS return_type,
+pg_get_function_arguments(p.oid) AS arguments
+FROM pg_proc p
+LEFT JOIN pg_namespace n ON p.pronamespace = n.oid
+LEFT JOIN pg_type t ON t.oid = p.prorettype 
+WHERE n.nspname NOT IN ('pg_catalog', 'information_schema')`
 
 const queryStoredProcedureSupported = `SELECT column_name 
 FROM information_schema.columns 
@@ -402,7 +402,7 @@ func (p *Postgres) isProceduresSupported() (bool, error) {
 	}
 	defer result.Close()
 
-	for result.Next() {
+	if result.Next() {
 		var (
 			name sql.NullString
 		)
