@@ -484,7 +484,7 @@ const queryFunctions = `SELECT r.routine_schema as database_name,
 r.routine_name,
 r.routine_type AS type,
 r.data_type AS return_type,
-GROUP_CONCAT(CONCAT(p.parameter_name, ' ', p.data_type) SEPARATOR '; ') AAS parameter
+GROUP_CONCAT(CONCAT(p.parameter_name, ' ', p.data_type) SEPARATOR '; ') AS parameter
 FROM information_schema.routines r
 LEFT JOIN information_schema.parameters p
 	 ON p.specific_schema = r.routine_schema
