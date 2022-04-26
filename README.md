@@ -404,6 +404,13 @@ dsn: mysql://dbuser:dbpass@hostname:3306/dbname
 dsn: my://dbuser:dbpass@hostname:3306/dbname
 ```
 
+When you want to hide AUTO_INCREMENT clause on the table definitions,
+add "?hide_auto_increment".
+For example:
+``` yaml
+dsn: my://dbuser:dbpass@hostname:3306/dbname?hide_auto_increment
+```
+
 **MariaDB:**
 
 ``` yaml

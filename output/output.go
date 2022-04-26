@@ -8,6 +8,7 @@ import (
 
 	"github.com/k1LoW/tbls/dict"
 	"github.com/k1LoW/tbls/schema"
+	"gitlab.com/golang-commonmark/mdurl"
 )
 
 // Output is interface for output
@@ -43,6 +44,9 @@ func Funcs(d *dict.Dict) map[string]interface{} {
 			return d.Lookup(text)
 		},
 		"label_join": LabelJoin,
+		"escape": func(text string) string {
+			return mdurl.Encode(text)
+		},
 	}
 }
 

@@ -12,7 +12,8 @@ DROP TYPE IF EXISTS post_types;
 DROP TABLE IF EXISTS user_options;
 DROP TABLE IF EXISTS users;
 DROP SCHEMA IF EXISTS administrator;
-DROP PROC IF EXISTS "name with spaces";
+DROP VIEW IF EXISTS "name with spaces";
+
 
 CREATE TABLE users (
   id int NOT NULL IDENTITY(1,1) PRIMARY KEY,
@@ -167,6 +168,7 @@ BEGIN
   WHERE id = ( SELECT user_id FROM deleted)
 END;
 
-CREATE PROC "name with spaces" @ID INT
-AS
-SELECT DB_NAME(@ID) AS ThatDB;
+CREATE VIEW "name with spaces" AS (
+  SELECT TOP 1 p.title
+  FROM posts AS p
+);
