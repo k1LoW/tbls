@@ -480,7 +480,7 @@ const query = `SELECT SCHEMA_NAME(obj.schema_id) AS schema_name,
 FROM sys.objects obj
 JOIN sys.sql_modules mod
 ON mod.object_id = obj.object_id
-CROSS APPLY (select p.name + ' ' + TYPE_NAME(p.user_type_id) + ', ' 
+CROSS APPLY (SELECT p.name + ' ' + TYPE_NAME(p.user_type_id) + ', ' 
 			FROM sys.parameters p
 			WHERE p.object_id = obj.object_id 
 						AND p.parameter_id != 0 
@@ -488,7 +488,7 @@ CROSS APPLY (select p.name + ' ' + TYPE_NAME(p.user_type_id) + ', '
 LEFT JOIN sys.parameters ret
 	 ON obj.object_id = ret.object_id
 	 AND ret.parameter_id = 0
-WHERE obj.type in ('FN', 'TF', 'IF', 'P', 'X')
+WHERE obj.type IN ('FN', 'TF', 'IF', 'P', 'X')
 ORDER BY schema_name, name;`
 
 func (m *Mssql) getFunctions() ([]*schema.Function, error) {
