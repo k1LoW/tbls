@@ -489,7 +489,7 @@ LEFT JOIN sys.parameters ret
 	 ON obj.object_id = ret.object_id
 	 AND ret.parameter_id = 0
 WHERE obj.type in ('FN', 'TF', 'IF', 'P', 'X')
-OREDER BY schema_name, name;`
+ORDER BY schema_name, name;`
 
 func (m *Mssql) getFunctions() ([]*schema.Function, error) {
 	functions := []*schema.Function{}
