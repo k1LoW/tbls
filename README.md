@@ -70,7 +70,8 @@ Use [dpkg-i-from-url](https://github.com/k1LoW/dpkg-i-from-url)
 
 ``` console
 $ export TBLS_VERSION=X.X.X
-$ curl -L https://git.io/dpkg-i-from-url | bash -s -- https://github.com/k1LoW/tbls/releases/download/v$TBLS_VERSION/tbls_$TBLS_VERSION-1_amd64.deb
+$ curl -o tbls.deb https://github.com/k1LoW/tbls/releases/download/v$TBLS_VERSION/tbls_$TBLS_VERSION-1_amd64.deb
+$ dpkg -i tbls.deb
 ```
 
 **RPM:**
@@ -105,11 +106,11 @@ $ docker pull ghcr.io/k1low/tbls:latest
 **temporary:**
 
 ``` console
-$ source <(curl https://git.io/use-tbls)
+$ source <(curl https://raw.githubusercontent.com/k1LoW/tbls/main/use)
 ```
 
 ``` console
-$ curl -sL https://git.io/use-tbls > /tmp/use-tbls.tmp && . /tmp/use-tbls.tmp
+$ curl -sL https://raw.githubusercontent.com/k1LoW/tbls/main/use > /tmp/use-tbls.tmp && . /tmp/use-tbls.tmp
 ```
 
 ## Getting Started
@@ -293,13 +294,13 @@ Continuous integration using tbls.
 language: go
 
 install:
-  - source <(curl -sL https://git.io/use-tbls)
+  - source <(curl -sL https://raw.githubusercontent.com/k1LoW/tbls/main/use)
 script:
   - tbls diff
   - tbls lint
 ```
 
-> **Tips:** If your CI based on Debian/Ubuntu (`/bin/sh -> dash`), you can use following install command `curl -sL https://git.io/use-tbls > use-tbls.tmp && . ./use-tbls.tmp && rm ./use-tbls.tmp`
+> **Tips:** If your CI based on Debian/Ubuntu (`/bin/sh -> dash`), you can use following install command `curl -sL https://raw.githubusercontent.com/k1LoW/tbls/main/use > use-tbls.tmp && . ./use-tbls.tmp && rm ./use-tbls.tmp`
 
 > **Tips:** If the order of the columns does not match, you can use the `--sort` option.
 
