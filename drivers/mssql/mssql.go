@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/k1LoW/tbls/ddl"
+	"github.com/k1LoW/tbls/dict"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/pkg/errors"
 )
@@ -402,6 +403,12 @@ ORDER BY i.index_id
 		tables = append(tables, table)
 	}
 
+	functions, err := m.getFunctions()
+	if err != nil {
+		return err
+	}
+	s.Functions = functions
+
 	s.Tables = tables
 
 	// relations
@@ -459,6 +466,67 @@ ORDER BY i.index_id
 	return nil
 }
 
+const query = `SELECT SCHEMA_NAME(obj.schema_id) AS schema_name,
+	obj.name as name,
+	CASE type
+		WHEN 'FN' THEN 'SQL scalar function'
+		WHEN 'TF' THEN 'SQL table-valued-function'
+		WHEN 'IF' THEN 'SQL inline table-valued function'
+		WHEN 'P' THEN 'SQL Stored Procedure'
+		WHEN 'X' THEN 'Extended stored procedure'
+	END AS type,
+	TYPE_NAME(ret.user_type_id) AS return_type,
+	SUBSTRING(par.parameters, 0, LEN(par.parameters)) AS parameters
+FROM sys.objects obj
+JOIN sys.sql_modules mod
+ON mod.object_id = obj.object_id
+CROSS APPLY (SELECT p.name + ' ' + TYPE_NAME(p.user_type_id) + ', ' 
+			FROM sys.parameters p
+			WHERE p.object_id = obj.object_id 
+						AND p.parameter_id != 0 
+		 FOR XML PATH ('') ) par (parameters)
+LEFT JOIN sys.parameters ret
+	 ON obj.object_id = ret.object_id
+	 AND ret.parameter_id = 0
+WHERE obj.type IN ('FN', 'TF', 'IF', 'P', 'X')
+ORDER BY schema_name, name;`
+
+func (m *Mssql) getFunctions() ([]*schema.Function, error) {
+	functions := []*schema.Function{}
+	functionsResult, err := m.db.Query(query)
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+	defer functionsResult.Close()
+
+	for functionsResult.Next() {
+		var (
+			schemaName string
+			name       string
+			typeValue  string
+			returnType sql.NullString
+			arguments  sql.NullString
+		)
+		err := functionsResult.Scan(&schemaName, &name, &typeValue, &returnType, &arguments)
+		if err != nil {
+			return functions, errors.WithStack(err)
+		}
+		function := &schema.Function{
+			Name:       fullTableName(schemaName, name),
+			Type:       typeValue,
+			ReturnType: returnType.String,
+			Arguments:  arguments.String,
+		}
+
+		functions = append(functions, function)
+	}
+	return functions, nil
+}
+
+func fullTableName(owner string, tableName string) string {
+	return fmt.Sprintf("%s.%s", owner, tableName)
+}
+
 func (m *Mssql) Info() (*schema.Driver, error) {
 	var v string
 	row := m.db.QueryRow(`SELECT @@VERSION`)
@@ -467,9 +535,17 @@ func (m *Mssql) Info() (*schema.Driver, error) {
 		return nil, err
 	}
 
+	dct := dict.New()
+	dct.Merge(map[string]string{
+		"Functions": "Stored procedures and functions",
+	})
+
 	d := &schema.Driver{
 		Name:            "sqlserver",
 		DatabaseVersion: v,
+		Meta: &schema.DriverMeta{
+			Dict: &dct,
+		},
 	}
 	return d, nil
 }

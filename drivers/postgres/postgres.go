@@ -8,6 +8,7 @@ import (
 
 	"github.com/aquasecurity/go-version/pkg/version"
 	"github.com/k1LoW/tbls/ddl"
+	"github.com/k1LoW/tbls/dict"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/lib/pq"
 	"github.com/pkg/errors"
@@ -296,6 +297,12 @@ ORDER BY tgrelid
 		tables = append(tables, table)
 	}
 
+	functions, err := p.getFunctions()
+	if err != nil {
+		return err
+	}
+	s.Functions = functions
+
 	s.Tables = tables
 
 	// Relations
@@ -364,6 +371,106 @@ ORDER BY tgrelid
 	return nil
 }
 
+const queryFunctions95 = `SELECT n.nspname AS schema_name,
+p.proname AS specific_name,
+TEXT 'FUNCTION',
+t.typname AS return_type,
+pg_get_function_arguments(p.oid) AS arguments
+from pg_proc p
+LEFT JOIN pg_namespace n ON p.pronamespace = n.oid
+LEFT JOIN pg_type t ON t.oid = p.prorettype 
+WHERE n.nspname NOT IN ('pg_catalog', 'information_schema')`
+
+const queryFunctions = `SELECT n.nspname AS schema_name,
+p.proname AS specific_name,
+CASE WHEN p.prokind = 'p' THEN TEXT 'PROCEDURE' ELSE CASE WHEN p.prokind = 'f' THEN TEXT 'FUNCTION' ELSE p.prokind END END,
+t.typname AS return_type,
+pg_get_function_arguments(p.oid) AS arguments
+FROM pg_proc p
+LEFT JOIN pg_namespace n ON p.pronamespace = n.oid
+LEFT JOIN pg_type t ON t.oid = p.prorettype 
+WHERE n.nspname NOT IN ('pg_catalog', 'information_schema')`
+
+const queryStoredProcedureSupported = `SELECT column_name 
+FROM information_schema.columns 
+WHERE table_name='pg_proc' and column_name='prokind';`
+
+func (p *Postgres) isProceduresSupported() (bool, error) {
+	result, err := p.db.Query(queryStoredProcedureSupported)
+	if err != nil {
+		return false, errors.WithStack(err)
+	}
+	defer result.Close()
+
+	if result.Next() {
+		var (
+			name sql.NullString
+		)
+		err := result.Scan(&name)
+		if err != nil {
+			return false, errors.WithStack(err)
+		}
+		return true, nil
+	}
+	return false, nil
+}
+
+func (p *Postgres) getFunctions() ([]*schema.Function, error) {
+	var functions []*schema.Function
+	storedProcedureSupported, err := p.isProceduresSupported()
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+	if storedProcedureSupported {
+		functions, err = p.getFunctionsByQuery(queryFunctions)
+		if err != nil {
+			return nil, errors.WithStack(err)
+		}
+	} else {
+		functions, err = p.getFunctionsByQuery(queryFunctions95)
+		if err != nil {
+			return nil, errors.WithStack(err)
+		}
+	}
+	return functions, nil
+}
+
+func (p *Postgres) getFunctionsByQuery(query string) ([]*schema.Function, error) {
+	functions := []*schema.Function{}
+	functionsResult, err := p.db.Query(query)
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+	defer functionsResult.Close()
+
+	for functionsResult.Next() {
+		var (
+			schemaName string
+			name       string
+			typeValue  string
+			returnType string
+			arguments  sql.NullString
+		)
+		err := functionsResult.Scan(&schemaName, &name, &typeValue, &returnType, &arguments)
+		if err != nil {
+			return functions, errors.WithStack(err)
+		}
+		function := &schema.Function{
+			Name:       fullTableName(schemaName, name),
+			Type:       typeValue,
+			ReturnType: returnType,
+			Arguments:  arguments.String,
+		}
+
+		functions = append(functions, function)
+	}
+	return functions, nil
+}
+
+func fullTableName(owner string, tableName string) string {
+	return fmt.Sprintf("%s.%s", owner, tableName)
+}
+
 // Info return schema.Driver
 func (p *Postgres) Info() (*schema.Driver, error) {
 	var v string
@@ -378,10 +485,17 @@ func (p *Postgres) Info() (*schema.Driver, error) {
 		name = "redshift"
 	}
 
+	dct := dict.New()
+	dct.Merge(map[string]string{
+		"Functions": "Stored procedures and functions",
+	})
+
 	d := &schema.Driver{
 		Name:            name,
 		DatabaseVersion: v,
-		Meta:            &schema.DriverMeta{},
+		Meta: &schema.DriverMeta{
+			Dict: &dct,
+		},
 	}
 	return d, nil
 }

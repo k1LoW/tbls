@@ -17,6 +17,7 @@ func (s Schema) MarshalJSON() ([]byte, error) {
 		Desc      string      `json:"desc"`
 		Tables    []*Table    `json:"tables"`
 		Relations []*Relation `json:"relations"`
+		Functions []*Function `json:"functions"`
 		Driver    *Driver     `json:"driver"`
 		Labels    Labels      `json:"labels,omitempty"`
 	}{
@@ -25,7 +26,23 @@ func (s Schema) MarshalJSON() ([]byte, error) {
 		Tables:    s.Tables,
 		Relations: s.Relations,
 		Driver:    s.Driver,
+		Functions: s.Functions,
 		Labels:    s.Labels,
+	})
+}
+
+// MarshalJSON return custom JSON byte
+func (d Function) MarshalJSON() ([]byte, error) {
+	return json.Marshal(&struct {
+		Name       string `json:"name"`
+		ReturnType string `json:"return_type"`
+		Arguments  string `json:"arguments"`
+		Type       string `json:"type"`
+	}{
+		Name:       d.Name,
+		ReturnType: d.ReturnType,
+		Arguments:  d.Arguments,
+		Type:       d.Type,
 	})
 }
 
