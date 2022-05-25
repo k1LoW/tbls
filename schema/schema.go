@@ -104,6 +104,14 @@ type DriverMeta struct {
 	Dict          *dict.Dict `json:"dict,omitempty"`
 }
 
+// Function is the struct for tbls stored procedure/function information
+type Function struct {
+	Name       string `json:"name"`
+	ReturnType string `json:"return_type" yaml:"returnType"`
+	Arguments  string `json:"arguments"`
+	Type       string `json:"type"`
+}
+
 // Driver is the struct for tbls driver information
 type Driver struct {
 	Name            string      `json:"name"`
@@ -117,6 +125,7 @@ type Schema struct {
 	Desc      string      `json:"desc"`
 	Tables    []*Table    `json:"tables"`
 	Relations []*Relation `json:"relations"`
+	Functions []*Function `json:"functions"`
 	Driver    *Driver     `json:"driver"`
 	Labels    Labels      `json:"labels,omitempty"`
 }

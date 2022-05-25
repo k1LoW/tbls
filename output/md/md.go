@@ -478,16 +478,41 @@ func (m *Md) makeSchemaTemplateData(s *schema.Schema) map[string]interface{} {
 		tablesData = m.addNumberToTable(tablesData)
 	}
 
+	tablesSubroutineData := [][]string{}
+	tablesSubroutineHeader := []string{
+		m.config.MergedDict.Lookup("Name"),
+		m.config.MergedDict.Lookup("ReturnType"),
+		m.config.MergedDict.Lookup("Arguments"),
+		m.config.MergedDict.Lookup("Type"),
+	}
+	tablesSubroutineHeaderLine := []string{"----", "-------", "-------", "----"}
+	tablesSubroutineData = append(tablesSubroutineData,
+		tablesSubroutineHeader,
+		tablesSubroutineHeaderLine,
+	)
+
+	for _, t := range s.Functions {
+		data := []string{
+			t.Name,
+			t.ReturnType,
+			t.Arguments,
+			t.Type,
+		}
+		tablesSubroutineData = append(tablesSubroutineData, data)
+	}
+
 	if adjust {
 		return map[string]interface{}{
-			"Schema": s,
-			"Tables": adjustTable(tablesData),
+			"Schema":    s,
+			"Tables":    adjustTable(tablesData),
+			"Functions": adjustTable(tablesSubroutineData),
 		}
 	}
 
 	return map[string]interface{}{
-		"Schema": s,
-		"Tables": tablesData,
+		"Schema":    s,
+		"Tables":    tablesData,
+		"Functions": tablesSubroutineData,
 	}
 }
 

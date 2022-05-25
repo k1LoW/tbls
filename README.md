@@ -59,18 +59,17 @@ $ tbls doc postgres://dbuser:dbpass@hostname:5432/dbname
 Using docker image.
 
 ```console
-$ docker run --rm -v $PWD:/work ghcr.io/k1low/tbls doc postgres://dbuser:dbpass@hostname:5432/dbname
+$ docker run --rm -v $PWD:/work -w /work ghcr.io/k1low/tbls doc postgres://dbuser:dbpass@hostname:5432/dbname
 ```
 
 ## Install
 
 **deb:**
 
-Use [dpkg-i-from-url](https://github.com/k1LoW/dpkg-i-from-url)
-
 ``` console
 $ export TBLS_VERSION=X.X.X
-$ curl -L https://git.io/dpkg-i-from-url | bash -s -- https://github.com/k1LoW/tbls/releases/download/v$TBLS_VERSION/tbls_$TBLS_VERSION-1_amd64.deb
+$ curl -o tbls.deb -L https://github.com/k1LoW/tbls/releases/download/v$TBLS_VERSION/tbls_$TBLS_VERSION-1_amd64.deb
+$ dpkg -i tbls.deb
 ```
 
 **RPM:**
@@ -105,11 +104,11 @@ $ docker pull ghcr.io/k1low/tbls:latest
 **temporary:**
 
 ``` console
-$ source <(curl https://git.io/use-tbls)
+$ source <(curl https://raw.githubusercontent.com/k1LoW/tbls/main/use)
 ```
 
 ``` console
-$ curl -sL https://git.io/use-tbls > /tmp/use-tbls.tmp && . /tmp/use-tbls.tmp
+$ curl -sL https://raw.githubusercontent.com/k1LoW/tbls/main/use > /tmp/use-tbls.tmp && . /tmp/use-tbls.tmp
 ```
 
 ## Getting Started
@@ -293,13 +292,13 @@ Continuous integration using tbls.
 language: go
 
 install:
-  - source <(curl -sL https://git.io/use-tbls)
+  - source <(curl -sL https://raw.githubusercontent.com/k1LoW/tbls/main/use)
 script:
   - tbls diff
   - tbls lint
 ```
 
-> **Tips:** If your CI based on Debian/Ubuntu (`/bin/sh -> dash`), you can use following install command `curl -sL https://git.io/use-tbls > use-tbls.tmp && . ./use-tbls.tmp && rm ./use-tbls.tmp`
+> **Tips:** If your CI based on Debian/Ubuntu (`/bin/sh -> dash`), you can use following install command `curl -sL https://raw.githubusercontent.com/k1LoW/tbls/main/use > use-tbls.tmp && . ./use-tbls.tmp && rm ./use-tbls.tmp`
 
 > **Tips:** If the order of the columns does not match, you can use the `--sort` option.
 
@@ -402,6 +401,13 @@ dsn: mysql://dbuser:dbpass@hostname:3306/dbname
 ``` yaml
 # .tbls.yml
 dsn: my://dbuser:dbpass@hostname:3306/dbname
+```
+
+When you want to hide AUTO_INCREMENT clause on the table definitions,
+add "?hide_auto_increment".
+For example:
+``` yaml
+dsn: my://dbuser:dbpass@hostname:3306/dbname?hide_auto_increment
 ```
 
 **MariaDB:**

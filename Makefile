@@ -28,7 +28,6 @@ db: db_sqlite
 	usql pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -f testdata/ddl/postgres95.sql
 	usql pg://postgres:pgpass@localhost:55413/testdb?sslmode=disable -f testdata/ddl/postgres.sql
 	usql my://root:mypass@localhost:33306/testdb -f testdata/ddl/mysql56.sql
-	usql my://root:mypass@localhost:33308/testdb -f testdata/ddl/mysql.sql
 	usql my://root:mypass@localhost:33308/testdb -c "CREATE DATABASE IF NOT EXISTS relations;"
 	usql my://root:mypass@localhost:33308/relations -f testdata/ddl/detect_relations.sql
 	usql my://root:mypass@localhost:33308/testdb -c "CREATE DATABASE IF NOT EXISTS relations_singular;"
