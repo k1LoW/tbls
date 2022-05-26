@@ -4,7 +4,7 @@
 <br><br>
 </p>
 
-[![Build Status](https://github.com/k1LoW/tbls/workflows/build/badge.svg)](https://github.com/k1LoW/tbls/actions) [![GitHub release](https://img.shields.io/github/release/k1LoW/tbls.svg)](https://github.com/k1LoW/tbls/releases) [![Go Report Card](https://goreportcard.com/badge/github.com/k1LoW/tbls)](https://goreportcard.com/report/github.com/k1LoW/tbls) 
+[![Build Status](https://github.com/k1LoW/tbls/workflows/build/badge.svg)](https://github.com/k1LoW/tbls/actions) [![GitHub release](https://img.shields.io/github/release/k1LoW/tbls.svg)](https://github.com/k1LoW/tbls/releases) [![Go Report Card](https://goreportcard.com/badge/github.com/k1LoW/tbls)](https://goreportcard.com/report/github.com/k1LoW/tbls)
 
 `tbls` is a CI-Friendly tool for document a database, written in Go.
 
@@ -596,6 +596,11 @@ format:
   # The comments for each table in the Tables section of the index page will display the text up to the first double newline (first paragraph).
   # Default is false
   showOnlyFirstParagraph: true
+  # Hide table columns without values
+  # Default is false
+  hideColumnsWithoutValues: true
+  # It can be boolean or array
+  # hideColumnsWithoutValues: ["Parents", "Children"]
 ```
 
 ### ER diagram
