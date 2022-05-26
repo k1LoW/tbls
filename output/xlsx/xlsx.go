@@ -169,12 +169,13 @@ func (x *Xlsx) createTableSheet(w *excl.Workbook, t *schema.Table) (e error) {
 		x.config.MergedDict.Lookup("Default"),
 		x.config.MergedDict.Lookup("Nullable"),
 	}
-	x.adjustColumnHeader(&columnValues, t.HasColumnWithExtraDef(), "Extra Definition")
-	x.adjustColumnHeader(&columnValues, t.HasColumnWithOccurrences(), "Occurrences")
-	x.adjustColumnHeader(&columnValues, t.HasColumnWithPercents(), "Percents")
-	x.adjustColumnHeader(&columnValues, t.HasColumnWithChildren(), "Children")
-	x.adjustColumnHeader(&columnValues, t.HasColumnWithParents(), "Parents")
-	x.adjustColumnHeader(&columnValues, t.HasColumnWithComment(), "Comment")
+	hideColumns := x.config.Format.HideColumnsWithoutValues
+	x.adjustColumnHeader(&columnValues, t.ShowColumn("ExtraDef", hideColumns), "Extra Definition")
+	x.adjustColumnHeader(&columnValues, t.ShowColumn("Occurrences", hideColumns), "Occurrences")
+	x.adjustColumnHeader(&columnValues, t.ShowColumn("Percents", hideColumns), "Percents")
+	x.adjustColumnHeader(&columnValues, t.ShowColumn("Children", hideColumns), "Children")
+	x.adjustColumnHeader(&columnValues, t.ShowColumn("Parents", hideColumns), "Parents")
+	x.adjustColumnHeader(&columnValues, t.ShowColumn("Comment", hideColumns), "Comment")
 	setHeader(sheet, 5, columnValues)
 	r := 6
 	for i, c := range t.Columns {
@@ -183,20 +184,20 @@ func (x *Xlsx) createTableSheet(w *excl.Workbook, t *schema.Table) (e error) {
 		setStringWithBorder(sheet, r+i, 3, c.Default.String)
 		setStringWithBorder(sheet, r+i, 4, fmt.Sprintf("%v", c.Nullable))
 		ci := 5
-		ci = adjustData(t.HasColumnWithExtraDef(), sheet, r+i, ci, fmt.Sprintf("%v", c.ExtraDef))
-		ci = adjustData(t.HasColumnWithOccurrences(), sheet, r+i, ci, fmt.Sprintf("%d", c.Occurrences.Int32))
-		ci = adjustData(t.HasColumnWithPercents(), sheet, r+i, ci, fmt.Sprintf("%.1f", c.Percents.Float64))
+		ci = adjustData(t.ShowColumn("ExtraDef", hideColumns), sheet, r+i, ci, fmt.Sprintf("%v", c.ExtraDef))
+		ci = adjustData(t.ShowColumn("Occurrences", hideColumns), sheet, r+i, ci, fmt.Sprintf("%d", c.Occurrences.Int32))
+		ci = adjustData(t.ShowColumn("Percent", hideColumns), sheet, r+i, ci, fmt.Sprintf("%.1f", c.Percents.Float64))
 		children := []string{}
 		for _, child := range c.ChildRelations {
 			children = append(children, child.Table.Name)
 		}
-		ci = adjustData(t.HasColumnWithChildren(), sheet, r+i, ci, strings.Join(children, "\n"))
+		ci = adjustData(t.ShowColumn("Children", hideColumns), sheet, r+i, ci, strings.Join(children, "\n"))
 		parents := []string{}
 		for _, parent := range c.ParentRelations {
 			parents = append(parents, parent.ParentTable.Name)
 		}
-		ci = adjustData(t.HasColumnWithParents(), sheet, r+i, ci, strings.Join(parents, "\n"))
-		ci = adjustData(t.HasColumnWithComment(), sheet, r+i, ci, c.Comment)
+		ci = adjustData(t.ShowColumn("Parents", hideColumns), sheet, r+i, ci, strings.Join(parents, "\n"))
+		ci = adjustData(t.ShowColumn("Comment", hideColumns), sheet, r+i, ci, c.Comment)
 	}
 	r = r + len(t.Columns)
 

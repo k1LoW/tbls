@@ -60,6 +60,7 @@ doc: build doc_sqlite
 	./tbls doc my://root:mypass@localhost:33308/testdb -c testdata/dict_test_tbls.yml -f sample/dict
 	./tbls doc my://root:mypass@localhost:33308/testdb -c testdata/font_test_tbls.yml -f sample/font
 	./tbls doc my://root:mypass@localhost:33308/testdb -c testdata/number_test_tbls.yml -f sample/number
+	./tbls doc mongodb://mongoadmin:secret@localhost:27017/test?authSource=admin -f sample/mongo
 
 doc_sqlite: build
 	./tbls doc sq://$(PWD)/testdata/testdb.sqlite3 -c testdata/test_tbls.yml -f sample/sqlite
