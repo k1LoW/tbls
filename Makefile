@@ -30,7 +30,6 @@ db: db_sqlite
 	usql pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -f testdata/ddl/postgres95.sql
 	usql pg://postgres:pgpass@localhost:55413/testdb?sslmode=disable -f testdata/ddl/postgres.sql
 	usql my://root:mypass@localhost:33306/testdb -f testdata/ddl/mysql56.sql
-	usql my://root:mypass@localhost:33308/testdb -f testdata/ddl/mysql.sql
 	usql my://root:mypass@localhost:33308/testdb -c "CREATE DATABASE IF NOT EXISTS relations;"
 	usql my://root:mypass@localhost:33308/relations -f testdata/ddl/detect_relations.sql
 	usql my://root:mypass@localhost:33308/testdb -c "CREATE DATABASE IF NOT EXISTS relations_singular;"
@@ -56,6 +55,7 @@ doc: build doc_sqlite
 	$(TBLS) doc my://root:mypass@localhost:33308/relations_singular -c testdata/test_tbls_detect_relations_singular.yml -f sample/detect_relations_singular
 	$(TBLS) doc maria://root:mypass@localhost:33309/testdb -c testdata/test_tbls.yml -f sample/mariadb
 	$(TBLS) doc ms://SA:MSSQLServer-Passw0rd@localhost:11433/testdb -c testdata/test_tbls_mssql.yml -f sample/mssql
+	$(TBLS) doc mongodb://mongoadmin:secret@localhost:27017/test?authSource=admin -f sample/mongo
 	env AWS_ENDPOINT_URL=http://localhost:18000 $(TBLS) doc dynamodb://ap-northeast-1 -c testdata/test_tbls_dynamodb.yml -f sample/dynamodb
 	$(TBLS) doc pg://postgres:pgpass@localhost:55413/testdb?sslmode=disable -c testdata/test_tbls_postgres.yml -j -f sample/adjust
 	$(TBLS) doc my://root:mypass@localhost:33308/testdb -c testdata/test_tbls.yml -t png -f sample/png
@@ -63,6 +63,7 @@ doc: build doc_sqlite
 	$(TBLS) doc my://root:mypass@localhost:33308/testdb -c testdata/dict_test_tbls.yml -f sample/dict
 	$(TBLS) doc my://root:mypass@localhost:33308/testdb -c testdata/font_test_tbls.yml -f sample/font
 	$(TBLS) doc my://root:mypass@localhost:33308/testdb -c testdata/number_test_tbls.yml -f sample/number
+	$(TBLS) doc my://root:mypass@localhost:33308/testdb -c testdata/hide_test_tbls.yml -f sample/hide
 
 doc_sqlite: build
 	$(TBLS) doc sq://$(PWD)/testdata/testdb.sqlite3 -c testdata/test_tbls.yml -f sample/sqlite
@@ -76,6 +77,7 @@ testdoc: build testdoc_sqlite
 	$(TBLS) diff my://root:mypass@localhost:33308/relations_singular -c testdata/test_tbls_detect_relations_singular.yml sample/detect_relations_singular
 	$(TBLS) diff maria://root:mypass@localhost:33309/testdb -c testdata/test_tbls.yml sample/mariadb
 	$(TBLS) diff ms://SA:MSSQLServer-Passw0rd@localhost:11433/testdb -c testdata/test_tbls_mssql.yml sample/mssql
+	$(TBLS) diff mongodb://mongoadmin:secret@localhost:27017/test?authSource=admin sample/mongo
 	env AWS_ENDPOINT_URL=http://localhost:18000 $(TBLS) diff dynamodb://ap-northeast-1 -c testdata/test_tbls_dynamodb.yml sample/dynamodb
 	$(TBLS) diff pg://postgres:pgpass@localhost:55413/testdb?sslmode=disable -c testdata/test_tbls_postgres.yml -j sample/adjust
 	$(TBLS) diff my://root:mypass@localhost:33308/testdb -c testdata/test_tbls.yml -t png sample/png
@@ -83,7 +85,7 @@ testdoc: build testdoc_sqlite
 	$(TBLS) diff my://root:mypass@localhost:33308/testdb -c testdata/dict_test_tbls.yml sample/dict
 	$(TBLS) diff my://root:mypass@localhost:33308/testdb -c testdata/font_test_tbls.yml sample/font
 	$(TBLS) diff my://root:mypass@localhost:33308/testdb -c testdata/number_test_tbls.yml sample/number
-	$(TBLS) diff mongodb://mongoadmin:secret@localhost:27017/test?authSource=admin sample/mongo
+	$(TBLS) diff my://root:mypass@localhost:33308/testdb -c testdata/hide_test_tbls.yml sample/hide
 
 testdoc_sqlite: build
 	$(TBLS) diff sq://$(PWD)/testdata/testdb.sqlite3 -c testdata/test_tbls.yml sample/sqlite

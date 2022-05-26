@@ -22,6 +22,14 @@ Sample database document.
 | [CamelizeTable](CamelizeTable.md) | 2 |  | BASIC TABLE |  |
 | [hyphen-table](hyphen-table.md) | 3 |  | BASIC TABLE |  |
 | [administrator.blogs](administrator.blogs.md) | 6 | admin blogs | BASIC TABLE |  |
+| [name with spaces](name%20with%20spaces.md) | 1 |  | VIEW |  |
+
+## Stored procedures and functions
+
+| Name | ReturnType | Arguments | Type |
+| ---- | ------- | ------- | ---- |
+| dbo.get_user |  | @userid int | SQL inline table-valued function |
+| dbo.What_DB_is_that |  | @ID int | SQL Stored Procedure |
 
 ## Relations
 

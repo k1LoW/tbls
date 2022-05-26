@@ -59,10 +59,11 @@ type DSN struct {
 
 // Format is document format setting
 type Format struct {
-	Adjust                 bool `yaml:"adjust,omitempty"`
-	Sort                   bool `yaml:"sort,omitempty"`
-	Number                 bool `yaml:"number,omitempty"`
-	ShowOnlyFirstParagraph bool `yaml:"showOnlyFirstParagraph,omitempty"`
+	Adjust                   bool     `yaml:"adjust,omitempty"`
+	Sort                     bool     `yaml:"sort,omitempty"`
+	Number                   bool     `yaml:"number,omitempty"`
+	ShowOnlyFirstParagraph   bool     `yaml:"showOnlyFirstParagraph,omitempty"`
+	HideColumnsWithoutValues []string `yaml:"hideColumnsWithoutValues,omitempty"`
 }
 
 // ER is er setting

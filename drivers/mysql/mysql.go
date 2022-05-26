@@ -8,6 +8,7 @@ import (
 
 	"github.com/aquasecurity/go-version/pkg/version"
 	"github.com/k1LoW/tbls/ddl"
+	"github.com/k1LoW/tbls/dict"
 	"github.com/k1LoW/tbls/drivers"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/pkg/errors"
@@ -418,6 +419,12 @@ WHERE table_schema = ? AND table_name = ? ORDER BY ordinal_position`
 		tables = append(tables, table)
 	}
 
+	functions, err := m.getFunctions()
+	if err != nil {
+		return err
+	}
+	s.Functions = functions
+
 	s.Tables = tables
 
 	// Relations
@@ -473,6 +480,50 @@ WHERE table_schema = ? AND table_name = ? ORDER BY ordinal_position`
 	return nil
 }
 
+const queryFunctions = `SELECT r.routine_schema as database_name,
+r.routine_name,
+r.routine_type AS type,
+r.data_type AS return_type,
+GROUP_CONCAT(CONCAT(p.parameter_name, ' ', p.data_type) SEPARATOR '; ') AS parameter
+FROM information_schema.routines r
+LEFT JOIN information_schema.parameters p
+	 ON p.specific_schema = r.routine_schema
+	 AND p.specific_name = r.specific_name
+WHERE routine_schema NOT IN ('sys', 'information_schema', 'mysql', 'performance_schema')
+GROUP BY r.routine_schema, r.routine_name, r.routine_type, r.data_type, r.routine_definition`
+
+func (m *Mysql) getFunctions() ([]*schema.Function, error) {
+	functions := []*schema.Function{}
+	functionsResult, err := m.db.Query(queryFunctions)
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+	defer functionsResult.Close()
+
+	for functionsResult.Next() {
+		var (
+			databaseName string
+			name         string
+			typeValue    string
+			returnType   string
+			arguments    sql.NullString
+		)
+		err := functionsResult.Scan(&databaseName, &name, &typeValue, &returnType, &arguments)
+		if err != nil {
+			return functions, errors.WithStack(err)
+		}
+		subroutine := &schema.Function{
+			Name:       name,
+			Type:       typeValue,
+			ReturnType: returnType,
+			Arguments:  arguments.String,
+		}
+
+		functions = append(functions, subroutine)
+	}
+	return functions, nil
+}
+
 // Info return schema.Driver
 func (m *Mysql) Info() (*schema.Driver, error) {
 	var v string
@@ -487,9 +538,17 @@ func (m *Mysql) Info() (*schema.Driver, error) {
 		name = "mariadb"
 	}
 
+	dct := dict.New()
+	dct.Merge(map[string]string{
+		"Functions": "Stored procedures and functions",
+	})
+
 	d := &schema.Driver{
 		Name:            name,
 		DatabaseVersion: v,
+		Meta: &schema.DriverMeta{
+			Dict: &dct,
+		},
 	}
 	return d, nil
 }
@@ -509,8 +568,5 @@ SELECT table_name, table_type, table_comment FROM information_schema.tables WHER
 }
 
 func convertColumnNullable(str string) bool {
-	if str == "NO" {
-		return false
-	}
-	return true
+	return str != "NO"
 }

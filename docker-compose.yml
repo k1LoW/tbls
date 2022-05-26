@@ -35,6 +35,9 @@ services:
     environment:
       - MYSQL_DATABASE=testdb
       - MYSQL_ROOT_PASSWORD=mypass
+      - LANG=C.UTF-8
+    volumes:
+      - ./testdata/ddl/mysql:/docker-entrypoint-initdb.d
   mariadb:
     image: mariadb:10.5
     restart: always

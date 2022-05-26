@@ -21,7 +21,7 @@ var tests = []struct {
 	{config.DSN{URL: "pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable"}, "testdb", 17, 12},
 	{config.DSN{URL: "json://../testdata/testdb.json"}, "testdb", 11, 12},
 	{config.DSN{URL: "https://raw.githubusercontent.com/k1LoW/tbls/main/testdata/testdb.json"}, "testdb", 11, 12},
-	{config.DSN{URL: "ms://SA:MSSQLServer-Passw0rd@localhost:11433/testdb"}, "testdb", 10, 7},
+	{config.DSN{URL: "ms://SA:MSSQLServer-Passw0rd@localhost:11433/testdb"}, "testdb", 11, 7},
 }
 
 func TestMain(m *testing.M) {

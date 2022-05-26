@@ -4,10 +4,6 @@
 
 Sample database document.
 
-## Labels
-
-`sample` `tbls`
-
 ## Tables
 
 | Name | Columns | Comment | Type | Labels |

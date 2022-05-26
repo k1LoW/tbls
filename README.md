@@ -4,7 +4,7 @@
 <br><br>
 </p>
 
-[![Build Status](https://github.com/k1LoW/tbls/workflows/build/badge.svg)](https://github.com/k1LoW/tbls/actions) [![GitHub release](https://img.shields.io/github/release/k1LoW/tbls.svg)](https://github.com/k1LoW/tbls/releases) [![Go Report Card](https://goreportcard.com/badge/github.com/k1LoW/tbls)](https://goreportcard.com/report/github.com/k1LoW/tbls) 
+[![Build Status](https://github.com/k1LoW/tbls/workflows/build/badge.svg)](https://github.com/k1LoW/tbls/actions) [![GitHub release](https://img.shields.io/github/release/k1LoW/tbls.svg)](https://github.com/k1LoW/tbls/releases) [![Go Report Card](https://goreportcard.com/badge/github.com/k1LoW/tbls)](https://goreportcard.com/report/github.com/k1LoW/tbls)
 
 `tbls` is a CI-Friendly tool for document a database, written in Go.
 
@@ -59,18 +59,17 @@ $ tbls doc postgres://dbuser:dbpass@hostname:5432/dbname
 Using docker image.
 
 ```console
-$ docker run --rm -v $PWD:/work ghcr.io/k1low/tbls doc postgres://dbuser:dbpass@hostname:5432/dbname
+$ docker run --rm -v $PWD:/work -w /work ghcr.io/k1low/tbls doc postgres://dbuser:dbpass@hostname:5432/dbname
 ```
 
 ## Install
 
 **deb:**
 
-Use [dpkg-i-from-url](https://github.com/k1LoW/dpkg-i-from-url)
-
 ``` console
 $ export TBLS_VERSION=X.X.X
-$ curl -L https://git.io/dpkg-i-from-url | bash -s -- https://github.com/k1LoW/tbls/releases/download/v$TBLS_VERSION/tbls_$TBLS_VERSION-1_amd64.deb
+$ curl -o tbls.deb -L https://github.com/k1LoW/tbls/releases/download/v$TBLS_VERSION/tbls_$TBLS_VERSION-1_amd64.deb
+$ dpkg -i tbls.deb
 ```
 
 **RPM:**
@@ -105,11 +104,11 @@ $ docker pull ghcr.io/k1low/tbls:latest
 **temporary:**
 
 ``` console
-$ source <(curl https://git.io/use-tbls)
+$ source <(curl https://raw.githubusercontent.com/k1LoW/tbls/main/use)
 ```
 
 ``` console
-$ curl -sL https://git.io/use-tbls > /tmp/use-tbls.tmp && . /tmp/use-tbls.tmp
+$ curl -sL https://raw.githubusercontent.com/k1LoW/tbls/main/use > /tmp/use-tbls.tmp && . /tmp/use-tbls.tmp
 ```
 
 ## Getting Started
@@ -293,13 +292,13 @@ Continuous integration using tbls.
 language: go
 
 install:
-  - source <(curl -sL https://git.io/use-tbls)
+  - source <(curl -sL https://raw.githubusercontent.com/k1LoW/tbls/main/use)
 script:
   - tbls diff
   - tbls lint
 ```
 
-> **Tips:** If your CI based on Debian/Ubuntu (`/bin/sh -> dash`), you can use following install command `curl -sL https://git.io/use-tbls > use-tbls.tmp && . ./use-tbls.tmp && rm ./use-tbls.tmp`
+> **Tips:** If your CI based on Debian/Ubuntu (`/bin/sh -> dash`), you can use following install command `curl -sL https://raw.githubusercontent.com/k1LoW/tbls/main/use > use-tbls.tmp && . ./use-tbls.tmp && rm ./use-tbls.tmp`
 
 > **Tips:** If the order of the columns does not match, you can use the `--sort` option.
 
@@ -402,6 +401,13 @@ dsn: mysql://dbuser:dbpass@hostname:3306/dbname
 ``` yaml
 # .tbls.yml
 dsn: my://dbuser:dbpass@hostname:3306/dbname
+```
+
+When you want to hide AUTO_INCREMENT clause on the table definitions,
+add "?hide_auto_increment".
+For example:
+``` yaml
+dsn: my://dbuser:dbpass@hostname:3306/dbname?hide_auto_increment
 ```
 
 **MariaDB:**
@@ -590,6 +596,11 @@ format:
   # The comments for each table in the Tables section of the index page will display the text up to the first double newline (first paragraph).
   # Default is false
   showOnlyFirstParagraph: true
+  # Hide table columns without values
+  # Default is false
+  hideColumnsWithoutValues: true
+  # It can be boolean or array
+  # hideColumnsWithoutValues: ["Parents", "Children"]
 ```
 
 ### ER diagram
