@@ -14,6 +14,9 @@ const (
 	TypeFK = "FOREIGN KEY"
 )
 
+var DefaultHideColumns = []string{"ExtraDef", "Occurrences", "Percents", "Labels"}
+var HideableColumns = []string{"ExtraDef", "Occurrences", "Percents", "Children", "Parents", "Comment", "Labels"}
+
 type Label struct {
 	Name    string
 	Virtual bool
@@ -250,7 +253,7 @@ func (t *Table) FindConstrainsByColumnName(name string) []*Constraint {
 	return cts
 }
 
-func (t *Table) hasColumnWithName(name string) bool {
+func (t *Table) hasColumnWithValues(name string) bool {
 	for _, c := range t.Columns {
 		switch name {
 		case "ExtraDef":
@@ -265,30 +268,33 @@ func (t *Table) hasColumnWithName(name string) bool {
 			if c.Percents.Valid {
 				return true
 			}
+		case "Children":
+			if len(c.ChildRelations) > 0 {
+				return true
+			}
+		case "Parents":
+			if len(c.ParentRelations) > 0 {
+				return true
+			}
+		case "Comment":
+			if c.Comment != "" {
+				return true
+			}
+		case "Labels":
+			if len(c.Labels) > 0 {
+				return true
+			}
 		}
 	}
 	return false
 }
 
-func (t *Table) HasColumnWithExtraDef() bool {
-	return t.hasColumnWithName("ExtraDef")
-}
-
-func (t *Table) HasColumnWithOccurrences() bool {
-	return t.hasColumnWithName("Occurrences")
-}
-
-func (t *Table) HasColumnWithPercents() bool {
-	return t.hasColumnWithName("Percents")
-}
-
-func (t *Table) HasColumnWithLabels() bool {
-	for _, c := range t.Columns {
-		if len(c.Labels) > 0 {
-			return true
-		}
+func (t *Table) ShowColumn(name string, hideColumns []string) bool {
+	hideColumns = unique(append(DefaultHideColumns, hideColumns...))
+	if contains(hideColumns, name) {
+		return t.hasColumnWithValues(name)
 	}
-	return false
+	return true
 }
 
 // Sort schema tables, columns, relations, and constrains
@@ -436,4 +442,26 @@ func (t *Table) CollectTablesAndRelations(distance int, root bool) ([]*Table, []
 	}
 
 	return uTables, uRelations, nil
+}
+
+func unique(in []string) []string {
+	u := []string{}
+	m := map[string]struct{}{}
+	for _, s := range in {
+		if _, ok := m[s]; ok {
+			continue
+		}
+		u = append(u, s)
+		m[s] = struct{}{}
+	}
+	return u
+}
+
+func contains(s []string, e string) bool {
+	for _, v := range s {
+		if e == v {
+			return true
+		}
+	}
+	return false
 }

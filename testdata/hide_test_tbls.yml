@@ -1,0 +1,23 @@
+---
+desc: Sample database document.
+format:
+  hideColumnsWithoutValues: true
+comments:
+  -
+    table: posts
+    columnComments:
+      body: post body
+    labels:
+      - green
+      - red
+      - blue
+  -
+    table: post_comments
+    tableComment: post and comments View table
+    columnComments:
+      id: comments.id
+      title: posts.title
+      post_user: posts.users.username
+      comment_user: comments.users.username
+      created: comments.created
+      updated: comments.updated
