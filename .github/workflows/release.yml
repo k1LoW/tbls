@@ -67,7 +67,7 @@ jobs:
           path: dist/*
 
       - name: Run integration test
-        run: env TBLS=dist/tbls-linux_linux_amd64/tbls make depsdev db doc
+        run: env TBLS=dist/tbls-linux_linux_amd64_v1/tbls make depsdev db doc
 
   windows-release:
     name: Release assets for Windows
