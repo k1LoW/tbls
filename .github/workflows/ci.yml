@@ -24,7 +24,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install sqlite3
- 
+
       - name: Install aws-cli
         uses: isbang/setup-awscli@v0.1.0
 
@@ -87,6 +87,12 @@ jobs:
 
       - name: Check out source code
         uses: actions/checkout@v2
+
+      - name: Run lint
+        uses: reviewdog/action-golangci-lint@v2
+        with:
+          go_version: ${{ matrix.go_version }}
+          reporter: github-pr-check
 
       - name: Run tests
         run: |

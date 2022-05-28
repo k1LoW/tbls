@@ -22,7 +22,7 @@ TBLS ?= ./tbls
 
 default: test
 
-ci: depsdev build db test testdoc testdoc_hide_auto_increment test_too_many_tables test_json test_ext_subcommand sec doc
+ci: depsdev build db test testdoc testdoc_hide_auto_increment test_too_many_tables test_json test_ext_subcommand doc
 
 ci_windows: depsdev build db_sqlite testdoc_sqlite
 
@@ -144,8 +144,8 @@ test_ext_subcommand: build
 	env PATH="./testdata/bin:${PATH}" TBLS_DSN=pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable $(TBLS) echo | grep 'TBLS_DSN=pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable' > /dev/null
 	echo hello | env PATH="./testdata/bin:${PATH}" $(TBLS) echo -c ./testdata/ext_subcommand_tbls.yml | grep 'STDIN=hello' > /dev/null
 
-sec:
-	gosec ./...
+lint:
+	golangci-lint run ./...
 
 build:
 	go build -ldflags="$(BUILD_LDFLAGS)"
