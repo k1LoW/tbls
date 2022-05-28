@@ -155,7 +155,7 @@ depsdev:
 	go install github.com/Songmu/ghch/cmd/ghch@v0.10.2
 	go install github.com/xo/usql@v0.9.5
 	go install github.com/Songmu/gocredits/cmd/gocredits@v0.2.0
-	go install github.com/securego/gosec/cmd/gosec@master
+	go install github.com/securego/gosec/v2/cmd/gosec@latest
 
 prerelease:
 	git pull origin --tag
