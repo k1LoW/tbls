@@ -1,7 +1,7 @@
 linters:
   fast: false
-linters-settings:
-  staticcheck:
+  enable:
+    - gosec
 issues:
   exclude:
     - SA3000

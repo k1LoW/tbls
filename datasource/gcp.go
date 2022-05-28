@@ -66,7 +66,10 @@ func AnalyzeSpanner(urlstr string) (*schema.Schema, error) {
 	s := &schema.Schema{}
 	ctx := context.Background()
 	client, db, err := NewSpannerClient(ctx, urlstr)
-	defer client.Close()
+	if err != nil {
+		return s, err
+	}
+	defer client.Close() //nolint
 
 	s.Name = db
 	driver, err := spanner.New(ctx, client)

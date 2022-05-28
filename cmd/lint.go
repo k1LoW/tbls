@@ -81,7 +81,7 @@ var lintCmd = &cobra.Command{
 		}
 		if len(ruleWarns) > 0 {
 			for _, warn := range ruleWarns {
-				fmt.Println(fmt.Sprintf("%s%s", color.Cyan(warn.Target), color.White(fmt.Sprintf(": %s", warn.Message), color.B)))
+				fmt.Printf("%s%s", color.Cyan(warn.Target), color.White(fmt.Sprintf(": %s", warn.Message), color.B))
 			}
 			fmt.Println(color.White(fmt.Sprintf("\n%d detected", len(ruleWarns)), color.B))
 			os.Exit(1)
