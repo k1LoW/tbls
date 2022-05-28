@@ -42,6 +42,12 @@ jobs:
           docker-compose up -d
           sleep 20s
 
+      - name: Run lint
+        uses: reviewdog/action-golangci-lint@v2
+        with:
+          go_version: ${{ matrix.go_version }}
+          reporter: github-pr-check
+
       - name: Run tests
         run: make ci
         env:
@@ -87,12 +93,6 @@ jobs:
 
       - name: Check out source code
         uses: actions/checkout@v2
-
-      - name: Run lint
-        uses: reviewdog/action-golangci-lint@v2
-        with:
-          go_version: ${{ matrix.go_version }}
-          reporter: github-pr-check
 
       - name: Run tests
         run: |
