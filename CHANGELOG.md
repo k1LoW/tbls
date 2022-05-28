@@ -1,5 +1,15 @@
 # Changelog
 
+## [v1.56.0](https://github.com/k1LoW/tbls/compare/v1.55.1...v1.56.0) (2022-05-28)
+
+* Fix release pipeline [#349](https://github.com/k1LoW/tbls/pull/349) ([k1LoW](https://github.com/k1LoW))
+* [BREAKING] Add `format.hideColumnsWithoutValues:` [#354](https://github.com/k1LoW/tbls/pull/354) ([k1LoW](https://github.com/k1LoW))
+* Update README [#353](https://github.com/k1LoW/tbls/pull/353) ([bugcloud](https://github.com/bugcloud))
+* [BREAKING] Stored procedure/functions support for MsSQL, MySQL and PostrgeSQL [#341](https://github.com/k1LoW/tbls/pull/341) ([YauhenPylAurea](https://github.com/YauhenPylAurea))
+* Git.io deprecation [#352](https://github.com/k1LoW/tbls/pull/352) ([k1LoW](https://github.com/k1LoW))
+* doc: Add explanation for hide_auto_increment option [#350](https://github.com/k1LoW/tbls/pull/350) ([tk0miya](https://github.com/tk0miya))
+* Er diagram links [#347](https://github.com/k1LoW/tbls/pull/347) ([YauhenPylAurea](https://github.com/YauhenPylAurea))
+
 ## [v1.55.1](https://github.com/k1LoW/tbls/compare/v1.55.0...v1.55.1) (2022-04-05)
 
 * Revert build env [#345](https://github.com/k1LoW/tbls/pull/345) ([k1LoW](https://github.com/k1LoW))
