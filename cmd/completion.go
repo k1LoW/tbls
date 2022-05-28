@@ -24,6 +24,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
@@ -66,7 +67,7 @@ tbls completion fish ~/.config/fish/completions/tbls.fish
 		if out == "" {
 			o = os.Stdout
 		} else {
-			o, err = os.Create(out)
+			o, err = os.Create(filepath.Clean(out))
 			if err != nil {
 				return errors.WithStack(err)
 			}

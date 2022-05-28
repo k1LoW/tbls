@@ -131,7 +131,7 @@ func Output(s *schema.Schema, c *config.Config, force bool) (e error) {
 	}
 
 	// README.md
-	file, err := os.Create(filepath.Join(fullPath, "README.md"))
+	file, err := os.Create(filepath.Clean(filepath.Join(fullPath, "README.md")))
 	defer func() {
 		err := file.Close()
 		if err != nil {
@@ -156,7 +156,7 @@ func Output(s *schema.Schema, c *config.Config, force bool) (e error) {
 
 	// tables
 	for _, t := range s.Tables {
-		file, err := os.Create(filepath.Join(fullPath, fmt.Sprintf("%s.md", t.Name)))
+		file, err := os.Create(filepath.Clean(filepath.Join(fullPath, fmt.Sprintf("%s.md", t.Name))))
 		if err != nil {
 			_ = file.Close()
 			return errors.WithStack(err)

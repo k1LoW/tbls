@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         platform: [ubuntu-latest]
-        go_version: [1.17]
+        go_version: [1.18]
     runs-on: ${{ matrix.platform }}
     steps:
       - name: Set up Go ${{ matrix.go_version }} on ${{ matrix.platform }}
@@ -29,7 +29,7 @@ jobs:
         uses: isbang/setup-awscli@v0.1.0
 
       - name: Check out source code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Decrypt secrets
         run: gpg --quiet --batch --yes --decrypt --passphrase="$GCP_CLIENT_SECRETS_PASSPHRASE" --output $GITHUB_WORKSPACE/client_secrets.json $GITHUB_WORKSPACE/client_secrets.json.gpg
@@ -65,7 +65,7 @@ jobs:
     strategy:
       matrix:
         platform: [windows-latest]
-        go_version: [1.17]
+        go_version: [1.18]
     runs-on: ${{ matrix.platform }}
     steps:
       - name: Set up Go ${{ matrix.go_version }} on ${{ matrix.platform }}
