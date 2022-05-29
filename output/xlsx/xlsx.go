@@ -104,10 +104,12 @@ func (x *Xlsx) createSchemaSheet(w *excl.Workbook, s *schema.Schema) error {
 		sheetName = "Tables"
 	}
 	sheet, err := w.OpenSheet(x.config.MergedDict.Lookup(sheetName))
-	defer sheet.Close()
 	if err != nil {
 		return errors.WithStack(err)
 	}
+	defer func() {
+		_ = sheet.Close()
+	}()
 	setString(sheet, 1, 1, s.Name).SetFont(excl.Font{Bold: true})
 
 	setString(sheet, 3, 1, x.config.MergedDict.Lookup("Tables")).SetFont(excl.Font{Bold: true})
@@ -197,7 +199,7 @@ func (x *Xlsx) createTableSheet(w *excl.Workbook, t *schema.Table) (e error) {
 			parents = append(parents, parent.ParentTable.Name)
 		}
 		ci = adjustData(t.ShowColumn("Parents", hideColumns), sheet, r+i, ci, strings.Join(parents, "\n"))
-		ci = adjustData(t.ShowColumn("Comment", hideColumns), sheet, r+i, ci, c.Comment)
+		ci = adjustData(t.ShowColumn("Comment", hideColumns), sheet, r+i, ci, c.Comment) //nolint
 	}
 	r = r + len(t.Columns)
 
@@ -288,16 +290,16 @@ func setStringWithBorder(sheet *excl.Sheet, rowNo int, colNo int, v string) *exc
 	})
 }
 
-func setFormula(sheet *excl.Sheet, rowNo int, colNo int, v string) *excl.Cell {
-	row := sheet.GetRow(rowNo)
-	return row.SetFormula(v, colNo)
-}
+// func setFormula(sheet *excl.Sheet, rowNo int, colNo int, v string) *excl.Cell {
+// 	row := sheet.GetRow(rowNo)
+// 	return row.SetFormula(v, colNo)
+// }
 
-func setFormulaWithBorder(sheet *excl.Sheet, rowNo int, colNo int, v string) *excl.Cell {
-	return setFormula(sheet, rowNo, colNo, v).SetBorder(excl.Border{
-		Left:   &excl.BorderSetting{Style: "thin"},
-		Right:  &excl.BorderSetting{Style: "thin"},
-		Top:    &excl.BorderSetting{Style: "thin"},
-		Bottom: &excl.BorderSetting{Style: "thin"},
-	})
-}
+// func setFormulaWithBorder(sheet *excl.Sheet, rowNo int, colNo int, v string) *excl.Cell {
+// 	return setFormula(sheet, rowNo, colNo, v).SetBorder(excl.Border{
+// 		Left:   &excl.BorderSetting{Style: "thin"},
+// 		Right:  &excl.BorderSetting{Style: "thin"},
+// 		Top:    &excl.BorderSetting{Style: "thin"},
+// 		Bottom: &excl.BorderSetting{Style: "thin"},
+// 	})
+// }

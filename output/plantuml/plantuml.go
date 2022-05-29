@@ -121,7 +121,7 @@ func (p *PlantUML) OutputTable(wr io.Writer, t *schema.Table) error {
 func addPrefix(t *schema.Table) error {
 	// PRIMARY KEY
 	for _, i := range t.Indexes {
-		if strings.Index(i.Def, "PRIMARY") < 0 {
+		if !strings.Contains(i.Def, "PRIMARY") {
 			continue
 		}
 		for _, c := range i.Columns {
@@ -134,18 +134,9 @@ func addPrefix(t *schema.Table) error {
 	}
 	// Foreign Key (Relations)
 	for _, c := range t.Columns {
-		if len(c.ParentRelations) > 0 && strings.Index(c.Name, "+") < 0 {
+		if len(c.ParentRelations) > 0 && !strings.Contains(c.Name, "+") {
 			c.Name = fmt.Sprintf("# %s", c.Name)
 		}
 	}
 	return nil
-}
-
-func contains(rs []*schema.Relation, e *schema.Relation) bool {
-	for _, r := range rs {
-		if e == r {
-			return true
-		}
-	}
-	return false
 }

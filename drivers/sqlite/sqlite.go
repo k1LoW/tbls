@@ -343,9 +343,7 @@ SELECT name, sql FROM sqlite_master WHERE type = 'trigger' AND tbl_name = ?;
 
 		// constraints(CHECK)
 		checkConstraints := parseCheckConstraints(table, tableDef)
-		for _, c := range checkConstraints {
-			constraints = append(constraints, c)
-		}
+		constraints = append(constraints, checkConstraints...)
 
 		table.Constraints = constraints
 		table.Triggers = triggers
@@ -433,10 +431,7 @@ func (l *Sqlite) Info() (*schema.Driver, error) {
 }
 
 func convertColumnNullable(str string) bool {
-	if str == "1" {
-		return false
-	}
-	return true
+	return str != "1"
 }
 
 func parseCheckConstraints(table *schema.Table, sql string) []*schema.Constraint {

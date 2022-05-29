@@ -1,0 +1,7 @@
+linters:
+  fast: false
+  enable:
+    - gosec
+issues:
+  exclude:
+    - SA3000

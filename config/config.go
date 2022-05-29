@@ -580,23 +580,6 @@ func mergeDetectedRelations(s *schema.Schema, strategy *NamingStrategy) {
 	}
 }
 
-func envMap() map[string]string {
-	m := map[string]string{}
-	for _, kv := range os.Environ() {
-		if !strings.Contains(kv, "=") {
-			continue
-		}
-		parts := strings.SplitN(kv, "=", 2)
-		k := parts[0]
-		if len(parts) < 2 {
-			m[k] = ""
-			continue
-		}
-		m[k] = parts[1]
-	}
-	return m
-}
-
 func contains(s []string, e string) bool {
 	for _, v := range s {
 		if wildcard.MatchSimple(v, e) {

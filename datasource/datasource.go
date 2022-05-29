@@ -73,7 +73,9 @@ func Analyze(dsn config.DSN) (*schema.Schema, error) {
 	}
 
 	db, err := dburl.Open(urlstr)
-	defer db.Close()
+	defer func() {
+		_ = db.Close()
+	}()
 	if err != nil {
 		return s, errors.WithStack(err)
 	}

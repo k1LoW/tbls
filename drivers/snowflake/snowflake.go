@@ -128,8 +128,5 @@ func (s *Snowflake) Info() (*schema.Driver, error) {
 }
 
 func convertColumnNullable(str string) bool {
-	if str == "NO" {
-		return false
-	}
-	return true
+	return str != "NO"
 }

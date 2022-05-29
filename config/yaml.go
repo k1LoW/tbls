@@ -78,16 +78,3 @@ func (f *Format) UnmarshalYAML(data []byte) error {
 	}
 	return nil
 }
-
-func unique(in []string) []string {
-	u := []string{}
-	m := map[string]struct{}{}
-	for _, s := range in {
-		if _, ok := m[s]; ok {
-			continue
-		}
-		u = append(u, s)
-		m[s] = struct{}{}
-	}
-	return u
-}
