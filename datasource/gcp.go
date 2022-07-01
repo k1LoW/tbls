@@ -6,12 +6,15 @@ import (
 	"net/url"
 	"os"
 	"strings"
+	"time"
 
 	"cloud.google.com/go/bigquery"
 	cloudspanner "cloud.google.com/go/spanner"
 	"github.com/k1LoW/tbls/drivers/bq"
 	"github.com/k1LoW/tbls/drivers/spanner"
 	"github.com/k1LoW/tbls/schema"
+	"golang.org/x/oauth2"
+	"google.golang.org/api/impersonate"
 	"google.golang.org/api/option"
 )
 
@@ -101,11 +104,21 @@ func NewSpannerClient(ctx context.Context, urlstr string) (*cloudspanner.Client,
 		return nil, "", err
 	}
 	var client *cloudspanner.Client
-	if os.Getenv("GOOGLE_APPLICATION_CREDENTIALS") == "" && os.Getenv("GOOGLE_APPLICATION_CREDENTIALS_JSON") != "" {
-		client, err = cloudspanner.NewClient(ctx, db, option.WithCredentialsJSON([]byte(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS_JSON"))))
-	} else {
-		client, err = cloudspanner.NewClient(ctx, db)
+	options := []option.ClientOption{}
+
+	ts, err := getImpersonationTokenSource(ctx, values)
+	if err != nil {
+		return nil, "", err
 	}
+	if ts != nil {
+		options = append(options, option.WithTokenSource(ts))
+	}
+
+	if os.Getenv("GOOGLE_APPLICATION_CREDENTIALS") == "" && os.Getenv("GOOGLE_APPLICATION_CREDENTIALS_JSON") != "" {
+		options = append(options, option.WithCredentialsJSON([]byte(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS_JSON"))))
+	}
+
+	client, err = cloudspanner.NewClient(ctx, db, options...)
 	if err != nil {
 		return nil, "", err
 	}
@@ -124,4 +137,25 @@ func setEnvGoogleApplicationCredentials(values url.Values) error {
 		}
 	}
 	return nil
+}
+
+func getImpersonationTokenSource(ctx context.Context, values url.Values) (oauth2.TokenSource, error) {
+	impersonateServiceAccount := values.Get("impersonate_service_account")
+	if impersonateServiceAccount == "" {
+		return nil, nil
+	}
+	// Setting up options for service account impersonation
+	durationStr := values.Get("impersonate_service_account_duration")
+	if durationStr == "" {
+		durationStr = "300s"
+	}
+	duration, err := time.ParseDuration(durationStr)
+	if err != nil {
+		return nil, err
+	}
+	return impersonate.CredentialsTokenSource(ctx, impersonate.CredentialsConfig{
+		TargetPrincipal: impersonateServiceAccount,
+		Scopes:          []string{"https://www.googleapis.com/auth/cloud-platform"},
+		Lifetime:        duration,
+	})
 }
