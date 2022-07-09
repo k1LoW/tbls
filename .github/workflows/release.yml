@@ -11,7 +11,7 @@ jobs:
     name: Release assets for Linux
     strategy:
       matrix:
-        go_version: [1.17]
+        go_version: [1.18]
     runs-on: ubuntu-latest
     steps:
       - name: Login to Docker Hub
@@ -75,7 +75,7 @@ jobs:
     name: Release assets for Windows
     strategy:
       matrix:
-        go_version: [1.17]
+        go_version: [1.18]
     runs-on: windows-2019
     steps:
       - name: Set up Go ${{ matrix.go_version }} on Windows
