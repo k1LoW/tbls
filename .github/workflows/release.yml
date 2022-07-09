@@ -76,7 +76,7 @@ jobs:
     strategy:
       matrix:
         go_version: [1.17]
-    runs-on: windows-latest
+    runs-on: windows-2019
     steps:
       - name: Set up Go ${{ matrix.go_version }} on Windows
         uses: actions/setup-go@v2
