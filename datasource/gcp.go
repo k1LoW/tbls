@@ -6,10 +6,10 @@ import (
 	"net/url"
 	"os"
 	"strings"
-	"time"
 
 	"cloud.google.com/go/bigquery"
 	cloudspanner "cloud.google.com/go/spanner"
+	"github.com/k1LoW/duration"
 	"github.com/k1LoW/tbls/drivers/bq"
 	"github.com/k1LoW/tbls/drivers/spanner"
 	"github.com/k1LoW/tbls/schema"
@@ -140,22 +140,22 @@ func setEnvGoogleApplicationCredentials(values url.Values) error {
 }
 
 func getImpersonationTokenSource(ctx context.Context, values url.Values) (oauth2.TokenSource, error) {
-	impersonateServiceAccount := values.Get("impersonate_service_account")
+	impersonateServiceAccount := os.Getenv("GOOGLE_IMPERSONATE_SERVICE_ACCOUNT")
 	if impersonateServiceAccount == "" {
 		return nil, nil
 	}
 	// Setting up options for service account impersonation
-	durationStr := values.Get("impersonate_service_account_duration")
+	durationStr := os.Getenv("GOOGLE_IMPERSONATE_SERVICE_ACCOUNT_LIFETIME")
 	if durationStr == "" {
-		durationStr = "300s"
+		durationStr = "300sec"
 	}
-	duration, err := time.ParseDuration(durationStr)
+	d, err := duration.Parse(durationStr)
 	if err != nil {
 		return nil, err
 	}
 	return impersonate.CredentialsTokenSource(ctx, impersonate.CredentialsConfig{
 		TargetPrincipal: impersonateServiceAccount,
 		Scopes:          []string{"https://www.googleapis.com/auth/cloud-platform"},
-		Lifetime:        duration,
+		Lifetime:        d,
 	})
 }

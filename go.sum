@@ -418,6 +418,8 @@ github.com/jtolds/gls v4.20.0+incompatible/go.mod h1:QJZ7F/aHp+rZTRtaJ1ow/lLfFfV
 github.com/julienschmidt/httprouter v1.2.0/go.mod h1:SYymIcj16QtmaHHD7aYtjjsJG7VTCxuUUipMqKk8s4w=
 github.com/jung-kurt/gofpdf v1.0.0/go.mod h1:7Id9E/uU8ce6rXgefFLlgrJj/GYY22cpxn+r32jIOes=
 github.com/jung-kurt/gofpdf v1.0.3-0.20190309125859-24315acbbda5/go.mod h1:7Id9E/uU8ce6rXgefFLlgrJj/GYY22cpxn+r32jIOes=
+github.com/k1LoW/duration v1.1.0 h1:KEIL/aAGL//DnGMCiMrxSgRcVw4nM0ur6KSC9kEBsDo=
+github.com/k1LoW/duration v1.1.0/go.mod h1:MEWYmZ4Agei4RDvERiInjZAhcZStYLp6y7+ZrpaAMJQ=
 github.com/k1LoW/expand v0.1.0 h1:WnExzFli09OzQ2cZpaOiUjP+/sZ6DBpHQWWJAsWAZPY=
 github.com/k1LoW/expand v0.1.0/go.mod h1:CojQ4SR1YvdeC4Srw8pTtF9PRnGr5pUvAkiNfdAwRQg=
 github.com/k1LoW/ffff v0.2.0 h1:k5IYb2ggSKrkgVRkFnn1fs4xVUkJxanTH5gInmEKTDA=
