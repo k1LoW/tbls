@@ -456,6 +456,12 @@ To set `GOOGLE_APPLICATION_CREDENTIALS` environment variable, you can use
 
 Required permissions: `bigquery.datasets.get` `bigquery.tables.get` `bigquery.tables.list`
 
+Also, you can use impersonate service account using environment variables below.
+
+- `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT`: Email of service account
+- `GOOGLE_IMPERSONATE_SERVICE_ACCOUNT_LIFETIME`: You can use impersonate service account within this lifetime. This value must be readable from https://github.com/k1LoW/duration .
+
+
 **Cloud Spanner:**
 
 ``` yaml
