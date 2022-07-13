@@ -6,6 +6,7 @@ import (
 	"net/url"
 	"os"
 	"strings"
+	"time"
 
 	"cloud.google.com/go/bigquery"
 	cloudspanner "cloud.google.com/go/spanner"
@@ -17,6 +18,8 @@ import (
 	"google.golang.org/api/impersonate"
 	"google.golang.org/api/option"
 )
+
+const defaultImpersonateServiceAccountLifetimeStr = "300sec"
 
 // AnalyzeBigquery analyze `bq://`
 func AnalyzeBigquery(urlstr string) (*schema.Schema, error) {
@@ -106,7 +109,7 @@ func NewSpannerClient(ctx context.Context, urlstr string) (*cloudspanner.Client,
 	var client *cloudspanner.Client
 	options := []option.ClientOption{}
 
-	ts, err := getImpersonationTokenSource(ctx, values)
+	ts, err := createImpersonationTokenSource(ctx)
 	if err != nil {
 		return nil, "", err
 	}
@@ -139,23 +142,34 @@ func setEnvGoogleApplicationCredentials(values url.Values) error {
 	return nil
 }
 
-func getImpersonationTokenSource(ctx context.Context, values url.Values) (oauth2.TokenSource, error) {
-	impersonateServiceAccount := os.Getenv("GOOGLE_IMPERSONATE_SERVICE_ACCOUNT")
+func createImpersonationTokenSource(ctx context.Context) (oauth2.TokenSource, error) {
+	impersonateServiceAccount := getImpersonateServiceAccount()
 	if impersonateServiceAccount == "" {
 		return nil, nil
 	}
-	// Setting up options for service account impersonation
-	durationStr := os.Getenv("GOOGLE_IMPERSONATE_SERVICE_ACCOUNT_LIFETIME")
-	if durationStr == "" {
-		durationStr = "300sec"
-	}
-	d, err := duration.Parse(durationStr)
+	lifetime, err := getImpersonateServiceAccountLifetime()
 	if err != nil {
 		return nil, err
 	}
 	return impersonate.CredentialsTokenSource(ctx, impersonate.CredentialsConfig{
 		TargetPrincipal: impersonateServiceAccount,
 		Scopes:          []string{"https://www.googleapis.com/auth/cloud-platform"},
-		Lifetime:        d,
+		Lifetime:        lifetime,
 	})
+}
+
+func getImpersonateServiceAccount() string {
+	return os.Getenv("GOOGLE_IMPERSONATE_SERVICE_ACCOUNT")
+}
+
+func getImpersonateServiceAccountLifetime() (time.Duration, error) {
+	durationStr := os.Getenv("GOOGLE_IMPERSONATE_SERVICE_ACCOUNT_LIFETIME")
+	if durationStr == "" {
+		durationStr = defaultImpersonateServiceAccountLifetimeStr
+	}
+	d, err := duration.Parse(durationStr)
+	if err != nil {
+		return 0, err
+	}
+	return d, nil
 }
