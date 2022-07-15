@@ -102,26 +102,33 @@ func NewSpannerClient(ctx context.Context, urlstr string) (*cloudspanner.Client,
 	databaseID := splitted[2]
 	db := fmt.Sprintf("projects/%s/instances/%s/databases/%s", projectID, instanceID, databaseID)
 
+	var options []option.ClientOption
+
+	// Setup credential
 	values := u.Query()
 	if err := setEnvGoogleApplicationCredentials(values); err != nil {
 		return nil, "", err
-	}
-	var client *cloudspanner.Client
-	options := []option.ClientOption{}
-
-	ts, err := createImpersonationTokenSource(ctx)
-	if err != nil {
-		return nil, "", err
-	}
-	if ts != nil {
-		options = append(options, option.WithTokenSource(ts))
 	}
 
 	if os.Getenv("GOOGLE_APPLICATION_CREDENTIALS") == "" && os.Getenv("GOOGLE_APPLICATION_CREDENTIALS_JSON") != "" {
 		options = append(options, option.WithCredentialsJSON([]byte(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS_JSON"))))
 	}
 
-	client, err = cloudspanner.NewClient(ctx, db, options...)
+	// Setup impersonate service account configuration
+	impersonateServiceAccount := getImpersonateServiceAccount()
+	if impersonateServiceAccount != "" {
+		lifetime, err := getImpersonateServiceAccountLifetime()
+		if err != nil {
+			return nil, "", err
+		}
+		ts, err := createImpersonationTokenSource(ctx, impersonateServiceAccount, lifetime)
+		if err != nil {
+			return nil, "", err
+		}
+		options = append(options, option.WithTokenSource(ts))
+	}
+
+	client, err := cloudspanner.NewClient(ctx, db, options...)
 	if err != nil {
 		return nil, "", err
 	}
@@ -142,19 +149,11 @@ func setEnvGoogleApplicationCredentials(values url.Values) error {
 	return nil
 }
 
-func createImpersonationTokenSource(ctx context.Context) (oauth2.TokenSource, error) {
-	impersonateServiceAccount := getImpersonateServiceAccount()
-	if impersonateServiceAccount == "" {
-		return nil, nil
-	}
-	lifetime, err := getImpersonateServiceAccountLifetime()
-	if err != nil {
-		return nil, err
-	}
+func createImpersonationTokenSource(ctx context.Context, impersonateServiceAccount string, impersonateServiceAccountLifetime time.Duration) (oauth2.TokenSource, error) {
 	return impersonate.CredentialsTokenSource(ctx, impersonate.CredentialsConfig{
 		TargetPrincipal: impersonateServiceAccount,
 		Scopes:          []string{"https://www.googleapis.com/auth/cloud-platform"},
-		Lifetime:        lifetime,
+		Lifetime:        impersonateServiceAccountLifetime,
 	})
 }
 
