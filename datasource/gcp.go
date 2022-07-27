@@ -6,14 +6,20 @@ import (
 	"net/url"
 	"os"
 	"strings"
+	"time"
 
 	"cloud.google.com/go/bigquery"
 	cloudspanner "cloud.google.com/go/spanner"
+	"github.com/k1LoW/duration"
 	"github.com/k1LoW/tbls/drivers/bq"
 	"github.com/k1LoW/tbls/drivers/spanner"
 	"github.com/k1LoW/tbls/schema"
+	"golang.org/x/oauth2"
+	"google.golang.org/api/impersonate"
 	"google.golang.org/api/option"
 )
+
+const defaultImpersonateServiceAccountLifetimeStr = "300sec"
 
 // AnalyzeBigquery analyze `bq://`
 func AnalyzeBigquery(urlstr string) (*schema.Schema, error) {
@@ -96,16 +102,33 @@ func NewSpannerClient(ctx context.Context, urlstr string) (*cloudspanner.Client,
 	databaseID := splitted[2]
 	db := fmt.Sprintf("projects/%s/instances/%s/databases/%s", projectID, instanceID, databaseID)
 
+	var options []option.ClientOption
+
+	// Setup credential
 	values := u.Query()
 	if err := setEnvGoogleApplicationCredentials(values); err != nil {
 		return nil, "", err
 	}
-	var client *cloudspanner.Client
+
 	if os.Getenv("GOOGLE_APPLICATION_CREDENTIALS") == "" && os.Getenv("GOOGLE_APPLICATION_CREDENTIALS_JSON") != "" {
-		client, err = cloudspanner.NewClient(ctx, db, option.WithCredentialsJSON([]byte(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS_JSON"))))
-	} else {
-		client, err = cloudspanner.NewClient(ctx, db)
+		options = append(options, option.WithCredentialsJSON([]byte(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS_JSON"))))
 	}
+
+	// Setup impersonate service account configuration
+	impersonateServiceAccount := getImpersonateServiceAccount()
+	if impersonateServiceAccount != "" {
+		lifetime, err := getImpersonateServiceAccountLifetime()
+		if err != nil {
+			return nil, "", err
+		}
+		ts, err := createImpersonationTokenSource(ctx, impersonateServiceAccount, lifetime)
+		if err != nil {
+			return nil, "", err
+		}
+		options = append(options, option.WithTokenSource(ts))
+	}
+
+	client, err := cloudspanner.NewClient(ctx, db, options...)
 	if err != nil {
 		return nil, "", err
 	}
@@ -124,4 +147,28 @@ func setEnvGoogleApplicationCredentials(values url.Values) error {
 		}
 	}
 	return nil
+}
+
+func createImpersonationTokenSource(ctx context.Context, impersonateServiceAccount string, impersonateServiceAccountLifetime time.Duration) (oauth2.TokenSource, error) {
+	return impersonate.CredentialsTokenSource(ctx, impersonate.CredentialsConfig{
+		TargetPrincipal: impersonateServiceAccount,
+		Scopes:          []string{"https://www.googleapis.com/auth/cloud-platform"},
+		Lifetime:        impersonateServiceAccountLifetime,
+	})
+}
+
+func getImpersonateServiceAccount() string {
+	return os.Getenv("GOOGLE_IMPERSONATE_SERVICE_ACCOUNT")
+}
+
+func getImpersonateServiceAccountLifetime() (time.Duration, error) {
+	durationStr := os.Getenv("GOOGLE_IMPERSONATE_SERVICE_ACCOUNT_LIFETIME")
+	if durationStr == "" {
+		durationStr = defaultImpersonateServiceAccountLifetimeStr
+	}
+	d, err := duration.Parse(durationStr)
+	if err != nil {
+		return 0, err
+	}
+	return d, nil
 }

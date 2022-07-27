@@ -4,6 +4,9 @@ import (
 	"net/url"
 	"os"
 	"testing"
+	"time"
+
+	"github.com/k1LoW/duration"
 )
 
 func TestSetEnvGoogleApplicationCredentials(t *testing.T) {
@@ -31,6 +34,30 @@ func TestSetEnvGoogleApplicationCredentials(t *testing.T) {
 		}
 
 		got := os.Getenv("GOOGLE_APPLICATION_CREDENTIALS")
+		if got != tt.want {
+			t.Errorf("got %v\nwant %v", got, tt.want)
+		}
+	}
+}
+
+func TestGetImpersonateServiceAccountLifetime(t *testing.T) {
+	defaultDuration, _ := duration.Parse(defaultImpersonateServiceAccountLifetimeStr)
+	specificDuration, _ := duration.Parse("1hour")
+	tests := []struct {
+		value string
+		want  time.Duration
+	}{
+		{defaultImpersonateServiceAccountLifetimeStr, defaultDuration},
+		{"1hour", specificDuration},
+	}
+	for _, tt := range tests {
+		_ = os.Unsetenv("GOOGLE_IMPERSONATE_SERVICE_ACCOUNT_LIFETIME")
+		_ = os.Setenv("GOOGLE_IMPERSONATE_SERVICE_ACCOUNT_LIFETIME", tt.value)
+
+		got, err := getImpersonateServiceAccountLifetime()
+		if err != nil {
+			t.Fatal(err)
+		}
 		if got != tt.want {
 			t.Errorf("got %v\nwant %v", got, tt.want)
 		}
