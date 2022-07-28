@@ -54,15 +54,35 @@ func NewBigqueryClient(ctx context.Context, urlstr string) (*bigquery.Client, st
 	projectID := u.Host
 	datasetID := splitted[1]
 
+	var options []option.ClientOption
+
+	// Setup credential
 	values := u.Query()
 	if err := setEnvGoogleApplicationCredentials(values); err != nil {
 		return nil, "", "", err
 	}
-	var client *bigquery.Client
+
 	if os.Getenv("GOOGLE_APPLICATION_CREDENTIALS") == "" && os.Getenv("GOOGLE_APPLICATION_CREDENTIALS_JSON") != "" {
-		client, err = bigquery.NewClient(ctx, projectID, option.WithCredentialsJSON([]byte(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS_JSON"))))
-	} else {
-		client, err = bigquery.NewClient(ctx, projectID)
+		options = append(options, option.WithCredentialsJSON([]byte(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS_JSON"))))
+	}
+
+	// Setup impersonate service account configuration
+	impersonateServiceAccount := getImpersonateServiceAccount()
+	if impersonateServiceAccount != "" {
+		lifetime, err := getImpersonateServiceAccountLifetime()
+		if err != nil {
+			return nil, "", "", err
+		}
+		ts, err := createImpersonationTokenSource(ctx, impersonateServiceAccount, lifetime)
+		if err != nil {
+			return nil, "", "", err
+		}
+		options = append(options, option.WithTokenSource(ts))
+	}
+
+	client, err := bigquery.NewClient(ctx, projectID, options...)
+	if err != nil {
+		return nil, "", "", err
 	}
 	return client, projectID, datasetID, err
 }
