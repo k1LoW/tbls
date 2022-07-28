@@ -1,5 +1,13 @@
 # Changelog
 
+## [v1.56.1](https://github.com/k1LoW/tbls/compare/v1.56.0...v1.56.1) (2022-07-28)
+
+* Support service account impersonation with BigQuery [#363](https://github.com/k1LoW/tbls/pull/363) ([k1LoW](https://github.com/k1LoW))
+* [FEATURE REQUEST] Support service account impersonation with Cloud Spanner [#360](https://github.com/k1LoW/tbls/pull/360) ([Attsun1031](https://github.com/Attsun1031))
+* Workaround: change windows platform [#361](https://github.com/k1LoW/tbls/pull/361) ([k1LoW](https://github.com/k1LoW))
+* Introduce golangci-lint [#356](https://github.com/k1LoW/tbls/pull/356) ([k1LoW](https://github.com/k1LoW))
+* Fix CI / Update go version [#355](https://github.com/k1LoW/tbls/pull/355) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.56.0](https://github.com/k1LoW/tbls/compare/v1.55.1...v1.56.0) (2022-05-28)
 
 * Fix release pipeline [#349](https://github.com/k1LoW/tbls/pull/349) ([k1LoW](https://github.com/k1LoW))
