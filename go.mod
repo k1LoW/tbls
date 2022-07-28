@@ -15,6 +15,7 @@ require (
 	github.com/goccy/go-graphviz v0.0.9
 	github.com/goccy/go-yaml v1.9.4
 	github.com/google/go-cmp v0.5.8
+	github.com/k1LoW/duration v1.1.0
 	github.com/k1LoW/expand v0.1.0
 	github.com/k1LoW/ffff v0.2.0
 	github.com/labstack/gommon v0.3.1
@@ -69,7 +70,6 @@ require (
 	github.com/googleapis/gax-go/v2 v2.4.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
-	github.com/k1LoW/duration v1.1.0 // indirect
 	github.com/k1LoW/fontdir v0.1.1 // indirect
 	github.com/klauspost/compress v1.13.6 // indirect
 	github.com/kylelemons/godebug v1.1.0 // indirect
