@@ -25,7 +25,7 @@ func (sf *Snowflake) Analyze(s *schema.Schema) error {
 	}
 	s.Driver = d
 
-	tableRows, err := sf.db.Query(`SELECT table_name, table_type, comment FROM information_schema.tables WHERE table_schema = ?`, s.Name)
+	tableRows, err := sf.db.Query(`SELECT table_name, table_type, comment FROM information_schema.tables WHERE table_schema = ? order by table_name`, s.Name)
 	if err != nil {
 		return errors.WithStack(err)
 	}
