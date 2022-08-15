@@ -47,4 +47,4 @@ then
   unzip -qo "$TBLS_ARCHIVE" -d "$TBLS_TMPDIR"
 fi
 export PATH=${TBLS_TMPDIR}:$PATH
-echo -e '\e[36mYou can use `tbls` command in this session.\e[m'
+printf '\e[36mYou can use `tbls` command in this session.\e[m\n'
