@@ -561,7 +561,7 @@ func (m *Mysql) EnableMariaMode() {
 func (m *Mysql) queryForTables() string {
 	if m.mariaMode {
 		return `
-SELECT table_name, table_type, table_comment FROM information_schema.tables WHERE table_schema = ? ORDER BY table_name;`
+SELECT table_name, table_type, table_comment FROM information_schema.tables WHERE table_schema = ? ORDER BY create_time;`
 	}
 	return `
 SELECT table_name, table_type, table_comment FROM information_schema.tables WHERE table_schema = ?;`
