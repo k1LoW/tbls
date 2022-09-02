@@ -1,5 +1,10 @@
 # Changelog
 
+## [v1.56.2](https://github.com/k1LoW/tbls/compare/v1.56.1...v1.56.2) (2022-09-02)
+
+* Added sorting to the Table list. [#364](https://github.com/k1LoW/tbls/pull/364) ([awhitford](https://github.com/awhitford))
+* Fix extra `-e` displayed on temporary installation. [#365](https://github.com/k1LoW/tbls/pull/365) ([ogumaru](https://github.com/ogumaru))
+
 ## [v1.56.1](https://github.com/k1LoW/tbls/compare/v1.56.0...v1.56.1) (2022-07-28)
 
 * Support service account impersonation with BigQuery [#363](https://github.com/k1LoW/tbls/pull/363) ([k1LoW](https://github.com/k1LoW))
