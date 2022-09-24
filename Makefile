@@ -160,7 +160,7 @@ depsdev:
 prerelease:
 	git pull origin --tag
 	ghch -w -N ${VER}
-	gocredits . > CREDITS
+	gocredits -w .
 	git add CHANGELOG.md CREDITS
 	git commit -m'Bump up version number'
 	git tag ${VER}
