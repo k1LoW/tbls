@@ -72,6 +72,11 @@ jobs:
     name: Release assets for Windows
     runs-on: windows-2019
     steps:
+      - name: Use LF
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+
       - name: Install packages
         run: |
           choco install sqlite
@@ -88,11 +93,6 @@ jobs:
         uses: actions/setup-go@v3
         with:
           go-version-file: go.mod
-
-      - name: Use LF
-        run: |
-          git config --global core.autocrlf false
-          git config --global core.eol lf
 
       - name: Run tests
         run: env TBLS=tbls.exe make ci_windows

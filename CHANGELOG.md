@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.56.3](https://github.com/k1LoW/tbls/compare/v1.56.2...v1.56.3) (2022-09-24)
+
+* Skip getting functions because Amazon RedShift does not support `pg_get_funciton_arguments()` [#371](https://github.com/k1LoW/tbls/pull/371) ([k1LoW](https://github.com/k1LoW))
+
 ## [v1.56.2](https://github.com/k1LoW/tbls/compare/v1.56.1...v1.56.2) (2022-09-02)
 
 * Added sorting to the Table list. [#364](https://github.com/k1LoW/tbls/pull/364) ([awhitford](https://github.com/awhitford))
