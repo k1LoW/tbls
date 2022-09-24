@@ -421,6 +421,10 @@ func (p *Postgres) getFunctions() ([]*schema.Function, error) {
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
+	if p.rsMode {
+		// Amazon RedShift does not support pg_get_function_arguments
+		return functions, nil
+	}
 	if storedProcedureSupported {
 		functions, err = p.getFunctionsByQuery(queryFunctions)
 		if err != nil {
