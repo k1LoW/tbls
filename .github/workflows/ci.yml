@@ -12,13 +12,15 @@ jobs:
     strategy:
       matrix:
         platform: [ubuntu-latest]
-        go_version: [1.18]
     runs-on: ${{ matrix.platform }}
     steps:
-      - name: Set up Go ${{ matrix.go_version }} on ${{ matrix.platform }}
-        uses: actions/setup-go@v2
+      - name: Check out source code
+        uses: actions/checkout@v3
+
+      - name: Set up Go on ${{ matrix.platform }}
+        uses: actions/setup-go@v3
         with:
-          go-version: ${{ matrix.go_version }}
+          go-version-file: go.mod
 
       - name: Install packages
         run: |
@@ -27,9 +29,6 @@ jobs:
 
       - name: Install aws-cli
         uses: isbang/setup-awscli@v0.1.0
-
-      - name: Check out source code
-        uses: actions/checkout@v3
 
       - name: Decrypt secrets
         run: gpg --quiet --batch --yes --decrypt --passphrase="$GCP_CLIENT_SECRETS_PASSPHRASE" --output $GITHUB_WORKSPACE/client_secrets.json $GITHUB_WORKSPACE/client_secrets.json.gpg
@@ -71,13 +70,15 @@ jobs:
     strategy:
       matrix:
         platform: [windows-2019]
-        go_version: [1.18]
     runs-on: ${{ matrix.platform }}
     steps:
-      - name: Set up Go ${{ matrix.go_version }} on ${{ matrix.platform }}
-        uses: actions/setup-go@v2
+      - name: Check out source code
+        uses: actions/checkout@v3
+
+      - name: Set up Go on ${{ matrix.platform }}
+        uses: actions/setup-go@v3
         with:
-          go-version: ${{ matrix.go_version }}
+          go-version-file: go.mod
 
       - name: Install packages
         run: |
@@ -90,9 +91,6 @@ jobs:
         run: |
           git config --global core.autocrlf false
           git config --global core.eol lf
-
-      - name: Check out source code
-        uses: actions/checkout@v2
 
       - name: Run tests
         run: |
