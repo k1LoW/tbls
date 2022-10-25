@@ -165,8 +165,7 @@ prerelease:
 	git commit -m'Bump up version number'
 	git tag ${VER}
 
-release:
-	git push origin main --tag
+release_darwin:
 	goreleaser --config .goreleaser/darwin.yml --rm-dist
 
 .PHONY: default test
