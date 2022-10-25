@@ -1,5 +1,8 @@
 # Changelog
 
+## [v1.56.4](https://github.com/k1LoW/tbls/compare/v1.56.3...v1.56.4) - 2022-10-25
+- Use tagpr by @k1LoW in https://github.com/k1LoW/tbls/pull/373
+
 ## [v1.56.3](https://github.com/k1LoW/tbls/compare/v1.56.2...v1.56.3) (2022-09-24)
 
 * Skip getting functions because Amazon RedShift does not support `pg_get_funciton_arguments()` [#371](https://github.com/k1LoW/tbls/pull/371) ([k1LoW](https://github.com/k1LoW))
