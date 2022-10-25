@@ -19,8 +19,6 @@ archives:
   id: tbls-archive
   name_template: '{{ .ProjectName }}_v{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
   format_overrides:
-    - goos: windows
-      format: zip
     - goos: darwin
       format: zip
   files:
@@ -38,21 +36,3 @@ changelog:
     exclude:
     - '^docs:'
     - '^test:'
-brews:
-  -
-    name: tbls
-    tap:
-      owner: k1LoW
-      name: homebrew-tap
-    commit_author:
-      name: k1LoW
-      email: k1lowxb@gmail.com
-    homepage: https://github.com/k1LoW/tbls
-    description: 'tbls is a CI-Friendly tool for document a database, written in Go.'
-    license: MIT
-    install: |
-      system './tbls', 'completion', 'bash', '--out', 'tbls.bash'
-      system './tbls', 'completion', 'zsh', '--out', 'tbls.zsh'
-      bin.install 'tbls'
-      bash_completion.install 'tbls.bash' => 'tbls'
-      zsh_completion.install 'tbls.zsh' => '_tbls'

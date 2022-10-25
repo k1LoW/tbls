@@ -90,24 +90,6 @@ dockers:
       - "--label=org.opencontainers.image.revision={{.FullCommit}}"
       - "--label=org.opencontainers.image.version={{.Version}}"
       - "--label=org.opencontainers.image.source=https://github.com/k1LoW/tbls"
-brews:
-  -
-    name: tbls
-    tap:
-      owner: k1LoW
-      name: homebrew-tap
-    commit_author:
-      name: k1LoW
-      email: k1lowxb@gmail.com
-    homepage: https://github.com/k1LoW/tbls
-    description: 'tbls is a CI-Friendly tool for document a database, written in Go.'
-    license: MIT
-    install: |
-      system './tbls', 'completion', 'bash', '--out', 'tbls.bash'
-      system './tbls', 'completion', 'zsh', '--out', 'tbls.zsh'
-      bin.install 'tbls'
-      bash_completion.install 'tbls.bash' => 'tbls'
-      zsh_completion.install 'tbls.zsh' => '_tbls'
 nfpms:
   -
     id: tbls-nfpms
