@@ -1,139 +1,139 @@
 name: tagpr
 on:
   push:
-    branches:
-      - main
+    # branches:
+    #   - main
 
 jobs:
-  tagpr:
-    runs-on: ubuntu-latest
-    outputs:
-      tagpr-tag: ${{ steps.run-tagpr.outputs.tag }}
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    steps:
-      - name: Check out source code
-        uses: actions/checkout@v3
+  # tagpr:
+  #   runs-on: ubuntu-latest
+  #   outputs:
+  #     tagpr-tag: ${{ steps.run-tagpr.outputs.tag }}
+  #   env:
+  #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #   steps:
+  #     - name: Check out source code
+  #       uses: actions/checkout@v3
 
-      - id: run-tagpr
-        name: Run tagpr
-        uses: Songmu/tagpr@v1
+  #     - id: run-tagpr
+  #       name: Run tagpr
+  #       uses: Songmu/tagpr@v1
 
-  darwin-release:
-    needs: tagpr
-    if: needs.tagpr.outputs.tagpr-tag != ''
-    runs-on: macos-latest
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    steps:
-      - name: Check out source code
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+  # darwin-release:
+  #   needs: tagpr
+  #   if: needs.tagpr.outputs.tagpr-tag != ''
+  #   runs-on: macos-latest
+  #   env:
+  #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #   steps:
+  #     - name: Check out source code
+  #       uses: actions/checkout@v3
+  #       with:
+  #         fetch-depth: 0
 
-      - name: Setup
-        run: |
-          brew uninstall go@1.17
-          brew install go
-          brew install goreleaser
-          brew install sqlite3
+  #     - name: Setup
+  #       run: |
+  #         brew uninstall go@1.17
+  #         brew install go
+  #         brew install goreleaser
+  #         brew install sqlite3
 
-      - name: Release
-        run: |
-          make release_darwin
+  #     - name: Release
+  #       run: |
+  #         make release_darwin
 
-  linux-release:
-    needs: tagpr
-    if: needs.tagpr.outputs.tagpr-tag != ''
-    runs-on: ubuntu-latest
-    steps:
-      - name: Install packages
-        run: |
-          sudo apt-get update
-          sudo apt-get install sqlite3
+  # linux-release:
+  #   needs: tagpr
+  #   if: needs.tagpr.outputs.tagpr-tag != ''
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Install packages
+  #       run: |
+  #         sudo apt-get update
+  #         sudo apt-get install sqlite3
 
-      - name: Install aws-cli
-        uses: isbang/setup-awscli@v0.1.0
+  #     - name: Install aws-cli
+  #       uses: isbang/setup-awscli@v0.1.0
 
-      - name: Check out source code
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+  #     - name: Check out source code
+  #       uses: actions/checkout@v3
+  #       with:
+  #         fetch-depth: 0
 
-      - name: Set up Go on Ubuntu
-        uses: actions/setup-go@v3
-        with:
-          go-version-file: go.mod
+  #     - name: Set up Go on Ubuntu
+  #       uses: actions/setup-go@v3
+  #       with:
+  #         go-version-file: go.mod
 
-      - name: Start databases
-        run: |
-          docker compose up -d
-          sleep 20s
+  #     - name: Start databases
+  #       run: |
+  #         docker compose up -d
+  #         sleep 20s
 
-      - name: Run GoReleaser (dry-run)
-        uses: goreleaser/goreleaser-action@v2
-        with:
-          distribution: goreleaser
-          version: latest
-          args: --config .goreleaser/linux.yml --rm-dist --snapshot --skip-publish
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #     - name: Run GoReleaser (dry-run)
+  #       uses: goreleaser/goreleaser-action@v2
+  #       with:
+  #         distribution: goreleaser
+  #         version: latest
+  #         args: --config .goreleaser/linux.yml --rm-dist --snapshot --skip-publish
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Run integration test
-        run: env TBLS=dist/tbls-linux_linux_amd64_v1/tbls make depsdev db doc
+  #     - name: Run integration test
+  #       run: env TBLS=dist/tbls-linux_linux_amd64_v1/tbls make depsdev db doc
 
-      - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v2
-        with:
-          distribution: goreleaser
-          version: latest
-          args: --config .goreleaser/linux.yml --rm-dist
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #     - name: Run GoReleaser
+  #       uses: goreleaser/goreleaser-action@v2
+  #       with:
+  #         distribution: goreleaser
+  #         version: latest
+  #         args: --config .goreleaser/linux.yml --rm-dist
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  windows-release:
-    needs: tagpr
-    if: needs.tagpr.outputs.tagpr-tag != ''
-    runs-on: windows-2019
-    steps:
-      - name: Use LF
-        run: |
-          git config --global core.autocrlf false
-          git config --global core.eol lf
+  # windows-release:
+  #   needs: tagpr
+  #   if: needs.tagpr.outputs.tagpr-tag != ''
+  #   runs-on: windows-2019
+  #   steps:
+  #     - name: Use LF
+  #       run: |
+  #         git config --global core.autocrlf false
+  #         git config --global core.eol lf
 
-      - name: Install packages
-        run: |
-          choco install sqlite
+  #     - name: Install packages
+  #       run: |
+  #         choco install sqlite
 
-      - name: Install aws-cli
-        uses: isbang/setup-awscli@v0.1.0
+  #     - name: Install aws-cli
+  #       uses: isbang/setup-awscli@v0.1.0
 
-      - name: Check out source code
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+  #     - name: Check out source code
+  #       uses: actions/checkout@v3
+  #       with:
+  #         fetch-depth: 0
 
-      - name: Set up Go on Windows
-        uses: actions/setup-go@v3
-        with:
-          go-version-file: go.mod
+  #     - name: Set up Go on Windows
+  #       uses: actions/setup-go@v3
+  #       with:
+  #         go-version-file: go.mod
 
-      - name: Run tests
-        run: env TBLS=tbls.exe make ci_windows
-        shell: bash
+  #     - name: Run tests
+  #       run: env TBLS=tbls.exe make ci_windows
+  #       shell: bash
 
-      - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v2
-        with:
-          distribution: goreleaser
-          version: latest
-          args: --config .goreleaser/windows.yml --rm-dist
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #     - name: Run GoReleaser
+  #       uses: goreleaser/goreleaser-action@v2
+  #       with:
+  #         distribution: goreleaser
+  #         version: latest
+  #         args: --config .goreleaser/windows.yml --rm-dist
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   dockerimage:
-    needs: tagpr
-    if: needs.tagpr.outputs.tagpr-tag != ''
+    # needs: tagpr
+    # if: needs.tagpr.outputs.tagpr-tag != ''
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
