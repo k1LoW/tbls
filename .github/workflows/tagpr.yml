@@ -1,14 +1,50 @@
-name: release
-
+name: tagpr
 on:
-  workflow_dispatch:
   push:
-    tags:
-      - v*.*.*
+    branches:
+      - main
 
 jobs:
+  tagpr:
+    runs-on: ubuntu-latest
+    outputs:
+      tagpr-tag: ${{ steps.run-tagpr.outputs.tag }}
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Check out source code
+        uses: actions/checkout@v3
+
+      - id: run-tagpr
+        name: Run tagpr
+        uses: Songmu/tagpr@v1
+
+  darwin-release:
+    needs: tagpr
+    if: needs.tagpr.outputs.tagpr-tag != ''
+    runs-on: macos-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Check out source code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup
+        run: |
+          brew uninstall go@1.17
+          brew install go
+          brew install goreleaser
+          brew install sqlite3
+
+      - name: Release
+        run: |
+          make release_darwin
+
   linux-release:
-    name: Release assets for Linux
+    needs: tagpr
+    if: needs.tagpr.outputs.tagpr-tag != ''
     runs-on: ubuntu-latest
     steps:
       - name: Login to Docker Hub
@@ -69,7 +105,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   windows-release:
-    name: Release assets for Windows
+    needs: tagpr
+    if: needs.tagpr.outputs.tagpr-tag != ''
     runs-on: windows-2019
     steps:
       - name: Use LF

@@ -25,11 +25,6 @@ archives:
 -
   id: tbls-archive
   name_template: '{{ .ProjectName }}_v{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
-  format_overrides:
-    - goos: windows
-      format: zip
-    - goos: darwin
-      format: zip
   files:
     - CREDITS
     - README.md

@@ -27,8 +27,6 @@ archives:
   format_overrides:
     - goos: windows
       format: zip
-    - goos: darwin
-      format: zip
   files:
     - CREDITS
     - README.md
