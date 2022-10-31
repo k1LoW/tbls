@@ -1,5 +1,8 @@
 # Changelog
 
+## [v1.56.6](https://github.com/k1LoW/tbls/compare/v1.56.5...v1.56.6) - 2022-10-31
+- Copy ca-certificates.crt from builder image by @k1LoW in https://github.com/k1LoW/tbls/pull/379
+
 ## [v1.56.5](https://github.com/k1LoW/tbls/compare/v1.56.4...v1.56.5) - 2022-10-26
 - Fix docker image build pipeline by @k1LoW in https://github.com/k1LoW/tbls/pull/375
 - `tbls lint` line breaks were missing, so added by @k1LoW in https://github.com/k1LoW/tbls/pull/377
