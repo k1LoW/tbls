@@ -15,6 +15,10 @@ DROP SCHEMA IF EXISTS administrator;
 DROP VIEW IF EXISTS "name with spaces";
 DROP FUNCTION IF EXISTS get_user;
 DROP PROC IF EXISTS What_DB_is_that;
+DROP TABLE IF EXISTS [Rabbits].[Running];
+DROP TABLE IF EXISTS [Sales].[Product];
+DROP SCHEMA IF EXISTS Sales;
+DROP SCHEMA IF EXISTS Rabbits;
 
 CREATE TABLE users (
   id int NOT NULL IDENTITY(1,1) PRIMARY KEY,
@@ -187,3 +191,21 @@ RETURN
 CREATE PROC What_DB_is_that @ID INT
 AS
 SELECT DB_NAME(@ID) AS ThatDB;
+
+CREATE SCHEMA Sales;
+CREATE SCHEMA Rabbits;
+
+CREATE TABLE [Sales].[Product] (
+  ProductID INT PRIMARY KEY CLUSTERED,
+  SalesPersonID INT UNIQUE NONCLUSTERED
+);
+
+CREATE TABLE [Rabbits].[Running] (
+  LocationID INT PRIMARY KEY CLUSTERED,
+  ProductID INT UNIQUE NONCLUSTERED,
+  EmployeeID INT UNIQUE NONCLUSTERED
+);
+
+ALTER TABLE [Rabbits].[Running]
+  ADD CONSTRAINT FK_TempSales_SalesReason FOREIGN KEY (ProductID)
+  REFERENCES [Sales].[Product] (SalesPersonID);
