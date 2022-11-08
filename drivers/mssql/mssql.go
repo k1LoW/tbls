@@ -222,8 +222,9 @@ ORDER BY i.index_id
 		fkRows, err := m.db.Query(`
 SELECT
   f.name AS f_name,
-  object_name(f.parent_object_id) AS table_name,
-  object_name(f.referenced_object_id) AS parent_table_name,
+  OBJECT_NAME(f.parent_object_id) AS table_name,
+  OBJECT_NAME(f.referenced_object_id) AS parent_table_name,
+  OBJECT_SCHEMA_NAME(f.referenced_object_id) AS parent_schema_name,
   STRING_AGG(COL_NAME(fc.parent_object_id, fc.parent_column_id), ', ') AS column_names,
   STRING_AGG(COL_NAME(fc.referenced_object_id, fc.referenced_column_id), ', ') AS parent_column_names,
   update_referential_action_desc,
@@ -243,15 +244,19 @@ GROUP BY f.name, f.parent_object_id, f.referenced_object_id, delete_referential_
 				fkName              string
 				fkTableName         string
 				fkParentTableName   string
+				fkParentSchemaName  string
 				fkColumnNames       string
 				fkParentColumnNames string
 				fkUpdateAction      string
 				fkDeleteAction      string
 				fkIsSystemNamed     bool
 			)
-			err = fkRows.Scan(&fkName, &fkTableName, &fkParentTableName, &fkColumnNames, &fkParentColumnNames, &fkUpdateAction, &fkDeleteAction, &fkIsSystemNamed)
+			err = fkRows.Scan(&fkName, &fkTableName, &fkParentTableName, &fkParentSchemaName, &fkColumnNames, &fkParentColumnNames, &fkUpdateAction, &fkDeleteAction, &fkIsSystemNamed)
 			if err != nil {
 				return errors.WithStack(err)
+			}
+			if fkParentSchemaName != defaultSchemaName {
+				fkParentTableName = fmt.Sprintf("%s.%s", fkParentSchemaName, fkParentTableName)
 			}
 			fkDef := fmt.Sprintf("FOREIGN KEY(%s) REFERENCES %s(%s) ON UPDATE %s ON DELETE %s", fkColumnNames, fkParentTableName, fkParentColumnNames, fkUpdateAction, fkDeleteAction) // #nosec
 			constraint := &schema.Constraint{
@@ -480,10 +485,10 @@ const query = `SELECT SCHEMA_NAME(obj.schema_id) AS schema_name,
 FROM sys.objects obj
 JOIN sys.sql_modules mod
 ON mod.object_id = obj.object_id
-CROSS APPLY (SELECT p.name + ' ' + TYPE_NAME(p.user_type_id) + ', ' 
+CROSS APPLY (SELECT p.name + ' ' + TYPE_NAME(p.user_type_id) + ', '
 			FROM sys.parameters p
-			WHERE p.object_id = obj.object_id 
-						AND p.parameter_id != 0 
+			WHERE p.object_id = obj.object_id
+						AND p.parameter_id != 0
 		 FOR XML PATH ('') ) par (parameters)
 LEFT JOIN sys.parameters ret
 	 ON obj.object_id = ret.object_id

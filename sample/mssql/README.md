@@ -23,6 +23,8 @@ Sample database document.
 | [hyphen-table](hyphen-table.md) | 3 |  | BASIC TABLE |  |
 | [administrator.blogs](administrator.blogs.md) | 6 | admin blogs | BASIC TABLE |  |
 | [name with spaces](name%20with%20spaces.md) | 1 |  | VIEW |  |
+| [Sales.Product](Sales.Product.md) | 2 |  | BASIC TABLE |  |
+| [Rabbits.Running](Rabbits.Running.md) | 3 |  | BASIC TABLE |  |
 
 ## Stored procedures and functions
 
