@@ -1,5 +1,8 @@
 # Changelog
 
+## [v1.56.7](https://github.com/k1LoW/tbls/compare/v1.56.6...v1.56.7) - 2022-11-08
+- Cross schema foreign keys cannot be procesed by @ypyl in https://github.com/k1LoW/tbls/pull/383
+
 ## [v1.56.6](https://github.com/k1LoW/tbls/compare/v1.56.5...v1.56.6) - 2022-10-31
 - Copy ca-certificates.crt from builder image by @k1LoW in https://github.com/k1LoW/tbls/pull/379
 
