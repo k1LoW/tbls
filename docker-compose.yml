@@ -11,7 +11,7 @@ services:
       - POSTGRES_PASSWORD=pgpass
       - POSTGRES_DB=testdb
   postgres:
-    image: postgres:13.1
+    image: postgres:15
     restart: always
     ports:
       - "55413:5432"

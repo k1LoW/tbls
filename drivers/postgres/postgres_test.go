@@ -29,7 +29,7 @@ func TestAnalyzeView(t *testing.T) {
 	driver := New(db)
 	err := driver.Analyze(s)
 	if err != nil {
-		t.Errorf("%v", err)
+		t.Errorf("%+v", err)
 	}
 	view, _ := s.FindTableByName("post_comments")
 	want := view.Def
