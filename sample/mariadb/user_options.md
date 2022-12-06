@@ -16,7 +16,7 @@ CREATE TABLE `user_options` (
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `user_id` (`user_id`),
   CONSTRAINT `user_options_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='User options table'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='User options table'
 ```
 
 </details>
