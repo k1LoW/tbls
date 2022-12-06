@@ -49,7 +49,7 @@ type Index struct {
 	Def     string   `json:"def"`
 	Table   *string  `json:"table"`
 	Columns []string `json:"columns"`
-	Comment string   `json:ColumnComment`
+	Comment string   `json:"comment"`
 }
 
 // Constraint is the struct for database constraint
@@ -61,14 +61,14 @@ type Constraint struct {
 	ReferencedTable   *string  `json:"referenced_table" yaml:"referencedTable"`
 	Columns           []string `json:"columns"`
 	ReferencedColumns []string `json:"referenced_columns" yaml:"referencedColumns"`
-	Comment           string   `json:ColumnComment`
+	Comment           string   `json:"comment"`
 }
 
 // Trigger is the struct for database trigger
 type Trigger struct {
 	Name    string `json:"name"`
 	Def     string `json:"def"`
-	Comment string `json:ColumnComment`
+	Comment string `json:"comment"`
 }
 
 // Column is the struct for table column
@@ -77,7 +77,7 @@ type Column struct {
 	Type            string          `json:"type"`
 	Nullable        bool            `json:"nullable"`
 	Default         sql.NullString  `json:"default"`
-	Comment         string          `json:ColumnComment`
+	Comment         string          `json:"comment"`
 	ExtraDef        string          `json:"extra_def,omitempty" yaml:"extraDef,omitempty"`
 	Occurrences     sql.NullInt32   `json:"occurrences,omitempty" yaml:"occurrences,omitempty"`
 	Percents        sql.NullFloat64 `json:"percents,omitempty" yaml:"percents,omitempty"`
@@ -90,7 +90,7 @@ type Column struct {
 type Table struct {
 	Name             string        `json:"name"`
 	Type             string        `json:"type"`
-	Comment          string        `json:ColumnComment`
+	Comment          string        `json:"comment"`
 	Columns          []*Column     `json:"columns"`
 	Indexes          []*Index      `json:"indexes"`
 	Constraints      []*Constraint `json:"constraints"`
