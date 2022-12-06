@@ -25,7 +25,7 @@ CREATE TABLE `comments` (
   KEY `comments_post_id_user_id_idx` (`post_id`,`user_id`) USING HASH,
   CONSTRAINT `comments_post_id_fk` FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`),
   CONSTRAINT `comments_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Comments\nMulti-line\r\ntable\rcomment'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Comments\nMulti-line\r\ntable\rcomment'
 ```
 
 </details>

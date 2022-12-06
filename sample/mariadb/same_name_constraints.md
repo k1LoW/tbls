@@ -11,7 +11,7 @@ CREATE TABLE `same_name_constraints` (
   `user_id` int(11) NOT NULL,
   UNIQUE KEY `same_name` (`user_id`,`id`),
   CONSTRAINT `same_name` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
 ```
 
 </details>
