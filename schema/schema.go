@@ -14,8 +14,18 @@ const (
 	TypeFK = "FOREIGN KEY"
 )
 
-var DefaultHideColumns = []string{"ExtraDef", "Occurrences", "Percents", "Labels"}
-var HideableColumns = []string{"ExtraDef", "Occurrences", "Percents", "Children", "Parents", "Comment", "Labels"}
+const (
+	ColumnExtraDef    = "ExtraDef"
+	ColumnOccurrences = "Occurrences"
+	ColumnPercents    = "Percents"
+	ColumnChildren    = "Children"
+	ColumnParents     = "Parents"
+	ColumnComment     = "Comment"
+	ColumnLabels      = "Labels"
+)
+
+var DefaultHideColumns = []string{ColumnExtraDef, ColumnOccurrences, ColumnPercents, ColumnLabels}
+var HideableColumns = []string{ColumnExtraDef, ColumnOccurrences, ColumnPercents, ColumnChildren, ColumnParents, ColumnComment, ColumnLabels}
 
 type Label struct {
 	Name    string
@@ -256,31 +266,31 @@ func (t *Table) FindConstrainsByColumnName(name string) []*Constraint {
 func (t *Table) hasColumnWithValues(name string) bool {
 	for _, c := range t.Columns {
 		switch name {
-		case "ExtraDef":
+		case ColumnExtraDef:
 			if c.ExtraDef != "" {
 				return true
 			}
-		case "Occurrences":
+		case ColumnOccurrences:
 			if c.Occurrences.Valid {
 				return true
 			}
-		case "Percents":
+		case ColumnPercents:
 			if c.Percents.Valid {
 				return true
 			}
-		case "Children":
+		case ColumnChildren:
 			if len(c.ChildRelations) > 0 {
 				return true
 			}
-		case "Parents":
+		case ColumnParents:
 			if len(c.ParentRelations) > 0 {
 				return true
 			}
-		case "Comment":
+		case ColumnComment:
 			if c.Comment != "" {
 				return true
 			}
-		case "Labels":
+		case ColumnLabels:
 			if len(c.Labels) > 0 {
 				return true
 			}
