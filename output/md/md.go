@@ -529,13 +529,13 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 	m.adjustColumnHeader(&columnsHeader, &columnsHeaderLine, true, "Type")
 	m.adjustColumnHeader(&columnsHeader, &columnsHeaderLine, true, "Default")
 	m.adjustColumnHeader(&columnsHeader, &columnsHeaderLine, true, "Nullable")
-	m.adjustColumnHeader(&columnsHeader, &columnsHeaderLine, t.ShowColumn("ExtraDef", hideColumns), "Extra Definition")
-	m.adjustColumnHeader(&columnsHeader, &columnsHeaderLine, t.ShowColumn("Occurrences", hideColumns), "Occurrences")
-	m.adjustColumnHeader(&columnsHeader, &columnsHeaderLine, t.ShowColumn("Percents", hideColumns), "Percents")
-	m.adjustColumnHeader(&columnsHeader, &columnsHeaderLine, t.ShowColumn("Children", hideColumns), "Children")
-	m.adjustColumnHeader(&columnsHeader, &columnsHeaderLine, t.ShowColumn("Parents", hideColumns), "Parents")
-	m.adjustColumnHeader(&columnsHeader, &columnsHeaderLine, t.ShowColumn("Comment", hideColumns), "Comment")
-	m.adjustColumnHeader(&columnsHeader, &columnsHeaderLine, t.ShowColumn("Labels", hideColumns), "Labels")
+	m.adjustColumnHeader(&columnsHeader, &columnsHeaderLine, t.ShowColumn(schema.ColumnExtraDef, hideColumns), "Extra Definition")
+	m.adjustColumnHeader(&columnsHeader, &columnsHeaderLine, t.ShowColumn(schema.ColumnOccurrences, hideColumns), "Occurrences")
+	m.adjustColumnHeader(&columnsHeader, &columnsHeaderLine, t.ShowColumn(schema.ColumnPercents, hideColumns), "Percents")
+	m.adjustColumnHeader(&columnsHeader, &columnsHeaderLine, t.ShowColumn(schema.ColumnChildren, hideColumns), "Children")
+	m.adjustColumnHeader(&columnsHeader, &columnsHeaderLine, t.ShowColumn(schema.ColumnParents, hideColumns), "Parents")
+	m.adjustColumnHeader(&columnsHeader, &columnsHeaderLine, t.ShowColumn(schema.ColumnComment, hideColumns), "Comment")
+	m.adjustColumnHeader(&columnsHeader, &columnsHeaderLine, t.ShowColumn(schema.ColumnLabels, hideColumns), "Labels")
 
 	columnsData = append(columnsData, columnsHeader, columnsHeaderLine)
 
@@ -565,13 +565,13 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 			c.Default.String,
 			fmt.Sprintf("%v", c.Nullable),
 		}
-		adjustData(&data, t.ShowColumn("ExtraDef", hideColumns), mdEscRep.Replace(c.ExtraDef))
-		adjustData(&data, t.ShowColumn("Occurrences", hideColumns), fmt.Sprint(c.Occurrences.Int32))
-		adjustData(&data, t.ShowColumn("Percents", hideColumns), fmt.Sprintf("%.1f", c.Percents.Float64))
-		adjustData(&data, t.ShowColumn("Children", hideColumns), strings.Join(childRelations, " "))
-		adjustData(&data, t.ShowColumn("Parents", hideColumns), strings.Join(parentRelations, " "))
-		adjustData(&data, t.ShowColumn("Comment", hideColumns), c.Comment)
-		adjustData(&data, t.ShowColumn("Labels", hideColumns), output.LabelJoin(c.Labels))
+		adjustData(&data, t.ShowColumn(schema.ColumnExtraDef, hideColumns), mdEscRep.Replace(c.ExtraDef))
+		adjustData(&data, t.ShowColumn(schema.ColumnOccurrences, hideColumns), fmt.Sprint(c.Occurrences.Int32))
+		adjustData(&data, t.ShowColumn(schema.ColumnPercents, hideColumns), fmt.Sprintf("%.1f", c.Percents.Float64))
+		adjustData(&data, t.ShowColumn(schema.ColumnChildren, hideColumns), strings.Join(childRelations, " "))
+		adjustData(&data, t.ShowColumn(schema.ColumnParents, hideColumns), strings.Join(parentRelations, " "))
+		adjustData(&data, t.ShowColumn(schema.ColumnComment, hideColumns), c.Comment)
+		adjustData(&data, t.ShowColumn(schema.ColumnLabels, hideColumns), output.LabelJoin(c.Labels))
 		columnsData = append(columnsData, data)
 	}
 
