@@ -24,15 +24,18 @@ var DefaultConfigFilePaths = []string{".tbls.yml", "tbls.yml"}
 // DefaultERFormat is the default ER diagram format
 const DefaultERFormat = "svg"
 
+const SchemaFileName = "schema.json"
+
 // DefaultDistance is the default distance between tables that display relations in the ER
 var DefaultDistance = 1
 
 // Config is tbls config
 type Config struct {
-	Name                   string                 `yaml:"name"`
-	Desc                   string                 `yaml:"desc,omitempty"`
-	Labels                 []string               `yaml:"labels,omitempty"`
-	DSN                    DSN                    `yaml:"dsn"`
+	Name   string   `yaml:"name"`
+	Desc   string   `yaml:"desc,omitempty"`
+	Labels []string `yaml:"labels,omitempty"`
+	DSN    DSN      `yaml:"dsn"`
+	// Directory of schema document
 	DocPath                string                 `yaml:"docPath"`
 	Format                 Format                 `yaml:"format,omitempty"`
 	ER                     ER                     `yaml:"er,omitempty"`
@@ -47,9 +50,11 @@ type Config struct {
 	DetectVirtualRelations DetectVirtualRelations `yaml:"detectVirtualRelations,omitempty"`
 	BaseUrl                string                 `yaml:"baseUrl,omitempty"`
 	RequiredVersion        string                 `yaml:"requiredVersion,omitempty"`
+	DisableOutputSchema    bool                   `yaml:"disableOutputSchema,omitempty"`
 	MergedDict             dict.Dict              `yaml:"-"`
-	Path                   string                 `yaml:"-"`
-	root                   string                 `yaml:"-"`
+	// Path of config file
+	Path string `yaml:"-"`
+	root string `yaml:"-"`
 }
 
 type DSN struct {
@@ -446,6 +451,10 @@ func (c *Config) MaskedDSN() (string, error) {
 	tmp := "-----tbls-----"
 	u.User = url.UserPassword(u.User.Username(), tmp)
 	return strings.Replace(u.String(), tmp, "*****", 1), nil
+}
+
+func (c *Config) SchemaFilePath() string {
+	return filepath.Join(c.DocPath, SchemaFileName)
 }
 
 func mergeAdditionalRelations(s *schema.Schema, relations []AdditionalRelation) error {

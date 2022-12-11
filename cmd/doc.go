@@ -29,6 +29,7 @@ import (
 	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/datasource"
 	"github.com/k1LoW/tbls/output/gviz"
+	"github.com/k1LoW/tbls/output/json"
 	"github.com/k1LoW/tbls/output/md"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/pkg/errors"
@@ -96,17 +97,22 @@ var docCmd = &cobra.Command{
 			}
 		}
 
-		err = md.Output(s, c, force)
-
-		if err != nil {
+		if err := md.Output(s, c, force); err != nil {
 			return err
+		}
+
+		// output schema.json
+		if !c.DisableOutputSchema {
+			if err := withSchemaFile(s, c); err != nil {
+				return err
+			}
 		}
 
 		return nil
 	},
 }
 
-func withDot(s *schema.Schema, c *config.Config, force bool) (e error) {
+func withDot(s *schema.Schema, c *config.Config, force bool) error {
 	erFormat := c.ER.Format
 	outputPath := c.DocPath
 	fullPath, err := filepath.Abs(outputPath)
@@ -131,8 +137,7 @@ func withDot(s *schema.Schema, c *config.Config, force bool) (e error) {
 		return errors.WithStack(err)
 	}
 	g := gviz.New(c)
-	err = g.OutputSchema(file, s)
-	if err != nil {
+	if err := g.OutputSchema(file, s); err != nil {
 		return errors.WithStack(err)
 	}
 
@@ -145,12 +150,27 @@ func withDot(s *schema.Schema, c *config.Config, force bool) (e error) {
 		if err != nil {
 			return errors.WithStack(err)
 		}
-		err = g.OutputTable(file, t)
-		if err != nil {
+		if err := g.OutputTable(file, t); err != nil {
 			return errors.WithStack(err)
 		}
 	}
 
+	return nil
+}
+
+func withSchemaFile(s *schema.Schema, c *config.Config) (e error) {
+	sf, err := os.Create(c.SchemaFilePath())
+	if err != nil {
+		return err
+	}
+	defer func() {
+		_ = sf.Close()
+	}()
+	fmt.Printf("%s\n", c.SchemaFilePath())
+	j := json.New(true)
+	if err := j.OutputSchema(sf, s); err != nil {
+		return err
+	}
 	return nil
 }
 
