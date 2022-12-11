@@ -1035,6 +1035,12 @@ Flags:
       --without-er         no generate ER diagrams
 ```
 
+## Output Schema data
+
+`tbls doc` also output schema data ( `schema.json` ) to same directory as the generated schema document.
+
+To disable output of schema data, set `disableOutputSchema:` to `true` in `.tbls.yml` file.
+
 ## Environment variables
 
 tbls accepts environment variables `TBLS_DSN` and `TBLS_DOC_PATH`

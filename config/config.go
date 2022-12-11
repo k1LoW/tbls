@@ -50,6 +50,7 @@ type Config struct {
 	DetectVirtualRelations DetectVirtualRelations `yaml:"detectVirtualRelations,omitempty"`
 	BaseUrl                string                 `yaml:"baseUrl,omitempty"`
 	RequiredVersion        string                 `yaml:"requiredVersion,omitempty"`
+	DisableOutputSchema    bool                   `yaml:"disableOutputSchema,omitempty"`
 	MergedDict             dict.Dict              `yaml:"-"`
 	// Path of config file
 	Path string `yaml:"-"`
