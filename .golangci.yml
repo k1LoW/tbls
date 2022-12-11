@@ -1,7 +1,16 @@
 linters:
   fast: false
   enable:
+    - misspell
     - gosec
+linters-settings:
+  errcheck:
+    check-type-assertions: true
+  staticcheck:
+    go: 1.16
+  misspell:
+    locale: US
+    ignore-words: []
 issues:
   exclude:
     - SA3000

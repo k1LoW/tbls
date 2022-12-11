@@ -74,9 +74,11 @@ var lintCmd = &cobra.Command{
 
 		ruleWarns := []config.RuleWarn{}
 		for i := 0; i < t.NumField(); i++ {
-			var v config.Rule
 			r := l.Field(i)
-			v = r.Interface().(config.Rule)
+			v, ok := r.Interface().(config.Rule)
+			if !ok {
+				return fmt.Errorf("invalid rule: %v", r.Interface())
+			}
 			ruleWarns = append(ruleWarns, v.Check(s, s.NormalizeTableNames(c.LintExclude))...)
 		}
 		if len(ruleWarns) > 0 {
