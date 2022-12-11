@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.57.0](https://github.com/k1LoW/tbls/compare/v1.56.9...v1.57.0) - 2022-12-11
+- Fix linter settings by @k1LoW in https://github.com/k1LoW/tbls/pull/394
+- Update pkgs by @k1LoW in https://github.com/k1LoW/tbls/pull/396
+- Use mongo:4.x because MongoDB 5.0+ requires a CPU with AVX support by @k1LoW in https://github.com/k1LoW/tbls/pull/397
+- [BREAKING] Output schema data file by default by @k1LoW in https://github.com/k1LoW/tbls/pull/398
+
 ## [v1.56.9](https://github.com/k1LoW/tbls/compare/v1.56.8...v1.56.9) - 2022-12-06
 - Update sample/mariadb by @k1LoW in https://github.com/k1LoW/tbls/pull/391
 - fix: Percentage columns are always output in Excel format by @zonbitamago in https://github.com/k1LoW/tbls/pull/390
