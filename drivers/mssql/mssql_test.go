@@ -18,7 +18,7 @@ func TestMain(m *testing.M) {
 	s = &schema.Schema{
 		Name: "testdb",
 	}
-	db, err = dburl.Open("ms://SA:MSSQLServer-Passw0rd@localhost:11433/testdb")
+	db, err = dburl.Open("ms://SA:MSSQLServer-Passw0rd@localhost:11433/instance?database=testdb")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -29,7 +29,7 @@ func TestMain(m *testing.M) {
 	_ = m.Run()
 }
 
-func TestAnalyzeViewMs(t *testing.T) {
+func TestAnalyzeView(t *testing.T) {
 	driver := New(db)
 	err := driver.Analyze(s)
 	if err != nil {

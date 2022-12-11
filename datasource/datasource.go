@@ -56,7 +56,8 @@ func Analyze(dsn config.DSN) (*schema.Schema, error) {
 	}
 
 	opts := []drivers.Option{}
-	if u.Driver == "mysql" {
+	switch u.Driver {
+	case "mysql":
 		values := u.Query()
 		for k := range values {
 			if k == "show_auto_increment" {
@@ -68,6 +69,12 @@ func Analyze(dsn config.DSN) (*schema.Schema, error) {
 				values.Del(k)
 			}
 		}
+		u.RawQuery = values.Encode()
+		urlstr = u.String()
+	case "sqlserver":
+		values := u.Query()
+		dbname := strings.TrimPrefix(u.Path, "/")
+		values.Add("database", dbname)
 		u.RawQuery = values.Encode()
 		urlstr = u.String()
 	}
