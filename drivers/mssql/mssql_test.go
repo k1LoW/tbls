@@ -2,36 +2,43 @@ package mssql
 
 import (
 	"database/sql"
-	"os"
+	"log"
 	"testing"
 
-	_ "github.com/denisenkom/go-mssqldb"
 	"github.com/k1LoW/tbls/schema"
+	_ "github.com/microsoft/go-mssqldb"
 	"github.com/xo/dburl"
 )
 
 var s *schema.Schema
 var db *sql.DB
+var err error
 
 func TestMain(m *testing.M) {
 	s = &schema.Schema{
 		Name: "testdb",
 	}
-	db, _ = dburl.Open("ms://SA:MSSQLServer-Passw0rd@localhost:11433/testdb")
-	defer db.Close()
-	exit := m.Run()
-	if exit != 0 {
-		os.Exit(exit)
+	db, err = dburl.Open("ms://SA:MSSQLServer-Passw0rd@localhost:11433/testdb")
+	if err != nil {
+		log.Fatal(err)
 	}
+	defer db.Close()
+	if err := db.Ping(); err != nil {
+		log.Fatal(err)
+	}
+	_ = m.Run()
 }
 
-func TestAnalyzeView(t *testing.T) {
+func TestAnalyzeViewMs(t *testing.T) {
 	driver := New(db)
 	err := driver.Analyze(s)
 	if err != nil {
-		t.Errorf("%v", err)
+		t.Error(err)
 	}
-	view, _ := s.FindTableByName("post_comments")
+	view, err := s.FindTableByName("post_comments")
+	if err != nil {
+		t.Fatal(err)
+	}
 	want := view.Def
 	if want == "" {
 		t.Errorf("got not empty string.")

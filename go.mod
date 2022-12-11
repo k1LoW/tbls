@@ -9,7 +9,6 @@ require (
 	github.com/aquasecurity/go-version v0.0.0-20210121072130-637058cfe492
 	github.com/aws/aws-sdk-go v1.44.157
 	github.com/beta/freetype v0.0.1
-	github.com/denisenkom/go-mssqldb v0.12.3
 	github.com/gertd/go-pluralize v0.2.1
 	github.com/go-sql-driver/mysql v1.7.0
 	github.com/goccy/go-graphviz v0.0.9
@@ -23,6 +22,7 @@ require (
 	github.com/loadoff/excl v0.0.0-20171207172601-c6a9e4c4b4c4
 	github.com/mattn/go-runewidth v0.0.14
 	github.com/mattn/go-sqlite3 v1.14.16
+	github.com/microsoft/go-mssqldb v0.18.0
 	github.com/minio/pkg v1.5.6
 	github.com/pkg/errors v0.9.1
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2
@@ -72,7 +72,6 @@ require (
 	github.com/fogleman/gg v1.3.0 // indirect
 	github.com/form3tech-oss/jwt-go v3.2.5+incompatible // indirect
 	github.com/gabriel-vasile/mimetype v1.4.1 // indirect
-	github.com/go-stack/stack v1.8.1 // indirect
 	github.com/godbus/dbus v0.0.0-20190726142602-4481cbc300e2 // indirect
 	github.com/golang-sql/civil v0.0.0-20220223132316-b832511892a9 // indirect
 	github.com/golang-sql/sqlexp v0.1.0 // indirect
@@ -89,7 +88,6 @@ require (
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/k1LoW/fontdir v0.1.1 // indirect
 	github.com/klauspost/compress v1.15.12 // indirect
-	github.com/kylelemons/godebug v1.1.0 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-ieproxy v0.0.9 // indirect
 	github.com/mattn/go-isatty v0.0.16 // indirect

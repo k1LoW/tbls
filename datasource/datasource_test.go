@@ -5,10 +5,10 @@ import (
 	"path/filepath"
 	"testing"
 
-	_ "github.com/denisenkom/go-mssqldb"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/k1LoW/tbls/config"
 	_ "github.com/lib/pq"
+	_ "github.com/microsoft/go-mssqldb"
 )
 
 var tests = []struct {
