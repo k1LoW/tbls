@@ -1,5 +1,8 @@
 # Changelog
 
+## [v1.57.1](https://github.com/k1LoW/tbls/compare/v1.57.0...v1.57.1) - 2022-12-11
+- Fix release pipeline (Linux) by @k1LoW in https://github.com/k1LoW/tbls/pull/399
+
 ## [v1.57.0](https://github.com/k1LoW/tbls/compare/v1.56.9...v1.57.0) - 2022-12-11
 - Fix linter settings by @k1LoW in https://github.com/k1LoW/tbls/pull/394
 - Update pkgs by @k1LoW in https://github.com/k1LoW/tbls/pull/396
