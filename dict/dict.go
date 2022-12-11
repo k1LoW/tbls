@@ -50,7 +50,15 @@ func (d *Dict) MergeIfNotPresent(in map[string]string) {
 func (d *Dict) Dump() map[string]string {
 	dpd := make(map[string]string)
 	d.s.Range(func(k, v interface{}) bool {
-		dpd[k.(string)] = v.(string)
+		kk, ok := k.(string)
+		if !ok {
+			return false
+		}
+		vv, ok := v.(string)
+		if !ok {
+			return false
+		}
+		dpd[kk] = vv
 		return true
 	})
 	return dpd
