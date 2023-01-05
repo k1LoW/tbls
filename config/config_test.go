@@ -193,9 +193,15 @@ func TestFilterTables(t *testing.T) {
 		{[]string{}, []string{"users"}, 4, 1},
 		{[]string{"users"}, []string{}, 1, 0},
 		{[]string{"user*"}, []string{}, 2, 1},
+		{[]string{"*options"}, []string{}, 1, 0},
 		{[]string{"*"}, []string{"user_options"}, 4, 1},
 		{[]string{"not_exist"}, []string{}, 0, 0},
 		{[]string{"not_exist", "*"}, []string{}, 5, 2},
+		{[]string{"users"}, []string{"*"}, 1, 0},
+		{[]string{"use*"}, []string{"use*"}, 2, 1},
+		{[]string{"use*"}, []string{"user*"}, 0, 0},
+		{[]string{"user*"}, []string{"user_*"}, 1, 0},
+		{[]string{"*", "user*"}, []string{"user_*"}, 4, 1},
 	}
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%v%v", tt.include, tt.exclude), func(t *testing.T) {

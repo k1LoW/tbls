@@ -60,10 +60,10 @@ func (r RequireTableComment) Check(s *schema.Schema, exclude []string) []RuleWar
 	commented := false
 
 	for _, t := range s.Tables {
-		if contains(exclude, t.Name) {
+		if match(exclude, t.Name) {
 			continue
 		}
-		if contains(nt, t.Name) {
+		if match(nt, t.Name) {
 			continue
 		}
 		if t.Comment == "" {
@@ -106,15 +106,15 @@ func (r RequireColumnComment) Check(s *schema.Schema, exclude []string) []RuleWa
 	commented := false
 
 	for _, t := range s.Tables {
-		if contains(exclude, t.Name) {
+		if match(exclude, t.Name) {
 			continue
 		}
-		if contains(nt, t.Name) {
+		if match(nt, t.Name) {
 			continue
 		}
 		for _, c := range t.Columns {
 			target := fmt.Sprintf("%s.%s", t.Name, c.Name)
-			if contains(r.Exclude, c.Name) || contains(r.Exclude, target) {
+			if match(r.Exclude, c.Name) || match(r.Exclude, target) {
 				continue
 			}
 			if c.Comment == "" {
@@ -158,15 +158,15 @@ func (r RequireIndexComment) Check(s *schema.Schema, exclude []string) []RuleWar
 	commented := false
 
 	for _, t := range s.Tables {
-		if contains(exclude, t.Name) {
+		if match(exclude, t.Name) {
 			continue
 		}
-		if contains(nt, t.Name) {
+		if match(nt, t.Name) {
 			continue
 		}
 		for _, i := range t.Indexes {
 			target := fmt.Sprintf("%s.%s", t.Name, i.Name)
-			if contains(r.Exclude, i.Name) || contains(r.Exclude, target) {
+			if match(r.Exclude, i.Name) || match(r.Exclude, target) {
 				continue
 			}
 			if i.Comment == "" {
@@ -210,15 +210,15 @@ func (r RequireConstraintComment) Check(s *schema.Schema, exclude []string) []Ru
 	commented := false
 
 	for _, t := range s.Tables {
-		if contains(exclude, t.Name) {
+		if match(exclude, t.Name) {
 			continue
 		}
-		if contains(nt, t.Name) {
+		if match(nt, t.Name) {
 			continue
 		}
 		for _, c := range t.Constraints {
 			target := fmt.Sprintf("%s.%s", t.Name, c.Name)
-			if contains(r.Exclude, c.Name) || contains(r.Exclude, target) {
+			if match(r.Exclude, c.Name) || match(r.Exclude, target) {
 				continue
 			}
 			if c.Comment == "" {
@@ -262,15 +262,15 @@ func (r RequireTriggerComment) Check(s *schema.Schema, exclude []string) []RuleW
 	commented := false
 
 	for _, t := range s.Tables {
-		if contains(exclude, t.Name) {
+		if match(exclude, t.Name) {
 			continue
 		}
-		if contains(nt, t.Name) {
+		if match(nt, t.Name) {
 			continue
 		}
 		for _, trig := range t.Triggers {
 			target := fmt.Sprintf("%s.%s", t.Name, trig.Name)
-			if contains(r.Exclude, trig.Name) || contains(r.Exclude, target) {
+			if match(r.Exclude, trig.Name) || match(r.Exclude, target) {
 				continue
 			}
 			if trig.Comment == "" {
@@ -313,10 +313,10 @@ func (r UnrelatedTable) Check(s *schema.Schema, exclude []string) []RuleWarn {
 	related := false
 	ut := map[string]*schema.Table{}
 	for _, t := range s.Tables {
-		if contains(exclude, t.Name) {
+		if match(exclude, t.Name) {
 			continue
 		}
-		if contains(nt, t.Name) {
+		if match(nt, t.Name) {
 			continue
 		}
 		ut[t.Name] = t
@@ -368,10 +368,10 @@ func (r ColumnCount) Check(s *schema.Schema, exclude []string) []RuleWarn {
 
 	nt := s.NormalizeTableNames(r.Exclude)
 	for _, t := range s.Tables {
-		if contains(exclude, t.Name) {
+		if match(exclude, t.Name) {
 			continue
 		}
-		if contains(nt, t.Name) {
+		if match(nt, t.Name) {
 			continue
 		}
 		if len(t.Columns) > r.Max {
@@ -408,12 +408,12 @@ func (r RequireColumns) Check(s *schema.Schema, exclude []string) []RuleWarn {
 		return warns
 	}
 	for _, t := range s.Tables {
-		if contains(exclude, t.Name) {
+		if match(exclude, t.Name) {
 			continue
 		}
 		for _, cc := range r.Columns {
 			exclude := false
-			if contains(cc.Exclude, t.Name) {
+			if match(cc.Exclude, t.Name) {
 				exclude = true
 			}
 			if exclude {
@@ -457,10 +457,10 @@ func (r DuplicateRelations) Check(s *schema.Schema, exclude []string) []RuleWarn
 	msgFmt := "duplicate relations. [%s -> %s]"
 
 	for _, r := range s.Relations {
-		if contains(exclude, r.Table.Name) {
+		if match(exclude, r.Table.Name) {
 			continue
 		}
-		if contains(exclude, r.ParentTable.Name) {
+		if match(exclude, r.ParentTable.Name) {
 			continue
 		}
 		columns := []string{}
@@ -507,7 +507,7 @@ func (r RequireForeignKeyIndex) Check(s *schema.Schema, exclude []string) []Rule
 	msgFmt := "foreign key columns do not have an index. [%s]"
 
 	for _, t := range s.Tables {
-		if contains(exclude, t.Name) {
+		if match(exclude, t.Name) {
 			continue
 		}
 		for _, c := range t.Constraints {
@@ -516,7 +516,7 @@ func (r RequireForeignKeyIndex) Check(s *schema.Schema, exclude []string) []Rule
 			}
 			for _, c1 := range c.Columns {
 				target := fmt.Sprintf("%s.%s", t.Name, c1)
-				if contains(r.Exclude, c1) || contains(r.Exclude, target) {
+				if match(r.Exclude, c1) || match(r.Exclude, target) {
 					continue
 				}
 				exist := false
@@ -572,10 +572,10 @@ func (r LabelStyleBigQuery) Check(s *schema.Schema, exclude []string) []RuleWarn
 
 	nt := s.NormalizeTableNames(r.Exclude)
 	for _, t := range s.Tables {
-		if contains(exclude, t.Name) {
+		if match(exclude, t.Name) {
 			continue
 		}
-		if contains(nt, t.Name) {
+		if match(nt, t.Name) {
 			continue
 		}
 		for _, l := range t.Labels {
