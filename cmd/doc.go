@@ -190,6 +190,8 @@ func loadDocArgs(args []string) ([]config.Option, error) {
 		options = append(options, config.ERSkip(withoutER))
 	}
 	options = append(options, config.BaseUrl(baseUrl))
+	options = append(options, config.Include(includes))
+	options = append(options, config.Exclude(excludes))
 	if len(args) == 2 {
 		options = append(options, config.DSNURL(args[0]))
 		options = append(options, config.DocPath(args[1]))
@@ -227,6 +229,7 @@ func init() {
 	docCmd.Flags().StringVarP(&when, "when", "", "", "command execute condition")
 	docCmd.Flags().StringVarP(&baseUrl, "base-url", "b", "", "base url for links")
 	docCmd.Flags().BoolVarP(&rmDist, "rm-dist", "", false, "remove files in docPath before generating documents")
+
 	if err := docCmd.MarkZshCompPositionalArgumentFile(2); err != nil {
 		_, _ = fmt.Fprintf(os.Stderr, "%s\n", err)
 		os.Exit(1)

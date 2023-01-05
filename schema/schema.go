@@ -454,6 +454,15 @@ func (t *Table) CollectTablesAndRelations(distance int, root bool) ([]*Table, []
 	return uTables, uRelations, nil
 }
 
+func (t *Table) Contains(ts []*Table) bool {
+	for _, tt := range ts {
+		if t.Name == tt.Name {
+			return true
+		}
+	}
+	return false
+}
+
 func unique(in []string) []string {
 	u := []string{}
 	m := map[string]struct{}{}

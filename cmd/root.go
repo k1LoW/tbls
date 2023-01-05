@@ -55,7 +55,14 @@ var erFormat string
 // when is a option that command execute condition
 var when string
 
+// base url for links
 var baseUrl string
+
+// tables to include
+var includes []string
+
+// tables to excludes
+var excludes []string
 
 const rootUsageTemplate = `Usage:{{if .Runnable}}{{if ne .UseLine "tbls [flags]" }}
   {{.UseLine}}{{end}}{{end}}{{if .HasAvailableSubCommands}}

@@ -144,6 +144,10 @@ test_ext_subcommand: build
 	env PATH="${PWD}/testdata/bin:${PATH}" TBLS_DSN=pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable $(TBLS) echo | grep 'TBLS_DSN=pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable' > /dev/null
 	echo hello | env PATH="${PWD}/testdata/bin:${PATH}" $(TBLS) echo -c ./testdata/ext_subcommand_tbls.yml | grep 'STDIN=hello' > /dev/null
 
+generate_test_json: build
+	sqlite3 $(PWD)/filter_tables.sqlite3 < testdata/ddl/filter_tables.sql
+	$(TBLS) out sq://$(PWD)/filter_tables.sqlite3 -t json > testdata/filter_tables.json
+
 lint:
 	golangci-lint run ./...
 

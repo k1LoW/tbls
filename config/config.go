@@ -26,8 +26,8 @@ const DefaultERFormat = "svg"
 
 const SchemaFileName = "schema.json"
 
-// DefaultDistance is the default distance between tables that display relations in the ER
-var DefaultDistance = 1
+// DefaultERDistance is the default distance between tables that display relations in the ER
+var DefaultERDistance = 1
 
 // Config is tbls config
 type Config struct {
@@ -41,6 +41,7 @@ type Config struct {
 	ER                     ER                     `yaml:"er,omitempty"`
 	Include                []string               `yaml:"include,omitempty"`
 	Exclude                []string               `yaml:"exclude,omitempty"`
+	Distance               int                    `yaml:"distance,omitempty"`
 	Lint                   Lint                   `yaml:"lint,omitempty"`
 	LintExclude            []string               `yaml:"lintExclude,omitempty"`
 	Relations              []AdditionalRelation   `yaml:"relations,omitempty"`
@@ -163,10 +164,10 @@ func ERFormat(erFormat string) Option {
 	}
 }
 
-// Distance return Option set Config.ER.Distance
+// Distance return Option set Config.Distance
 func Distance(distance int) Option {
 	return func(c *Config) error {
-		c.ER.Distance = &distance
+		c.Distance = distance
 		return nil
 	}
 }
@@ -176,6 +177,26 @@ func BaseUrl(baseUrl string) Option {
 	return func(c *Config) error {
 		if baseUrl != "" {
 			c.BaseUrl = baseUrl
+		}
+		return nil
+	}
+}
+
+// Include return Option set Config.Include
+func Include(i []string) Option {
+	return func(c *Config) error {
+		if len(i) > 0 {
+			c.Include = i
+		}
+		return nil
+	}
+}
+
+// Exclude return Option set Config.Exclude
+func Exclude(e []string) Option {
+	return func(c *Config) error {
+		if len(e) > 0 {
+			c.Exclude = e
 		}
 		return nil
 	}
@@ -237,7 +258,7 @@ func (c *Config) setDefault() error {
 	}
 
 	if c.ER.Distance == nil {
-		c.ER.Distance = &DefaultDistance
+		c.ER.Distance = &DefaultERDistance
 	}
 
 	return nil
@@ -373,31 +394,54 @@ func (c *Config) MergeAdditionalData(s *schema.Schema) error {
 func (c *Config) FilterTables(s *schema.Schema) error {
 	i := append(c.Include, s.NormalizeTableNames(c.Include)...)
 	e := append(c.Exclude, s.NormalizeTableNames(c.Exclude)...)
+
+	includes := []*schema.Table{}
+	excludes := []*schema.Table{}
 	for _, t := range s.Tables {
 		li, mi := matchLength(i, t.Name)
 		le, me := matchLength(e, t.Name)
 		switch {
 		case len(c.Include) == 0:
 			if me {
-				err := excludeTableFromSchema(t.Name, s)
-				if err != nil {
-					return errors.Wrap(errors.WithStack(err), fmt.Sprintf("failed to filter table '%s'", t.Name))
-				}
+				excludes = append(excludes, t)
+				continue
 			}
+			includes = append(includes, t)
 		case mi:
 			if me && li < le {
-				err := excludeTableFromSchema(t.Name, s)
-				if err != nil {
-					return errors.Wrap(errors.WithStack(err), fmt.Sprintf("failed to filter table '%s'", t.Name))
-				}
+				excludes = append(excludes, t)
+				continue
 			}
+			includes = append(includes, t)
 		default:
-			err := excludeTableFromSchema(t.Name, s)
-			if err != nil {
-				return errors.Wrap(errors.WithStack(err), fmt.Sprintf("failed to filter table '%s'", t.Name))
+			// c.Include > 0 && !mi
+			excludes = append(excludes, t)
+		}
+	}
+
+	collects := []*schema.Table{}
+	for _, t := range includes {
+		ts, _, err := t.CollectTablesAndRelations(c.Distance, true)
+		if err != nil {
+			return err
+		}
+		for _, tt := range ts {
+			if !tt.Contains(includes) {
+				collects = append(collects, tt)
 			}
 		}
 	}
+
+	for _, t := range excludes {
+		if t.Contains(collects) {
+			continue
+		}
+		err := excludeTableFromSchema(t.Name, s)
+		if err != nil {
+			return errors.Wrap(errors.WithStack(err), fmt.Sprintf("failed to filter table '%s'", t.Name))
+		}
+	}
+
 	return nil
 }
 

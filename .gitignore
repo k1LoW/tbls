@@ -3,7 +3,7 @@ tbls.exe
 dist/
 dbdoc/
 coverage.out
-testdb.sqlite3
+*.sqlite3
 .envrc
 .go-version
 .tbls.yml

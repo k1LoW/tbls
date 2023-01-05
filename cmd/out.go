@@ -41,10 +41,10 @@ import (
 )
 
 var (
-	format    string
-	outPath   string
-	tableName string
-	distance  int
+	format   string
+	outPath  string
+	tables   []string
+	distance int
 )
 
 // outCmd represents the doc command
@@ -125,17 +125,7 @@ var outCmd = &cobra.Command{
 			wr = os.Stdout
 		}
 
-		if tableName == "" {
-			err = o.OutputSchema(wr, s)
-		} else {
-			t, ferr := s.FindTableByName(tableName)
-			if ferr != nil {
-				return err
-			}
-			err = o.OutputTable(wr, t)
-		}
-
-		if err != nil {
+		if err := o.OutputSchema(wr, s); err != nil {
 			return err
 		}
 
@@ -153,6 +143,9 @@ func loadOutArgs(args []string) ([]config.Option, error) {
 	}
 	options = append(options, config.Distance(distance))
 
+	options = append(options, config.Include(append(tables, includes...)))
+	options = append(options, config.Exclude(excludes))
+
 	if len(args) == 1 {
 		options = append(options, config.DSNURL(args[0]))
 	}
@@ -165,7 +158,9 @@ func init() {
 	outCmd.Flags().StringVarP(&configPath, "config", "c", "", "config file path")
 	outCmd.Flags().StringVarP(&format, "format", "t", "json", "output format")
 	outCmd.Flags().StringVarP(&outPath, "out", "o", "", "output file path")
-	outCmd.Flags().StringVar(&tableName, "table", "", "table name")
-	outCmd.Flags().IntVarP(&distance, "distance", "", config.DefaultDistance, "distance between tables that display associations in the ER")
+	outCmd.Flags().StringSliceVarP(&tables, "table", "", []string{}, "target table")
+	outCmd.Flags().StringSliceVarP(&includes, "include", "", []string{}, "tables to include")
+	outCmd.Flags().StringSliceVarP(&excludes, "exclude", "", []string{}, "tables to exclude")
+	outCmd.Flags().IntVarP(&distance, "distance", "", 0, "distance between related tables to be displayed")
 	outCmd.Flags().StringVarP(&when, "when", "", "", "command execute condition")
 }
