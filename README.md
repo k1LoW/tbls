@@ -767,6 +767,14 @@ lintExclude:
   - CamelizeTable
 ```
 
+#### Filter logic
+
+1. Add tables from include
+2. Remove tables from exclude
+    - Check for include/exclude overlaps
+    - If include is more specific than exclude (i.e. `schema.MyTable` > `schema.*` or `schema.MyT*` > `schema.*` ), include the table(s). If include is equally or less specific than exclude, exclude wins.
+3. Result
+
 ### Comments
 
 `comments:` is used to add table/column comment to database document without `ALTER TABLE`.

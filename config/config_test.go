@@ -174,118 +174,6 @@ func TestMergeAditionalData(t *testing.T) {
 }
 
 func TestFilterTables(t *testing.T) {
-	s := schema.Schema{
-		Name: "testschema",
-		Tables: []*schema.Table{
-			&schema.Table{
-				Name:    "users",
-				Comment: "users comment",
-				Columns: []*schema.Column{
-					&schema.Column{
-						Name: "id",
-						Type: "serial",
-					},
-					&schema.Column{
-						Name: "username",
-						Type: "text",
-					},
-				},
-			},
-			&schema.Table{
-				Name:    "categories",
-				Comment: "categories comment",
-				Columns: []*schema.Column{
-					&schema.Column{
-						Name: "id",
-						Type: "serial",
-					},
-					&schema.Column{
-						Name: "name",
-						Type: "text",
-					},
-				},
-			},
-			&schema.Table{
-				Name:    "posts",
-				Comment: "posts comment",
-				Columns: []*schema.Column{
-					&schema.Column{
-						Name: "id",
-						Type: "serial",
-					},
-					&schema.Column{
-						Name: "user_id",
-						Type: "int",
-					},
-					&schema.Column{
-						Name: "category_id",
-						Type: "int",
-					},
-					&schema.Column{
-						Name: "title",
-						Type: "text",
-					},
-				},
-			},
-			&schema.Table{
-				Name:    "user_options",
-				Comment: "user_options comment",
-				Columns: []*schema.Column{
-					&schema.Column{
-						Name: "id",
-						Type: "serial",
-					},
-					&schema.Column{
-						Name: "user_id",
-						Type: "int",
-					},
-					&schema.Column{
-						Name: "email",
-						Type: "text",
-					},
-				},
-			},
-			&schema.Table{
-				Name: "schema_migrations",
-				Columns: []*schema.Column{
-					&schema.Column{
-						Name: "id",
-						Type: "serial",
-					},
-					&schema.Column{
-						Name: "name",
-						Type: "text",
-					},
-				},
-			},
-		},
-	}
-	usersTable, err := s.FindTableByName("users")
-	if err != nil {
-		t.Error(err)
-	}
-	categoriesTable, err := s.FindTableByName("categories")
-	if err != nil {
-		t.Error(err)
-	}
-	postsTable, err := s.FindTableByName("posts")
-	if err != nil {
-		t.Error(err)
-	}
-	userOptionsTable, err := s.FindTableByName("user_options")
-	if err != nil {
-		t.Error(err)
-	}
-	s.Relations = []*schema.Relation{
-		&schema.Relation{
-			Table:       userOptionsTable,
-			ParentTable: usersTable,
-		},
-		&schema.Relation{
-			Table:       postsTable,
-			ParentTable: categoriesTable,
-		},
-	}
 	c, err := New()
 	if err != nil {
 		t.Error(err)
@@ -294,15 +182,43 @@ func TestFilterTables(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	err = c.FilterTables(&s)
-	if err != nil {
-		t.Error(err)
+	tests := []struct {
+		include       []string
+		exclude       []string
+		wantTables    int
+		wantRelations int
+	}{
+		{[]string{}, []string{}, 5, 2},
+		{[]string{}, []string{"schema_migrations"}, 4, 2},
+		{[]string{}, []string{"users"}, 4, 1},
+		{[]string{"users"}, []string{}, 1, 0},
+		{[]string{"user*"}, []string{}, 2, 1},
+		{[]string{"*options"}, []string{}, 1, 0},
+		{[]string{"*"}, []string{"user_options"}, 4, 1},
+		{[]string{"not_exist"}, []string{}, 0, 0},
+		{[]string{"not_exist", "*"}, []string{}, 5, 2},
+		{[]string{"users"}, []string{"*"}, 1, 0},
+		{[]string{"use*"}, []string{"use*"}, 2, 1},
+		{[]string{"use*"}, []string{"user*"}, 0, 0},
+		{[]string{"user*"}, []string{"user_*"}, 1, 0},
+		{[]string{"*", "user*"}, []string{"user_*"}, 4, 1},
 	}
-	if want := 2; len(s.Tables) != want {
-		t.Errorf("got %v\nwant %v", len(s.Tables), want)
-	}
-	if want := 0; len(s.Relations) != want {
-		t.Errorf("got %v\nwant %v", len(s.Relations), want)
+	for _, tt := range tests {
+		t.Run(fmt.Sprintf("%v%v", tt.include, tt.exclude), func(t *testing.T) {
+			s := newSchemaForTestFilterTables(t)
+			c.Include = tt.include
+			c.Exclude = tt.exclude
+			err = c.FilterTables(&s)
+			if err != nil {
+				t.Error(err)
+			}
+			if got := len(s.Tables); got != tt.wantTables {
+				t.Errorf("got %v\nwant %v", got, tt.wantTables)
+			}
+			if got := len(s.Relations); got != tt.wantRelations {
+				t.Errorf("got %v\nwant %v", got, tt.wantRelations)
+			}
+		})
 	}
 }
 
@@ -621,4 +537,121 @@ func TestCheckVersion(t *testing.T) {
 			t.Errorf("got %v\nwant %v", got, tt.want)
 		}
 	}
+}
+
+func newSchemaForTestFilterTables(t *testing.T) schema.Schema {
+	t.Helper()
+	s := schema.Schema{
+		Name: "testschema",
+		Tables: []*schema.Table{
+			&schema.Table{
+				Name:    "users",
+				Comment: "users comment",
+				Columns: []*schema.Column{
+					&schema.Column{
+						Name: "id",
+						Type: "serial",
+					},
+					&schema.Column{
+						Name: "username",
+						Type: "text",
+					},
+				},
+			},
+			&schema.Table{
+				Name:    "categories",
+				Comment: "categories comment",
+				Columns: []*schema.Column{
+					&schema.Column{
+						Name: "id",
+						Type: "serial",
+					},
+					&schema.Column{
+						Name: "name",
+						Type: "text",
+					},
+				},
+			},
+			&schema.Table{
+				Name:    "posts",
+				Comment: "posts comment",
+				Columns: []*schema.Column{
+					&schema.Column{
+						Name: "id",
+						Type: "serial",
+					},
+					&schema.Column{
+						Name: "user_id",
+						Type: "int",
+					},
+					&schema.Column{
+						Name: "category_id",
+						Type: "int",
+					},
+					&schema.Column{
+						Name: "title",
+						Type: "text",
+					},
+				},
+			},
+			&schema.Table{
+				Name:    "user_options",
+				Comment: "user_options comment",
+				Columns: []*schema.Column{
+					&schema.Column{
+						Name: "id",
+						Type: "serial",
+					},
+					&schema.Column{
+						Name: "user_id",
+						Type: "int",
+					},
+					&schema.Column{
+						Name: "email",
+						Type: "text",
+					},
+				},
+			},
+			&schema.Table{
+				Name: "schema_migrations",
+				Columns: []*schema.Column{
+					&schema.Column{
+						Name: "id",
+						Type: "serial",
+					},
+					&schema.Column{
+						Name: "name",
+						Type: "text",
+					},
+				},
+			},
+		},
+	}
+	usersTable, err := s.FindTableByName("users")
+	if err != nil {
+		t.Error(err)
+	}
+	categoriesTable, err := s.FindTableByName("categories")
+	if err != nil {
+		t.Error(err)
+	}
+	postsTable, err := s.FindTableByName("posts")
+	if err != nil {
+		t.Error(err)
+	}
+	userOptionsTable, err := s.FindTableByName("user_options")
+	if err != nil {
+		t.Error(err)
+	}
+	s.Relations = []*schema.Relation{
+		&schema.Relation{
+			Table:       userOptionsTable,
+			ParentTable: usersTable,
+		},
+		&schema.Relation{
+			Table:       postsTable,
+			ParentTable: categoriesTable,
+		},
+	}
+	return s
 }

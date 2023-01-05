@@ -371,17 +371,27 @@ func (c *Config) MergeAdditionalData(s *schema.Schema) error {
 
 // FilterTables filter tables from schema.Schema
 func (c *Config) FilterTables(s *schema.Schema) error {
-	ni := s.NormalizeTableNames(c.Include)
-	ne := s.NormalizeTableNames(c.Exclude)
+	i := append(c.Include, s.NormalizeTableNames(c.Include)...)
+	e := append(c.Exclude, s.NormalizeTableNames(c.Exclude)...)
 	for _, t := range s.Tables {
-		if len(c.Include) == 0 || contains(c.Include, t.Name) || contains(ni, t.Name) {
-			if contains(c.Exclude, t.Name) || contains(ne, t.Name) {
+		li, mi := matchLength(i, t.Name)
+		le, me := matchLength(e, t.Name)
+		switch {
+		case len(c.Include) == 0:
+			if me {
 				err := excludeTableFromSchema(t.Name, s)
 				if err != nil {
 					return errors.Wrap(errors.WithStack(err), fmt.Sprintf("failed to filter table '%s'", t.Name))
 				}
 			}
-		} else {
+		case mi:
+			if me && li < le {
+				err := excludeTableFromSchema(t.Name, s)
+				if err != nil {
+					return errors.Wrap(errors.WithStack(err), fmt.Sprintf("failed to filter table '%s'", t.Name))
+				}
+			}
+		default:
 			err := excludeTableFromSchema(t.Name, s)
 			if err != nil {
 				return errors.Wrap(errors.WithStack(err), fmt.Sprintf("failed to filter table '%s'", t.Name))
@@ -589,11 +599,16 @@ func mergeDetectedRelations(s *schema.Schema, strategy *NamingStrategy) {
 	}
 }
 
-func contains(s []string, e string) bool {
+func matchLength(s []string, e string) (int, bool) {
 	for _, v := range s {
 		if wildcard.MatchSimple(v, e) {
-			return true
+			return len(strings.ReplaceAll(v, "*", "")), true
 		}
 	}
-	return false
+	return 0, false
+}
+
+func match(s []string, e string) bool {
+	_, m := matchLength(s, e)
+	return m
 }
