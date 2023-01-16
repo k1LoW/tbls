@@ -1,5 +1,10 @@
 # Changelog
 
+## [v1.58.0](https://github.com/k1LoW/tbls/compare/v1.57.1...v1.58.0) - 2023-01-05
+- [BREAKING] Exclude all tables except specific table by @k1LoW in https://github.com/k1LoW/tbls/pull/402
+- Bump up go and pkgs by @k1LoW in https://github.com/k1LoW/tbls/pull/404
+- [BREAKING] Add `--include/--exclude` option / Change logic of `--distance/--table` for tbls out by @k1LoW in https://github.com/k1LoW/tbls/pull/406
+
 ## [v1.57.1](https://github.com/k1LoW/tbls/compare/v1.57.0...v1.57.1) - 2022-12-11
 - Fix release pipeline (Linux) by @k1LoW in https://github.com/k1LoW/tbls/pull/399
 
