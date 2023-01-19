@@ -192,6 +192,7 @@ func loadDocArgs(args []string) ([]config.Option, error) {
 	options = append(options, config.BaseUrl(baseUrl))
 	options = append(options, config.Include(append(tables, includes...)))
 	options = append(options, config.Exclude(excludes))
+	options = append(options, config.IncludeLabels(labels))
 	if len(args) == 2 {
 		options = append(options, config.DSNURL(args[0]))
 		options = append(options, config.DocPath(args[1]))
@@ -232,6 +233,7 @@ func init() {
 	docCmd.Flags().StringSliceVarP(&tables, "table", "", []string{}, "target table (tables to include)")
 	docCmd.Flags().StringSliceVarP(&includes, "include", "", []string{}, "tables to include")
 	docCmd.Flags().StringSliceVarP(&excludes, "exclude", "", []string{}, "tables to exclude")
+	docCmd.Flags().StringSliceVarP(&labels, "label", "", []string{}, "table labels to be included")
 
 	if err := docCmd.MarkZshCompPositionalArgumentFile(2); err != nil {
 		_, _ = fmt.Fprintf(os.Stderr, "%s\n", err)
