@@ -186,38 +186,47 @@ func TestFilterTables(t *testing.T) {
 	tests := []struct {
 		include       []string
 		exclude       []string
+		labels        []string
 		distance      int
 		wantTables    int
 		wantRelations int
 	}{
-		{[]string{}, []string{}, 0, 5, 3},
-		{[]string{}, []string{"schema_migrations"}, 0, 4, 3},
-		{[]string{}, []string{"users"}, 0, 4, 1},
-		{[]string{"users"}, []string{}, 0, 1, 0},
-		{[]string{"user*"}, []string{}, 0, 2, 1},
-		{[]string{"*options"}, []string{}, 0, 1, 0},
-		{[]string{"*"}, []string{"user_options"}, 0, 4, 2},
-		{[]string{"not_exist"}, []string{}, 0, 0, 0},
-		{[]string{"not_exist", "*"}, []string{}, 0, 5, 3},
-		{[]string{"users"}, []string{"*"}, 0, 1, 0},
-		{[]string{"use*"}, []string{"use*"}, 0, 2, 1},
-		{[]string{"use*"}, []string{"user*"}, 0, 0, 0},
-		{[]string{"user*"}, []string{"user_*"}, 0, 1, 0},
-		{[]string{"*", "user*"}, []string{"user_*"}, 0, 4, 2},
+		{[]string{}, []string{}, []string{}, 0, 5, 3},
+		{[]string{}, []string{"schema_migrations"}, []string{}, 0, 4, 3},
+		{[]string{}, []string{"users"}, []string{}, 0, 4, 1},
+		{[]string{"users"}, []string{}, []string{}, 0, 1, 0},
+		{[]string{"user*"}, []string{}, []string{}, 0, 2, 1},
+		{[]string{"*options"}, []string{}, []string{}, 0, 1, 0},
+		{[]string{"*"}, []string{"user_options"}, []string{}, 0, 4, 2},
+		{[]string{"not_exist"}, []string{}, []string{}, 0, 0, 0},
+		{[]string{"not_exist", "*"}, []string{}, []string{}, 0, 5, 3},
+		{[]string{"users"}, []string{"*"}, []string{}, 0, 1, 0},
+		{[]string{"use*"}, []string{"use*"}, []string{}, 0, 2, 1},
+		{[]string{"use*"}, []string{"user*"}, []string{}, 0, 0, 0},
+		{[]string{"user*"}, []string{"user_*"}, []string{}, 0, 1, 0},
+		{[]string{"*", "user*"}, []string{"user_*"}, []string{}, 0, 4, 2},
 
-		{[]string{"users"}, []string{}, 1, 3, 2},
-		{[]string{"user_options"}, []string{}, 1, 2, 1},
-		{[]string{"user_options"}, []string{}, 2, 3, 2},
-		{[]string{"user_options"}, []string{}, 3, 4, 3},
-		{[]string{}, []string{}, 9, 5, 3},
-		{[]string{"posts"}, []string{}, 9, 4, 3},
-		{[]string{""}, []string{"*"}, 9, 0, 0},
+		{[]string{"users"}, []string{}, []string{}, 1, 3, 2},
+		{[]string{"user_options"}, []string{}, []string{}, 1, 2, 1},
+		{[]string{"user_options"}, []string{}, []string{}, 2, 3, 2},
+		{[]string{"user_options"}, []string{}, []string{}, 3, 4, 3},
+		{[]string{}, []string{}, []string{}, 9, 5, 3},
+		{[]string{"posts"}, []string{}, []string{}, 9, 4, 3},
+		{[]string{""}, []string{"*"}, []string{}, 9, 0, 0},
+
+		{[]string{}, []string{}, []string{"private"}, 0, 2, 1},
+		{[]string{}, []string{}, []string{"option"}, 0, 2, 0},
+		{[]string{}, []string{}, []string{"public", "private"}, 0, 4, 3},
+		{[]string{}, []string{"users"}, []string{"private"}, 0, 1, 0},
+		{[]string{}, []string{"user*"}, []string{"option"}, 0, 1, 0},
+		{[]string{"users"}, []string{}, []string{"private"}, 0, 2, 1},
 	}
 	for i, tt := range tests {
 		t.Run(fmt.Sprintf("%d.%v%v", i, tt.include, tt.exclude), func(t *testing.T) {
 			s := newSchemaForTestFilterTables(t)
 			c.Include = tt.include
 			c.Exclude = tt.exclude
+			c.includeLabels = tt.labels
 			c.Distance = tt.distance
 			err = c.FilterTables(s)
 			if err != nil {

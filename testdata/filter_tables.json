@@ -72,7 +72,8 @@
         }
       ],
       "triggers": [],
-      "def": "CREATE TABLE users (\n  id INTEGER PRIMARY KEY AUTOINCREMENT,\n  username TEXT UNIQUE NOT NULL CHECK(length(username) \u003e 4)\n)"
+      "def": "CREATE TABLE users (\n  id INTEGER PRIMARY KEY AUTOINCREMENT,\n  username TEXT UNIQUE NOT NULL CHECK(length(username) \u003e 4)\n)",
+      "labels": [{"name":"private", "virtual": true}]
     },
     {
       "name": "categories",
@@ -132,7 +133,8 @@
         }
       ],
       "triggers": [],
-      "def": "CREATE TABLE categories (\n  id INTEGER PRIMARY KEY AUTOINCREMENT,\n  name TEXT UNIQUE NOT NULL\n)"
+      "def": "CREATE TABLE categories (\n  id INTEGER PRIMARY KEY AUTOINCREMENT,\n  name TEXT UNIQUE NOT NULL\n)",
+      "labels": [{"name":"public", "virtual": true}, {"name":"option", "virtual": true}]
     },
     {
       "name": "posts",
@@ -212,7 +214,8 @@
         }
       ],
       "triggers": [],
-      "def": "CREATE TABLE posts (\n  id INTEGER PRIMARY KEY AUTOINCREMENT,\n  user_id INTEGER NOT NULL,\n  category_id INTEGER NOT NULL,\n  title TEXT NOT NULL,\n  CONSTRAINT posts_user_id_fk FOREIGN KEY(user_id) REFERENCES users(id) MATCH NONE ON UPDATE NO ACTION ON DELETE CASCADE,\n  CONSTRAINT posts_category_id_fk FOREIGN KEY(category_id) REFERENCES categories(id) MATCH NONE ON UPDATE NO ACTION ON DELETE CASCADE\n)"
+      "def": "CREATE TABLE posts (\n  id INTEGER PRIMARY KEY AUTOINCREMENT,\n  user_id INTEGER NOT NULL,\n  category_id INTEGER NOT NULL,\n  title TEXT NOT NULL,\n  CONSTRAINT posts_user_id_fk FOREIGN KEY(user_id) REFERENCES users(id) MATCH NONE ON UPDATE NO ACTION ON DELETE CASCADE,\n  CONSTRAINT posts_category_id_fk FOREIGN KEY(category_id) REFERENCES categories(id) MATCH NONE ON UPDATE NO ACTION ON DELETE CASCADE\n)",
+      "labels": [{"name":"public", "virtual": true}]
     },
     {
       "name": "user_options",
@@ -271,7 +274,8 @@
         }
       ],
       "triggers": [],
-      "def": "CREATE TABLE user_options (\n  id INTEGER PRIMARY KEY AUTOINCREMENT,\n  user_id INTEGER NOT NULL,\n  email TEXT NOT NULL,\n  CONSTRAINT user_options_user_id_fk FOREIGN KEY(user_id) REFERENCES users(id) MATCH NONE ON UPDATE NO ACTION ON DELETE CASCADE\n)"
+      "def": "CREATE TABLE user_options (\n  id INTEGER PRIMARY KEY AUTOINCREMENT,\n  user_id INTEGER NOT NULL,\n  email TEXT NOT NULL,\n  CONSTRAINT user_options_user_id_fk FOREIGN KEY(user_id) REFERENCES users(id) MATCH NONE ON UPDATE NO ACTION ON DELETE CASCADE\n)",
+      "labels": [{"name":"private", "virtual": true}, {"name":"option", "virtual": true}]
     },
     {
       "name": "schema_migrations",

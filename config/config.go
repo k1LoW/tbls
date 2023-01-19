@@ -53,6 +53,10 @@ type Config struct {
 	RequiredVersion        string                 `yaml:"requiredVersion,omitempty"`
 	DisableOutputSchema    bool                   `yaml:"disableOutputSchema,omitempty"`
 	MergedDict             dict.Dict              `yaml:"-"`
+
+	// Table labels to be included
+	includeLabels []string
+
 	// Path of config file
 	Path string `yaml:"-"`
 	root string `yaml:"-"`
@@ -197,6 +201,16 @@ func Exclude(e []string) Option {
 	return func(c *Config) error {
 		if len(e) > 0 {
 			c.Exclude = e
+		}
+		return nil
+	}
+}
+
+// IncludeLabels return Option set Config.IncludeLabels
+func IncludeLabels(l []string) Option {
+	return func(c *Config) error {
+		if len(l) > 0 {
+			c.includeLabels = l
 		}
 		return nil
 	}
@@ -400,21 +414,27 @@ func (c *Config) FilterTables(s *schema.Schema) error {
 	for _, t := range s.Tables {
 		li, mi := matchLength(i, t.Name)
 		le, me := matchLength(e, t.Name)
+		ml := matchLabels(c.includeLabels, t.Labels)
 		switch {
-		case len(c.Include) == 0:
-			if me {
-				excludes = append(excludes, t)
-				continue
-			}
-			includes = append(includes, t)
 		case mi:
 			if me && li < le {
 				excludes = append(excludes, t)
 				continue
 			}
 			includes = append(includes, t)
+		case ml:
+			if me {
+				excludes = append(excludes, t)
+				continue
+			}
+			includes = append(includes, t)
+		case len(c.Include) == 0 && len(c.includeLabels) == 0:
+			if me {
+				excludes = append(excludes, t)
+				continue
+			}
+			includes = append(includes, t)
 		default:
-			// c.Include > 0 && !mi
 			excludes = append(excludes, t)
 		}
 	}
@@ -650,6 +670,17 @@ func matchLength(s []string, e string) (int, bool) {
 		}
 	}
 	return 0, false
+}
+
+func matchLabels(il []string, l schema.Labels) bool {
+	for _, ll := range l {
+		for _, ill := range il {
+			if ll.Name == ill {
+				return true
+			}
+		}
+	}
+	return false
 }
 
 func match(s []string, e string) bool {

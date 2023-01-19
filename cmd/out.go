@@ -144,6 +144,7 @@ func loadOutArgs(args []string) ([]config.Option, error) {
 
 	options = append(options, config.Include(append(tables, includes...)))
 	options = append(options, config.Exclude(excludes))
+	options = append(options, config.IncludeLabels(labels))
 
 	if len(args) == 1 {
 		options = append(options, config.DSNURL(args[0]))
@@ -160,6 +161,7 @@ func init() {
 	outCmd.Flags().StringSliceVarP(&tables, "table", "", []string{}, "target table (tables to include)")
 	outCmd.Flags().StringSliceVarP(&includes, "include", "", []string{}, "tables to include")
 	outCmd.Flags().StringSliceVarP(&excludes, "exclude", "", []string{}, "tables to exclude")
+	outCmd.Flags().StringSliceVarP(&labels, "label", "", []string{}, "table labels to be included")
 	outCmd.Flags().IntVarP(&distance, "distance", "", 0, "distance between related tables to be displayed")
 	outCmd.Flags().StringVarP(&when, "when", "", "", "command execute condition")
 }
