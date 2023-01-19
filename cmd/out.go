@@ -43,7 +43,6 @@ import (
 var (
 	format   string
 	outPath  string
-	tables   []string
 	distance int
 )
 
@@ -158,7 +157,7 @@ func init() {
 	outCmd.Flags().StringVarP(&configPath, "config", "c", "", "config file path")
 	outCmd.Flags().StringVarP(&format, "format", "t", "json", "output format")
 	outCmd.Flags().StringVarP(&outPath, "out", "o", "", "output file path")
-	outCmd.Flags().StringSliceVarP(&tables, "table", "", []string{}, "target table")
+	outCmd.Flags().StringSliceVarP(&tables, "table", "", []string{}, "target table (tables to include)")
 	outCmd.Flags().StringSliceVarP(&includes, "include", "", []string{}, "tables to include")
 	outCmd.Flags().StringSliceVarP(&excludes, "exclude", "", []string{}, "tables to exclude")
 	outCmd.Flags().IntVarP(&distance, "distance", "", 0, "distance between related tables to be displayed")
