@@ -60,6 +60,7 @@ var baseUrl string
 
 // tables to include
 var includes []string
+var tables []string
 
 // tables to excludes
 var excludes []string
