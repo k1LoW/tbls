@@ -179,10 +179,6 @@ func TestFilterTables(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	err = c.LoadConfigFile(filepath.Join(testdataDir(), "config_test_tbls.yml"))
-	if err != nil {
-		t.Error(err)
-	}
 	tests := []struct {
 		include       []string
 		exclude       []string

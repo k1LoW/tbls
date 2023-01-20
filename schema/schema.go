@@ -167,7 +167,7 @@ func (s *Schema) FindTableByName(name string) (*Table, error) {
 	return nil, errors.Errorf("not found table '%s'", name)
 }
 
-// FindRelation ...
+// FindRelation find relation by columns and parent colums
 func (s *Schema) FindRelation(cs, pcs []*Column) (*Relation, error) {
 L:
 	for _, r := range s.Relations {
