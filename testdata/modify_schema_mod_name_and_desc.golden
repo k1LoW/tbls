@@ -1,11 +1,11 @@
 {
-  "name": "filter_tables.sqlite3",
-  "desc": "",
+  "name": "mod_name_and_desc",
+  "desc": "this is test schema",
   "tables": [
     {
       "name": "users",
       "type": "table",
-      "comment": "",
+      "comment": "users comment",
       "columns": [
         {
           "name": "id",
@@ -73,7 +73,12 @@
       ],
       "triggers": [],
       "def": "CREATE TABLE users (\n  id INTEGER PRIMARY KEY AUTOINCREMENT,\n  username TEXT UNIQUE NOT NULL CHECK(length(username) \u003e 4)\n)",
-      "labels": [{"name":"private", "virtual": true}]
+      "labels": [
+        {
+          "Name": "private",
+          "Virtual": true
+        }
+      ]
     },
     {
       "name": "categories",
@@ -134,7 +139,16 @@
       ],
       "triggers": [],
       "def": "CREATE TABLE categories (\n  id INTEGER PRIMARY KEY AUTOINCREMENT,\n  name TEXT UNIQUE NOT NULL\n)",
-      "labels": [{"name":"public", "virtual": true}, {"name":"option", "virtual": true}]
+      "labels": [
+        {
+          "Name": "public",
+          "Virtual": true
+        },
+        {
+          "Name": "option",
+          "Virtual": true
+        }
+      ]
     },
     {
       "name": "posts",
@@ -170,7 +184,17 @@
           "comment": ""
         }
       ],
-      "indexes": [],
+      "indexes": [
+        {
+          "name": "posts_user_id_idx",
+          "def": "CREATE INDEX posts_user_id_idx ON posts(user_id)",
+          "table": "posts",
+          "columns": [
+            "user_id"
+          ],
+          "comment": ""
+        }
+      ],
       "constraints": [
         {
           "name": "id",
@@ -213,9 +237,20 @@
           "comment": ""
         }
       ],
-      "triggers": [],
+      "triggers": [
+        {
+          "name": "update_posts_updated",
+          "def": "CREATE TRIGGER update_posts_updated AFTER UPDATE ON posts FOR EACH ROW\nBEGIN\n  UPDATE posts SET updated = current_timestamp WHERE id = OLD.id;\nEND",
+          "comment": ""
+        }
+      ],
       "def": "CREATE TABLE posts (\n  id INTEGER PRIMARY KEY AUTOINCREMENT,\n  user_id INTEGER NOT NULL,\n  category_id INTEGER NOT NULL,\n  title TEXT NOT NULL,\n  CONSTRAINT posts_user_id_fk FOREIGN KEY(user_id) REFERENCES users(id) MATCH NONE ON UPDATE NO ACTION ON DELETE CASCADE,\n  CONSTRAINT posts_category_id_fk FOREIGN KEY(category_id) REFERENCES categories(id) MATCH NONE ON UPDATE NO ACTION ON DELETE CASCADE\n)",
-      "labels": [{"name":"public", "virtual": true}]
+      "labels": [
+        {
+          "Name": "public",
+          "Virtual": true
+        }
+      ]
     },
     {
       "name": "user_options",
@@ -275,7 +310,16 @@
       ],
       "triggers": [],
       "def": "CREATE TABLE user_options (\n  id INTEGER PRIMARY KEY AUTOINCREMENT,\n  user_id INTEGER NOT NULL,\n  email TEXT NOT NULL,\n  CONSTRAINT user_options_user_id_fk FOREIGN KEY(user_id) REFERENCES users(id) MATCH NONE ON UPDATE NO ACTION ON DELETE CASCADE\n)",
-      "labels": [{"name":"private", "virtual": true}, {"name":"option", "virtual": true}]
+      "labels": [
+        {
+          "Name": "private",
+          "Virtual": true
+        },
+        {
+          "Name": "option",
+          "Virtual": true
+        }
+      ]
     },
     {
       "name": "schema_migrations",

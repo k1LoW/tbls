@@ -1,3 +1,4 @@
+DROP TRIGGER IF EXISTS update_posts_updated;
 DROP TABLE IF EXISTS schema_migrations;
 DROP TABLE IF EXISTS user_options;
 DROP TABLE IF EXISTS posts;
@@ -22,6 +23,7 @@ CREATE TABLE posts (
   CONSTRAINT posts_user_id_fk FOREIGN KEY(user_id) REFERENCES users(id) MATCH NONE ON UPDATE NO ACTION ON DELETE CASCADE,
   CONSTRAINT posts_category_id_fk FOREIGN KEY(category_id) REFERENCES categories(id) MATCH NONE ON UPDATE NO ACTION ON DELETE CASCADE
 );
+CREATE INDEX posts_user_id_idx ON posts(user_id);
 
 CREATE TABLE user_options (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -34,3 +36,8 @@ CREATE TABLE schema_migrations (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT NOT NULL
 );
+
+CREATE TRIGGER update_posts_updated AFTER UPDATE ON posts FOR EACH ROW
+BEGIN
+  UPDATE posts SET updated = current_timestamp WHERE id = OLD.id;
+END;
