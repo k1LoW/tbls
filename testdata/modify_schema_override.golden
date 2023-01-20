@@ -1,0 +1,407 @@
+{
+  "name": "override",
+  "desc": "",
+  "tables": [
+    {
+      "name": "users",
+      "type": "table",
+      "comment": "users comment",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "nullable": true,
+          "default": null,
+          "comment": ""
+        },
+        {
+          "name": "username",
+          "type": "TEXT",
+          "nullable": false,
+          "default": null,
+          "comment": ""
+        }
+      ],
+      "indexes": [
+        {
+          "name": "sqlite_autoindex_users_1",
+          "def": "UNIQUE (username)",
+          "table": "users",
+          "columns": [
+            "username"
+          ],
+          "comment": ""
+        }
+      ],
+      "constraints": [
+        {
+          "name": "id",
+          "type": "PRIMARY KEY",
+          "def": "PRIMARY KEY (id)",
+          "table": "users",
+          "referenced_table": null,
+          "columns": [
+            "id"
+          ],
+          "referenced_columns": null,
+          "comment": ""
+        },
+        {
+          "name": "sqlite_autoindex_users_1",
+          "type": "UNIQUE",
+          "def": "UNIQUE (username)",
+          "table": "users",
+          "referenced_table": null,
+          "columns": [
+            "username"
+          ],
+          "referenced_columns": null,
+          "comment": ""
+        },
+        {
+          "name": "-",
+          "type": "CHECK",
+          "def": "CHECK(length(username) \u003e 4)",
+          "table": "users",
+          "referenced_table": null,
+          "columns": [
+            "username"
+          ],
+          "referenced_columns": null,
+          "comment": ""
+        }
+      ],
+      "triggers": [],
+      "def": "CREATE TABLE users (\n  id INTEGER PRIMARY KEY AUTOINCREMENT,\n  username TEXT UNIQUE NOT NULL CHECK(length(username) \u003e 4)\n)",
+      "labels": [
+        {
+          "Name": "private",
+          "Virtual": true
+        }
+      ]
+    },
+    {
+      "name": "categories",
+      "type": "table",
+      "comment": "",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "nullable": true,
+          "default": null,
+          "comment": ""
+        },
+        {
+          "name": "name",
+          "type": "TEXT",
+          "nullable": false,
+          "default": null,
+          "comment": ""
+        }
+      ],
+      "indexes": [
+        {
+          "name": "sqlite_autoindex_categories_1",
+          "def": "UNIQUE (name)",
+          "table": "categories",
+          "columns": [
+            "name"
+          ],
+          "comment": ""
+        }
+      ],
+      "constraints": [
+        {
+          "name": "id",
+          "type": "PRIMARY KEY",
+          "def": "PRIMARY KEY (id)",
+          "table": "categories",
+          "referenced_table": null,
+          "columns": [
+            "id"
+          ],
+          "referenced_columns": null,
+          "comment": ""
+        },
+        {
+          "name": "sqlite_autoindex_categories_1",
+          "type": "UNIQUE",
+          "def": "UNIQUE (name)",
+          "table": "categories",
+          "referenced_table": null,
+          "columns": [
+            "name"
+          ],
+          "referenced_columns": null,
+          "comment": ""
+        }
+      ],
+      "triggers": [],
+      "def": "CREATE TABLE categories (\n  id INTEGER PRIMARY KEY AUTOINCREMENT,\n  name TEXT UNIQUE NOT NULL\n)",
+      "labels": [
+        {
+          "Name": "public",
+          "Virtual": true
+        },
+        {
+          "Name": "option",
+          "Virtual": true
+        }
+      ]
+    },
+    {
+      "name": "posts",
+      "type": "table",
+      "comment": "",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "nullable": true,
+          "default": null,
+          "comment": ""
+        },
+        {
+          "name": "user_id",
+          "type": "INTEGER",
+          "nullable": false,
+          "default": null,
+          "comment": ""
+        },
+        {
+          "name": "category_id",
+          "type": "INTEGER",
+          "nullable": false,
+          "default": null,
+          "comment": ""
+        },
+        {
+          "name": "title",
+          "type": "TEXT",
+          "nullable": false,
+          "default": null,
+          "comment": ""
+        }
+      ],
+      "indexes": [
+        {
+          "name": "posts_user_id_idx",
+          "def": "CREATE INDEX posts_user_id_idx ON posts(user_id)",
+          "table": "posts",
+          "columns": [
+            "user_id"
+          ],
+          "comment": ""
+        }
+      ],
+      "constraints": [
+        {
+          "name": "id",
+          "type": "PRIMARY KEY",
+          "def": "PRIMARY KEY (id)",
+          "table": "posts",
+          "referenced_table": null,
+          "columns": [
+            "id"
+          ],
+          "referenced_columns": null,
+          "comment": ""
+        },
+        {
+          "name": "- (Foreign key ID: 0)",
+          "type": "FOREIGN KEY",
+          "def": "FOREIGN KEY (category_id) REFERENCES categories (id) ON UPDATE NO ACTION ON DELETE CASCADE MATCH NONE",
+          "table": "posts",
+          "referenced_table": "categories",
+          "columns": [
+            "category_id"
+          ],
+          "referenced_columns": [
+            "id"
+          ],
+          "comment": ""
+        },
+        {
+          "name": "- (Foreign key ID: 1)",
+          "type": "FOREIGN KEY",
+          "def": "FOREIGN KEY (user_id) REFERENCES users (id) ON UPDATE NO ACTION ON DELETE CASCADE MATCH NONE",
+          "table": "posts",
+          "referenced_table": "users",
+          "columns": [
+            "user_id"
+          ],
+          "referenced_columns": [
+            "id"
+          ],
+          "comment": ""
+        }
+      ],
+      "triggers": [
+        {
+          "name": "update_posts_updated",
+          "def": "CREATE TRIGGER update_posts_updated AFTER UPDATE ON posts FOR EACH ROW\nBEGIN\n  UPDATE posts SET updated = current_timestamp WHERE id = OLD.id;\nEND",
+          "comment": ""
+        }
+      ],
+      "def": "CREATE TABLE posts (\n  id INTEGER PRIMARY KEY AUTOINCREMENT,\n  user_id INTEGER NOT NULL,\n  category_id INTEGER NOT NULL,\n  title TEXT NOT NULL,\n  CONSTRAINT posts_user_id_fk FOREIGN KEY(user_id) REFERENCES users(id) MATCH NONE ON UPDATE NO ACTION ON DELETE CASCADE,\n  CONSTRAINT posts_category_id_fk FOREIGN KEY(category_id) REFERENCES categories(id) MATCH NONE ON UPDATE NO ACTION ON DELETE CASCADE\n)",
+      "labels": [
+        {
+          "Name": "public",
+          "Virtual": true
+        }
+      ]
+    },
+    {
+      "name": "user_options",
+      "type": "table",
+      "comment": "",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "nullable": true,
+          "default": null,
+          "comment": ""
+        },
+        {
+          "name": "user_id",
+          "type": "INTEGER",
+          "nullable": false,
+          "default": null,
+          "comment": ""
+        },
+        {
+          "name": "email",
+          "type": "TEXT",
+          "nullable": false,
+          "default": null,
+          "comment": ""
+        }
+      ],
+      "indexes": [],
+      "constraints": [
+        {
+          "name": "id",
+          "type": "PRIMARY KEY",
+          "def": "PRIMARY KEY (id)",
+          "table": "user_options",
+          "referenced_table": null,
+          "columns": [
+            "id"
+          ],
+          "referenced_columns": null,
+          "comment": ""
+        },
+        {
+          "name": "- (Foreign key ID: 0)",
+          "type": "FOREIGN KEY",
+          "def": "FOREIGN KEY (user_id) REFERENCES users (id) ON UPDATE NO ACTION ON DELETE CASCADE MATCH NONE",
+          "table": "user_options",
+          "referenced_table": "users",
+          "columns": [
+            "user_id"
+          ],
+          "referenced_columns": [
+            "id"
+          ],
+          "comment": ""
+        }
+      ],
+      "triggers": [],
+      "def": "CREATE TABLE user_options (\n  id INTEGER PRIMARY KEY AUTOINCREMENT,\n  user_id INTEGER NOT NULL,\n  email TEXT NOT NULL,\n  CONSTRAINT user_options_user_id_fk FOREIGN KEY(user_id) REFERENCES users(id) MATCH NONE ON UPDATE NO ACTION ON DELETE CASCADE\n)",
+      "labels": [
+        {
+          "Name": "private",
+          "Virtual": true
+        },
+        {
+          "Name": "option",
+          "Virtual": true
+        }
+      ]
+    },
+    {
+      "name": "schema_migrations",
+      "type": "table",
+      "comment": "",
+      "columns": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "nullable": true,
+          "default": null,
+          "comment": ""
+        },
+        {
+          "name": "name",
+          "type": "TEXT",
+          "nullable": false,
+          "default": null,
+          "comment": ""
+        }
+      ],
+      "indexes": [],
+      "constraints": [
+        {
+          "name": "id",
+          "type": "PRIMARY KEY",
+          "def": "PRIMARY KEY (id)",
+          "table": "schema_migrations",
+          "referenced_table": null,
+          "columns": [
+            "id"
+          ],
+          "referenced_columns": null,
+          "comment": ""
+        }
+      ],
+      "triggers": [],
+      "def": "CREATE TABLE schema_migrations (\n  id INTEGER PRIMARY KEY AUTOINCREMENT,\n  name TEXT NOT NULL\n)"
+    }
+  ],
+  "relations": [
+    {
+      "table": "posts",
+      "columns": [
+        "category_id"
+      ],
+      "parent_table": "categories",
+      "parent_columns": [
+        "id"
+      ],
+      "def": "FOREIGN KEY (category_id) REFERENCES categories (id) ON UPDATE NO ACTION ON DELETE CASCADE MATCH NONE",
+      "virtual": false
+    },
+    {
+      "table": "posts",
+      "columns": [
+        "user_id"
+      ],
+      "parent_table": "users",
+      "parent_columns": [
+        "id"
+      ],
+      "def": "Override Relation",
+      "virtual": true
+    },
+    {
+      "table": "user_options",
+      "columns": [
+        "user_id"
+      ],
+      "parent_table": "users",
+      "parent_columns": [
+        "id"
+      ],
+      "def": "FOREIGN KEY (user_id) REFERENCES users (id) ON UPDATE NO ACTION ON DELETE CASCADE MATCH NONE",
+      "virtual": false
+    }
+  ],
+  "functions": null,
+  "driver": {
+    "name": "sqlite",
+    "database_version": "3.39.4",
+    "meta": {}
+  }
+}

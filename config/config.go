@@ -92,6 +92,7 @@ type AdditionalRelation struct {
 	ParentTable   string   `yaml:"parentTable"`
 	ParentColumns []string `yaml:"parentColumns"`
 	Def           string   `yaml:"def,omitempty"`
+	Override      bool     `yaml:"override,omitempty"`
 }
 
 // AdditionalComment is the struct for table relation from yaml
@@ -567,7 +568,17 @@ func mergeAdditionalRelations(s *schema.Schema, relations []AdditionalRelation) 
 			column.ChildRelations = append(column.ChildRelations, relation)
 		}
 
-		s.Relations = append(s.Relations, relation)
+		if r.Override {
+			cr, err := s.FindRelation(relation.Columns, relation.ParentColumns)
+			if err != nil {
+				s.Relations = append(s.Relations, relation)
+			} else {
+				cr.Virtual = true
+				cr.Def = r.Def
+			}
+		} else {
+			s.Relations = append(s.Relations, relation)
+		}
 	}
 	return nil
 }
