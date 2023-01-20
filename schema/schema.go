@@ -103,12 +103,14 @@ type Table struct {
 
 // Relation is the struct for table relation
 type Relation struct {
-	Table         *Table    `json:"table"`
-	Columns       []*Column `json:"columns"`
-	ParentTable   *Table    `json:"parent_table" yaml:"parentTable"`
-	ParentColumns []*Column `json:"parent_columns" yaml:"parentColumns"`
-	Def           string    `json:"def"`
-	Virtual       bool      `json:"virtual"`
+	Table             *Table      `json:"table"`
+	Columns           []*Column   `json:"columns"`
+	ParentTable       *Table      `json:"parent_table" yaml:"parentTable"`
+	ParentColumns     []*Column   `json:"parent_columns" yaml:"parentColumns"`
+	Cardinality       Cardinality `json:"cardinality"`
+	ParentCardinality Cardinality `json:"parent_cardinality" yaml:"parentCardinality"`
+	Def               string      `json:"def"`
+	Virtual           bool        `json:"virtual"`
 }
 
 type DriverMeta struct {

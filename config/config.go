@@ -367,6 +367,9 @@ func (c *Config) ModifySchema(s *schema.Schema) error {
 			s.Labels = s.Labels.Merge(l)
 		}
 	}
+	if err := detectCardinality(s); err != nil {
+		return err
+	}
 	err := c.MergeAdditionalData(s)
 	if err != nil {
 		return err
@@ -389,6 +392,9 @@ func (c *Config) ModifySchema(s *schema.Schema) error {
 		mergeDetectedRelations(s, strategy)
 	}
 	c.mergeDictFromSchema(s)
+	if err := detectCardinality(s); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -683,6 +689,86 @@ func matchLength(s []string, e string) (int, bool) {
 	return 0, false
 }
 
+func detectCardinality(s *schema.Schema) error {
+	// This function should be applied to the completed schema
+	for _, r := range s.Relations {
+		// parent
+		if r.ParentCardinality != schema.UnknownCardinality {
+			nullable := true
+			unique := false
+			columns := []string{}
+			for _, c := range r.ParentColumns {
+				if !c.Nullable {
+					nullable = false
+				}
+				columns = append(columns, c.Name)
+			}
+		L:
+			for _, c := range r.ParentTable.Constraints {
+				if len(columns) != len(c.Columns) {
+					continue
+				}
+				for _, cc := range c.Columns {
+					if !contains(columns, cc) {
+						continue L
+					}
+				}
+				if strings.Contains(strings.ToUpper(c.Def), "UNIQUE") || strings.Contains(strings.ToUpper(c.Def), "PRIMARY KEY") {
+					unique = true
+				}
+			}
+			switch {
+			case nullable && unique:
+				r.ParentCardinality = schema.ZeroOrOne
+			case !nullable && unique:
+				r.ParentCardinality = schema.ExactlyOne
+			case nullable && !unique:
+				r.ParentCardinality = schema.ZeroOrMore
+			case !nullable && !unique:
+				r.ParentCardinality = schema.OneOrMore
+			}
+		}
+
+		// child
+		if r.Cardinality != schema.UnknownCardinality {
+			nullable := true
+			unique := false
+			columns := []string{}
+			for _, c := range r.Columns {
+				if !c.Nullable {
+					nullable = false
+				}
+				columns = append(columns, c.Name)
+			}
+		LL:
+			for _, c := range r.Table.Constraints {
+				if len(columns) != len(c.Columns) {
+					continue
+				}
+				for _, cc := range c.Columns {
+					if !contains(columns, cc) {
+						continue LL
+					}
+				}
+				if strings.Contains(strings.ToUpper(c.Def), "UNIQUE") || strings.Contains(strings.ToUpper(c.Def), "PRIMARY KEY") {
+					unique = true
+				}
+			}
+			switch {
+			case nullable && unique:
+				r.Cardinality = schema.ZeroOrOne
+			case !nullable && unique:
+				r.Cardinality = schema.ExactlyOne
+			case nullable && !unique:
+				r.Cardinality = schema.ZeroOrMore
+			case !nullable && !unique:
+				r.Cardinality = schema.OneOrMore
+			}
+		}
+	}
+	return nil
+}
+
 func matchLabels(il []string, l schema.Labels) bool {
 	for _, ll := range l {
 		for _, ill := range il {
@@ -697,4 +783,13 @@ func matchLabels(il []string, l schema.Labels) bool {
 func match(s []string, e string) bool {
 	_, m := matchLength(s, e)
 	return m
+}
+
+func contains(s []string, e string) bool {
+	for _, v := range s {
+		if e == v {
+			return true
+		}
+	}
+	return false
 }
