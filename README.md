@@ -820,7 +820,7 @@ comments:
 
 ### Relations
 
-`relations:` is used to add table relation to database document without `FOREIGN KEY`.
+`relations:` is used to add or override table relation to database document without `FOREIGN KEY`.
 
 You can create ER diagrams with relations without having foreign key constraints.
 
@@ -860,6 +860,22 @@ relations:
 ```
 
 ![img](sample/mysql/logs.svg)
+
+#### Override relations
+
+If you want to override an existing relation, set the `override:` to `true`.
+
+``` yaml
+relations:
+  -
+    table: posts
+    columns:
+      - user_id
+    parentTable: users
+    parentColumns:
+      - id
+    override: true
+    def: posts->users
 
 #### Automatically detect relations
 

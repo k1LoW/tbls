@@ -250,9 +250,38 @@ func TestModifySchema(t *testing.T) {
 		labels    []string
 		comments  []AdditionalComment
 		relations []AdditionalRelation
+		wantRel   int
 	}{
-		{"", "", []string{}, nil, nil},
-		{"mod_name_and_desc", "this is test schema", []string{}, nil, nil},
+		{"", "", []string{}, nil, nil, 3},
+		{"mod_name_and_desc", "this is test schema", []string{}, nil, nil, 3},
+		{"relations", "", []string{}, nil, []AdditionalRelation{
+			{
+				Table:         "users",
+				ParentTable:   "categories",
+				Columns:       []string{"id"},
+				ParentColumns: []string{"id"},
+			},
+		}, 4},
+		{"not_override", "", []string{}, nil, []AdditionalRelation{
+			{
+				Table:         "users",
+				ParentTable:   "posts",
+				Columns:       []string{"id"},
+				ParentColumns: []string{"user_id"},
+				Def:           "Additional Relation",
+				Override:      false,
+			},
+		}, 4},
+		{"override", "", []string{}, nil, []AdditionalRelation{
+			{
+				Table:         "posts",
+				ParentTable:   "users",
+				Columns:       []string{"user_id"},
+				ParentColumns: []string{"id"},
+				Def:           "Override Relation",
+				Override:      true,
+			},
+		}, 3},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -278,6 +307,9 @@ func TestModifySchema(t *testing.T) {
 			}
 			if diff := golden.Diff(t, testdataDir(), f, got); diff != "" {
 				t.Error(diff)
+			}
+			if got := len(s.Relations); got != tt.wantRel {
+				t.Errorf("got %v wantRel %v", got, tt.wantRel)
 			}
 		})
 	}
