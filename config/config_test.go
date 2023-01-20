@@ -218,7 +218,7 @@ func TestFilterTables(t *testing.T) {
 		{[]string{"users"}, []string{}, []string{"private"}, 0, 2, 1},
 	}
 	for i, tt := range tests {
-		t.Run(fmt.Sprintf("%d.%v%v", i, tt.include, tt.exclude), func(t *testing.T) {
+		t.Run(fmt.Sprintf("%d.%v%v%v", i, tt.include, tt.exclude, tt.labels), func(t *testing.T) {
 			s := newSchemaForTestFilterTables(t)
 			c.Include = tt.include
 			c.Exclude = tt.exclude
