@@ -41,9 +41,11 @@ relations:
 - table: a
   columns:
   - a
+  cardinality: Zero or more
   parentTable: b
   parentColumns:
   - b
+  parentCardinality: Zero or one
   def: ""
   virtual: false
 functions: []

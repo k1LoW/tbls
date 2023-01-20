@@ -13,7 +13,7 @@ import (
 func TestOutputSchema(t *testing.T) {
 	format := "svg"
 
-	s := newTestSchema()
+	s := newTestSchema(t)
 	c, err := config.New()
 	if err != nil {
 		t.Fatal(err)
@@ -43,7 +43,7 @@ func TestOutputSchema(t *testing.T) {
 
 func TestOutputTable(t *testing.T) {
 	format := "svg"
-	s := newTestSchema()
+	s := newTestSchema(t)
 	c, err := config.New()
 	if err != nil {
 		t.Error(err)
@@ -76,7 +76,7 @@ func testdataDir() string {
 	return dir
 }
 
-func newTestSchema() *schema.Schema {
+func newTestSchema(t *testing.T) *schema.Schema {
 	ca := &schema.Column{
 		Name:    "a",
 		Comment: "column a",

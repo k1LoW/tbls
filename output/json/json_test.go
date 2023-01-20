@@ -12,25 +12,30 @@ import (
 	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/k1LoW/tbls/dict"
 	"github.com/k1LoW/tbls/schema"
+	"github.com/tenntenn/golden"
 )
 
 func TestOutputSchema(t *testing.T) {
-	s := newTestSchema()
+	s := newTestSchema(t)
 	o := new(JSON)
 	buf := &bytes.Buffer{}
 	err := o.OutputSchema(buf, s)
 	if err != nil {
 		t.Error(err)
 	}
-	want, _ := os.ReadFile(filepath.Join(testdataDir(), "json_test_schema.json.golden"))
 	got := buf.String()
-	if got != string(want) {
-		t.Errorf("got %v\nwant %v", got, string(want))
+	f := "json_output_schema"
+	if os.Getenv("UPDATE_GOLDEN") != "" {
+		golden.Update(t, testdataDir(), f, got)
+		return
+	}
+	if diff := golden.Diff(t, testdataDir(), f, got); diff != "" {
+		t.Error(diff)
 	}
 }
 
 func TestEncodeAndDecode(t *testing.T) {
-	s1 := newTestSchema()
+	s1 := newTestSchema(t)
 	o := new(JSON)
 	buf := &bytes.Buffer{}
 	err := o.OutputSchema(buf, s1)
@@ -72,7 +77,7 @@ func testdataDir() string {
 	return dir
 }
 
-func newTestSchema() *schema.Schema {
+func newTestSchema(t *testing.T) *schema.Schema {
 	ca := &schema.Column{
 		Name:     "a",
 		Type:     "bigint(20)",

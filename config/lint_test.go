@@ -36,11 +36,11 @@ func TestRequireTableComment(t *testing.T) {
 			AllOrNothing: tt.allOrNothing,
 			Exclude:      tt.exclude,
 		}
-		s := newTestSchema()
+		s := newTestSchema(t)
 		if warns := r.Check(s, tt.lintExclude); len(warns) != tt.want {
 			t.Errorf("TestRequireTableComment(%d): got %v\nwant %v", i, len(warns), tt.want)
 		}
-		ns := newTestNoCommentSchema()
+		ns := newTestNoCommentSchema(t)
 		if warns := r.Check(ns, tt.lintExclude); len(warns) != tt.wantNoComment {
 			t.Errorf("TestRequireTableComment(%d) (no comment schema): got %v\nwant %v", i, len(warns), tt.wantNoComment)
 		}
@@ -85,12 +85,12 @@ func TestRequireColumnComment(t *testing.T) {
 			Exclude:       tt.exclude,
 			ExcludeTables: tt.excludeTables,
 		}
-		s := newTestSchema()
+		s := newTestSchema(t)
 		if warns := r.Check(s, tt.lintExclude); len(warns) != tt.want {
 			t.Errorf("TestRequireColumnComment(%d): got %v\nwant %v", i, len(warns), tt.want)
 		}
 
-		ns := newTestNoCommentSchema()
+		ns := newTestNoCommentSchema(t)
 		if warns := r.Check(ns, tt.lintExclude); len(warns) != tt.wantNoComment {
 			t.Errorf("TestRequireColumnComment(%d) (no comment schema): got %v\nwant %v", i, len(warns), tt.wantNoComment)
 		}
@@ -129,12 +129,12 @@ func TestRequireIndexComment(t *testing.T) {
 			Exclude:       tt.exclude,
 			ExcludeTables: tt.excludeTables,
 		}
-		s := newTestSchema()
+		s := newTestSchema(t)
 		if warns := r.Check(s, tt.lintExclude); len(warns) != tt.want {
 			t.Errorf("TestRequireIndexComment(%d): got %v\nwant %v", i, len(warns), tt.want)
 		}
 
-		ns := newTestNoCommentSchema()
+		ns := newTestNoCommentSchema(t)
 		if warns := r.Check(ns, tt.lintExclude); len(warns) != tt.wantNoComment {
 			t.Errorf("TestRequireIndexComment(%d) (no comment schema): got %v\nwant %v", i, len(warns), tt.wantNoComment)
 		}
@@ -173,12 +173,12 @@ func TestRequireConstraintComment(t *testing.T) {
 			Exclude:       tt.exclude,
 			ExcludeTables: tt.excludeTables,
 		}
-		s := newTestSchema()
+		s := newTestSchema(t)
 		if warns := r.Check(s, tt.lintExclude); len(warns) != tt.want {
 			t.Errorf("TestRequireConstraintComment(%d): got %v\nwant %v", i, len(warns), tt.want)
 		}
 
-		ns := newTestNoCommentSchema()
+		ns := newTestNoCommentSchema(t)
 		if warns := r.Check(ns, tt.lintExclude); len(warns) != tt.wantNoComment {
 			t.Errorf("TestRequireConstraintComment(%d) (no comment schema): got %v\nwant %v", i, len(warns), tt.wantNoComment)
 		}
@@ -217,12 +217,12 @@ func TestRequireTriggerComment(t *testing.T) {
 			Exclude:       tt.exclude,
 			ExcludeTables: tt.excludeTables,
 		}
-		s := newTestSchema()
+		s := newTestSchema(t)
 		if warns := r.Check(s, tt.lintExclude); len(warns) != tt.want {
 			t.Errorf("TestRequireTriggerComment(%d): got %v\nwant %v", i, len(warns), tt.want)
 		}
 
-		ns := newTestNoCommentSchema()
+		ns := newTestNoCommentSchema(t)
 		if warns := r.Check(ns, tt.lintExclude); len(warns) != tt.wantNoComment {
 			t.Errorf("TestRequireTriggerComment(%d) (no comment schema): got %v\nwant %v", i, len(warns), tt.wantNoComment)
 		}
@@ -262,7 +262,7 @@ func TestUnrelatedTable(t *testing.T) {
 			AllOrNothing: tt.allOrNothing,
 			Exclude:      tt.exclude,
 		}
-		s := newTestSchema()
+		s := newTestSchema(t)
 		warns := r.Check(s, tt.lintExclude)
 		if len(warns) != tt.want {
 			t.Errorf("TestUnrelatedTable(%d): got %v\nwant %v", i, len(warns), tt.want)
@@ -272,7 +272,7 @@ func TestUnrelatedTable(t *testing.T) {
 				t.Errorf("TestUnrelatedTable(%d): got %v\nwant %v", i, warns[0].Message, tt.wantMsg)
 			}
 		}
-		ns := newTestNoRelationSchema()
+		ns := newTestNoRelationSchema(t)
 		if warns := r.Check(ns, tt.lintExclude); len(warns) != tt.wantNoRelation {
 			fmt.Printf("%v\n", warns)
 			t.Errorf("TestUnrelatedTable(%d) (no relation): got %v\nwant %v", i, len(warns), tt.wantNoRelation)
@@ -301,7 +301,7 @@ func TestColumnCount(t *testing.T) {
 			Exclude: tt.exclude,
 			Max:     3,
 		}
-		s := newTestSchema()
+		s := newTestSchema(t)
 		warns := r.Check(s, tt.lintExclude)
 		if len(warns) != tt.want {
 			t.Errorf("TestColumnCount(%d): got %v\nwant %v", i, len(warns), tt.want)
@@ -339,7 +339,7 @@ func TestRequireColumns(t *testing.T) {
 				},
 			},
 		}
-		s := newTestSchema()
+		s := newTestSchema(t)
 		warns := r.Check(s, tt.lintExclude)
 		if len(warns) != tt.want {
 			t.Errorf("TestRequireColumns(%d): got %v\nwant %v", i, len(warns), tt.want)
@@ -363,7 +363,7 @@ func TestDuplicateRelations(t *testing.T) {
 		r := DuplicateRelations{
 			Enabled: tt.enabled,
 		}
-		s := newTestSchema()
+		s := newTestSchema(t)
 		copy := *s.Relations[0]
 		copy.Def = "copy"
 		s.Relations = append(s.Relations, &copy)
@@ -401,7 +401,7 @@ func TestRequireForeignKeyIndex(t *testing.T) {
 			Enabled: tt.enabled,
 			Exclude: tt.exclude,
 		}
-		s := newTestSchema()
+		s := newTestSchema(t)
 		warns := r.Check(s, tt.lintExclude)
 		if len(warns) != tt.want {
 			t.Errorf("TestRequireForeignKeyIndex(%d): got %v\nwant %v", i, len(warns), tt.want)
@@ -423,7 +423,7 @@ func TestLabelStyleBigQuery(t *testing.T) {
 		r := LabelStyleBigQuery{
 			Enabled: tt.enabled,
 		}
-		s := newTestSchema()
+		s := newTestSchema(t)
 		warns := r.Check(s, tt.lintExclude)
 		if len(warns) != tt.want {
 			t.Errorf("TestLabelStyleBigQuery(%d): got %v\nwant %v", i, len(warns), tt.want)
@@ -461,7 +461,7 @@ func TestCheckLabelStyleBigQuery(t *testing.T) {
 	}
 }
 
-func newTestSchema() *schema.Schema {
+func newTestSchema(t *testing.T) *schema.Schema {
 	ca := &schema.Column{
 		Name:     "column_a1",
 		Type:     "bigint(20)",
@@ -615,8 +615,9 @@ func newTestSchema() *schema.Schema {
 	return s
 }
 
-func newTestNoCommentSchema() *schema.Schema {
-	s := newTestSchema()
+func newTestNoCommentSchema(t *testing.T) *schema.Schema {
+	t.Helper()
+	s := newTestSchema(t)
 	for _, t := range s.Tables {
 		t.Comment = ""
 		for _, c := range t.Columns {
@@ -635,8 +636,9 @@ func newTestNoCommentSchema() *schema.Schema {
 	return s
 }
 
-func newTestNoRelationSchema() *schema.Schema {
-	s := newTestSchema()
+func newTestNoRelationSchema(t *testing.T) *schema.Schema {
+	t.Helper()
+	s := newTestSchema(t)
 	for _, t := range s.Tables {
 		for _, c := range t.Columns {
 			c.ChildRelations = nil

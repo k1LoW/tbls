@@ -408,12 +408,12 @@
       "columns": [
         "id"
       ],
-      "cardinality": "Exactly one",
+      "cardinality": "",
       "parent_table": "posts",
       "parent_columns": [
         "user_id"
       ],
-      "parent_cardinality": "One or more",
+      "parent_cardinality": "",
       "def": "Additional Relation",
       "virtual": true
     }
