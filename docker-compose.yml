@@ -67,6 +67,6 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=secret
       - MONGO_INITDB_DATABASE=test
     volumes:
-      - ./testdata/ddl/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - ./testdata/ddl/mongo:/docker-entrypoint-initdb.d
     ports:
       - "27017:27017"
