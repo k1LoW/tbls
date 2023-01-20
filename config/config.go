@@ -206,7 +206,7 @@ func Exclude(e []string) Option {
 	}
 }
 
-// IncludeLabels return Option set Config.IncludeLabels
+// IncludeLabels return Option set Config.includeLabels
 func IncludeLabels(l []string) Option {
 	return func(c *Config) error {
 		if len(l) > 0 {
@@ -226,7 +226,7 @@ func New() (*Config, error) {
 	return &c, nil
 }
 
-// Load load config with all method
+// Load config with all method
 func (c *Config) Load(configPath string, options ...Option) error {
 	if err := c.LoadConfigFile(configPath); err != nil {
 		return err
