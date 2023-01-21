@@ -27,6 +27,11 @@ var cardinalityAliases = map[string]Cardinality{
 	"many(1)":      OneOrMore,
 	"0+":           ZeroOrMore,
 	"1+":           OneOrMore,
+	"*":            ZeroOrMore,
+	"0..*":         ZeroOrMore,
+	"0..1":         ZeroOrOne,
+	"1..*":         OneOrMore,
+	"1":            ExactlyOne,
 	"":             UnknownCardinality,
 }
 
