@@ -135,7 +135,7 @@ func TestSchema_Sort(t *testing.T) {
 
 func TestRepair(t *testing.T) {
 	got := &Schema{}
-	file, err := os.Open(filepath.Join(testdataDir(), "json_test_schema.json.golden"))
+	file, err := os.Open(filepath.Join(testdataDir(), "json_output_schema.golden"))
 	if err != nil {
 		t.Error(err)
 	}
@@ -144,7 +144,7 @@ func TestRepair(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	want := newTestSchema()
+	want := newTestSchema(t)
 	err = got.Repair()
 	if err != nil {
 		t.Error(err)
@@ -183,7 +183,7 @@ func testdataDir() string {
 	return dir
 }
 
-func newTestSchema() *Schema {
+func newTestSchema(t *testing.T) *Schema {
 	ca := &Column{
 		Name:     "a",
 		Type:     "bigint(20)",

@@ -274,12 +274,14 @@ func TestModifySchema(t *testing.T) {
 		}, 4},
 		{"override", "", []string{}, nil, []AdditionalRelation{
 			{
-				Table:         "posts",
-				ParentTable:   "users",
-				Columns:       []string{"user_id"},
-				ParentColumns: []string{"id"},
-				Def:           "Override Relation",
-				Override:      true,
+				Table:             "posts",
+				ParentTable:       "users",
+				Columns:           []string{"user_id"},
+				ParentColumns:     []string{"id"},
+				Cardinality:       "Zero or one",
+				ParentCardinality: "1+",
+				Def:               "Override Relation",
+				Override:          true,
 			},
 		}, 3},
 	}
@@ -291,8 +293,7 @@ func TestModifySchema(t *testing.T) {
 			c.Comments = tt.comments
 			c.Relations = tt.relations
 			s := newTestSchemaViaJSON(t)
-			err = c.ModifySchema(s)
-			if err != nil {
+			if err := c.ModifySchema(s); err != nil {
 				t.Error(err)
 			}
 

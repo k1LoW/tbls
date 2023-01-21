@@ -59,10 +59,12 @@
       "columns": [
         "a"
       ],
+      "cardinality": "",
       "parent_table": "b",
       "parent_columns": [
         "b"
       ],
+      "parent_cardinality": "",
       "def": "",
       "virtual": false
     }

@@ -8,7 +8,7 @@ import (
 )
 
 func TestMeasure(t *testing.T) {
-	s := newTestSchema()
+	s := newTestSchema(t)
 	got := Measure(s)
 	if want := 10; got.Covered != want {
 		t.Errorf("got %v want %v", got.Covered, want)
@@ -37,7 +37,7 @@ func TestRound(t *testing.T) {
 	}
 }
 
-func newTestSchema() *schema.Schema {
+func newTestSchema(t *testing.T) *schema.Schema {
 	ca := &schema.Column{
 		Name:     "column_a1",
 		Type:     "bigint(20)",

@@ -11,7 +11,7 @@ import (
 )
 
 func TestOutputSchema(t *testing.T) {
-	s := newTestSchema()
+	s := newTestSchema(t)
 	c, err := config.New()
 	if err != nil {
 		t.Error(err)
@@ -38,7 +38,7 @@ func TestOutputSchema(t *testing.T) {
 }
 
 func TestOutputSchemaTemplate(t *testing.T) {
-	s := newTestSchema()
+	s := newTestSchema(t)
 	c, err := config.New()
 	if err != nil {
 		t.Error(err)
@@ -69,7 +69,7 @@ func TestOutputSchemaTemplate(t *testing.T) {
 }
 
 func TestOutputTable(t *testing.T) {
-	s := newTestSchema()
+	s := newTestSchema(t)
 	c, err := config.New()
 	if err != nil {
 		t.Error(err)
@@ -95,7 +95,7 @@ func TestOutputTable(t *testing.T) {
 }
 
 func TestOutputTableTemplate(t *testing.T) {
-	s := newTestSchema()
+	s := newTestSchema(t)
 	c, err := config.New()
 	if err != nil {
 		t.Error(err)
@@ -129,7 +129,7 @@ func testdataDir() string {
 	return dir
 }
 
-func newTestSchema() *schema.Schema {
+func newTestSchema(t *testing.T) *schema.Schema {
 	ca := &schema.Column{
 		Name:    "a",
 		Comment: "column a",

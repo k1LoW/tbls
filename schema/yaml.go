@@ -109,19 +109,23 @@ func (r Relation) MarshalYAML() ([]byte, error) {
 	}
 
 	return yaml.Marshal(&struct {
-		Table         string   `yaml:"table"`
-		Columns       []string `yaml:"columns"`
-		ParentTable   string   `yaml:"parentTable"`
-		ParentColumns []string `yaml:"parentColumns"`
-		Def           string   `yaml:"def"`
-		Virtual       bool     `yaml:"virtual"`
+		Table             string   `yaml:"table"`
+		Columns           []string `yaml:"columns"`
+		Cardinality       string   `yaml:"cardinality"`
+		ParentTable       string   `yaml:"parentTable"`
+		ParentColumns     []string `yaml:"parentColumns"`
+		ParentCardinality string   `yaml:"parentCardinality"`
+		Def               string   `yaml:"def"`
+		Virtual           bool     `yaml:"virtual"`
 	}{
-		Table:         r.Table.Name,
-		Columns:       columns,
-		ParentTable:   r.ParentTable.Name,
-		ParentColumns: parentColumns,
-		Def:           r.Def,
-		Virtual:       r.Virtual,
+		Table:             r.Table.Name,
+		Columns:           columns,
+		Cardinality:       r.Cardinality.String(),
+		ParentTable:       r.ParentTable.Name,
+		ParentColumns:     parentColumns,
+		ParentCardinality: r.ParentCardinality.String(),
+		Def:               r.Def,
+		Virtual:           r.Virtual,
 	})
 }
 
@@ -197,12 +201,14 @@ func (c *Column) UnmarshalYAML(data []byte) error {
 // UnmarshalYAML unmarshal YAML to schema.Column
 func (r *Relation) UnmarshalYAML(data []byte) error {
 	s := struct {
-		Table         string   `yaml:"table"`
-		Columns       []string `yaml:"columns"`
-		ParentTable   string   `yaml:"parentTable"`
-		ParentColumns []string `yaml:"parentColumns"`
-		Def           string   `yaml:"def"`
-		Virtual       bool     `yaml:"virtual"`
+		Table             string   `yaml:"table"`
+		Columns           []string `yaml:"columns"`
+		Cardinality       string   `yaml:"cardinality"`
+		ParentTable       string   `yaml:"parentTable"`
+		ParentColumns     []string `yaml:"parentColumns"`
+		ParentCardinality string   `yaml:"parentCardinality"`
+		Def               string   `yaml:"def"`
+		Virtual           bool     `yaml:"virtual"`
 	}{}
 	err := yaml.Unmarshal(data, &s)
 	if err != nil {
@@ -217,6 +223,10 @@ func (r *Relation) UnmarshalYAML(data []byte) error {
 			Name: c,
 		})
 	}
+	r.Cardinality, err = ToCardinality(s.Cardinality)
+	if err != nil {
+		return err
+	}
 	r.ParentTable = &Table{
 		Name: s.ParentTable,
 	}
@@ -225,6 +235,10 @@ func (r *Relation) UnmarshalYAML(data []byte) error {
 		r.ParentColumns = append(r.ParentColumns, &Column{
 			Name: c,
 		})
+	}
+	r.ParentCardinality, err = ToCardinality(s.ParentCardinality)
+	if err != nil {
+		return err
 	}
 	r.Def = s.Def
 	r.Virtual = s.Virtual

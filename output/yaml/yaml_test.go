@@ -12,25 +12,30 @@ import (
 	"github.com/google/go-cmp/cmp/cmpopts"
 	"github.com/k1LoW/tbls/dict"
 	"github.com/k1LoW/tbls/schema"
+	"github.com/tenntenn/golden"
 )
 
 func TestOutputSchema(t *testing.T) {
-	s := newTestSchema()
+	s := newTestSchema(t)
 	o := new(YAML)
 	buf := &bytes.Buffer{}
 	err := o.OutputSchema(buf, s)
 	if err != nil {
 		t.Error(err)
 	}
-	want, _ := os.ReadFile(filepath.Join(testdataDir(), "yaml_test_schema.yaml.golden"))
 	got := buf.String()
-	if got != string(want) {
-		t.Errorf("got\n%v\nwant\n%v", got, string(want))
+	f := "yaml_output_schema"
+	if os.Getenv("UPDATE_GOLDEN") != "" {
+		golden.Update(t, testdataDir(), f, got)
+		return
+	}
+	if diff := golden.Diff(t, testdataDir(), f, got); diff != "" {
+		t.Error(diff)
 	}
 }
 
 func TestEncodeAndDecode(t *testing.T) {
-	s1 := newTestSchema()
+	s1 := newTestSchema(t)
 	o := new(YAML)
 	buf := &bytes.Buffer{}
 	err := o.OutputSchema(buf, s1)
@@ -72,7 +77,8 @@ func testdataDir() string {
 	return dir
 }
 
-func newTestSchema() *schema.Schema {
+func newTestSchema(t *testing.T) *schema.Schema {
+	t.Helper()
 	ca := &schema.Column{
 		Name:     "a",
 		Type:     "bigint(20)",
@@ -119,10 +125,12 @@ func newTestSchema() *schema.Schema {
 		},
 	}
 	r := &schema.Relation{
-		Table:         ta,
-		Columns:       []*schema.Column{ca},
-		ParentTable:   tb,
-		ParentColumns: []*schema.Column{cb},
+		Table:             ta,
+		Columns:           []*schema.Column{ca},
+		ParentTable:       tb,
+		ParentColumns:     []*schema.Column{cb},
+		Cardinality:       schema.ZeroOrMore,
+		ParentCardinality: schema.ZeroOrOne,
 	}
 	ca.ParentRelations = []*schema.Relation{r}
 	cb.ChildRelations = []*schema.Relation{r}

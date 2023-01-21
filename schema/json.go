@@ -167,19 +167,23 @@ func (r Relation) MarshalJSON() ([]byte, error) {
 	}
 
 	return json.Marshal(&struct {
-		Table         string   `json:"table"`
-		Columns       []string `json:"columns"`
-		ParentTable   string   `json:"parent_table"`
-		ParentColumns []string `json:"parent_columns"`
-		Def           string   `json:"def"`
-		Virtual       bool     `json:"virtual"`
+		Table             string   `json:"table"`
+		Columns           []string `json:"columns"`
+		Cardinality       string   `json:"cardinality"`
+		ParentTable       string   `json:"parent_table"`
+		ParentColumns     []string `json:"parent_columns"`
+		ParentCardinality string   `json:"parent_cardinality"`
+		Def               string   `json:"def"`
+		Virtual           bool     `json:"virtual"`
 	}{
-		Table:         r.Table.Name,
-		Columns:       columns,
-		ParentTable:   r.ParentTable.Name,
-		ParentColumns: parentColumns,
-		Def:           r.Def,
-		Virtual:       r.Virtual,
+		Table:             r.Table.Name,
+		Columns:           columns,
+		Cardinality:       r.Cardinality.String(),
+		ParentTable:       r.ParentTable.Name,
+		ParentColumns:     parentColumns,
+		ParentCardinality: r.ParentCardinality.String(),
+		Def:               r.Def,
+		Virtual:           r.Virtual,
 	})
 }
 
@@ -254,12 +258,14 @@ func (c *Column) UnmarshalJSON(data []byte) error {
 // UnmarshalJSON unmarshal JSON to schema.Relation
 func (r *Relation) UnmarshalJSON(data []byte) error {
 	s := struct {
-		Table         string   `json:"table"`
-		Columns       []string `json:"columns"`
-		ParentTable   string   `json:"parent_table"`
-		ParentColumns []string `json:"parent_columns"`
-		Def           string   `json:"def"`
-		Virtual       bool     `json:"virtual"`
+		Table             string   `json:"table"`
+		Columns           []string `json:"columns"`
+		Cardinality       string   `json:"cardinality"`
+		ParentTable       string   `json:"parent_table"`
+		ParentColumns     []string `json:"parent_columns"`
+		ParentCardinality string   `json:"parent_cardinality"`
+		Def               string   `json:"def"`
+		Virtual           bool     `json:"virtual"`
 	}{}
 	err := json.Unmarshal(data, &s)
 	if err != nil {
@@ -274,6 +280,10 @@ func (r *Relation) UnmarshalJSON(data []byte) error {
 			Name: c,
 		})
 	}
+	r.Cardinality, err = ToCardinality(s.Cardinality)
+	if err != nil {
+		return err
+	}
 	r.ParentTable = &Table{
 		Name: s.ParentTable,
 	}
@@ -282,6 +292,10 @@ func (r *Relation) UnmarshalJSON(data []byte) error {
 		r.ParentColumns = append(r.ParentColumns, &Column{
 			Name: c,
 		})
+	}
+	r.ParentCardinality, err = ToCardinality(s.ParentCardinality)
+	if err != nil {
+		return err
 	}
 	r.Def = s.Def
 	r.Virtual = s.Virtual

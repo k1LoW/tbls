@@ -87,12 +87,14 @@ type ER struct {
 
 // AdditionalRelation is the struct for table relation from yaml
 type AdditionalRelation struct {
-	Table         string   `yaml:"table"`
-	Columns       []string `yaml:"columns"`
-	ParentTable   string   `yaml:"parentTable"`
-	ParentColumns []string `yaml:"parentColumns"`
-	Def           string   `yaml:"def,omitempty"`
-	Override      bool     `yaml:"override,omitempty"`
+	Table             string   `yaml:"table"`
+	Columns           []string `yaml:"columns"`
+	Cardinality       string   `yaml:"cardinality,omitempty"`
+	ParentTable       string   `yaml:"parentTable"`
+	ParentColumns     []string `yaml:"parentColumns"`
+	ParentCardinality string   `yaml:"parentCardinality,omitempty"`
+	Def               string   `yaml:"def,omitempty"`
+	Override          bool     `yaml:"override,omitempty"`
 }
 
 // AdditionalComment is the struct for table relation from yaml
@@ -367,6 +369,9 @@ func (c *Config) ModifySchema(s *schema.Schema) error {
 			s.Labels = s.Labels.Merge(l)
 		}
 	}
+	if err := detectCardinality(s); err != nil {
+		return err
+	}
 	err := c.MergeAdditionalData(s)
 	if err != nil {
 		return err
@@ -389,6 +394,9 @@ func (c *Config) ModifySchema(s *schema.Schema) error {
 		mergeDetectedRelations(s, strategy)
 	}
 	c.mergeDictFromSchema(s)
+	if err := detectCardinality(s); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -575,6 +583,14 @@ func mergeAdditionalRelations(s *schema.Schema, relations []AdditionalRelation) 
 			} else {
 				cr.Virtual = true
 				cr.Def = r.Def
+				cr.Cardinality, err = schema.ToCardinality(r.Cardinality)
+				if err != nil {
+					return errors.Wrap(err, "failed to add relation")
+				}
+				cr.ParentCardinality, err = schema.ToCardinality(r.ParentCardinality)
+				if err != nil {
+					return errors.Wrap(err, "failed to add relation")
+				}
 			}
 		} else {
 			s.Relations = append(s.Relations, relation)
@@ -683,6 +699,57 @@ func matchLength(s []string, e string) (int, bool) {
 	return 0, false
 }
 
+func detectCardinality(s *schema.Schema) error {
+	// This function should be applied to the completed schema
+	for _, r := range s.Relations {
+		// child
+		if r.Cardinality == schema.UnknownCardinality {
+			unique := false
+			columns := []string{}
+			for _, c := range r.Columns {
+				columns = append(columns, c.Name)
+			}
+		LL:
+			for _, c := range r.Table.Constraints {
+				if len(columns) != len(c.Columns) {
+					continue
+				}
+				for _, cc := range c.Columns {
+					if !contains(columns, cc) {
+						continue LL
+					}
+				}
+				if strings.Contains(strings.ToUpper(c.Def), "UNIQUE") || strings.Contains(strings.ToUpper(c.Def), "PRIMARY KEY") {
+					unique = true
+				}
+			}
+			if unique {
+				r.Cardinality = schema.ZeroOrOne
+			} else {
+				r.Cardinality = schema.ZeroOrMore
+			}
+		}
+
+		// parent
+		if r.ParentCardinality == schema.UnknownCardinality {
+			// whether the child colums are nullable or not.
+			nullable := true
+			for _, c := range r.Columns {
+				if !c.Nullable {
+					nullable = false
+				}
+			}
+
+			if nullable {
+				r.ParentCardinality = schema.ZeroOrOne
+			} else {
+				r.ParentCardinality = schema.ExactlyOne
+			}
+		}
+	}
+	return nil
+}
+
 func matchLabels(il []string, l schema.Labels) bool {
 	for _, ll := range l {
 		for _, ill := range il {
@@ -697,4 +764,13 @@ func matchLabels(il []string, l schema.Labels) bool {
 func match(s []string, e string) bool {
 	_, m := matchLength(s, e)
 	return m
+}
+
+func contains(s []string, e string) bool {
+	for _, v := range s {
+		if e == v {
+			return true
+		}
+	}
+	return false
 }
