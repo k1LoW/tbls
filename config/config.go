@@ -87,12 +87,14 @@ type ER struct {
 
 // AdditionalRelation is the struct for table relation from yaml
 type AdditionalRelation struct {
-	Table         string   `yaml:"table"`
-	Columns       []string `yaml:"columns"`
-	ParentTable   string   `yaml:"parentTable"`
-	ParentColumns []string `yaml:"parentColumns"`
-	Def           string   `yaml:"def,omitempty"`
-	Override      bool     `yaml:"override,omitempty"`
+	Table             string   `yaml:"table"`
+	Columns           []string `yaml:"columns"`
+	Cardinality       string   `yaml:"cardinality,omitempty"`
+	ParentTable       string   `yaml:"parentTable"`
+	ParentColumns     []string `yaml:"parentColumns"`
+	ParentCardinality string   `yaml:"parentCardinality,omitempty"`
+	Def               string   `yaml:"def,omitempty"`
+	Override          bool     `yaml:"override,omitempty"`
 }
 
 // AdditionalComment is the struct for table relation from yaml
@@ -581,6 +583,14 @@ func mergeAdditionalRelations(s *schema.Schema, relations []AdditionalRelation) 
 			} else {
 				cr.Virtual = true
 				cr.Def = r.Def
+				cr.Cardinality, err = schema.ToCardinality(r.Cardinality)
+				if err != nil {
+					return errors.Wrap(err, "failed to add relation")
+				}
+				cr.ParentCardinality, err = schema.ToCardinality(r.ParentCardinality)
+				if err != nil {
+					return errors.Wrap(err, "failed to add relation")
+				}
 			}
 		} else {
 			s.Relations = append(s.Relations, relation)

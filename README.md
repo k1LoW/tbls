@@ -871,9 +871,11 @@ relations:
     table: posts
     columns:
       - user_id
+    cardinality: zero or one
     parentTable: users
     parentColumns:
       - id
+    parentCardinality: one or more
     override: true
     def: posts->users
 

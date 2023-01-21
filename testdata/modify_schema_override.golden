@@ -380,12 +380,12 @@
       "columns": [
         "user_id"
       ],
-      "cardinality": "Zero or more",
+      "cardinality": "Zero or one",
       "parent_table": "users",
       "parent_columns": [
         "id"
       ],
-      "parent_cardinality": "Exactly one",
+      "parent_cardinality": "One or more",
       "def": "Override Relation",
       "virtual": true
     },
