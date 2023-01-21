@@ -338,7 +338,7 @@
       "columns": [
         "category_id"
       ],
-      "cardinality": "One or more",
+      "cardinality": "Zero or more",
       "parent_table": "categories",
       "parent_columns": [
         "id"
@@ -352,7 +352,7 @@
       "columns": [
         "user_id"
       ],
-      "cardinality": "One or more",
+      "cardinality": "Zero or more",
       "parent_table": "users",
       "parent_columns": [
         "id"
@@ -366,7 +366,7 @@
       "columns": [
         "user_id"
       ],
-      "cardinality": "One or more",
+      "cardinality": "Zero or more",
       "parent_table": "users",
       "parent_columns": [
         "id"

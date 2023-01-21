@@ -692,52 +692,11 @@ func matchLength(s []string, e string) (int, bool) {
 func detectCardinality(s *schema.Schema) error {
 	// This function should be applied to the completed schema
 	for _, r := range s.Relations {
-		// parent
-		if r.ParentCardinality != schema.UnknownCardinality {
-			nullable := true
-			unique := false
-			columns := []string{}
-			for _, c := range r.ParentColumns {
-				if !c.Nullable {
-					nullable = false
-				}
-				columns = append(columns, c.Name)
-			}
-		L:
-			for _, c := range r.ParentTable.Constraints {
-				if len(columns) != len(c.Columns) {
-					continue
-				}
-				for _, cc := range c.Columns {
-					if !contains(columns, cc) {
-						continue L
-					}
-				}
-				if strings.Contains(strings.ToUpper(c.Def), "UNIQUE") || strings.Contains(strings.ToUpper(c.Def), "PRIMARY KEY") {
-					unique = true
-				}
-			}
-			switch {
-			case nullable && unique:
-				r.ParentCardinality = schema.ZeroOrOne
-			case !nullable && unique:
-				r.ParentCardinality = schema.ExactlyOne
-			case nullable && !unique:
-				r.ParentCardinality = schema.ZeroOrMore
-			case !nullable && !unique:
-				r.ParentCardinality = schema.OneOrMore
-			}
-		}
-
 		// child
-		if r.Cardinality != schema.UnknownCardinality {
-			nullable := true
+		if r.Cardinality == schema.UnknownCardinality {
 			unique := false
 			columns := []string{}
 			for _, c := range r.Columns {
-				if !c.Nullable {
-					nullable = false
-				}
 				columns = append(columns, c.Name)
 			}
 		LL:
@@ -754,15 +713,27 @@ func detectCardinality(s *schema.Schema) error {
 					unique = true
 				}
 			}
-			switch {
-			case nullable && unique:
+			if unique {
 				r.Cardinality = schema.ZeroOrOne
-			case !nullable && unique:
-				r.Cardinality = schema.ExactlyOne
-			case nullable && !unique:
+			} else {
 				r.Cardinality = schema.ZeroOrMore
-			case !nullable && !unique:
-				r.Cardinality = schema.OneOrMore
+			}
+		}
+
+		// parent
+		if r.ParentCardinality == schema.UnknownCardinality {
+			// whether the child colums are nullable or not.
+			nullable := true
+			for _, c := range r.Columns {
+				if !c.Nullable {
+					nullable = false
+				}
+			}
+
+			if nullable {
+				r.ParentCardinality = schema.ZeroOrOne
+			} else {
+				r.ParentCardinality = schema.ExactlyOne
 			}
 		}
 	}
