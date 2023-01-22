@@ -1,5 +1,17 @@
 # Changelog
 
+## [v1.59.0](https://github.com/k1LoW/tbls/compare/v1.58.0...v1.59.0) - 2023-01-22
+- Fix option ( `--table` `--include` `--exclude` ) by @k1LoW in https://github.com/k1LoW/tbls/pull/407
+- Support `--label` option for filtering tables by @k1LoW in https://github.com/k1LoW/tbls/pull/409
+- Fix test by @k1LoW in https://github.com/k1LoW/tbls/pull/410
+- Add `relations[*].override:` section for overriding relations by @k1LoW in https://github.com/k1LoW/tbls/pull/411
+- [BREAKING] Support for cardinality detection by @k1LoW in https://github.com/k1LoW/tbls/pull/412
+- Support for displaying cardinality in PlantUML output by @k1LoW in https://github.com/k1LoW/tbls/pull/413
+- Add Mermaid output format by @k1LoW in https://github.com/k1LoW/tbls/pull/414
+- Support `mermaid` for `er.format:` by @k1LoW in https://github.com/k1LoW/tbls/pull/415
+- Add testutil by @k1LoW in https://github.com/k1LoW/tbls/pull/416
+- Add `er.hideDef:` for hiding relation definition by @k1LoW in https://github.com/k1LoW/tbls/pull/417
+
 ## [v1.58.0](https://github.com/k1LoW/tbls/compare/v1.57.1...v1.58.0) - 2023-01-05
 - [BREAKING] Exclude all tables except specific table by @k1LoW in https://github.com/k1LoW/tbls/pull/402
 - Bump up go and pkgs by @k1LoW in https://github.com/k1LoW/tbls/pull/404
