@@ -995,6 +995,12 @@ $ tbls out -t dot -o schema.dot
 $ tbls out -t plantuml -o schema.puml
 ```
 
+**Mermaid:**
+
+``` console
+$ tbls out -t mermaid -o schema.mmd
+```
+
 **Image (svg, png, jpg):**
 
 ``` console
