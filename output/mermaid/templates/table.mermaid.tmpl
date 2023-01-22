@@ -1,0 +1,19 @@
+erDiagram
+{{ $sc := .showComment -}}
+{{- range $j, $r := .Relations }}
+"{{ $r.Table.Name }}" {{ $r.Cardinality | lcardi }}--{{ $r.ParentCardinality | rcardi }} "{{ $r.ParentTable.Name }}" : "{{ $r.Def | html }}"
+{{- end }}
+
+"{{ .Table.Name }}" {
+{{- range $i, $c := .Table.Columns }}
+  {{ $c.Type }} {{ $c.Name }}{{ if $sc }} "{{ if ne $c.Comment "" }}\n{{ $c.Comment | html | escape_nl }}{{ end }}"{{ end }}
+{{- end }}
+}
+
+{{- range $i, $t := .Tables }}
+"{{ $t.Name }}" {
+{{- range $ii, $c := $t.Columns }}
+  {{ $c.Type }} {{ $c.Name }}{{ if $sc }} "{{ if ne $c.Comment "" }}\n{{ $c.Comment | html | escape_nl }}{{ end }}"{{ end }}
+{{- end }}
+}
+{{- end }}

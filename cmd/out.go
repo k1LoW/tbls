@@ -33,6 +33,7 @@ import (
 	"github.com/k1LoW/tbls/output/gviz"
 	"github.com/k1LoW/tbls/output/json"
 	"github.com/k1LoW/tbls/output/md"
+	"github.com/k1LoW/tbls/output/mermaid"
 	"github.com/k1LoW/tbls/output/plantuml"
 	"github.com/k1LoW/tbls/output/xlsx"
 	"github.com/k1LoW/tbls/output/yaml"
@@ -97,6 +98,8 @@ var outCmd = &cobra.Command{
 			o = xlsx.New(c)
 		case "plantuml":
 			o = plantuml.New(c)
+		case "mermaid":
+			o = mermaid.New(c)
 		case "png", "svg", "jpg":
 			c.ER.Format = format
 			o = gviz.New(c)

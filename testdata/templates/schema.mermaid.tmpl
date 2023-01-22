@@ -1,0 +1,5 @@
+erDiagram
+{{ $sc := .showComment -}}
+{{- range $j, $r := .Schema.Relations }}
+"{{ $r.Table.Name }}" {{ $r.Cardinality | lcardi }}--{{ $r.ParentCardinality | rcardi }} "{{ $r.ParentTable.Name }}" : "{{ $r.Def | html }}"
+{{- end }}
