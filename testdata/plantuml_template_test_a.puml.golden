@@ -13,12 +13,12 @@ skinparam class {
 
 ' tables
 table("a", "a") {
-  column("+ a", "", "")
-  column("a2", "", "")
+  column("+ a", "INTEGER", "")
+  column("a2", "TEXT", "")
 }
 table("b", "b") {
-  column("# b", "", "")
-  column("b2", "", "")
+  column("# b", "INTEGER", "")
+  column("b2", "TEXT", "")
 }
 
 ' relations

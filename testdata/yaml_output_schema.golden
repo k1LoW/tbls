@@ -2,35 +2,52 @@ name: testschema
 desc: ""
 tables:
 - name: a
-  type: BASE TABLE
+  type: ""
   comment: table a
   columns:
   - name: a
-    type: bigint(20)
+    type: INTEGER
     nullable: false
     default: null
     comment: column a
   - name: a2
-    type: datetime
+    type: TEXT
     nullable: false
-    default: CURRENT_TIMESTAMP
+    default: null
     comment: column a2
-  indexes: []
-  constraints: []
-  triggers: []
+  indexes:
+  - name: PRIMARY KEY
+    def: PRIMARY KEY(a)
+    table: a
+    columns:
+    - a
+    comment: ""
+  constraints:
+  - name: PRIMARY
+    type: ""
+    def: PRIMARY KEY (a)
+    table: a
+    referencedTable: null
+    columns: []
+    referencedColumns: []
+    comment: ""
+  triggers:
+  - name: update_a_a2
+    def: CREATE CONSTRAINT TRIGGER update_a_a2 AFTER INSERT OR UPDATE ON a
+    comment: ""
   def: ""
 - name: b
-  type: BASE TABLE
+  type: ""
   comment: table b
   columns:
   - name: b
-    type: text
-    nullable: true
+    type: INTEGER
+    nullable: false
     default: null
     comment: column b
   - name: b2
-    type: text
-    nullable: true
+    type: TEXT
+    nullable: false
     default: null
     comment: column b2
   indexes: []
@@ -38,14 +55,14 @@ tables:
   triggers: []
   def: ""
 relations:
-- table: a
+- table: b
   columns:
-  - a
-  cardinality: Zero or more
-  parentTable: b
-  parentColumns:
   - b
-  parentCardinality: Zero or one
+  cardinality: One or more
+  parentTable: a
+  parentColumns:
+  - a
+  parentCardinality: Exactly one
   def: ""
   virtual: false
 functions: []

@@ -356,6 +356,14 @@ func (s *Schema) Repair() error {
 		if len(t.Constraints) == 0 {
 			t.Constraints = nil
 		}
+		for _, ct := range t.Constraints {
+			if len(ct.Columns) == 0 {
+				ct.Columns = nil
+			}
+			if len(ct.ReferencedColumns) == 0 {
+				ct.ReferencedColumns = nil
+			}
+		}
 		if len(t.Triggers) == 0 {
 			t.Triggers = nil
 		}
@@ -396,6 +404,9 @@ func (s *Schema) Repair() error {
 			r.ParentColumns[i] = pc
 		}
 		r.ParentTable = pt
+	}
+	if len(s.Functions) == 0 {
+		s.Functions = nil
 	}
 
 	return nil

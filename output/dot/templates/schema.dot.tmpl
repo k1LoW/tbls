@@ -1,4 +1,5 @@
 {{- $sc := .showComment -}}
+{{- $sd := .showDef -}}
 digraph "{{ .Schema.Name }}" {
   // Config
   graph [rankdir=TB, layout=dot, fontname="Arial"];
@@ -17,6 +18,6 @@ digraph "{{ .Schema.Name }}" {
 
   // Relations
   {{- range $j, $r := .Schema.Relations }}
-  "{{ $r.Table.Name }}":{{ $c := index $r.Columns 0 }}"{{ $c.Name }}" -> "{{ $r.ParentTable.Name }}":{{ $pc := index $r.ParentColumns 0 }}"{{ $pc.Name }}" [dir=back, arrowtail=crow, {{ if $r.Virtual }}style="dashed",{{ end }} taillabel=<<table cellpadding="5" border="0" cellborder="0"><tr><td>{{ $r.Def | html }}</td></tr></table>>];
+  "{{ $r.Table.Name }}":{{ $c := index $r.Columns 0 }}"{{ $c.Name }}" -> "{{ $r.ParentTable.Name }}":{{ $pc := index $r.ParentColumns 0 }}"{{ $pc.Name }}" [dir=back, arrowtail=crow, {{ if $r.Virtual }}style="dashed",{{ end }} taillabel=<<table cellpadding="5" border="0" cellborder="0"><tr><td>{{ if $sd }}{{ $r.Def | html }}{{ end }}</td></tr></table>>];
   {{- end }}
 }

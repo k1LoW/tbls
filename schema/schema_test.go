@@ -135,7 +135,7 @@ func TestSchema_Sort(t *testing.T) {
 
 func TestRepair(t *testing.T) {
 	got := &Schema{}
-	file, err := os.Open(filepath.Join(testdataDir(), "json_output_schema.golden"))
+	file, err := os.Open(filepath.Join(testdataDir(), "test_repair.golden"))
 	if err != nil {
 		t.Error(err)
 	}
