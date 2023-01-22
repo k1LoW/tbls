@@ -82,33 +82,33 @@ erDiagram
 }
 "post_comments" {
   bigint id
-  varchar(255) title
-  varchar(50) post_user
+  varchar_255_ title
+  varchar_50_ post_user
   text comment
-  varchar(50) comment_user
+  varchar_50_ comment_user
   datetime created
   datetime updated
 }
 "posts" {
   bigint id PK
   int user_id FK
-  varchar(255) title
+  varchar_255_ title
   text body
-  enum('public','private','draft') post_type
+  enum__public___private___draft__ post_type
   datetime created
   datetime updated
 }
 "user_options" {
   int user_id PK
-  tinyint(1) show_email
+  tinyint_1_ show_email
   timestamp created
   timestamp updated
 }
 "users" {
   int id PK
-  varchar(50) username
-  varchar(50) password
-  varchar(355) email
+  varchar_50_ username
+  varchar_50_ password
+  varchar_355_ email
   timestamp created
   timestamp updated
 }

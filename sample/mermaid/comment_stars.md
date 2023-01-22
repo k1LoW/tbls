@@ -90,9 +90,9 @@ erDiagram
 }
 "users" {
   int id PK
-  varchar(50) username
-  varchar(50) password
-  varchar(355) email
+  varchar_50_ username
+  varchar_50_ password
+  varchar_355_ email
   timestamp created
   timestamp updated
 }

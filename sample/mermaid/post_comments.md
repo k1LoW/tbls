@@ -39,10 +39,10 @@ erDiagram
 
 "post_comments" {
   bigint id
-  varchar(255) title
-  varchar(50) post_user
+  varchar_255_ title
+  varchar_50_ post_user
   text comment
-  varchar(50) comment_user
+  varchar_50_ comment_user
   datetime created
   datetime updated
 }

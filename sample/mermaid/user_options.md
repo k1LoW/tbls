@@ -54,15 +54,15 @@ erDiagram
 
 "user_options" {
   int user_id PK
-  tinyint(1) show_email
+  tinyint_1_ show_email
   timestamp created
   timestamp updated
 }
 "users" {
   int id PK
-  varchar(50) username
-  varchar(50) password
-  varchar(355) email
+  varchar_50_ username
+  varchar_50_ password
+  varchar_355_ email
   timestamp created
   timestamp updated
 }
