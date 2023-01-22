@@ -624,7 +624,7 @@ er:
   # Skip generation of ER diagram
   # Default is false
   skip: false
-  # ER diagram image format
+  # ER diagram image format (`png`, `jpg`, `svg`, `mermaid`)
   # Default is `svg`
   format: svg
   # Add table/column comment to ER diagram
@@ -1058,7 +1058,7 @@ Flags:
   -j, --adjust-table       adjust column width of table
   -b, --base-url string    base url for links
   -c, --config string      config file path
-  -t, --er-format string   ER diagrams output format (png, svg, jpg, ...). default: svg
+  -t, --er-format string   ER diagrams output format (png, svg, jpg, mermaid). default: svg
   -f, --force              force
   -h, --help               help for doc
       --rm-dist            remove files in docPath before generating documents
