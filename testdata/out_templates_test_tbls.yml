@@ -21,7 +21,9 @@ templates:
   puml:
     schema: 'templates/schema.puml.tmpl'
     table: 'templates/table.puml.tmpl'
+  mermaid:
+    schema: 'templates/schema.mermaid.tmpl'
+    table: 'templates/table.mermaid.tmpl'
   md:
     index: 'templates/index.md.tmpl'
     table: 'templates/table.md.tmpl'
-

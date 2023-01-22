@@ -1,0 +1,7 @@
+erDiagram
+{{ $sc := .showComment -}}
+"{{ .Table.Name }}" {
+{{- range $i, $c := .Table.Columns }}
+  {{ $c.Type }} {{ $c.Name }}{{ if $sc }} "{{ if ne $c.Comment "" }}\n{{ $c.Comment | html | escape_nl }}{{ end }}"{{ end }}
+{{- end }}
+}

@@ -1,0 +1,11 @@
+erDiagram
+
+"b" }|--|| "a" : ""
+"a" {
+   a PK
+   a2
+}
+"b" {
+   b FK
+   b2
+}
