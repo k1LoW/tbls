@@ -47,6 +47,34 @@ func Funcs(d *dict.Dict) map[string]interface{} {
 		"escape": func(text string) string {
 			return mdurl.Encode(text)
 		},
+		"lcardi": func(c schema.Cardinality) string {
+			switch c {
+			case schema.ZeroOrOne:
+				return "|o"
+			case schema.ExactlyOne:
+				return "||"
+			case schema.ZeroOrMore:
+				return "}o"
+			case schema.OneOrMore:
+				return "}|"
+			default:
+				return "}"
+			}
+		},
+		"rcardi": func(c schema.Cardinality) string {
+			switch c {
+			case schema.ZeroOrOne:
+				return "o|"
+			case schema.ExactlyOne:
+				return "||"
+			case schema.ZeroOrMore:
+				return "o{"
+			case schema.OneOrMore:
+				return "|{"
+			default:
+				return ""
+			}
+		},
 	}
 }
 
