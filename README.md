@@ -578,6 +578,14 @@ dsn:
     Authorization: token GITHUB_OAUTH_TOKEN
 ```
 
+**GitHub:**
+
+``` yaml
+---
+# .tbls.yml
+dsn: github://k1LoW/tbls/sample/mysql/schema.json
+```
+
 ### Document path
 
 `tbls doc` generates document in the directory specified by `docPath:`.
