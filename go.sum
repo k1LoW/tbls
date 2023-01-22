@@ -219,6 +219,11 @@ github.com/google/go-cmp v0.5.6/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/
 github.com/google/go-cmp v0.5.8/go.mod h1:17dUlkBOakJ0+DkrSSNjCkIjxS6bF9zb3elmeNGIjoY=
 github.com/google/go-cmp v0.5.9 h1:O2Tfq5qg4qc4AmwVlvv0oLiVAGB7enBSJ2x2DqQFi38=
 github.com/google/go-cmp v0.5.9/go.mod h1:17dUlkBOakJ0+DkrSSNjCkIjxS6bF9zb3elmeNGIjoY=
+github.com/google/go-github/v41 v41.0.0 h1:HseJrM2JFf2vfiZJ8anY2hqBjdfY1Vlj/K27ueww4gg=
+github.com/google/go-github/v48 v48.0.0 h1:9H5fWVXFK6ZsRriyPbjtnFAkJnoj0WKFtTYfpCRrTm8=
+github.com/google/go-github/v48 v48.0.0/go.mod h1:dDlehKBDo850ZPvCTK0sEqTCVWcrGl2LcDiajkYi89Y=
+github.com/google/go-querystring v1.1.0 h1:AnCroh3fv4ZBgVIf1Iwtovgjaw/GiKJo8M8yD/fhyJ8=
+github.com/google/go-querystring v1.1.0/go.mod h1:Kcdr2DB4koayq7X8pmAG4sNG59So17icRSOU623lUBU=
 github.com/google/martian/v3 v3.2.1 h1:d8MncMlErDFTwQGBK1xhv026j9kqhvw1Qv9IbWT1VLQ=
 github.com/google/uuid v1.1.1/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
 github.com/google/uuid v1.1.2/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
@@ -229,6 +234,7 @@ github.com/googleapis/enterprise-certificate-proxy v0.2.1 h1:RY7tHKZcRlk788d5WSo
 github.com/googleapis/enterprise-certificate-proxy v0.2.1/go.mod h1:AwSRAtLfXpU5Nm3pW+v7rGDHp09LsPtGY9MduiEsR9k=
 github.com/googleapis/gax-go/v2 v2.7.0 h1:IcsPKeInNvYi7eqSaDjiZqDDKu5rsmunY0Y1YupQSSQ=
 github.com/googleapis/gax-go/v2 v2.7.0/go.mod h1:TEop28CZZQ2y+c0VxMUmu1lV+fQx57QpBWsYpwqHJx8=
+github.com/gorilla/mux v1.8.0 h1:i40aqfkR1h2SlN9hojwV5ZA91wcXFOvkdNIeFDP5koI=
 github.com/gorilla/securecookie v1.1.1/go.mod h1:ra0sb63/xPlUeL+yeDciTfxMRAA+MP+HVt/4epWDjd4=
 github.com/gorilla/sessions v1.2.1/go.mod h1:dk2InVEVJ0sfLlnXv9EAgkf6ecYs/i80K/zI+bUmuGM=
 github.com/grpc-ecosystem/grpc-gateway v1.16.0/go.mod h1:BDjrQk3hbvj6Nolgz8mAMFbcEtjT1g+wF4CSlocrBnw=
@@ -262,6 +268,8 @@ github.com/k1LoW/ffff v0.2.0 h1:k5IYb2ggSKrkgVRkFnn1fs4xVUkJxanTH5gInmEKTDA=
 github.com/k1LoW/ffff v0.2.0/go.mod h1:XuWQte6DCVCGKkvfeOFHTihuYWusf7dU+kp9jot7FlM=
 github.com/k1LoW/fontdir v0.1.0 h1:c5JD8M7qOpFpQ5RF8tey7L+sC8IgsXAx3/MeOFzQA10=
 github.com/k1LoW/fontdir v0.1.0/go.mod h1:9Zbr3T3BXZ5ypr1BM/JwzZN4bqBvl1+JnSTTg1c+zHg=
+github.com/k1LoW/go-github-client/v48 v48.2.3 h1:TQEsylTczyXC3sRS/IUkkYnydckSDiY5NS2Zv9JmP8w=
+github.com/k1LoW/go-github-client/v48 v48.2.3/go.mod h1:U4ZS4Gf+28ApQSfg4KFkk80dPV32r6ywir3z5huWaeQ=
 github.com/klauspost/compress v1.13.1/go.mod h1:8dP1Hq4DHOhN9w426knH3Rhby4rFm6D8eO+e+Dq5Gzg=
 github.com/klauspost/compress v1.13.6/go.mod h1:/3/Vjq9QcHkK5uEr5lBEmyoZ1iFhe47etQ6QUkpK6sk=
 github.com/klauspost/compress v1.15.11 h1:Lcadnb3RKGin4FYM/orgq0qde+nc15E5Cbqg4B9Sx9c=
@@ -303,6 +311,7 @@ github.com/mattn/go-sqlite3 v1.14.16 h1:yOQRA0RpS5PFz/oikGwBEqvAWhWg5ufRz4ETLjwp
 github.com/mattn/go-sqlite3 v1.14.16/go.mod h1:2eHXhiwb8IkHr+BDWZGa96P6+rkvnG63S2DGjv9HUNg=
 github.com/microsoft/go-mssqldb v0.19.0 h1:LMRSgLcNMF8paPX14xlyQBmBH+jnFylPsYpVZf86eHM=
 github.com/microsoft/go-mssqldb v0.19.0/go.mod h1:ukJCBnnzLzpVF0qYRT+eg1e+eSwjeQ7IvenUv8QPook=
+github.com/migueleliasweb/go-github-mock v0.0.13 h1:pV4yG4XlL/fEPE1Er6MzErAYFyiRSBYw1oo2OojTiCQ=
 github.com/minio/pkg v1.5.8 h1:ryx23f28havoidUezmYRNgaZpbyn4y3m2yp/vfasFy0=
 github.com/minio/pkg v1.5.8/go.mod h1:EiGlHS2xaooa2VMxhJsxxAZHDObHVUB3HwtuoEXOCVE=
 github.com/modocache/gover v0.0.0-20171022184752-b58185e213c5/go.mod h1:caMODM3PzxT8aQXRPkAt8xlV/e7d7w8GM5g0fa5F0D8=

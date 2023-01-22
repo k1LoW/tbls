@@ -14,9 +14,11 @@ require (
 	github.com/goccy/go-graphviz v0.1.0
 	github.com/goccy/go-yaml v1.9.8
 	github.com/google/go-cmp v0.5.9
+	github.com/google/go-github/v48 v48.0.0
 	github.com/k1LoW/duration v1.2.0
 	github.com/k1LoW/expand v0.5.5
 	github.com/k1LoW/ffff v0.2.0
+	github.com/k1LoW/go-github-client/v48 v48.2.3
 	github.com/labstack/gommon v0.4.0
 	github.com/lib/pq v1.10.7
 	github.com/loadoff/excl v0.0.0-20171207172601-c6a9e4c4b4c4
@@ -81,6 +83,7 @@ require (
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/golang/snappy v0.0.3 // indirect
 	github.com/google/flatbuffers v2.0.8+incompatible // indirect
+	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.2.1 // indirect
 	github.com/googleapis/gax-go/v2 v2.7.0 // indirect
