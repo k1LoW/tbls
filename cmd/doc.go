@@ -91,7 +91,7 @@ var docCmd = &cobra.Command{
 			}
 		}
 
-		if !c.ER.Skip {
+		if c.NeedToGenerateERImages() {
 			if err := withDot(s, c, force); err != nil {
 				return err
 			}

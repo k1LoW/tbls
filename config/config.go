@@ -24,7 +24,7 @@ var DefaultConfigFilePaths = []string{".tbls.yml", "tbls.yml"}
 // DefaultERFormat is the default ER diagram format
 const DefaultERFormat = "svg"
 
-var SupportERFormat = []string{"png", "jpg", "svg"}
+var SupportERFormat = []string{"png", "jpg", "svg", "mermaid"}
 
 const SchemaFileName = "schema.json"
 
@@ -550,6 +550,16 @@ func (c *Config) MaskedDSN() (string, error) {
 
 func (c *Config) SchemaFilePath() string {
 	return filepath.Join(c.DocPath, SchemaFileName)
+}
+
+func (c *Config) NeedToGenerateERImages() bool {
+	if c.ER.Skip {
+		return false
+	}
+	if c.ER.Format == "mermaid" {
+		return false
+	}
+	return true
 }
 
 func mergeAdditionalRelations(s *schema.Schema, relations []AdditionalRelation) error {

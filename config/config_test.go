@@ -518,6 +518,7 @@ func TestValidate(t *testing.T) {
 	}{
 		{"", true},
 		{"png", false},
+		{"mermaid", false},
 		{"invalid", true},
 	}
 	for _, tt := range tests {
@@ -562,6 +563,25 @@ func TestCheckVersion(t *testing.T) {
 		if got := cfg.checkVersion(tt.v); fmt.Sprintf("%s", got) != fmt.Sprintf("%s", tt.want) {
 			t.Errorf("got %v\nwant %v", got, tt.want)
 		}
+	}
+}
+
+func TestNeedToGenerateERImages(t *testing.T) {
+	tests := []struct {
+		c    *Config
+		want bool
+	}{
+		{&Config{ER: ER{Skip: true}}, false},
+		{&Config{ER: ER{Format: "png"}}, true},
+		{&Config{ER: ER{Format: "mermaid"}}, false},
+	}
+	for i, tt := range tests {
+		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
+			got := tt.c.NeedToGenerateERImages()
+			if got != tt.want {
+				t.Errorf("got %v\nwant %v", got, tt.want)
+			}
+		})
 	}
 }
 
