@@ -71,6 +71,7 @@ func (m *Mermaid) OutputSchema(wr io.Writer, s *schema.Schema) error {
 	err = tmpl.Execute(wr, map[string]interface{}{
 		"Schema":      s,
 		"showComment": m.config.ER.Comment,
+		"showDef":     !m.config.ER.HideDef,
 	})
 	if err != nil {
 		return errors.WithStack(err)
@@ -95,6 +96,7 @@ func (m *Mermaid) OutputTable(wr io.Writer, t *schema.Table) error {
 		"Tables":      tables[1:],
 		"Relations":   relations,
 		"showComment": m.config.ER.Comment,
+		"showDef":     !m.config.ER.HideDef,
 	})
 	if err != nil {
 		return errors.WithStack(err)

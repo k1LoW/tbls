@@ -80,6 +80,7 @@ func (p *PlantUML) OutputSchema(wr io.Writer, s *schema.Schema) error {
 	err = tmpl.Execute(wr, map[string]interface{}{
 		"Schema":      s,
 		"showComment": p.config.ER.Comment,
+		"showDef":     !p.config.ER.HideDef,
 	})
 	if err != nil {
 		return errors.WithStack(err)
@@ -110,6 +111,7 @@ func (p *PlantUML) OutputTable(wr io.Writer, t *schema.Table) error {
 		"Tables":      tables[1:],
 		"Relations":   relations,
 		"showComment": p.config.ER.Comment,
+		"showDef":     !p.config.ER.HideDef,
 	})
 	if err != nil {
 		return errors.WithStack(err)

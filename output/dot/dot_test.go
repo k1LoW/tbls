@@ -13,9 +13,11 @@ import (
 
 func TestOutputSchema(t *testing.T) {
 	tests := []struct {
+		hideDef  bool
 		wantFile string
 	}{
-		{"dot_test_schema.dot"},
+		{false, "dot_test_schema.dot"},
+		{true, "dot_test_schema.dot.hidedef"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.wantFile, func(t *testing.T) {
@@ -24,6 +26,7 @@ func TestOutputSchema(t *testing.T) {
 			if err != nil {
 				t.Error(err)
 			}
+			c.ER.HideDef = tt.hideDef
 			if err := c.LoadConfigFile(filepath.Join(testdataDir(), "out_test_tbls.yml")); err != nil {
 				t.Error(err)
 			}

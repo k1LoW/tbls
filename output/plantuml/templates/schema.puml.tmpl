@@ -1,5 +1,6 @@
 @startuml
 {{ $sc := .showComment -}}
+{{- $sd := .showDef -}}
 !define table(name, desc) entity name as "desc" << (T,#5DBCD2) >>
 !define view(name, desc) entity name as "desc" << (V,#C6EDDB) >>
 !define column(name, type, desc) name <font color="#666666">[type]</font><font color="#333333">desc</font>
@@ -27,7 +28,7 @@ view("{{ $t.Name }}", "{{ $t.Name }}{{ if $sc }}{{ if ne $t.Comment "" }}\n{{ $t
 
 ' relations
 {{- range $j, $r := .Schema.Relations }}
-"{{ $r.Table.Name }}" {{ $r.Cardinality | lcardi }}--{{ $r.ParentCardinality | rcardi }} "{{ $r.ParentTable.Name }}" : "{{ $r.Def | html }}"
+"{{ $r.Table.Name }}" {{ $r.Cardinality | lcardi }}--{{ $r.ParentCardinality | rcardi }} "{{ $r.ParentTable.Name }}" : "{{ if $sd }}{{ $r.Def | html }}{{ end }}"
 {{- end }}
 
 @enduml

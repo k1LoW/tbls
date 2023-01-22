@@ -71,6 +71,7 @@ func (d *Dot) OutputSchema(wr io.Writer, s *schema.Schema) error {
 	err = tmpl.Execute(wr, map[string]interface{}{
 		"Schema":      s,
 		"showComment": d.config.ER.Comment,
+		"showDef":     !d.config.ER.HideDef,
 	})
 	if err != nil {
 		return errors.WithStack(err)
@@ -96,6 +97,7 @@ func (d *Dot) OutputTable(wr io.Writer, t *schema.Table) error {
 		"Tables":      tables[1:],
 		"Relations":   relations,
 		"showComment": d.config.ER.Comment,
+		"showDef":     !d.config.ER.HideDef,
 	})
 	if err != nil {
 		return errors.WithStack(err)
