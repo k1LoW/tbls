@@ -2,12 +2,14 @@ package plantuml
 
 import (
 	"bytes"
+	"fmt"
 	"os"
 	"path/filepath"
 	"testing"
 
 	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/schema"
+	"github.com/tenntenn/golden"
 )
 
 func TestOutputSchema(t *testing.T) {
@@ -16,24 +18,25 @@ func TestOutputSchema(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	err = c.LoadConfigFile(filepath.Join(testdataDir(), "out_test_tbls.yml"))
-	if err != nil {
+	if err := c.LoadConfigFile(filepath.Join(testdataDir(), "out_test_tbls.yml")); err != nil {
 		t.Error(err)
 	}
-	err = c.MergeAdditionalData(s)
-	if err != nil {
+	if err := c.MergeAdditionalData(s); err != nil {
 		t.Error(err)
 	}
 	o := New(c)
-	buf := &bytes.Buffer{}
-	err = o.OutputSchema(buf, s)
+	got := &bytes.Buffer{}
+	err = o.OutputSchema(got, s)
 	if err != nil {
 		t.Error(err)
 	}
-	want, _ := os.ReadFile(filepath.Join(testdataDir(), "plantuml_test_schema.puml.golden"))
-	got := buf.String()
-	if got != string(want) {
-		t.Errorf("got %v\nwant %v", got, string(want))
+	f := fmt.Sprintf("plantuml_test_schema.puml")
+	if os.Getenv("UPDATE_GOLDEN") != "" {
+		golden.Update(t, testdataDir(), f, got)
+		return
+	}
+	if diff := golden.Diff(t, testdataDir(), f, got); diff != "" {
+		t.Error(diff)
 	}
 }
 
@@ -43,26 +46,26 @@ func TestOutputSchemaTemplate(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	err = c.LoadConfigFile(filepath.Join(testdataDir(), "out_templates_test_tbls.yml"))
-	if err != nil {
+	if err := c.LoadConfigFile(filepath.Join(testdataDir(), "out_templates_test_tbls.yml")); err != nil {
 		t.Error(err)
 	}
 	// use the templates in the testdata directory
 	c.Templates.PUML.Schema = filepath.Join(testdataDir(), c.Templates.PUML.Schema)
-	err = c.MergeAdditionalData(s)
-	if err != nil {
+	if err := c.MergeAdditionalData(s); err != nil {
 		t.Error(err)
 	}
 	o := New(c)
-	buf := &bytes.Buffer{}
-	err = o.OutputSchema(buf, s)
-	if err != nil {
+	got := &bytes.Buffer{}
+	if err := o.OutputSchema(got, s); err != nil {
 		t.Error(err)
 	}
-	want, _ := os.ReadFile(filepath.Join(testdataDir(), "plantuml_template_test_schema.puml.golden"))
-	got := buf.String()
-	if got != string(want) {
-		t.Errorf("got %v\nwant %v", got, string(want))
+	f := fmt.Sprintf("plantuml_template_test_schema.puml")
+	if os.Getenv("UPDATE_GOLDEN") != "" {
+		golden.Update(t, testdataDir(), f, got)
+		return
+	}
+	if diff := golden.Diff(t, testdataDir(), f, got); diff != "" {
+		t.Error(diff)
 	}
 }
 
@@ -72,23 +75,26 @@ func TestOutputTable(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	err = c.LoadConfigFile(filepath.Join(testdataDir(), "out_test_tbls.yml"))
-	if err != nil {
+	if err := c.LoadConfigFile(filepath.Join(testdataDir(), "out_test_tbls.yml")); err != nil {
 		t.Error(err)
 	}
-	err = c.MergeAdditionalData(s)
-	if err != nil {
+	if err := c.MergeAdditionalData(s); err != nil {
 		t.Error(err)
 	}
 	ta := s.Tables[0]
 
 	o := New(c)
-	buf := &bytes.Buffer{}
-	_ = o.OutputTable(buf, ta)
-	want, _ := os.ReadFile(filepath.Join(testdataDir(), "plantuml_test_a.puml.golden"))
-	got := buf.String()
-	if got != string(want) {
-		t.Errorf("got %v\nwant %v", got, string(want))
+	got := &bytes.Buffer{}
+	if err := o.OutputTable(got, ta); err != nil {
+		t.Error(err)
+	}
+	f := fmt.Sprintf("plantuml_test_a.puml")
+	if os.Getenv("UPDATE_GOLDEN") != "" {
+		golden.Update(t, testdataDir(), f, got)
+		return
+	}
+	if diff := golden.Diff(t, testdataDir(), f, got); diff != "" {
+		t.Error(diff)
 	}
 }
 
@@ -98,25 +104,28 @@ func TestOutputTableTemplate(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	err = c.LoadConfigFile(filepath.Join(testdataDir(), "out_templates_test_tbls.yml"))
-	if err != nil {
+	if err := c.LoadConfigFile(filepath.Join(testdataDir(), "out_templates_test_tbls.yml")); err != nil {
 		t.Error(err)
 	}
 	// use the templates in the testdata directory
 	c.Templates.PUML.Table = filepath.Join(testdataDir(), c.Templates.PUML.Table)
-	err = c.MergeAdditionalData(s)
-	if err != nil {
+	if err := c.MergeAdditionalData(s); err != nil {
 		t.Error(err)
 	}
 	ta := s.Tables[0]
 
 	o := New(c)
-	buf := &bytes.Buffer{}
-	_ = o.OutputTable(buf, ta)
-	want, _ := os.ReadFile(filepath.Join(testdataDir(), "plantuml_template_test_a.puml.golden"))
-	got := buf.String()
-	if got != string(want) {
-		t.Errorf("got %v\nwant %v", got, string(want))
+	got := &bytes.Buffer{}
+	if err := o.OutputTable(got, ta); err != nil {
+		t.Error(err)
+	}
+	f := fmt.Sprintf("plantuml_template_test_a.puml")
+	if os.Getenv("UPDATE_GOLDEN") != "" {
+		golden.Update(t, testdataDir(), f, got)
+		return
+	}
+	if diff := golden.Diff(t, testdataDir(), f, got); diff != "" {
+		t.Error(diff)
 	}
 }
 
@@ -180,10 +189,12 @@ func newTestSchema(t *testing.T) *schema.Schema {
 		},
 	}
 	r := &schema.Relation{
-		Table:         tb,
-		Columns:       []*schema.Column{cb},
-		ParentTable:   ta,
-		ParentColumns: []*schema.Column{ca},
+		Table:             tb,
+		Columns:           []*schema.Column{cb},
+		Cardinality:       schema.OneOrMore,
+		ParentTable:       ta,
+		ParentColumns:     []*schema.Column{ca},
+		ParentCardinality: schema.ExactlyOne,
 	}
 	ca.ChildRelations = []*schema.Relation{r}
 	cb.ParentRelations = []*schema.Relation{r}

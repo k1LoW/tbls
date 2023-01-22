@@ -36,7 +36,7 @@ view("{{ $t.Name }}", "{{ $t.Name }}{{ if $sc }}{{ if ne $t.Comment "" }}\n{{ $t
 
 ' relations
 {{- range $j, $r := .Relations }}
-"{{ $r.Table.Name }}" }-- "{{ $r.ParentTable.Name }}" : "{{ $r.Def | html }}"
+"{{ $r.Table.Name }}" {{ $r.Cardinality | lcardi }}--{{ $r.ParentCardinality | rcardi }} "{{ $r.ParentTable.Name }}" : "{{ $r.Def | html }}"
 {{- end }}
 
 @enduml
