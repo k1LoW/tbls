@@ -86,6 +86,7 @@ func NewSchema(t *testing.T) *schema.Schema {
 		Driver: &schema.Driver{
 			Name:            "testdriver",
 			DatabaseVersion: "1.0.0",
+			Meta:            &schema.DriverMeta{},
 		},
 	}
 	return s
