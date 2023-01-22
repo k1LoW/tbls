@@ -63,7 +63,7 @@ relations:
   parentColumns:
   - a
   parentCardinality: Exactly one
-  def: ""
+  def: FOREIGN KEY (b) REFERENCES a(a)
   virtual: false
 functions: []
 driver:

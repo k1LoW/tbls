@@ -13,30 +13,41 @@ import (
 )
 
 func TestOutputSchema(t *testing.T) {
-	s := testutil.NewSchema(t)
-	c, err := config.New()
-	if err != nil {
-		t.Error(err)
+	tests := []struct {
+		hideDef  bool
+		wantFile string
+	}{
+		{false, "plantuml_test_schema.puml"},
+		{true, "plantuml_test_schema.puml.hidedef"},
 	}
-	if err := c.LoadConfigFile(filepath.Join(testdataDir(), "out_test_tbls.yml")); err != nil {
-		t.Error(err)
-	}
-	if err := c.MergeAdditionalData(s); err != nil {
-		t.Error(err)
-	}
-	o := New(c)
-	got := &bytes.Buffer{}
-	err = o.OutputSchema(got, s)
-	if err != nil {
-		t.Error(err)
-	}
-	f := fmt.Sprintf("plantuml_test_schema.puml")
-	if os.Getenv("UPDATE_GOLDEN") != "" {
-		golden.Update(t, testdataDir(), f, got)
-		return
-	}
-	if diff := golden.Diff(t, testdataDir(), f, got); diff != "" {
-		t.Error(diff)
+	for _, tt := range tests {
+		t.Run(tt.wantFile, func(t *testing.T) {
+			s := testutil.NewSchema(t)
+			c, err := config.New()
+			if err != nil {
+				t.Error(err)
+			}
+			if err := c.LoadConfigFile(filepath.Join(testdataDir(), "out_test_tbls.yml")); err != nil {
+				t.Error(err)
+			}
+			if err := c.ModifySchema(s); err != nil {
+				t.Error(err)
+			}
+			c.ER.HideDef = tt.hideDef
+			o := New(c)
+			got := &bytes.Buffer{}
+			err = o.OutputSchema(got, s)
+			if err != nil {
+				t.Error(err)
+			}
+			if os.Getenv("UPDATE_GOLDEN") != "" {
+				golden.Update(t, testdataDir(), tt.wantFile, got)
+				return
+			}
+			if diff := golden.Diff(t, testdataDir(), tt.wantFile, got); diff != "" {
+				t.Error(diff)
+			}
+		})
 	}
 }
 

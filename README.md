@@ -630,6 +630,9 @@ er:
   # Add table/column comment to ER diagram
   # Default is false
   comment: true
+  # Hide relation definition from ER diagram
+  # Default is false
+  hideDef: true
   # Distance between tables that display relations in the ER
   # Default is 1
   distance: 2

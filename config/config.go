@@ -83,6 +83,7 @@ type ER struct {
 	Skip     bool   `yaml:"skip,omitempty"`
 	Format   string `yaml:"format,omitempty"`
 	Comment  bool   `yaml:"comment,omitempty"`
+	HideDef  bool   `yaml:"hideDef,omitempty"`
 	Distance *int   `yaml:"distance,omitempty"`
 	Font     string `yaml:"font,omitempty"`
 }

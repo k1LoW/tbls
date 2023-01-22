@@ -92,7 +92,7 @@
         "a"
       ],
       "parent_cardinality": "Exactly one",
-      "def": "",
+      "def": "FOREIGN KEY (b) REFERENCES a(a)",
       "virtual": false
     }
   ],
