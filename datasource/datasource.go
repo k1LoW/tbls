@@ -2,6 +2,7 @@ package datasource
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"io"
 	"net/http"
@@ -10,6 +11,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/google/go-github/v48/github"
+	"github.com/k1LoW/go-github-client/v48/factory"
 	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/drivers"
 	"github.com/k1LoW/tbls/drivers/mariadb"
@@ -27,22 +30,25 @@ import (
 // Analyze database
 func Analyze(dsn config.DSN) (*schema.Schema, error) {
 	urlstr := dsn.URL
-	if strings.Index(urlstr, "https://") == 0 || strings.Index(urlstr, "http://") == 0 {
+	if strings.HasPrefix(urlstr, "https://") || strings.HasPrefix(urlstr, "http://") {
 		return AnalyzeHTTPResource(dsn)
 	}
-	if strings.Index(urlstr, "json://") == 0 {
+	if strings.HasPrefix(urlstr, "github://") {
+		return AnalyzeGitHubContent(dsn)
+	}
+	if strings.HasPrefix(urlstr, "json://") {
 		return AnalyzeJSON(urlstr)
 	}
-	if strings.Index(urlstr, "bq://") == 0 || strings.Index(urlstr, "bigquery://") == 0 {
+	if strings.HasPrefix(urlstr, "bq://") || strings.HasPrefix(urlstr, "bigquery://") {
 		return AnalyzeBigquery(urlstr)
 	}
-	if strings.Index(urlstr, "span://") == 0 || strings.Index(urlstr, "spanner://") == 0 {
+	if strings.HasPrefix(urlstr, "span://") || strings.HasPrefix(urlstr, "spanner://") {
 		return AnalyzeSpanner(urlstr)
 	}
-	if strings.Index(urlstr, "dynamodb://") == 0 || strings.Index(urlstr, "dynamo://") == 0 {
+	if strings.HasPrefix(urlstr, "dynamodb://") || strings.HasPrefix(urlstr, "dynamo://") {
 		return AnalyzeDynamodb(urlstr)
 	}
-	if strings.Index(urlstr, "mongodb://") == 0 || strings.Index(urlstr, "mongo://") == 0 {
+	if strings.HasPrefix(urlstr, "mongodb://") || strings.HasPrefix(urlstr, "mongo://") {
 		return AnalyzeMongodb(urlstr)
 	}
 	s := &schema.Schema{}
@@ -146,6 +152,39 @@ func AnalyzeHTTPResource(dsn config.DSN) (*schema.Schema, error) {
 	}
 	defer resp.Body.Close()
 	dec := json.NewDecoder(resp.Body)
+	if err := dec.Decode(s); err != nil {
+		return s, errors.WithStack(err)
+	}
+	if err := s.Repair(); err != nil {
+		return s, errors.WithStack(err)
+	}
+	return s, nil
+}
+
+// AnalyzeGitHubContent analyze `github://`
+func AnalyzeGitHubContent(dsn config.DSN) (*schema.Schema, error) {
+	splitted := strings.SplitN(strings.TrimPrefix(dsn.URL, "github://"), "/", 3)
+	if len(splitted) != 3 {
+		return nil, errors.Errorf("invalid dsn: %s", dsn)
+	}
+	ctx := context.Background()
+	s := &schema.Schema{}
+	c, err := factory.NewGithubClient()
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+	f, _, _, err := c.Repositories.GetContents(ctx, splitted[0], splitted[1], splitted[2], &github.RepositoryContentGetOptions{})
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+	if f == nil {
+		return nil, errors.Errorf("invalid dsn: %s", dsn)
+	}
+	cc, err := f.GetContent()
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+	dec := json.NewDecoder(strings.NewReader(cc))
 	if err := dec.Decode(s); err != nil {
 		return s, errors.WithStack(err)
 	}
