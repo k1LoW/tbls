@@ -511,6 +511,35 @@ func Test_mergeDetectedRelations(t *testing.T) {
 	}
 }
 
+func TestValidate(t *testing.T) {
+	tests := []struct {
+		erFormat string
+		wantErr  bool
+	}{
+		{"", true},
+		{"png", false},
+		{"invalid", true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.erFormat, func(t *testing.T) {
+			c, err := New()
+			if err != nil {
+				t.Fatal(err)
+			}
+			c.ER.Format = tt.erFormat
+			if err := c.validate(); err != nil {
+				if !tt.wantErr {
+					t.Errorf("got error: %s", err)
+				}
+				return
+			}
+			if tt.wantErr {
+				t.Error("want error")
+			}
+		})
+	}
+}
+
 func TestCheckVersion(t *testing.T) {
 	tests := []struct {
 		v    string
@@ -518,6 +547,7 @@ func TestCheckVersion(t *testing.T) {
 		want error
 	}{
 		{"1.42.3", ">= 1.42", nil},
+		{"1.42.3", "", nil},
 		{"1.42.3", ">= 1.42, < 2", nil},
 		{"1.42.3", "> 1.42", nil},
 		{"1.42.3", "1.42.3", nil},

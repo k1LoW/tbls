@@ -24,6 +24,8 @@ var DefaultConfigFilePaths = []string{".tbls.yml", "tbls.yml"}
 // DefaultERFormat is the default ER diagram format
 const DefaultERFormat = "svg"
 
+var SupportERFormat = []string{"png", "jpg", "svg"}
+
 const SchemaFileName = "schema.json"
 
 // DefaultERDistance is the default distance between tables that display relations in the ER
@@ -247,7 +249,7 @@ func (c *Config) Load(configPath string, options ...Option) error {
 		return err
 	}
 
-	if err := c.checkVersion(ver.Version); err != nil {
+	if err := c.validate(); err != nil {
 		return err
 	}
 
@@ -300,6 +302,16 @@ func (c *Config) checkVersion(sv string) error {
 		return fmt.Errorf("the required tbls version for the configuration is '%s'. however, the running tbls version is '%s'", c.RequiredVersion, sv)
 	}
 
+	return nil
+}
+
+func (c *Config) validate() error {
+	if err := c.checkVersion(ver.Version); err != nil {
+		return err
+	}
+	if !contains(SupportERFormat, c.ER.Format) {
+		return fmt.Errorf("unsupported ER format: %s", c.ER.Format)
+	}
 	return nil
 }
 
