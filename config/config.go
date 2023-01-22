@@ -24,6 +24,8 @@ var DefaultConfigFilePaths = []string{".tbls.yml", "tbls.yml"}
 // DefaultERFormat is the default ER diagram format
 const DefaultERFormat = "svg"
 
+var SupportERFormat = []string{"png", "jpg", "svg", "mermaid"}
+
 const SchemaFileName = "schema.json"
 
 // DefaultERDistance is the default distance between tables that display relations in the ER
@@ -247,7 +249,7 @@ func (c *Config) Load(configPath string, options ...Option) error {
 		return err
 	}
 
-	if err := c.checkVersion(ver.Version); err != nil {
+	if err := c.validate(); err != nil {
 		return err
 	}
 
@@ -300,6 +302,16 @@ func (c *Config) checkVersion(sv string) error {
 		return fmt.Errorf("the required tbls version for the configuration is '%s'. however, the running tbls version is '%s'", c.RequiredVersion, sv)
 	}
 
+	return nil
+}
+
+func (c *Config) validate() error {
+	if err := c.checkVersion(ver.Version); err != nil {
+		return err
+	}
+	if !contains(SupportERFormat, c.ER.Format) {
+		return fmt.Errorf("unsupported ER format: %s", c.ER.Format)
+	}
 	return nil
 }
 
@@ -370,6 +382,9 @@ func (c *Config) ModifySchema(s *schema.Schema) error {
 		}
 	}
 	if err := detectCardinality(s); err != nil {
+		return err
+	}
+	if err := detectPKFK(s); err != nil {
 		return err
 	}
 	err := c.MergeAdditionalData(s)
@@ -538,6 +553,16 @@ func (c *Config) MaskedDSN() (string, error) {
 
 func (c *Config) SchemaFilePath() string {
 	return filepath.Join(c.DocPath, SchemaFileName)
+}
+
+func (c *Config) NeedToGenerateERImages() bool {
+	if c.ER.Skip {
+		return false
+	}
+	if c.ER.Format == "mermaid" {
+		return false
+	}
+	return true
 }
 
 func mergeAdditionalRelations(s *schema.Schema, relations []AdditionalRelation) error {
@@ -744,6 +769,31 @@ func detectCardinality(s *schema.Schema) error {
 				r.ParentCardinality = schema.ZeroOrOne
 			} else {
 				r.ParentCardinality = schema.ExactlyOne
+			}
+		}
+	}
+	return nil
+}
+
+func detectPKFK(s *schema.Schema) error {
+	for _, t := range s.Tables {
+		// PRIMARY KEY
+		for _, i := range t.Indexes {
+			if !strings.Contains(i.Def, "PRIMARY") {
+				continue
+			}
+			for _, c := range i.Columns {
+				column, err := t.FindColumnByName(c)
+				if err != nil {
+					return err
+				}
+				column.PK = true
+			}
+		}
+		// Foreign Key (Relations)
+		for _, c := range t.Columns {
+			if len(c.ParentRelations) > 0 && !c.PK {
+				c.FK = true
 			}
 		}
 	}

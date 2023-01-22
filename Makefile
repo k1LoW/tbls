@@ -59,6 +59,7 @@ doc: build doc_sqlite
 	env AWS_ENDPOINT_URL=http://localhost:18000 $(TBLS) doc dynamodb://ap-northeast-1 -c testdata/test_tbls_dynamodb.yml -f sample/dynamodb
 	$(TBLS) doc pg://postgres:pgpass@localhost:55413/testdb?sslmode=disable -c testdata/test_tbls_postgres.yml -j -f sample/adjust
 	$(TBLS) doc my://root:mypass@localhost:33308/testdb -c testdata/test_tbls.yml -t png -f sample/png
+	$(TBLS) doc my://root:mypass@localhost:33308/testdb -c testdata/test_tbls.yml -t mermaid -f sample/mermaid
 	$(TBLS) doc my://root:mypass@localhost:33308/testdb -c testdata/exclude_test_tbls.yml -f sample/exclude
 	$(TBLS) doc my://root:mypass@localhost:33308/testdb -c testdata/dict_test_tbls.yml -f sample/dict
 	$(TBLS) doc my://root:mypass@localhost:33308/testdb -c testdata/font_test_tbls.yml -f sample/font

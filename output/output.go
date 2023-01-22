@@ -3,6 +3,7 @@ package output
 import (
 	"fmt"
 	"io"
+	"regexp"
 	"strings"
 	"text/template"
 
@@ -16,6 +17,8 @@ type Output interface {
 	OutputSchema(wr io.Writer, s *schema.Schema) error
 	OutputTable(wr io.Writer, s *schema.Table) error
 }
+
+var escapeMermaidRe = regexp.MustCompile(`[^a-zA-Z0-9_\-]`)
 
 func Funcs(d *dict.Dict) map[string]interface{} {
 	return template.FuncMap{
@@ -46,6 +49,9 @@ func Funcs(d *dict.Dict) map[string]interface{} {
 		"label_join": LabelJoin,
 		"escape": func(text string) string {
 			return mdurl.Encode(text)
+		},
+		"escape_mermaid": func(text string) string {
+			return escapeMermaidRe.ReplaceAllString(text, "_")
 		},
 		"lcardi": func(c schema.Cardinality) string {
 			switch c {

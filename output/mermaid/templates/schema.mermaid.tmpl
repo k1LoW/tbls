@@ -3,11 +3,10 @@ erDiagram
 {{- range $j, $r := .Schema.Relations }}
 "{{ $r.Table.Name }}" {{ $r.Cardinality | lcardi }}--{{ $r.ParentCardinality | rcardi }} "{{ $r.ParentTable.Name }}" : "{{ $r.Def | html }}"
 {{- end }}
-
-{{- range $i, $t := .Schema.Tables }}
+{{ range $i, $t := .Schema.Tables }}
 "{{ $t.Name }}" {
 {{- range $ii, $c := $t.Columns }}
-  {{ $c.Type }} {{ $c.Name }}{{ if $sc }} "{{ if ne $c.Comment "" }}\n{{ $c.Comment | html | escape_nl }}{{ end }}"{{ end }}
+  {{ $c.Type | escape_mermaid }} {{ $c.Name }}{{ if $c.PK }} PK{{ end }}{{ if $c.FK }} FK{{ end }}{{ if $sc }} "{{ if ne $c.Comment "" }}\n{{ $c.Comment | html | escape_nl }}{{ end }}"{{ end }}
 {{- end }}
 }
 {{- end }}

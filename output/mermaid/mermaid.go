@@ -2,10 +2,8 @@ package mermaid
 
 import (
 	"embed"
-	"fmt"
 	"io"
 	"os"
-	"strings"
 	"text/template"
 
 	"github.com/k1LoW/tbls/config"
@@ -31,15 +29,15 @@ func New(c *config.Config) *Mermaid {
 	}
 }
 
-func (p *Mermaid) schemaTemplate() (string, error) {
-	if len(p.config.Templates.Mermaid.Schema) > 0 {
-		tb, err := os.ReadFile(p.config.Templates.Mermaid.Schema)
+func (m *Mermaid) schemaTemplate() (string, error) {
+	if len(m.config.Templates.Mermaid.Schema) > 0 {
+		tb, err := os.ReadFile(m.config.Templates.Mermaid.Schema)
 		if err != nil {
 			return "", errors.WithStack(err)
 		}
 		return string(tb), nil
 	} else {
-		tb, err := p.tmpl.ReadFile("templates/schema.mermaid.tmpl")
+		tb, err := m.tmpl.ReadFile("templates/schema.mermaid.tmpl")
 		if err != nil {
 			return "", errors.WithStack(err)
 		}
@@ -47,15 +45,15 @@ func (p *Mermaid) schemaTemplate() (string, error) {
 	}
 }
 
-func (p *Mermaid) tableTemplate() (string, error) {
-	if len(p.config.Templates.Mermaid.Schema) > 0 {
-		tb, err := os.ReadFile(p.config.Templates.Mermaid.Schema)
+func (m *Mermaid) tableTemplate() (string, error) {
+	if len(m.config.Templates.Mermaid.Table) > 0 {
+		tb, err := os.ReadFile(m.config.Templates.Mermaid.Table)
 		if err != nil {
 			return "", errors.WithStack(err)
 		}
 		return string(tb), nil
 	} else {
-		tb, err := p.tmpl.ReadFile("templates/table.mermaid.tmpl")
+		tb, err := m.tmpl.ReadFile("templates/table.mermaid.tmpl")
 		if err != nil {
 			return "", errors.WithStack(err)
 		}
@@ -64,22 +62,15 @@ func (p *Mermaid) tableTemplate() (string, error) {
 }
 
 // OutputSchema output dot format for full relation.
-func (p *Mermaid) OutputSchema(wr io.Writer, s *schema.Schema) error {
-	for _, t := range s.Tables {
-		err := addSuffix(t)
-		if err != nil {
-			return err
-		}
-	}
-
-	ts, err := p.schemaTemplate()
+func (m *Mermaid) OutputSchema(wr io.Writer, s *schema.Schema) error {
+	ts, err := m.schemaTemplate()
 	if err != nil {
 		return errors.WithStack(err)
 	}
-	tmpl := template.Must(template.New(s.Name).Funcs(output.Funcs(&p.config.MergedDict)).Parse(ts))
+	tmpl := template.Must(template.New(s.Name).Funcs(output.Funcs(&m.config.MergedDict)).Parse(ts))
 	err = tmpl.Execute(wr, map[string]interface{}{
 		"Schema":      s,
-		"showComment": p.config.ER.Comment,
+		"showComment": m.config.ER.Comment,
 	})
 	if err != nil {
 		return errors.WithStack(err)
@@ -89,54 +80,25 @@ func (p *Mermaid) OutputSchema(wr io.Writer, s *schema.Schema) error {
 }
 
 // OutputTable output dot format for table.
-func (p *Mermaid) OutputTable(wr io.Writer, t *schema.Table) error {
-	tables, relations, err := t.CollectTablesAndRelations(*p.config.ER.Distance, true)
-
+func (m *Mermaid) OutputTable(wr io.Writer, t *schema.Table) error {
+	tables, relations, err := t.CollectTablesAndRelations(*m.config.ER.Distance, true)
 	if err != nil {
 		return errors.WithStack(err)
 	}
-	for _, t := range tables {
-		if err := addSuffix(t); err != nil {
-			return errors.WithStack(err)
-		}
-	}
-	ts, err := p.tableTemplate()
+	ts, err := m.tableTemplate()
 	if err != nil {
 		return errors.WithStack(err)
 	}
-	tmpl := template.Must(template.New(t.Name).Funcs(output.Funcs(&p.config.MergedDict)).Parse(ts))
+	tmpl := template.Must(template.New(t.Name).Funcs(output.Funcs(&m.config.MergedDict)).Parse(ts))
 	err = tmpl.Execute(wr, map[string]interface{}{
 		"Table":       tables[0],
 		"Tables":      tables[1:],
 		"Relations":   relations,
-		"showComment": p.config.ER.Comment,
+		"showComment": m.config.ER.Comment,
 	})
 	if err != nil {
 		return errors.WithStack(err)
 	}
 
-	return nil
-}
-
-func addSuffix(t *schema.Table) error {
-	// PRIMARY KEY
-	for _, i := range t.Indexes {
-		if !strings.Contains(i.Def, "PRIMARY") {
-			continue
-		}
-		for _, c := range i.Columns {
-			column, err := t.FindColumnByName(c)
-			if err != nil {
-				return err
-			}
-			column.Name = fmt.Sprintf("%s PK", column.Name)
-		}
-	}
-	// Foreign Key (Relations)
-	for _, c := range t.Columns {
-		if len(c.ParentRelations) > 0 && !strings.Contains(c.Name, "PK") {
-			c.Name = fmt.Sprintf("%s FK", c.Name)
-		}
-	}
 	return nil
 }

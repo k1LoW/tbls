@@ -13,6 +13,7 @@ import (
 
 	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/output"
+	"github.com/k1LoW/tbls/output/mermaid"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/mattn/go-runewidth"
 	"github.com/pkg/errors"
@@ -81,9 +82,24 @@ func (m *Md) OutputSchema(wr io.Writer, s *schema.Schema) error {
 	}
 	tmpl := template.Must(template.New("index").Funcs(output.Funcs(&m.config.MergedDict)).Parse(ts))
 	templateData := m.makeSchemaTemplateData(s)
-	templateData["er"] = m.er
-	templateData["erFormat"] = m.config.ER.Format
-	templateData["baseUrl"] = m.config.BaseUrl
+	switch m.config.ER.Format {
+	case "mermaid":
+		buf := new(bytes.Buffer)
+		mmd := mermaid.New(m.config)
+		if err := mmd.OutputSchema(buf, s); err != nil {
+			return err
+		}
+		templateData["er"] = !m.config.ER.Skip
+		templateData["erDiagram"] = fmt.Sprintf("```mermaid\n%s```", buf.String())
+	default:
+		if m.er {
+			templateData["er"] = !m.config.ER.Skip
+		} else {
+			templateData["er"] = false
+		}
+		templateData["erDiagram"] = fmt.Sprintf("![er](%sschema.%s)", m.config.BaseUrl, m.config.ER.Format)
+	}
+
 	templateData["showOnlyFirstParagraph"] = m.config.Format.ShowOnlyFirstParagraph
 	err = tmpl.Execute(wr, templateData)
 	if err != nil {
@@ -100,9 +116,23 @@ func (m *Md) OutputTable(wr io.Writer, t *schema.Table) error {
 	}
 	tmpl := template.Must(template.New(t.Name).Funcs(output.Funcs(&m.config.MergedDict)).Parse(ts))
 	templateData := m.makeTableTemplateData(t)
-	templateData["er"] = m.er
-	templateData["erFormat"] = m.config.ER.Format
-	templateData["baseUrl"] = m.config.BaseUrl
+	switch m.config.ER.Format {
+	case "mermaid":
+		buf := new(bytes.Buffer)
+		mmd := mermaid.New(m.config)
+		if err := mmd.OutputTable(buf, t); err != nil {
+			return err
+		}
+		templateData["er"] = !m.config.ER.Skip
+		templateData["erDiagram"] = fmt.Sprintf("```mermaid\n%s```", buf.String())
+	default:
+		if m.er {
+			templateData["er"] = !m.config.ER.Skip
+		} else {
+			templateData["er"] = false
+		}
+		templateData["erDiagram"] = fmt.Sprintf("![er](%s%s.%s)", m.config.BaseUrl, mdurl.Encode(t.Name), m.config.ER.Format)
+	}
 
 	err = tmpl.Execute(wr, templateData)
 	if err != nil {

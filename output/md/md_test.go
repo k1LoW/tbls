@@ -1,18 +1,18 @@
 package md
 
 import (
-	"log"
 	"os"
 	"path/filepath"
 	"testing"
 
-	"github.com/google/go-cmp/cmp"
 	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/schema"
+	"github.com/tenntenn/golden"
 )
 
 var tests = []struct {
 	name                   string
+	format                 string
 	adjust                 bool
 	number                 bool
 	showOnlyFirstParagraph bool
@@ -20,11 +20,13 @@ var tests = []struct {
 	gotFile                string
 	wantFile               string
 }{
-	{"README.md", false, false, false, "b", "README.md", "md_test_README.md.golden"},
-	{"a.md", false, false, false, "b", "a.md", "md_test_a.md.golden"},
-	{"--adjust option", true, false, false, "b", "README.md", "md_test_README.md.adjust.golden"},
-	{"number", false, true, false, "b", "README.md", "md_test_README.md.number.golden"},
-	{"spaceInTableName", false, false, false, "a b", "README.md", "md_test_README.md.space_in_table_name.golden"},
+	{"README.md", "png", false, false, false, "b", "README.md", "md_test_README.md"},
+	{"a.md", "png", false, false, false, "b", "a.md", "md_test_a.md"},
+	{"--adjust option", "png", true, false, false, "b", "README.md", "md_test_README.md.adjust"},
+	{"number", "png", false, true, false, "b", "README.md", "md_test_README.md.number"},
+	{"spaceInTableName", "png", false, false, false, "a b", "README.md", "md_test_README.md.space_in_table_name"},
+	{"mermaid README.md", "mermaid", false, false, false, "b", "README.md", "md_test_README.md.mermaid"},
+	{"mermaid a.md", "mermaid", false, false, false, "b", "a.md", "md_test_a.md.mermaid"},
 }
 
 var testsTemplate = []struct {
@@ -35,91 +37,89 @@ var testsTemplate = []struct {
 	gotFile                string
 	wantFile               string
 }{
-	{"README.md", false, false, false, "README.md", "md_template_test_README.md.golden"},
-	{"a.md", false, false, false, "a.md", "md_template_test_a.md.golden"},
-	{"--adjust option", true, false, false, "README.md", "md_template_test_README.md.adjust.golden"},
-	{"number", false, true, false, "README.md", "md_template_test_README.md.number.golden"},
-	{"showOnlyFirstParagraph", false, true, true, "README.md", "md_template_test_README.md.first_para.golden"},
+	{"README.md", false, false, false, "README.md", "md_template_test_README.md"},
+	{"a.md", false, false, false, "a.md", "md_template_test_a.md"},
+	{"--adjust option", true, false, false, "README.md", "md_template_test_README.md.adjust"},
+	{"number", false, true, false, "README.md", "md_template_test_README.md.number"},
+	{"showOnlyFirstParagraph", false, true, true, "README.md", "md_template_test_README.md.first_para"},
 }
 
 func TestOutput(t *testing.T) {
 	for _, tt := range tests {
-		s := newTestSchema(tt.tableBName)
-		c, err := config.New()
-		if err != nil {
-			t.Error(err)
-		}
-		tempDir := t.TempDir()
-		force := true
-		adjust := tt.adjust
-		erFormat := "png"
-		err = c.Load(filepath.Join(testdataDir(), "out_test_tbls.yml"), config.DocPath(tempDir), config.Adjust(adjust), config.ERFormat(erFormat))
-		if err != nil {
-			t.Error(err)
-		}
-		c.Format.Number = tt.number
-		err = c.MergeAdditionalData(s)
-		if err != nil {
-			t.Error(err)
-		}
-		c.Format.ShowOnlyFirstParagraph = tt.showOnlyFirstParagraph
-		err = Output(s, c, force)
-		if err != nil {
-			t.Error(err)
-		}
-		want, err := os.ReadFile(filepath.Join(testdataDir(), tt.wantFile))
-		if err != nil {
-			t.Error(err)
-		}
-		got, err := os.ReadFile(filepath.Join(tempDir, tt.gotFile))
-		if err != nil {
-			log.Fatal(err)
-		}
-		if diff := cmp.Diff(string(got), string(want), nil); diff != "" {
-			t.Errorf("diff with %s:\n %s", tt.wantFile, diff)
-		}
+		t.Run(tt.name, func(t *testing.T) {
+			s := newTestSchema(tt.tableBName)
+			c, err := config.New()
+			if err != nil {
+				t.Error(err)
+			}
+			tempDir := t.TempDir()
+			force := true
+			adjust := tt.adjust
+			erFormat := tt.format
+			if err := c.Load(filepath.Join(testdataDir(), "out_test_tbls.yml"), config.DocPath(tempDir), config.Adjust(adjust), config.ERFormat(erFormat)); err != nil {
+				t.Error(err)
+			}
+			c.Format.Number = tt.number
+			if err := c.ModifySchema(s); err != nil {
+				t.Error(err)
+			}
+			c.Format.ShowOnlyFirstParagraph = tt.showOnlyFirstParagraph
+			if err := Output(s, c, force); err != nil {
+				t.Error(err)
+			}
+			got, err := os.ReadFile(filepath.Join(tempDir, tt.gotFile))
+			if err != nil {
+				t.Fatal(err)
+			}
+			if os.Getenv("UPDATE_GOLDEN") != "" {
+				golden.Update(t, testdataDir(), tt.wantFile, got)
+				return
+			}
+			if diff := golden.Diff(t, testdataDir(), tt.wantFile, got); diff != "" {
+				t.Error(diff)
+			}
+		})
 	}
 }
 
 func TestOutputTemplate(t *testing.T) {
 	for _, tt := range testsTemplate {
-		s := newTestSchema("b")
-		c, err := config.New()
-		if err != nil {
-			t.Error(err)
-		}
-		tempDir := t.TempDir()
-		force := true
-		adjust := tt.adjust
-		erFormat := "png"
-		err = c.Load(filepath.Join(testdataDir(), "out_templates_test_tbls.yml"), config.DocPath(tempDir), config.Adjust(adjust), config.ERFormat(erFormat))
-		if err != nil {
-			t.Error(err)
-		}
-		c.Format.Number = tt.number
-		// use the templates in the testdata directory
-		c.Templates.MD.Table = filepath.Join(testdataDir(), c.Templates.MD.Table)
-		c.Templates.MD.Index = filepath.Join(testdataDir(), c.Templates.MD.Index)
-		err = c.MergeAdditionalData(s)
-		if err != nil {
-			t.Error(err)
-		}
-		c.Format.ShowOnlyFirstParagraph = tt.showOnlyFirstParagraph
-		err = Output(s, c, force)
-		if err != nil {
-			t.Error(err)
-		}
-		want, err := os.ReadFile(filepath.Join(testdataDir(), tt.wantFile))
-		if err != nil {
-			t.Error(err)
-		}
-		got, err := os.ReadFile(filepath.Join(tempDir, tt.gotFile))
-		if err != nil {
-			log.Fatal(err)
-		}
-		if diff := cmp.Diff(string(got), string(want), nil); diff != "" {
-			t.Errorf("diff with %s:\n %s", tt.wantFile, diff)
-		}
+		t.Run(tt.name, func(t *testing.T) {
+			s := newTestSchema("b")
+			c, err := config.New()
+			if err != nil {
+				t.Error(err)
+			}
+			tempDir := t.TempDir()
+			force := true
+			adjust := tt.adjust
+			erFormat := "png"
+			if err := c.Load(filepath.Join(testdataDir(), "out_templates_test_tbls.yml"), config.DocPath(tempDir), config.Adjust(adjust), config.ERFormat(erFormat)); err != nil {
+				t.Error(err)
+			}
+			c.Format.Number = tt.number
+			// use the templates in the testdata directory
+			c.Templates.MD.Table = filepath.Join(testdataDir(), c.Templates.MD.Table)
+			c.Templates.MD.Index = filepath.Join(testdataDir(), c.Templates.MD.Index)
+			if err := c.ModifySchema(s); err != nil {
+				t.Error(err)
+			}
+			c.Format.ShowOnlyFirstParagraph = tt.showOnlyFirstParagraph
+			if err := Output(s, c, force); err != nil {
+				t.Error(err)
+			}
+			got, err := os.ReadFile(filepath.Join(tempDir, tt.gotFile))
+			if err != nil {
+				t.Fatal(err)
+			}
+			if os.Getenv("UPDATE_GOLDEN") != "" {
+				golden.Update(t, testdataDir(), tt.wantFile, got)
+				return
+			}
+			if diff := golden.Diff(t, testdataDir(), tt.wantFile, got); diff != "" {
+				t.Error(diff)
+			}
+		})
 	}
 }
 
@@ -134,18 +134,15 @@ func TestDiffSchemaAndDocs(t *testing.T) {
 			docPath := t.TempDir()
 			force := true
 			adjust := tt.adjust
-			erFormat := "png"
-			err = c.Load(filepath.Join(testdataDir(), "out_test_tbls.yml"), config.DocPath(docPath), config.Adjust(adjust), config.ERFormat(erFormat))
-			if err != nil {
+			erFormat := tt.format
+			if err := c.Load(filepath.Join(testdataDir(), "out_test_tbls.yml"), config.DocPath(docPath), config.Adjust(adjust), config.ERFormat(erFormat)); err != nil {
 				t.Error(err)
 			}
 			c.Format.Number = tt.number
-			err = c.MergeAdditionalData(s)
-			if err != nil {
+			if err := c.ModifySchema(s); err != nil {
 				t.Error(err)
 			}
-			err = Output(s, c, force)
-			if err != nil {
+			if err := Output(s, c, force); err != nil {
 				t.Error(err)
 			}
 			want := ""
@@ -226,10 +223,12 @@ func testdataDir() string {
 func newTestSchema(tableBName string) *schema.Schema {
 	ca := &schema.Column{
 		Name:    "a",
+		Type:    "INTEGER",
 		Comment: "column a",
 	}
 	cb := &schema.Column{
 		Name:    "b",
+		Type:    "TEXT",
 		Comment: "column b",
 	}
 
@@ -240,6 +239,7 @@ func newTestSchema(tableBName string) *schema.Schema {
 			ca,
 			{
 				Name:    "a2",
+				Type:    "TEXT",
 				Comment: "column a2",
 			},
 		},
@@ -272,15 +272,18 @@ func newTestSchema(tableBName string) *schema.Schema {
 			cb,
 			{
 				Name:    "b2",
+				Type:    "DATETIME",
 				Comment: "column b2",
 			},
 		},
 	}
 	r := &schema.Relation{
-		Table:         ta,
-		Columns:       []*schema.Column{ca},
-		ParentTable:   tb,
-		ParentColumns: []*schema.Column{cb},
+		Table:             ta,
+		Columns:           []*schema.Column{ca},
+		Cardinality:       schema.ZeroOrMore,
+		ParentTable:       tb,
+		ParentColumns:     []*schema.Column{cb},
+		ParentCardinality: schema.ZeroOrOne,
 	}
 	ca.ParentRelations = []*schema.Relation{r}
 	cb.ChildRelations = []*schema.Relation{r}

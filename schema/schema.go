@@ -84,6 +84,8 @@ type Column struct {
 	Labels          Labels          `json:"labels,omitempty"`
 	ParentRelations []*Relation     `json:"-"`
 	ChildRelations  []*Relation     `json:"-"`
+	PK              bool            `json:"-"`
+	FK              bool            `json:"-"`
 }
 
 // Table is the struct for database table
