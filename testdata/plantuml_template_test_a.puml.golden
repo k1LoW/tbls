@@ -13,11 +13,11 @@ skinparam class {
 
 ' tables
 table("a", "a") {
-  column("+ a", "INTEGER", "")
+  column("a", "INTEGER", "")
   column("a2", "TEXT", "")
 }
 table("b", "b") {
-  column("# b", "INTEGER", "")
+  column("b", "INTEGER", "")
   column("b2", "TEXT", "")
 }
 
