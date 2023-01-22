@@ -24,6 +24,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/k1LoW/tbls/cmdutil"
 	"github.com/k1LoW/tbls/config"
@@ -224,7 +225,7 @@ func init() {
 	docCmd.Flags().BoolVarP(&force, "force", "f", false, "force")
 	docCmd.Flags().BoolVarP(&sort, "sort", "", false, "sort")
 	docCmd.Flags().StringVarP(&configPath, "config", "c", "", "config file path")
-	docCmd.Flags().StringVarP(&erFormat, "er-format", "t", "", fmt.Sprintf("ER diagrams output format (png, svg, jpg, ...). default: %s", config.DefaultERFormat))
+	docCmd.Flags().StringVarP(&erFormat, "er-format", "t", "", fmt.Sprintf("ER diagrams output format (%s). default: %s", strings.Join(config.SupportERFormat, ", "), config.DefaultERFormat))
 	docCmd.Flags().BoolVarP(&withoutER, "without-er", "", false, "no generate ER diagrams")
 	docCmd.Flags().BoolVarP(&adjust, "adjust-table", "j", false, "adjust column width of table")
 	docCmd.Flags().StringVarP(&when, "when", "", "", "command execute condition")

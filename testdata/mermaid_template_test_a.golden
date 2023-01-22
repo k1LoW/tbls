@@ -1,2 +1,5 @@
 erDiagram
-
+"a" {
+  INTEGER a
+  TEXT a2
+}

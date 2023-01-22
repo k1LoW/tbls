@@ -6,14 +6,14 @@ erDiagram
 
 "{{ .Table.Name }}" {
 {{- range $i, $c := .Table.Columns }}
-  {{ $c.Type }} {{ $c.Name }}{{ if $sc }} "{{ if ne $c.Comment "" }}\n{{ $c.Comment | html | escape_nl }}{{ end }}"{{ end }}
+  {{ $c.Type }} {{ $c.Name }}{{ if $c.PK }} PK{{ end }}{{ if $c.FK }} FK{{ end }}{{ if $sc }} "{{ if ne $c.Comment "" }}\n{{ $c.Comment | html | escape_nl }}{{ end }}"{{ end }}
 {{- end }}
 }
 
 {{- range $i, $t := .Tables }}
 "{{ $t.Name }}" {
 {{- range $ii, $c := $t.Columns }}
-  {{ $c.Type }} {{ $c.Name }}{{ if $sc }} "{{ if ne $c.Comment "" }}\n{{ $c.Comment | html | escape_nl }}{{ end }}"{{ end }}
+  {{ $c.Type }} {{ $c.Name }}{{ if $c.PK }} PK{{ end }}{{ if $c.FK }} FK{{ end }}{{ if $sc }} "{{ if ne $c.Comment "" }}\n{{ $c.Comment | html | escape_nl }}{{ end }}"{{ end }}
 {{- end }}
 }
 {{- end }}

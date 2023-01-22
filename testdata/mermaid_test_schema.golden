@@ -1,11 +1,12 @@
 erDiagram
 
 "b" }|--|| "a" : ""
+
 "a" {
-   a PK
-   a2
+  INTEGER a
+  TEXT a2
 }
 "b" {
-   b FK
-   b2
+  INTEGER b
+  TEXT b2
 }

@@ -109,9 +109,10 @@ func TestOutputTableTemplate(t *testing.T) {
 	}
 	// use the templates in the testdata directory
 	c.Templates.Mermaid.Table = filepath.Join(testdataDir(), c.Templates.Mermaid.Table)
-	if err := c.MergeAdditionalData(s); err != nil {
+	if err := c.ModifySchema(s); err != nil {
 		t.Error(err)
 	}
+
 	ta := s.Tables[0]
 
 	o := New(c)
@@ -138,10 +139,12 @@ func testdataDir() string {
 func newTestSchema(t *testing.T) *schema.Schema {
 	ca := &schema.Column{
 		Name:    "a",
+		Type:    "INTEGER",
 		Comment: "column a",
 	}
 	cb := &schema.Column{
 		Name:    "b",
+		Type:    "INTEGER",
 		Comment: "column b",
 	}
 
@@ -152,6 +155,7 @@ func newTestSchema(t *testing.T) *schema.Schema {
 			ca,
 			&schema.Column{
 				Name:    "a2",
+				Type:    "TEXT",
 				Comment: "column a2",
 			},
 		},
@@ -184,6 +188,7 @@ func newTestSchema(t *testing.T) *schema.Schema {
 			cb,
 			&schema.Column{
 				Name:    "b2",
+				Type:    "TEXT",
 				Comment: "column b2",
 			},
 		},

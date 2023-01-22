@@ -384,6 +384,9 @@ func (c *Config) ModifySchema(s *schema.Schema) error {
 	if err := detectCardinality(s); err != nil {
 		return err
 	}
+	if err := detectPKFK(s); err != nil {
+		return err
+	}
 	err := c.MergeAdditionalData(s)
 	if err != nil {
 		return err
@@ -766,6 +769,31 @@ func detectCardinality(s *schema.Schema) error {
 				r.ParentCardinality = schema.ZeroOrOne
 			} else {
 				r.ParentCardinality = schema.ExactlyOne
+			}
+		}
+	}
+	return nil
+}
+
+func detectPKFK(s *schema.Schema) error {
+	for _, t := range s.Tables {
+		// PRIMARY KEY
+		for _, i := range t.Indexes {
+			if !strings.Contains(i.Def, "PRIMARY") {
+				continue
+			}
+			for _, c := range i.Columns {
+				column, err := t.FindColumnByName(c)
+				if err != nil {
+					return err
+				}
+				column.PK = true
+			}
+		}
+		// Foreign Key (Relations)
+		for _, c := range t.Columns {
+			if len(c.ParentRelations) > 0 && !c.PK {
+				c.FK = true
 			}
 		}
 	}

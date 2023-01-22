@@ -8,8 +8,8 @@ TABLE A
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| a |  |  | false |  | [b](b.md) | COLUMN A |
-| a2 |  |  | false |  |  | column a2 |
+| a | INTEGER |  | false |  | [b](b.md) | COLUMN A |
+| a2 | TEXT |  | false |  |  | column a2 |
 
 ## Constraints
 
