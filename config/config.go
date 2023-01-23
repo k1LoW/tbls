@@ -331,7 +331,7 @@ func (c *Config) LoadEnviron() error {
 
 // LoadConfigFile load config file
 func (c *Config) LoadConfigFile(path string) error {
-	if path == "" {
+	if path == "" && os.Getenv("TBLS_DSN") == "" {
 		for _, p := range DefaultConfigFilePaths {
 			if f, err := os.Stat(filepath.Join(c.root, p)); err == nil && !f.IsDir() {
 				if path != "" {
