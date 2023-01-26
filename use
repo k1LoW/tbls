@@ -33,8 +33,7 @@ download() {
     echo "Unable to get tbls version." >&2
     exit 1
   }
-  rm -f "$TBLS_ARCHIVE"
-  curl -s -L -o "$TBLS_ARCHIVE" \
+  curl -z "$TBLS_ARCHIVE" -s -L -o "$TBLS_ARCHIVE" \
     "${TBLS_RELEASES_URL}/download/${TBLS_VERSION}/tbls_${TBLS_VERSION}_${TBLS_GOOS}_${TBLS_ARCH}.${TBLS_EXT}"
 }
 
