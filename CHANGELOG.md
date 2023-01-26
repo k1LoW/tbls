@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.60.0](https://github.com/k1LoW/tbls/compare/v1.59.0...v1.60.0) - 2023-01-23
+- Fix column name prefix for PlantUML by @k1LoW in https://github.com/k1LoW/tbls/pull/418
+- Support `github://` by @k1LoW in https://github.com/k1LoW/tbls/pull/419
+- Update pkgs by @k1LoW in https://github.com/k1LoW/tbls/pull/421
+- [BREAKING] Do not read config file in the default path if env `TBLS_DSN` is given by @k1LoW in https://github.com/k1LoW/tbls/pull/422
+
 ## [v1.59.0](https://github.com/k1LoW/tbls/compare/v1.58.0...v1.59.0) - 2023-01-22
 - Fix option ( `--table` `--include` `--exclude` ) by @k1LoW in https://github.com/k1LoW/tbls/pull/407
 - Support `--label` option for filtering tables by @k1LoW in https://github.com/k1LoW/tbls/pull/409
