@@ -56,6 +56,9 @@ jobs:
         run: make test_bigquery
         if: github.ref == 'refs/heads/main'
 
+      - name: Run install script (aka use)
+        run: sh use
+
       - name: Run Trivy vulnerability scanner in repo mode
         uses: aquasecurity/trivy-action@master
         with:
