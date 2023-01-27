@@ -33,7 +33,8 @@ download() {
     echo "Unable to get tbls version." >&2
     exit 1
   }
-  curl `if [ -f "$TBLS_ARCHIVE" ]; then echo -z "$TBLS_ARCHIVE"; fi` \ # Skip downloading if the newest file was downloaded before
+  # Skip downloading if the newest file was downloaded before
+  curl `if [ -f "$TBLS_ARCHIVE" ]; then echo -z "$TBLS_ARCHIVE"; fi` \
     -s -L -o "$TBLS_ARCHIVE" \
     "${TBLS_RELEASES_URL}/download/${TBLS_VERSION}/tbls_${TBLS_VERSION}_${TBLS_GOOS}_${TBLS_ARCH}.${TBLS_EXT}"
 }
