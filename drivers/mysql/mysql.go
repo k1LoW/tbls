@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"regexp"
+	"sort"
 	"strings"
 
 	"github.com/aquasecurity/go-version/pkg/version"
@@ -262,6 +263,8 @@ WHERE table_schema = ? ORDER BY table_name, ordinal_position`
 	relations := []*schema.Relation{}
 
 	tableMap := map[string]*schema.Table{}
+	tableOrderMap := map[string]int{}
+	tableOrder := 0
 	tables := []*schema.Table{}
 	for tableRows.Next() {
 		var (
@@ -339,6 +342,8 @@ AND table_name = ?;
 
 		tables = append(tables, table)
 		tableMap[table.Name] = table
+		tableOrderMap[table.Name] = tableOrder
+		tableOrder++
 	}
 
 	// bulk get constraints
@@ -438,6 +443,9 @@ GROUP BY kcu.table_name, kcu.constraint_name, sub.costraint_type, kcu.referenced
 	s.Tables = tables
 
 	// Relations
+	sort.SliceStable(relations, func(i, j int) bool {
+		return tableOrderMap[relations[i].Table.Name] < tableOrderMap[relations[j].Table.Name]
+	})
 	for _, r := range relations {
 		result := reFK.FindAllStringSubmatch(r.Def, -1)
 		if len(result) == 0 || len(result[0]) < 4 {
