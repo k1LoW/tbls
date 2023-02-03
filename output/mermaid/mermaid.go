@@ -69,9 +69,10 @@ func (m *Mermaid) OutputSchema(wr io.Writer, s *schema.Schema) error {
 	}
 	tmpl := template.Must(template.New(s.Name).Funcs(output.Funcs(&m.config.MergedDict)).Parse(ts))
 	err = tmpl.Execute(wr, map[string]interface{}{
-		"Schema":      s,
-		"showComment": m.config.ER.Comment,
-		"showDef":     !m.config.ER.HideDef,
+		"Schema":         s,
+		"showComment":    m.config.ER.Comment,
+		"showDef":        !m.config.ER.HideDef,
+		"showAllColumns": !m.config.ER.HideNotRelatedColumn,
 	})
 	if err != nil {
 		return errors.WithStack(err)
@@ -92,11 +93,12 @@ func (m *Mermaid) OutputTable(wr io.Writer, t *schema.Table) error {
 	}
 	tmpl := template.Must(template.New(t.Name).Funcs(output.Funcs(&m.config.MergedDict)).Parse(ts))
 	err = tmpl.Execute(wr, map[string]interface{}{
-		"Table":       tables[0],
-		"Tables":      tables[1:],
-		"Relations":   relations,
-		"showComment": m.config.ER.Comment,
-		"showDef":     !m.config.ER.HideDef,
+		"Table":          tables[0],
+		"Tables":         tables[1:],
+		"Relations":      relations,
+		"showComment":    m.config.ER.Comment,
+		"showDef":        !m.config.ER.HideDef,
+		"showAllColumns": !m.config.ER.HideNotRelatedColumn,
 	})
 	if err != nil {
 		return errors.WithStack(err)

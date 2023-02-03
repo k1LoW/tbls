@@ -69,9 +69,10 @@ func (p *PlantUML) OutputSchema(wr io.Writer, s *schema.Schema) error {
 	}
 	tmpl := template.Must(template.New(s.Name).Funcs(output.Funcs(&p.config.MergedDict)).Parse(ts))
 	err = tmpl.Execute(wr, map[string]interface{}{
-		"Schema":      s,
-		"showComment": p.config.ER.Comment,
-		"showDef":     !p.config.ER.HideDef,
+		"Schema":         s,
+		"showComment":    p.config.ER.Comment,
+		"showDef":        !p.config.ER.HideDef,
+		"showAllColumns": !p.config.ER.HideNotRelatedColumn,
 	})
 	if err != nil {
 		return errors.WithStack(err)
@@ -92,11 +93,12 @@ func (p *PlantUML) OutputTable(wr io.Writer, t *schema.Table) error {
 	}
 	tmpl := template.Must(template.New(t.Name).Funcs(output.Funcs(&p.config.MergedDict)).Parse(ts))
 	err = tmpl.Execute(wr, map[string]interface{}{
-		"Table":       tables[0],
-		"Tables":      tables[1:],
-		"Relations":   relations,
-		"showComment": p.config.ER.Comment,
-		"showDef":     !p.config.ER.HideDef,
+		"Table":          tables[0],
+		"Tables":         tables[1:],
+		"Relations":      relations,
+		"showComment":    p.config.ER.Comment,
+		"showDef":        !p.config.ER.HideDef,
+		"showAllColumns": !p.config.ER.HideNotRelatedColumn,
 	})
 	if err != nil {
 		return errors.WithStack(err)

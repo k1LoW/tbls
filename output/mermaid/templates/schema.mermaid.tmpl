@@ -1,12 +1,14 @@
 erDiagram
 {{ $sc := .showComment -}}
 {{- $sd := .showDef -}}
+{{- $sac := .showAllColumns -}}
 {{- range $j, $r := .Schema.Relations }}
 "{{ $r.Table.Name }}" {{ $r.Cardinality | lcardi }}--{{ $r.ParentCardinality | rcardi }} "{{ $r.ParentTable.Name }}" : "{{ if $sd }}{{ $r.Def | html }}{{ end }}"
 {{- end }}
 {{ range $i, $t := .Schema.Tables }}
 "{{ $t.Name }}" {
-{{- range $ii, $c := $t.Columns }}
+{{- $columns := $t.FindShowColumnsForER $sac $.Schema.Relations }}
+{{- range $ii, $c := $columns }}
   {{ $c.Type | escape_mermaid }} {{ $c.Name }}{{ if $c.PK }} PK{{ end }}{{ if $c.FK }} FK{{ end }}{{ if $sc }} "{{ if ne $c.Comment "" }}\n{{ $c.Comment | html | escape_nl }}{{ end }}"{{ end }}
 {{- end }}
 }

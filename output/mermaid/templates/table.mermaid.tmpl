@@ -1,19 +1,22 @@
 erDiagram
 {{ $sc := .showComment -}}
 {{ $sd := .showDef -}}
+{{- $sac := .showAllColumns -}}
 {{- range $j, $r := .Relations }}
 "{{ $r.Table.Name }}" {{ $r.Cardinality | lcardi }}--{{ $r.ParentCardinality | rcardi }} "{{ $r.ParentTable.Name }}" : "{{ if $sd }}{{ $r.Def | html }}{{ end }}"
 {{- end }}
 
 "{{ .Table.Name }}" {
-{{- range $i, $c := .Table.Columns }}
+{{- $columns := .Table.FindShowColumnsForER $sac .Relations }}
+{{- range $i, $c := $columns }}
   {{ $c.Type | escape_mermaid }} {{ $c.Name }}{{ if $c.PK }} PK{{ end }}{{ if $c.FK }} FK{{ end }}{{ if $sc }} "{{ if ne $c.Comment "" }}\n{{ $c.Comment | html | escape_nl }}{{ end }}"{{ end }}
 {{- end }}
 }
 
 {{- range $i, $t := .Tables }}
 "{{ $t.Name }}" {
-{{- range $ii, $c := $t.Columns }}
+{{- $columns := $t.FindShowColumnsForER $sac $.Relations }}
+{{- range $ii, $c := $columns }}
   {{ $c.Type | escape_mermaid }} {{ $c.Name }}{{ if $c.PK }} PK{{ end }}{{ if $c.FK }} FK{{ end }}{{ if $sc }} "{{ if ne $c.Comment "" }}\n{{ $c.Comment | html | escape_nl }}{{ end }}"{{ end }}
 {{- end }}
 }

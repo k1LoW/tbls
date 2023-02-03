@@ -311,6 +311,36 @@ func (t *Table) ShowColumn(name string, hideColumns []string) bool {
 	return true
 }
 
+// FindShowColumnsForER find show columns for ER Diagram
+func (t *Table) FindShowColumnsForER(isShowAllColumns bool, relations []*Relation) []*Column {
+	if isShowAllColumns {
+		return t.Columns
+	}
+
+	// Show only columns with relation
+	relatedColumnNameMap := map[string]bool{}
+	for _, r := range relations {
+		if t.Name == r.Table.Name {
+			for _, c := range r.Columns {
+				relatedColumnNameMap[c.Name] = true
+			}
+		}
+		if t.Name == r.ParentTable.Name {
+			for _, c := range r.ParentColumns {
+				relatedColumnNameMap[c.Name] = true
+			}
+		}
+	}
+
+	var columns []*Column
+	for _, c := range t.Columns {
+		if relatedColumnNameMap[c.Name] {
+			columns = append(columns, c)
+		}
+	}
+	return columns
+}
+
 // Sort schema tables, columns, relations, and constrains
 func (s *Schema) Sort() error {
 	for _, t := range s.Tables {
