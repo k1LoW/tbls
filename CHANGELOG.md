@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.61.0](https://github.com/k1LoW/tbls/compare/v1.60.0...v1.61.0) - 2023-02-02
+- Added options for curl to skip downloading of tbls if the newest file exists by @usmanovbf in https://github.com/k1LoW/tbls/pull/423
+- Fixed position of a comment in the `use` script by @rsky in https://github.com/k1LoW/tbls/pull/426
+- Add test to run installation scripts ( `use` ) by @k1LoW in https://github.com/k1LoW/tbls/pull/427
+- Bulk get schema info for MySQL by @yasu89 in https://github.com/k1LoW/tbls/pull/428
+
 ## [v1.60.0](https://github.com/k1LoW/tbls/compare/v1.59.0...v1.60.0) - 2023-01-23
 - Fix column name prefix for PlantUML by @k1LoW in https://github.com/k1LoW/tbls/pull/418
 - Support `github://` by @k1LoW in https://github.com/k1LoW/tbls/pull/419
