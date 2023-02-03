@@ -96,6 +96,72 @@ func TestTable_FindConstrainsByColumnName(t *testing.T) {
 	}
 }
 
+func TestTable_hasColumnWithValues(t *testing.T) {
+	tests := []struct {
+		testName  string
+		name      string
+		addColumn *Column
+		want      bool
+	}{
+		{"Has no ExtraDef value.", ColumnExtraDef, &Column{Name: "b"}, false},
+		{"Has ExtraDef value", ColumnExtraDef, &Column{Name: "b", ExtraDef: "ExtraDef"}, true},
+		{"Occurrences is invalid", ColumnOccurrences, &Column{Name: "b", Occurrences: sql.NullInt32{Valid: false}}, false},
+		{"Occurrences is valid", ColumnOccurrences, &Column{Name: "b", Occurrences: sql.NullInt32{Valid: true}}, true},
+		{"Percents is invalid", ColumnPercents, &Column{Name: "b", Percents: sql.NullFloat64{Valid: false}}, false},
+		{"Percents is valid", ColumnPercents, &Column{Name: "b", Percents: sql.NullFloat64{Valid: true}}, true},
+		{"Has no ChildRelations", ColumnChildren, &Column{Name: "b"}, false},
+		{"Has ChildRelations", ColumnChildren, &Column{Name: "b", ChildRelations: []*Relation{{}}}, true},
+		{"Has no ParentRelations", ColumnParents, &Column{Name: "b"}, false},
+		{"Has ParentRelations", ColumnParents, &Column{Name: "b", ParentRelations: []*Relation{{}}}, true},
+		{"Has no Comment", ColumnComment, &Column{Name: "b"}, false},
+		{"Has Comment", ColumnComment, &Column{Name: "b", Comment: "comment"}, true},
+		{"Has no Labels", ColumnLabels, &Column{Name: "b"}, false},
+		{"Has Labels", ColumnLabels, &Column{Name: "b", Labels: Labels{{Name: "TestLabel"}}}, true},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.testName, func(t *testing.T) {
+			table := Table{
+				Name: "testTable",
+				Columns: []*Column{
+					&Column{
+						Name: "a",
+					},
+				},
+			}
+			table.Columns = append(table.Columns, tt.addColumn)
+
+			got := table.hasColumnWithValues(tt.name)
+			if got != tt.want {
+				t.Errorf("got %v\nwant %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestTable_ShowColumn(t *testing.T) {
+	tests := []struct {
+		testName    string
+		table       Table
+		name        string
+		hideColumns []string
+		want        bool
+	}{
+		{"No hideColumns", Table{Name: "testTable"}, ColumnComment, []string{}, true},
+		{"hideColumns without value", Table{Name: "testTable"}, ColumnComment, []string{ColumnComment}, false},
+		{"hideColumns with value", Table{Name: "testTable", Columns: []*Column{{Name: "testColumn", Comment: "comment"}}}, ColumnComment, []string{ColumnComment}, true},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.testName, func(t *testing.T) {
+			got := tt.table.ShowColumn(tt.name, tt.hideColumns)
+			if got != tt.want {
+				t.Errorf("got %v\nwant %v", got, tt.want)
+			}
+		})
+	}
+}
+
 func TestSchema_Sort(t *testing.T) {
 	schema := Schema{
 		Name: "testschema",
