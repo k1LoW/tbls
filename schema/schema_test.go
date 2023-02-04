@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"reflect"
 	"testing"
 )
 
@@ -157,6 +158,63 @@ func TestTable_ShowColumn(t *testing.T) {
 			got := tt.table.ShowColumn(tt.name, tt.hideColumns)
 			if got != tt.want {
 				t.Errorf("got %v\nwant %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestTable_FindShowColumnsForER(t *testing.T) {
+	tableName := "testTable"
+
+	columns := []*Column{
+		{Name: "noRelationColumn"},
+		{Name: "hasParentColumn"},
+		{Name: "hasChildColumn"},
+	}
+
+	relations := []*Relation{
+		{
+			Table: &Table{Name: tableName},
+			Columns: []*Column{
+				{Name: "hasParentColumn"},
+			},
+			ParentTable: &Table{Name: "otherTable"},
+		},
+		{
+			Table:       &Table{Name: "otherTable"},
+			ParentTable: &Table{Name: tableName},
+			ParentColumns: []*Column{
+				{Name: "hasChildColumn"},
+			},
+		},
+		// Other table relation
+		{
+			Table: &Table{Name: "otherTable"},
+			Columns: []*Column{
+				{Name: "noRelationColumn"},
+			},
+			ParentTable: &Table{Name: "otherTable"},
+			ParentColumns: []*Column{
+				{Name: "noRelationColumn"},
+			},
+		},
+	}
+
+	tests := []struct {
+		name             string
+		isShowAllColumns bool
+		table            Table
+		want             []*Column
+	}{
+		{"Show all columns", true, Table{Name: tableName, Columns: columns}, columns},
+		{"Show columns with relation", false, Table{Name: tableName, Columns: columns}, columns[1:3]},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.table.FindShowColumnsForER(tt.isShowAllColumns, relations)
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("got: %#v\nwant: %#v", got, tt.want)
 			}
 		})
 	}
