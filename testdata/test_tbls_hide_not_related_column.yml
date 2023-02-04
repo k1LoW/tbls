@@ -1,0 +1,76 @@
+---
+desc: Sample database document.
+er:
+  hideNotRelatedColumn: true
+labels:
+  - sample
+  - tbls
+lint:
+  requireColumnComment:
+    enabled: true
+    exclude:
+      - id
+      - created
+      - updated
+  columnCount:
+    enabled: true
+    max: 5
+relations:
+  -
+    table: logs
+    columns:
+      - user_id
+    parentTable: users
+    parentColumns:
+      - id
+    def: logs->users
+  -
+    table: logs
+    columns:
+      - post_id
+    parentTable: posts
+    parentColumns:
+      - id
+  -
+    table: logs
+    columns:
+      - comment_id
+    parentTable: comments
+    parentColumns:
+      - id
+  -
+    table: logs
+    columns:
+      - comment_star_id
+    parentTable: comment_stars
+    parentColumns:
+      - id
+comments:
+  -
+    table: posts
+    columnComments:
+      body: post body
+    labels:
+      - green
+      - red
+      - blue
+  -
+    table: logs
+  -
+    table: post_comments
+    tableComment: post and comments View table
+    columnComments:
+      id: comments.id
+      title: posts.title
+      post_user: posts.users.username
+      comment_user: comments.users.username
+      created: comments.created
+      updated: comments.updated
+  -
+    table: users
+    columnLabels:
+      email:
+        - secure
+      password:
+        - secure
+        - encrypted

@@ -1,0 +1,10 @@
+erDiagram
+
+"b" }|--|| "a" : "FOREIGN KEY (b) REFERENCES a(a)"
+
+"a" {
+  INTEGER a PK
+}
+"b" {
+  INTEGER b FK
+}

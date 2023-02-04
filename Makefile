@@ -65,6 +65,7 @@ doc: build doc_sqlite
 	$(TBLS) doc my://root:mypass@localhost:33308/testdb -c testdata/font_test_tbls.yml -f sample/font
 	$(TBLS) doc my://root:mypass@localhost:33308/testdb -c testdata/number_test_tbls.yml -f sample/number
 	$(TBLS) doc my://root:mypass@localhost:33308/testdb -c testdata/hide_test_tbls.yml -f sample/hide
+	$(TBLS) doc my://root:mypass@localhost:33308/testdb -c testdata/test_tbls_hide_not_related_column.yml -f sample/hide_not_related_column
 
 doc_sqlite: build
 	$(TBLS) doc sq://$(PWD)/testdata/testdb.sqlite3 -c testdata/test_tbls.yml -f sample/sqlite
@@ -87,6 +88,7 @@ testdoc: build testdoc_sqlite
 	$(TBLS) diff my://root:mypass@localhost:33308/testdb -c testdata/font_test_tbls.yml sample/font
 	$(TBLS) diff my://root:mypass@localhost:33308/testdb -c testdata/number_test_tbls.yml sample/number
 	$(TBLS) diff my://root:mypass@localhost:33308/testdb -c testdata/hide_test_tbls.yml sample/hide
+	$(TBLS) diff my://root:mypass@localhost:33308/testdb -c testdata/test_tbls_hide_not_related_column.yml sample/hide_not_related_column
 
 testdoc_sqlite: build
 	$(TBLS) diff sq://$(PWD)/testdata/testdb.sqlite3 -c testdata/test_tbls.yml sample/sqlite

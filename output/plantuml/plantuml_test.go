@@ -14,11 +14,13 @@ import (
 
 func TestOutputSchema(t *testing.T) {
 	tests := []struct {
-		hideDef  bool
-		wantFile string
+		hideDef              bool
+		hideNotRelatedColumn bool
+		wantFile             string
 	}{
-		{false, "plantuml_test_schema.puml"},
-		{true, "plantuml_test_schema.puml.hidedef"},
+		{false, false, "plantuml_test_schema.puml"},
+		{true, false, "plantuml_test_schema.puml.hidedef"},
+		{false, true, "plantuml_test_schema.puml.hide_not_related_column"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.wantFile, func(t *testing.T) {
@@ -34,6 +36,7 @@ func TestOutputSchema(t *testing.T) {
 				t.Error(err)
 			}
 			c.ER.HideDef = tt.hideDef
+			c.ER.HideNotRelatedColumn = tt.hideNotRelatedColumn
 			o := New(c)
 			got := &bytes.Buffer{}
 			err = o.OutputSchema(got, s)

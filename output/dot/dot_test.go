@@ -13,11 +13,13 @@ import (
 
 func TestOutputSchema(t *testing.T) {
 	tests := []struct {
-		hideDef  bool
-		wantFile string
+		hideDef              bool
+		hideNotRelatedColumn bool
+		wantFile             string
 	}{
-		{false, "dot_test_schema.dot"},
-		{true, "dot_test_schema.dot.hidedef"},
+		{false, false, "dot_test_schema.dot"},
+		{true, false, "dot_test_schema.dot.hidedef"},
+		{false, true, "dot_test_schema.dot.hide_not_related_column"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.wantFile, func(t *testing.T) {
@@ -27,6 +29,7 @@ func TestOutputSchema(t *testing.T) {
 				t.Error(err)
 			}
 			c.ER.HideDef = tt.hideDef
+			c.ER.HideNotRelatedColumn = tt.hideNotRelatedColumn
 			if err := c.LoadConfigFile(filepath.Join(testdataDir(), "out_test_tbls.yml")); err != nil {
 				t.Error(err)
 			}
