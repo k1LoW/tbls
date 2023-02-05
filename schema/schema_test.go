@@ -3,6 +3,7 @@ package schema
 import (
 	"database/sql"
 	"encoding/json"
+	"github.com/google/go-cmp/cmp"
 	"os"
 	"path/filepath"
 	"testing"
@@ -27,6 +28,40 @@ func TestSchema_FindTableByName(t *testing.T) {
 	got := table.Comment
 	if got != want {
 		t.Errorf("got %v\nwant %v", got, want)
+	}
+}
+
+func TestSchema_NewSchemaForTableGroup(t *testing.T) {
+	schema := newTestSchema(t)
+	tc := &Table{
+		Name:    "c",
+		Type:    "BASE TABLE",
+		Comment: "table c",
+		Columns: []*Column{
+			&Column{
+				Name:     "c1",
+				Comment:  "column c1",
+				Type:     "text",
+				Nullable: true,
+			},
+		},
+	}
+	schema.Tables = append(schema.Tables, tc)
+
+	groupName := "groupName"
+	want := &Schema{
+		Name:      groupName,
+		Tables:    schema.Tables[0:2],
+		Relations: schema.Relations,
+	}
+
+	got, err := schema.NewSchemaForTableGroup(groupName, []string{"a", "b"})
+	if err != nil {
+		t.Error(err)
+	}
+
+	if diff := cmp.Diff(got, want); diff != "" {
+		t.Errorf("schemas not equal\n%v", diff)
 	}
 }
 

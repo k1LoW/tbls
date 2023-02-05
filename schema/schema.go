@@ -207,13 +207,24 @@ L:
 	return nil, errors.Errorf("not found relation '%v, %v'", cs, pcs)
 }
 
-func (s *Schema) HasTableWithLabels() bool {
-	for _, t := range s.Tables {
-		if len(t.Labels) > 0 {
-			return true
+// NewSchemaForTableGroup create new instance Schema for table group ER diagram
+func (s *Schema) NewSchemaForTableGroup(groupName string, tableNames []string) (*Schema, error) {
+	groupSchema := &Schema{
+		Name: groupName,
+	}
+	for _, tableName := range tableNames {
+		table, err := s.FindTableByName(tableName)
+		if err != nil {
+			return nil, errors.WithStack(err)
+		}
+		groupSchema.Tables = append(groupSchema.Tables, table)
+	}
+	for _, relation := range s.Relations {
+		if contains(tableNames, relation.Table.Name) && contains(tableNames, relation.ParentTable.Name) {
+			groupSchema.Relations = append(groupSchema.Relations, relation)
 		}
 	}
-	return false
+	return groupSchema, nil
 }
 
 // FindColumnByName find column by column name

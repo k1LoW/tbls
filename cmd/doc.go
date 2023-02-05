@@ -130,6 +130,7 @@ func withDot(s *schema.Schema, c *config.Config, force bool) error {
 		return errors.WithStack(err)
 	}
 
+	// schema
 	erFileName := fmt.Sprintf("schema.%s", erFormat)
 	fmt.Printf("%s\n", filepath.Join(outputPath, erFileName))
 
@@ -140,6 +141,26 @@ func withDot(s *schema.Schema, c *config.Config, force bool) error {
 	g := gviz.New(c)
 	if err := g.OutputSchema(file, s); err != nil {
 		return errors.WithStack(err)
+	}
+
+	// group schema
+	for _, tableGroup := range c.Format.TableGroups {
+		groupSchema, err := s.NewSchemaForTableGroup(tableGroup.Name, tableGroup.Tables)
+		if err != nil {
+			return errors.WithStack(err)
+		}
+
+		groupErFileName := fmt.Sprintf("%s_group_schema.%s", tableGroup.Name, erFormat)
+		fmt.Printf("%s\n", filepath.Join(outputPath, groupErFileName))
+
+		file, err := os.OpenFile(filepath.Join(fullPath, groupErFileName), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644) // #nosec
+		if err != nil {
+			return errors.WithStack(err)
+		}
+		g := gviz.New(c)
+		if err := g.OutputSchema(file, groupSchema); err != nil {
+			return errors.WithStack(err)
+		}
 	}
 
 	// tables
@@ -240,4 +261,13 @@ func init() {
 		_, _ = fmt.Fprintf(os.Stderr, "%s\n", err)
 		os.Exit(1)
 	}
+}
+
+func contains(s []string, e string) bool {
+	for _, v := range s {
+		if e == v {
+			return true
+		}
+	}
+	return false
 }

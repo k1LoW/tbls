@@ -620,6 +620,18 @@ format:
   hideColumnsWithoutValues: true
   # It can be boolean or array
   # hideColumnsWithoutValues: ["Parents", "Children"]
+  # Table group setting. If this sections is not set, Table lists are displayed ungrouped (default).
+  tableGroups:
+    -
+      name: user
+      tables:
+        - user
+        - user_options
+    -
+      name: comment
+      tables:
+        - comment_stars
+        - comments
 ```
 
 ### ER diagram

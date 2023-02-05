@@ -16,8 +16,32 @@
 {{- end }}
 
 ## {{ "Tables" | lookup }}
-{{ range $t := .Tables }}
+{{- if eq (len .TableGroupNames) 0 }}
+{{ range $t := .AllTables }}
 |{{ range $d := $t }} {{ $d | nl2br }} |{{ end }}
+{{- end -}}
+{{- else }}
+{{- range $tableGroupName := .TableGroupNames -}}
+{{ $tables := index $.GroupTables $tableGroupName }}
+<details>
+<summary>{{ $tableGroupName }}</summary>
+
+### Group Tables
+{{ range $t := $tables }}
+|{{ range $d := $t }} {{ $d | nl2br }} |{{ end }}
+{{- end }}
+
+### Group Relations
+
+{{ index $.groupErDiagrams $tableGroupName }}
+</details>
+{{ end }}
+{{- if ne (len .OutsideGroupTables) 0 }}
+### {{ "Other" | lookup }}
+{{ range $t := .OutsideGroupTables }}
+|{{ range $d := $t }} {{ $d | nl2br }} |{{ end }}
+{{- end -}}
+{{- end -}}
 {{- end -}}
 {{- if .er }}
 

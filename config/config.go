@@ -71,11 +71,18 @@ type DSN struct {
 
 // Format is document format setting
 type Format struct {
-	Adjust                   bool     `yaml:"adjust,omitempty"`
-	Sort                     bool     `yaml:"sort,omitempty"`
-	Number                   bool     `yaml:"number,omitempty"`
-	ShowOnlyFirstParagraph   bool     `yaml:"showOnlyFirstParagraph,omitempty"`
-	HideColumnsWithoutValues []string `yaml:"hideColumnsWithoutValues,omitempty"`
+	Adjust                   bool         `yaml:"adjust,omitempty"`
+	Sort                     bool         `yaml:"sort,omitempty"`
+	Number                   bool         `yaml:"number,omitempty"`
+	ShowOnlyFirstParagraph   bool         `yaml:"showOnlyFirstParagraph,omitempty"`
+	HideColumnsWithoutValues []string     `yaml:"hideColumnsWithoutValues,omitempty"`
+	TableGroups              []TableGroup `yaml:"tableGroups,omitempty"`
+}
+
+// TableGroup is grouping table setting
+type TableGroup struct {
+	Name   string   `yaml:"name,omitempty"`
+	Tables []string `yaml:"tables,omitempty"`
 }
 
 // ER is er setting

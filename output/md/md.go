@@ -82,6 +82,7 @@ func (m *Md) OutputSchema(wr io.Writer, s *schema.Schema) error {
 	}
 	tmpl := template.Must(template.New("index").Funcs(output.Funcs(&m.config.MergedDict)).Parse(ts))
 	templateData := m.makeSchemaTemplateData(s)
+	groupErDiagrams := map[string]string{}
 	switch m.config.ER.Format {
 	case "mermaid":
 		buf := new(bytes.Buffer)
@@ -91,6 +92,17 @@ func (m *Md) OutputSchema(wr io.Writer, s *schema.Schema) error {
 		}
 		templateData["er"] = !m.config.ER.Skip
 		templateData["erDiagram"] = fmt.Sprintf("```mermaid\n%s```", buf.String())
+		for _, tableGroup := range m.config.Format.TableGroups {
+			buf := new(bytes.Buffer)
+			groupSchema, err := s.NewSchemaForTableGroup(tableGroup.Name, tableGroup.Tables)
+			if err != nil {
+				return errors.WithStack(err)
+			}
+			if err := mmd.OutputSchema(buf, groupSchema); err != nil {
+				return err
+			}
+			groupErDiagrams[tableGroup.Name] = fmt.Sprintf("```mermaid\n%s```", buf.String())
+		}
 	default:
 		if m.er {
 			templateData["er"] = !m.config.ER.Skip
@@ -98,8 +110,12 @@ func (m *Md) OutputSchema(wr io.Writer, s *schema.Schema) error {
 			templateData["er"] = false
 		}
 		templateData["erDiagram"] = fmt.Sprintf("![er](%sschema.%s)", m.config.BaseUrl, m.config.ER.Format)
+		for _, tableGroup := range m.config.Format.TableGroups {
+			groupErDiagrams[tableGroup.Name] = fmt.Sprintf("![er](%s%s_group_schema.%s)", m.config.BaseUrl, tableGroup.Name, m.config.ER.Format)
+		}
 	}
 
+	templateData["groupErDiagrams"] = groupErDiagrams
 	templateData["showOnlyFirstParagraph"] = m.config.Format.ShowOnlyFirstParagraph
 	err = tmpl.Execute(wr, templateData)
 	if err != nil {
@@ -464,11 +480,18 @@ func outputExists(s *schema.Schema, path string) bool {
 	return false
 }
 
-func (m *Md) makeSchemaTemplateData(s *schema.Schema) map[string]interface{} {
-	number := m.config.Format.Number
-	adjust := m.config.Format.Adjust
+func containsTableWithLabels(tables []*schema.Table) bool {
+	for _, t := range tables {
+		if len(t.Labels) > 0 {
+			return true
+		}
+	}
+	return false
+}
 
-	tablesData := [][]string{}
+func (m *Md) makeTablesData(tables []*schema.Table) [][]string {
+	var tablesData [][]string
+
 	tablesHeader := []string{
 		m.config.MergedDict.Lookup("Name"),
 		m.config.MergedDict.Lookup("Columns"),
@@ -477,7 +500,7 @@ func (m *Md) makeSchemaTemplateData(s *schema.Schema) map[string]interface{} {
 	}
 	tablesHeaderLine := []string{"----", "-------", "-------", "----"}
 
-	if s.HasTableWithLabels() {
+	if containsTableWithLabels(tables) {
 		tablesHeader = append(tablesHeader, m.config.MergedDict.Lookup("Labels"))
 		tablesHeaderLine = append(tablesHeaderLine, "------")
 	}
@@ -487,7 +510,7 @@ func (m *Md) makeSchemaTemplateData(s *schema.Schema) map[string]interface{} {
 		tablesHeaderLine,
 	)
 
-	for _, t := range s.Tables {
+	for _, t := range tables {
 		comment := t.Comment
 		if m.config.Format.ShowOnlyFirstParagraph {
 			comment = output.ShowOnlyFirstParagraph(comment)
@@ -498,14 +521,52 @@ func (m *Md) makeSchemaTemplateData(s *schema.Schema) map[string]interface{} {
 			comment,
 			t.Type,
 		}
-		if s.HasTableWithLabels() {
+		if containsTableWithLabels(tables) {
 			data = append(data, output.LabelJoin(t.Labels))
 		}
+
 		tablesData = append(tablesData, data)
 	}
 
+	return tablesData
+}
+
+func (m *Md) makeSchemaTemplateData(s *schema.Schema) map[string]interface{} {
+	number := m.config.Format.Number
+	adjust := m.config.Format.Adjust
+
+	tableGroupsMap := map[string][]string{}
+	for _, tableGroup := range m.config.Format.TableGroups {
+		for _, table := range tableGroup.Tables {
+			tableGroupsMap[table] = append(tableGroupsMap[table], tableGroup.Name)
+		}
+	}
+
+	groupTables := map[string][]*schema.Table{}
+	var outsideGroupTables []*schema.Table
+	for _, t := range s.Tables {
+		if tableGroups, ok := tableGroupsMap[t.Name]; ok {
+			for _, tableGroup := range tableGroups {
+				groupTables[tableGroup] = append(groupTables[tableGroup], t)
+			}
+		} else {
+			outsideGroupTables = append(outsideGroupTables, t)
+		}
+	}
+
+	allTablesData := m.makeTablesData(s.Tables)
+	groupTablesData := map[string][][]string{}
+	for groupName, tables := range groupTables {
+		groupTablesData[groupName] = m.makeTablesData(tables)
+	}
+	outsideGroupTablesData := m.makeTablesData(outsideGroupTables)
+
 	if number {
-		tablesData = m.addNumberToTable(tablesData)
+		allTablesData = m.addNumberToTable(allTablesData)
+		for _, tablesData := range groupTablesData {
+			tablesData = m.addNumberToTable(tablesData)
+		}
+		outsideGroupTablesData = m.addNumberToTable(outsideGroupTablesData)
 	}
 
 	tablesSubroutineData := [][]string{}
@@ -532,17 +593,28 @@ func (m *Md) makeSchemaTemplateData(s *schema.Schema) map[string]interface{} {
 	}
 
 	if adjust {
-		return map[string]interface{}{
-			"Schema":    s,
-			"Tables":    adjustTable(tablesData),
-			"Functions": adjustTable(tablesSubroutineData),
+		allTablesData = adjustTable(allTablesData)
+		for _, tablesData := range groupTablesData {
+			tablesData = adjustTable(tablesData)
+		}
+		outsideGroupTablesData = adjustTable(outsideGroupTablesData)
+		tablesSubroutineData = adjustTable(tablesSubroutineData)
+	}
+
+	var tableGroupNames []string
+	for _, tableGroup := range m.config.Format.TableGroups {
+		if _, ok := groupTablesData[tableGroup.Name]; ok {
+			tableGroupNames = append(tableGroupNames, tableGroup.Name)
 		}
 	}
 
 	return map[string]interface{}{
-		"Schema":    s,
-		"Tables":    tablesData,
-		"Functions": tablesSubroutineData,
+		"Schema":             s,
+		"AllTables":          allTablesData,
+		"TableGroupNames":    tableGroupNames,
+		"GroupTables":        groupTablesData,
+		"OutsideGroupTables": outsideGroupTablesData,
+		"Functions":          tablesSubroutineData,
 	}
 }
 
