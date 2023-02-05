@@ -312,8 +312,8 @@ func (t *Table) ShowColumn(name string, hideColumns []string) bool {
 }
 
 // FindShowColumnsForER find show columns for ER Diagram
-func (t *Table) FindShowColumnsForER(isShowAllColumns bool, relations []*Relation) []*Column {
-	if isShowAllColumns {
+func (t *Table) FindShowColumnsForER(hideNotRelatedColumn bool, relations []*Relation) []*Column {
+	if !hideNotRelatedColumn {
 		return t.Columns
 	}
 

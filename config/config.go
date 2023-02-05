@@ -80,13 +80,18 @@ type Format struct {
 
 // ER is er setting
 type ER struct {
-	Skip                 bool   `yaml:"skip,omitempty"`
-	Format               string `yaml:"format,omitempty"`
-	Comment              bool   `yaml:"comment,omitempty"`
-	HideDef              bool   `yaml:"hideDef,omitempty"`
-	HideNotRelatedColumn bool   `yaml:"hideNotRelatedColumn,omitempty"`
-	Distance             *int   `yaml:"distance,omitempty"`
-	Font                 string `yaml:"font,omitempty"`
+	Skip            bool            `yaml:"skip,omitempty"`
+	Format          string          `yaml:"format,omitempty"`
+	Comment         bool            `yaml:"comment,omitempty"`
+	HideDef         bool            `yaml:"hideDef,omitempty"`
+	HideColumnTypes HideColumnTypes `yaml:"hideColumnTypes,omitempty"`
+	Distance        *int            `yaml:"distance,omitempty"`
+	Font            string          `yaml:"font,omitempty"`
+}
+
+// HideColumnTypes is hide column setting for ER diagram
+type HideColumnTypes struct {
+	NotRelated bool `yaml:"notRelated,omitempty"`
 }
 
 // AdditionalRelation is the struct for table relation from yaml

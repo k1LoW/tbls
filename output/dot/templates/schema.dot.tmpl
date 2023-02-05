@@ -1,6 +1,6 @@
 {{- $sc := .showComment -}}
 {{- $sd := .showDef -}}
-{{- $sac := .showAllColumns -}}
+{{- $hideNotRelated := .hideColumnTypes.NotRelated -}}
 digraph "{{ .Schema.Name }}" {
   // Config
   graph [rankdir=TB, layout=dot, fontname="Arial"];
@@ -11,7 +11,7 @@ digraph "{{ .Schema.Name }}" {
   {{- range $i, $t := .Schema.Tables }}
   "{{ $t.Name }}" [shape=none, label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="6">
                  <tr><td bgcolor="#EFEFEF"><font face="Arial Bold" point-size="18">{{ $t.Name | html }}</font> <font color="#666666">[{{ $t.Type | html }}]</font>{{ if $sc }}{{ if ne $t.Comment "" }}<br /><font color="#333333">{{ $t.Comment | html | nl2br_slash }}</font>{{ end }}{{ end }}</td></tr>
-                 {{- $columns := $t.FindShowColumnsForER $sac $.Schema.Relations }}
+                 {{- $columns := $t.FindShowColumnsForER $hideNotRelated $.Schema.Relations }}
                  {{- range $ii, $c := $columns }}
                  <tr><td port="{{ $c.Name | html }}" align="left">{{ $c.Name | html }} <font color="#666666">[{{ $c.Type | html }}]</font>{{ if $sc }}{{ if ne $c.Comment "" }} {{ $c.Comment | html | nl2space }}{{ end }}{{ end }}</td></tr>
                  {{- end }}

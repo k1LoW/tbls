@@ -14,13 +14,13 @@ import (
 
 func TestOutputSchema(t *testing.T) {
 	tests := []struct {
-		hideDef              bool
-		hideNotRelatedColumn bool
-		wantFile             string
+		hideDef         bool
+		hideColumnTypes config.HideColumnTypes
+		wantFile        string
 	}{
-		{false, false, "mermaid_test_schema"},
-		{true, false, "mermaid_test_schema.hidedef"},
-		{false, true, "mermaid_test_schema.hide_not_related_column"},
+		{false, config.HideColumnTypes{NotRelated: false}, "mermaid_test_schema"},
+		{true, config.HideColumnTypes{NotRelated: false}, "mermaid_test_schema.hidedef"},
+		{false, config.HideColumnTypes{NotRelated: true}, "mermaid_test_schema.hide_not_related_column"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.wantFile, func(t *testing.T) {
@@ -36,7 +36,7 @@ func TestOutputSchema(t *testing.T) {
 				t.Error(err)
 			}
 			c.ER.HideDef = tt.hideDef
-			c.ER.HideNotRelatedColumn = tt.hideNotRelatedColumn
+			c.ER.HideColumnTypes = tt.hideColumnTypes
 			o := New(c)
 			got := &bytes.Buffer{}
 			if err := o.OutputSchema(got, s); err != nil {
