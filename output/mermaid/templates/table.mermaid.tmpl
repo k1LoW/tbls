@@ -1,13 +1,13 @@
 erDiagram
 {{ $sc := .showComment -}}
 {{ $sd := .showDef -}}
-{{- $sac := .showAllColumns -}}
+{{- $hideNotRelated := .hideColumnTypes.NotRelated -}}
 {{- range $j, $r := .Relations }}
 "{{ $r.Table.Name }}" {{ $r.Cardinality | lcardi }}--{{ $r.ParentCardinality | rcardi }} "{{ $r.ParentTable.Name }}" : "{{ if $sd }}{{ $r.Def | html }}{{ end }}"
 {{- end }}
 
 "{{ .Table.Name }}" {
-{{- $columns := .Table.FindShowColumnsForER $sac .Relations }}
+{{- $columns := .Table.FindShowColumnsForER $hideNotRelated .Relations }}
 {{- range $i, $c := $columns }}
   {{ $c.Type | escape_mermaid }} {{ $c.Name }}{{ if $c.PK }} PK{{ end }}{{ if $c.FK }} FK{{ end }}{{ if $sc }} "{{ if ne $c.Comment "" }}\n{{ $c.Comment | html | escape_nl }}{{ end }}"{{ end }}
 {{- end }}
@@ -15,7 +15,7 @@ erDiagram
 
 {{- range $i, $t := .Tables }}
 "{{ $t.Name }}" {
-{{- $columns := $t.FindShowColumnsForER $sac $.Relations }}
+{{- $columns := $t.FindShowColumnsForER $hideNotRelated $.Relations }}
 {{- range $ii, $c := $columns }}
   {{ $c.Type | escape_mermaid }} {{ $c.Name }}{{ if $c.PK }} PK{{ end }}{{ if $c.FK }} FK{{ end }}{{ if $sc }} "{{ if ne $c.Comment "" }}\n{{ $c.Comment | html | escape_nl }}{{ end }}"{{ end }}
 {{- end }}
