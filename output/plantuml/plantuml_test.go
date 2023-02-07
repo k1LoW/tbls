@@ -15,12 +15,12 @@ import (
 func TestOutputSchema(t *testing.T) {
 	tests := []struct {
 		hideDef         bool
-		hideColumnTypes config.HideColumnTypes
+		showColumnTypes *config.ShowColumnTypes
 		wantFile        string
 	}{
-		{false, config.HideColumnTypes{NotRelated: false}, "plantuml_test_schema.puml"},
-		{true, config.HideColumnTypes{NotRelated: false}, "plantuml_test_schema.puml.hidedef"},
-		{false, config.HideColumnTypes{NotRelated: true}, "plantuml_test_schema.puml.hide_not_related_column"},
+		{false, nil, "plantuml_test_schema.puml"},
+		{true, nil, "plantuml_test_schema.puml.hidedef"},
+		{false, &config.ShowColumnTypes{Related: true}, "plantuml_test_schema.puml.hide_not_related_column"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.wantFile, func(t *testing.T) {
@@ -32,11 +32,11 @@ func TestOutputSchema(t *testing.T) {
 			if err := c.LoadConfigFile(filepath.Join(testdataDir(), "out_test_tbls.yml")); err != nil {
 				t.Error(err)
 			}
+			c.ER.HideDef = tt.hideDef
+			c.ER.ShowColumnTypes = tt.showColumnTypes
 			if err := c.ModifySchema(s); err != nil {
 				t.Error(err)
 			}
-			c.ER.HideDef = tt.hideDef
-			c.ER.HideColumnTypes = tt.hideColumnTypes
 			o := New(c)
 			got := &bytes.Buffer{}
 			err = o.OutputSchema(got, s)

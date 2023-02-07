@@ -80,18 +80,18 @@ type Format struct {
 
 // ER is er setting
 type ER struct {
-	Skip            bool            `yaml:"skip,omitempty"`
-	Format          string          `yaml:"format,omitempty"`
-	Comment         bool            `yaml:"comment,omitempty"`
-	HideDef         bool            `yaml:"hideDef,omitempty"`
-	HideColumnTypes HideColumnTypes `yaml:"hideColumnTypes,omitempty"`
-	Distance        *int            `yaml:"distance,omitempty"`
-	Font            string          `yaml:"font,omitempty"`
+	Skip            bool             `yaml:"skip,omitempty"`
+	Format          string           `yaml:"format,omitempty"`
+	Comment         bool             `yaml:"comment,omitempty"`
+	HideDef         bool             `yaml:"hideDef,omitempty"`
+	ShowColumnTypes *ShowColumnTypes `yaml:"showColumnTypes,omitempty"`
+	Distance        *int             `yaml:"distance,omitempty"`
+	Font            string           `yaml:"font,omitempty"`
 }
 
-// HideColumnTypes is hide column setting for ER diagram
-type HideColumnTypes struct {
-	NotRelated bool `yaml:"notRelated,omitempty"`
+// ShowColumnTypes is show column setting for ER diagram
+type ShowColumnTypes struct {
+	Related bool `yaml:"related,omitempty"`
 }
 
 // AdditionalRelation is the struct for table relation from yaml
@@ -394,17 +394,14 @@ func (c *Config) ModifySchema(s *schema.Schema) error {
 	if err := detectPKFK(s); err != nil {
 		return err
 	}
-	err := c.MergeAdditionalData(s)
-	if err != nil {
+	if err := c.MergeAdditionalData(s); err != nil {
 		return err
 	}
-	err = c.FilterTables(s)
-	if err != nil {
+	if err := c.FilterTables(s); err != nil {
 		return err
 	}
 	if c.Format.Sort {
-		err = s.Sort()
-		if err != nil {
+		if err := s.Sort(); err != nil {
 			return err
 		}
 	}
@@ -417,6 +414,9 @@ func (c *Config) ModifySchema(s *schema.Schema) error {
 	}
 	c.mergeDictFromSchema(s)
 	if err := detectCardinality(s); err != nil {
+		return err
+	}
+	if err := c.detectShowColumnsForER(s); err != nil {
 		return err
 	}
 	return nil
@@ -570,6 +570,30 @@ func (c *Config) NeedToGenerateERImages() bool {
 		return false
 	}
 	return true
+}
+
+func (c *Config) detectShowColumnsForER(s *schema.Schema) error {
+	if c.ER.ShowColumnTypes == nil {
+		return nil
+	}
+
+	if !c.ER.ShowColumnTypes.Related {
+		return errors.New("er.showColumnTypes: must be true at least one")
+	}
+
+	for _, t := range s.Tables {
+		for _, cc := range t.Columns {
+			// related
+			if t.Name == "a2" {
+				fmt.Printf("%#v\n", cc)
+			}
+			if c.ER.ShowColumnTypes.Related && cc.ChildRelations == nil && cc.ParentRelations == nil {
+				cc.HideForER = true
+			}
+		}
+	}
+
+	return nil
 }
 
 func mergeAdditionalRelations(s *schema.Schema, relations []AdditionalRelation) error {

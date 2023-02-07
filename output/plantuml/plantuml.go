@@ -72,7 +72,7 @@ func (p *PlantUML) OutputSchema(wr io.Writer, s *schema.Schema) error {
 		"Schema":          s,
 		"showComment":     p.config.ER.Comment,
 		"showDef":         !p.config.ER.HideDef,
-		"hideColumnTypes": p.config.ER.HideColumnTypes,
+		"showColumnTypes": p.config.ER.ShowColumnTypes,
 	})
 	if err != nil {
 		return errors.WithStack(err)
@@ -98,7 +98,7 @@ func (p *PlantUML) OutputTable(wr io.Writer, t *schema.Table) error {
 		"Relations":       relations,
 		"showComment":     p.config.ER.Comment,
 		"showDef":         !p.config.ER.HideDef,
-		"hideColumnTypes": p.config.ER.HideColumnTypes,
+		"showColumnTypes": p.config.ER.ShowColumnTypes,
 	})
 	if err != nil {
 		return errors.WithStack(err)

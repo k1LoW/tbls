@@ -72,7 +72,7 @@ func (m *Mermaid) OutputSchema(wr io.Writer, s *schema.Schema) error {
 		"Schema":          s,
 		"showComment":     m.config.ER.Comment,
 		"showDef":         !m.config.ER.HideDef,
-		"hideColumnTypes": m.config.ER.HideColumnTypes,
+		"showColumnTypes": m.config.ER.ShowColumnTypes,
 	})
 	if err != nil {
 		return errors.WithStack(err)
@@ -98,7 +98,7 @@ func (m *Mermaid) OutputTable(wr io.Writer, t *schema.Table) error {
 		"Relations":       relations,
 		"showComment":     m.config.ER.Comment,
 		"showDef":         !m.config.ER.HideDef,
-		"hideColumnTypes": m.config.ER.HideColumnTypes,
+		"showColumnTypes": m.config.ER.ShowColumnTypes,
 	})
 	if err != nil {
 		return errors.WithStack(err)

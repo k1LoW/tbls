@@ -72,7 +72,7 @@ func (d *Dot) OutputSchema(wr io.Writer, s *schema.Schema) error {
 		"Schema":          s,
 		"showComment":     d.config.ER.Comment,
 		"showDef":         !d.config.ER.HideDef,
-		"hideColumnTypes": d.config.ER.HideColumnTypes,
+		"showColumnTypes": d.config.ER.ShowColumnTypes,
 	})
 	if err != nil {
 		return errors.WithStack(err)
@@ -99,7 +99,7 @@ func (d *Dot) OutputTable(wr io.Writer, t *schema.Table) error {
 		"Relations":       relations,
 		"showComment":     d.config.ER.Comment,
 		"showDef":         !d.config.ER.HideDef,
-		"hideColumnTypes": d.config.ER.HideColumnTypes,
+		"showColumnTypes": d.config.ER.ShowColumnTypes,
 	})
 	if err != nil {
 		return errors.WithStack(err)

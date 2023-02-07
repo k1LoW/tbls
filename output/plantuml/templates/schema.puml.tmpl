@@ -1,7 +1,6 @@
 @startuml
 {{ $sc := .showComment -}}
 {{- $sd := .showDef -}}
-{{- $hideNotRelated := .hideColumnTypes.NotRelated -}}
 !define table(name, desc) entity name as "desc" << (T,#5DBCD2) >>
 !define view(name, desc) entity name as "desc" << (V,#C6EDDB) >>
 !define column(name, type, desc) name <font color="#666666">[type]</font><font color="#333333">desc</font>
@@ -21,8 +20,8 @@ table("{{ $t.Name }}", "{{ $t.Name }}{{ if $sc }}{{ if ne $t.Comment "" }}\n{{ $
 {{- else }}
 view("{{ $t.Name }}", "{{ $t.Name }}{{ if $sc }}{{ if ne $t.Comment "" }}\n{{ $t.Comment | html | escape_nl }}{{ end }}{{ end }}") {
 {{- end }}
-{{- $columns := $t.FindShowColumnsForER $hideNotRelated $.Schema.Relations }}
-{{- range $ii, $c := $columns }}
+{{- range $ii, $c := $t.Columns }}
+  {{- if $c.HideForER }}{{ continue }}{{ end }}
   column("{{ if $c.PK}}+ {{ end }}{{ if $c.FK }}# {{ end }}{{ $c.Name | html }}", "{{ $c.Type | html }}", "{{ if $sc }}{{ if ne $c.Comment "" }} {{ $c.Comment | html | nl2space }}{{ end }}{{ end }}")
 {{- end }}
 }

@@ -15,12 +15,12 @@ import (
 func TestOutputSchema(t *testing.T) {
 	tests := []struct {
 		hideDef         bool
-		hideColumnTypes config.HideColumnTypes
+		showColumnTypes *config.ShowColumnTypes
 		wantFile        string
 	}{
-		{false, config.HideColumnTypes{NotRelated: false}, "mermaid_test_schema"},
-		{true, config.HideColumnTypes{NotRelated: false}, "mermaid_test_schema.hidedef"},
-		{false, config.HideColumnTypes{NotRelated: true}, "mermaid_test_schema.hide_not_related_column"},
+		{false, nil, "mermaid_test_schema"},
+		{true, nil, "mermaid_test_schema.hidedef"},
+		{false, &config.ShowColumnTypes{Related: true}, "mermaid_test_schema.hide_not_related_column"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.wantFile, func(t *testing.T) {
@@ -32,11 +32,11 @@ func TestOutputSchema(t *testing.T) {
 			if err := c.LoadConfigFile(filepath.Join(testdataDir(), "out_test_tbls.yml")); err != nil {
 				t.Error(err)
 			}
+			c.ER.HideDef = tt.hideDef
+			c.ER.ShowColumnTypes = tt.showColumnTypes
 			if err := c.ModifySchema(s); err != nil {
 				t.Error(err)
 			}
-			c.ER.HideDef = tt.hideDef
-			c.ER.HideColumnTypes = tt.hideColumnTypes
 			o := New(c)
 			got := &bytes.Buffer{}
 			if err := o.OutputSchema(got, s); err != nil {

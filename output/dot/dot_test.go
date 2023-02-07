@@ -14,12 +14,12 @@ import (
 func TestOutputSchema(t *testing.T) {
 	tests := []struct {
 		hideDef         bool
-		hideColumnTypes config.HideColumnTypes
+		showColumnTypes *config.ShowColumnTypes
 		wantFile        string
 	}{
-		{false, config.HideColumnTypes{NotRelated: false}, "dot_test_schema.dot"},
-		{true, config.HideColumnTypes{NotRelated: false}, "dot_test_schema.dot.hidedef"},
-		{false, config.HideColumnTypes{NotRelated: true}, "dot_test_schema.dot.hide_not_related_column"},
+		{false, nil, "dot_test_schema.dot"},
+		{true, nil, "dot_test_schema.dot.hidedef"},
+		{false, &config.ShowColumnTypes{Related: true}, "dot_test_schema.dot.hide_not_related_column"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.wantFile, func(t *testing.T) {
@@ -28,11 +28,11 @@ func TestOutputSchema(t *testing.T) {
 			if err != nil {
 				t.Error(err)
 			}
-			c.ER.HideDef = tt.hideDef
-			c.ER.HideColumnTypes = tt.hideColumnTypes
 			if err := c.LoadConfigFile(filepath.Join(testdataDir(), "out_test_tbls.yml")); err != nil {
 				t.Error(err)
 			}
+			c.ER.HideDef = tt.hideDef
+			c.ER.ShowColumnTypes = tt.showColumnTypes
 			if err := c.ModifySchema(s); err != nil {
 				t.Error(err)
 			}
