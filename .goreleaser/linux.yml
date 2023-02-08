@@ -26,6 +26,7 @@ archives:
   id: tbls-archive
   name_template: '{{ .ProjectName }}_v{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
   files:
+    - LICENSE
     - CREDITS
     - README.md
     - CHANGELOG.md

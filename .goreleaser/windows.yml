@@ -3,7 +3,7 @@ before:
     - go mod download
     - go mod tidy
 builds:
--  
+-
   id: tbls-windows
   flags:
     - -a
@@ -19,7 +19,7 @@ builds:
   goos:
     - windows
   goarch:
-    - amd64  
+    - amd64
 archives:
 -
   id: tbls-archive
@@ -28,6 +28,7 @@ archives:
     - goos: windows
       format: zip
   files:
+    - LICENSE
     - CREDITS
     - README.md
     - CHANGELOG.md
