@@ -604,7 +604,9 @@ func TestDetectShowColumnsForER(t *testing.T) {
 			}
 			c.ER.ShowColumnTypes = tt.showColumnTypes
 			s := newTestSchemaViaJSON(t)
-			c.ModifySchema(s)
+			if err := c.ModifySchema(s); err != nil {
+				t.Fatal(err)
+			}
 			var (
 				gotColumnCount   int
 				gotRelationCount int
