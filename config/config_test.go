@@ -585,6 +585,52 @@ func TestNeedToGenerateERImages(t *testing.T) {
 	}
 }
 
+func TestDetectShowColumnsForER(t *testing.T) {
+	tests := []struct {
+		showColumnTypes   *ShowColumnTypes
+		wantColumnCount   int
+		wantRelationCount int
+	}{
+		{nil, 13, 3},
+		{&ShowColumnTypes{Related: true, Primary: false}, 5, 3},
+		{&ShowColumnTypes{Related: false, Primary: true}, 0, 0},
+		{&ShowColumnTypes{Related: true, Primary: true}, 5, 3},
+	}
+	for _, tt := range tests {
+		t.Run(fmt.Sprintf("%v", tt.showColumnTypes), func(t *testing.T) {
+			c, err := New()
+			if err != nil {
+				t.Fatal(err)
+			}
+			c.ER.ShowColumnTypes = tt.showColumnTypes
+			s := newTestSchemaViaJSON(t)
+			c.ModifySchema(s)
+			var (
+				gotColumnCount   int
+				gotRelationCount int
+			)
+			for _, tt := range s.Tables {
+				for _, cc := range tt.Columns {
+					if !cc.HideForER {
+						gotColumnCount++
+					}
+				}
+			}
+			for _, r := range s.Relations {
+				if !r.HideForER {
+					gotRelationCount++
+				}
+			}
+			if gotColumnCount != tt.wantColumnCount {
+				t.Errorf("got %v\nwant %v", gotColumnCount, tt.wantColumnCount)
+			}
+			if gotRelationCount != tt.wantRelationCount {
+				t.Errorf("got %v\nwant %v", gotRelationCount, tt.wantRelationCount)
+			}
+		})
+	}
+}
+
 func newTestSchemaViaJSON(t *testing.T) *schema.Schema {
 	t.Helper()
 	s := &schema.Schema{}

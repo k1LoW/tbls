@@ -26,6 +26,7 @@ digraph "{{ .Table.Name }}" {
 
   // Relations
   {{- range $i, $r := .Relations }}
+  {{- if $r.HideForER }}{{ continue }}{{ end }}
   "{{ $r.Table.Name }}":{{ $c := index $r.Columns 0 }}"{{ $c.Name }}" -> "{{ $r.ParentTable.Name }}":{{ $pc := index $r.ParentColumns 0 }}"{{ $pc.Name }}" [dir=back, arrowtail=crow, {{ if $r.Virtual }}style ="dashed",{{ end }} taillabel=<<table cellpadding="5" border="0" cellborder="0"><tr><td>{{ if $sd }}{{ $r.Def | html }}{{ end }}</td></tr></table>>];
   {{- end }}
 }

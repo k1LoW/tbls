@@ -29,6 +29,7 @@ view("{{ $t.Name }}", "{{ $t.Name }}{{ if $sc }}{{ if ne $t.Comment "" }}\n{{ $t
 
 ' relations
 {{- range $j, $r := .Schema.Relations }}
+{{- if $r.HideForER }}{{ continue }}{{ end }}
 "{{ $r.Table.Name }}" {{ $r.Cardinality | lcardi }}--{{ $r.ParentCardinality | rcardi }} "{{ $r.ParentTable.Name }}" : "{{ if $sd }}{{ $r.Def | html }}{{ end }}"
 {{- end }}
 
