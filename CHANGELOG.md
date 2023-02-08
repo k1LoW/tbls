@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.62.0](https://github.com/k1LoW/tbls/compare/v1.61.0...v1.62.0) - 2023-02-08
+- Bundle LICENSE file by @k1LoW in https://github.com/k1LoW/tbls/pull/433
+- Add `er.showColumnTypes.related:` for showing related columns only by @k1LoW in https://github.com/k1LoW/tbls/pull/432
+- Add `er.hideColumnTypes:notRelated:` for hiding not related columns by @yasu89 in https://github.com/k1LoW/tbls/pull/430
+- Add `er.showColumnTypes.primary:` for showing primary key columns only by @k1LoW in https://github.com/k1LoW/tbls/pull/435
+
 ## [v1.61.0](https://github.com/k1LoW/tbls/compare/v1.60.0...v1.61.0) - 2023-02-02
 - Added options for curl to skip downloading of tbls if the newest file exists by @usmanovbf in https://github.com/k1LoW/tbls/pull/423
 - Fixed position of a comment in the `use` script by @rsky in https://github.com/k1LoW/tbls/pull/426
