@@ -563,8 +563,8 @@ func (m *Md) makeSchemaTemplateData(s *schema.Schema) map[string]interface{} {
 
 	if number {
 		allTablesData = m.addNumberToTable(allTablesData)
-		for _, tablesData := range groupTablesData {
-			tablesData = m.addNumberToTable(tablesData)
+		for groupName, _ := range groupTablesData {
+			groupTablesData[groupName] = m.addNumberToTable(groupTablesData[groupName])
 		}
 		outsideGroupTablesData = m.addNumberToTable(outsideGroupTablesData)
 	}
@@ -594,8 +594,8 @@ func (m *Md) makeSchemaTemplateData(s *schema.Schema) map[string]interface{} {
 
 	if adjust {
 		allTablesData = adjustTable(allTablesData)
-		for _, tablesData := range groupTablesData {
-			tablesData = adjustTable(tablesData)
+		for groupName, _ := range groupTablesData {
+			groupTablesData[groupName] = adjustTable(groupTablesData[groupName])
 		}
 		outsideGroupTablesData = adjustTable(outsideGroupTablesData)
 		tablesSubroutineData = adjustTable(tablesSubroutineData)
