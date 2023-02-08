@@ -14,11 +14,13 @@ import (
 
 func TestOutputSchema(t *testing.T) {
 	tests := []struct {
-		hideDef  bool
-		wantFile string
+		hideDef         bool
+		showColumnTypes *config.ShowColumnTypes
+		wantFile        string
 	}{
-		{false, "plantuml_test_schema.puml"},
-		{true, "plantuml_test_schema.puml.hidedef"},
+		{false, nil, "plantuml_test_schema.puml"},
+		{true, nil, "plantuml_test_schema.puml.hidedef"},
+		{false, &config.ShowColumnTypes{Related: true}, "plantuml_test_schema.puml.hide_not_related_column"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.wantFile, func(t *testing.T) {
@@ -30,10 +32,11 @@ func TestOutputSchema(t *testing.T) {
 			if err := c.LoadConfigFile(filepath.Join(testdataDir(), "out_test_tbls.yml")); err != nil {
 				t.Error(err)
 			}
+			c.ER.HideDef = tt.hideDef
+			c.ER.ShowColumnTypes = tt.showColumnTypes
 			if err := c.ModifySchema(s); err != nil {
 				t.Error(err)
 			}
-			c.ER.HideDef = tt.hideDef
 			o := New(c)
 			got := &bytes.Buffer{}
 			err = o.OutputSchema(got, s)

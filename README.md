@@ -641,6 +641,10 @@ er:
   # Hide relation definition from ER diagram
   # Default is false
   hideDef: true
+  # Show column settings in ER diagram. If this section is not set, all columns will be displayed (default).
+  showColumnTypes:
+    # Show related columns
+    related: true
   # Distance between tables that display relations in the ER
   # Default is 1
   distance: 2

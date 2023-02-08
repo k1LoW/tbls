@@ -1,0 +1,25 @@
+@startuml
+!define table(name, desc) entity name as "desc" << (T,#5DBCD2) >>
+!define view(name, desc) entity name as "desc" << (V,#C6EDDB) >>
+!define column(name, type, desc) name <font color="#666666">[type]</font><font color="#333333">desc</font>
+hide methods
+hide stereotypes
+
+skinparam class {
+  BackgroundColor White
+  BorderColor #6E6E6E
+  ArrowColor #6E6E6E
+}
+
+' tables
+table("a", "a") {
+  column("+ a", "INTEGER", "")
+}
+table("b", "b") {
+  column("# b", "INTEGER", "")
+}
+
+' relations
+"b" }|--|| "a" : "FOREIGN KEY (b) REFERENCES a(a)"
+
+@enduml

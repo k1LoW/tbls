@@ -86,6 +86,7 @@ type Column struct {
 	ChildRelations  []*Relation     `json:"-"`
 	PK              bool            `json:"-"`
 	FK              bool            `json:"-"`
+	HideForER       bool            `json:"-"`
 }
 
 // Table is the struct for database table

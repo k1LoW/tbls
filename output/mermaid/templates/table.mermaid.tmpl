@@ -7,6 +7,7 @@ erDiagram
 
 "{{ .Table.Name }}" {
 {{- range $i, $c := .Table.Columns }}
+  {{- if $c.HideForER }}{{ continue }}{{ end }}
   {{ $c.Type | escape_mermaid }} {{ $c.Name }}{{ if $c.PK }} PK{{ end }}{{ if $c.FK }} FK{{ end }}{{ if $sc }} "{{ if ne $c.Comment "" }}\n{{ $c.Comment | html | escape_nl }}{{ end }}"{{ end }}
 {{- end }}
 }
@@ -14,6 +15,7 @@ erDiagram
 {{- range $i, $t := .Tables }}
 "{{ $t.Name }}" {
 {{- range $ii, $c := $t.Columns }}
+  {{- if $c.HideForER }}{{ continue }}{{ end }}
   {{ $c.Type | escape_mermaid }} {{ $c.Name }}{{ if $c.PK }} PK{{ end }}{{ if $c.FK }} FK{{ end }}{{ if $sc }} "{{ if ne $c.Comment "" }}\n{{ $c.Comment | html | escape_nl }}{{ end }}"{{ end }}
 {{- end }}
 }
