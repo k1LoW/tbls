@@ -584,9 +584,6 @@ func (c *Config) detectShowColumnsForER(s *schema.Schema) error {
 	for _, t := range s.Tables {
 		for _, cc := range t.Columns {
 			// related
-			if t.Name == "a2" {
-				fmt.Printf("%#v\n", cc)
-			}
 			if c.ER.ShowColumnTypes.Related && cc.ChildRelations == nil && cc.ParentRelations == nil {
 				cc.HideForER = true
 			}

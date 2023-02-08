@@ -69,10 +69,9 @@ func (d *Dot) OutputSchema(wr io.Writer, s *schema.Schema) error {
 	}
 	tmpl := template.Must(template.New(s.Name).Funcs(output.Funcs(&d.config.MergedDict)).Parse(ts))
 	err = tmpl.Execute(wr, map[string]interface{}{
-		"Schema":          s,
-		"showComment":     d.config.ER.Comment,
-		"showDef":         !d.config.ER.HideDef,
-		"showColumnTypes": d.config.ER.ShowColumnTypes,
+		"Schema":      s,
+		"showComment": d.config.ER.Comment,
+		"showDef":     !d.config.ER.HideDef,
 	})
 	if err != nil {
 		return errors.WithStack(err)
@@ -94,12 +93,11 @@ func (d *Dot) OutputTable(wr io.Writer, t *schema.Table) error {
 	}
 	tmpl := template.Must(template.New(t.Name).Funcs(output.Funcs(&d.config.MergedDict)).Parse(ts))
 	err = tmpl.Execute(wr, map[string]interface{}{
-		"Table":           tables[0],
-		"Tables":          tables[1:],
-		"Relations":       relations,
-		"showComment":     d.config.ER.Comment,
-		"showDef":         !d.config.ER.HideDef,
-		"showColumnTypes": d.config.ER.ShowColumnTypes,
+		"Table":       tables[0],
+		"Tables":      tables[1:],
+		"Relations":   relations,
+		"showComment": d.config.ER.Comment,
+		"showDef":     !d.config.ER.HideDef,
 	})
 	if err != nil {
 		return errors.WithStack(err)
