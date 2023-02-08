@@ -92,6 +92,7 @@ type ER struct {
 // ShowColumnTypes is show column setting for ER diagram
 type ShowColumnTypes struct {
 	Related bool `yaml:"related,omitempty"`
+	Primary bool `yaml:"primary,omitempty"`
 }
 
 // AdditionalRelation is the struct for table relation from yaml
@@ -577,15 +578,26 @@ func (c *Config) detectShowColumnsForER(s *schema.Schema) error {
 		return nil
 	}
 
-	if !c.ER.ShowColumnTypes.Related {
+	if !c.ER.ShowColumnTypes.Related && !c.ER.ShowColumnTypes.Primary {
 		return errors.New("er.showColumnTypes: must be true at least one")
 	}
 
 	for _, t := range s.Tables {
 		for _, cc := range t.Columns {
-			// related
-			if c.ER.ShowColumnTypes.Related && cc.ChildRelations == nil && cc.ParentRelations == nil {
+			if c.ER.ShowColumnTypes.Related && (cc.ChildRelations != nil || cc.ParentRelations != nil) {
+				// related
+				cc.HideForER = false
+			} else if c.ER.ShowColumnTypes.Primary && cc.PK {
+				// primary
+				cc.HideForER = false
+			} else {
 				cc.HideForER = true
+				for _, r := range cc.ChildRelations {
+					r.HideForER = true
+				}
+				for _, r := range cc.ParentRelations {
+					r.HideForER = true
+				}
 			}
 		}
 	}

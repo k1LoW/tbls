@@ -645,6 +645,8 @@ er:
   showColumnTypes:
     # Show related columns
     related: true
+    # Show primary key columns
+    primary: true
   # Distance between tables that display relations in the ER
   # Default is 1
   distance: 2

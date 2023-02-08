@@ -2,6 +2,7 @@ erDiagram
 {{ $sc := .showComment -}}
 {{ $sd := .showDef -}}
 {{- range $j, $r := .Relations }}
+{{- if $r.HideForER }}{{ continue }}{{ end }}
 "{{ $r.Table.Name }}" {{ $r.Cardinality | lcardi }}--{{ $r.ParentCardinality | rcardi }} "{{ $r.ParentTable.Name }}" : "{{ if $sd }}{{ $r.Def | html }}{{ end }}"
 {{- end }}
 

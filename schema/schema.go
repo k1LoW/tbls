@@ -114,6 +114,7 @@ type Relation struct {
 	ParentCardinality Cardinality `json:"parent_cardinality" yaml:"parentCardinality"`
 	Def               string      `json:"def"`
 	Virtual           bool        `json:"virtual"`
+	HideForER         bool        `json:"-"`
 }
 
 type DriverMeta struct {
