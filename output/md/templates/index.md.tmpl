@@ -24,12 +24,12 @@
 <details>
 <summary>{{ $tableGroupName }}</summary>
 
-### Group Tables
+### {{ "Group Tables" | lookup }}
 {{ range $t := $tables }}
 |{{ range $d := $t }} {{ $d | nl2br }} |{{ end }}
 {{- end }}
 
-### Group Relations
+### {{ "Group Relations" | lookup }}
 
 {{ index $.groupErDiagrams $tableGroupName }}
 </details>
