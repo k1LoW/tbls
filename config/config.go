@@ -76,6 +76,7 @@ type Format struct {
 	Number                   bool     `yaml:"number,omitempty"`
 	ShowOnlyFirstParagraph   bool     `yaml:"showOnlyFirstParagraph,omitempty"`
 	HideColumnsWithoutValues []string `yaml:"hideColumnsWithoutValues,omitempty"`
+	InlineJSON               bool     `yaml:"inlineJSON,omitempty"`
 }
 
 // ER is er setting

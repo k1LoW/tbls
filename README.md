@@ -620,6 +620,9 @@ format:
   hideColumnsWithoutValues: true
   # It can be boolean or array
   # hideColumnsWithoutValues: ["Parents", "Children"]
+  # Format JSON schema as a single line.
+  # Default is false
+  inlineJSON: true
 ```
 
 ### ER diagram

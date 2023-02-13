@@ -168,7 +168,7 @@ func withSchemaFile(s *schema.Schema, c *config.Config) (e error) {
 		_ = sf.Close()
 	}()
 	fmt.Printf("%s\n", c.SchemaFilePath())
-	j := json.New(true)
+	j := json.New(c.Format.InlineJSON)
 	if err := j.OutputSchema(sf, s); err != nil {
 		return err
 	}

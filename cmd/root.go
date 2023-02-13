@@ -156,7 +156,7 @@ var rootCmd = &cobra.Command{
 
 			envs = append(envs, fmt.Sprintf("TBLS_DSN=%s", cfg.DSN.URL))
 			envs = append(envs, fmt.Sprintf("TBLS_CONFIG_PATH=%s", cfg.Path))
-			o := json.New(true)
+			o := json.New(cfg.Format.InlineJSON)
 			tmpfile, err := os.CreateTemp("", "TBLS_SCHEMA")
 			if err != nil {
 				return err

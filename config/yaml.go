@@ -36,12 +36,14 @@ func (f Format) MarshalYAML() ([]byte, error) {
 			Sort                     bool `yaml:"sort,omitempty"`
 			Number                   bool `yaml:"number,omitempty"`
 			ShowOnlyFirstParagraph   bool `yaml:"showOnlyFirstParagraph,omitempty"`
+			InlineJSON               bool `yaml:"inlineJSON,omitempty"`
 			HideColumnsWithoutValues bool `yaml:"hideColumnsWithoutValues,omitempty"`
 		}{
 			Adjust:                   f.Adjust,
 			Sort:                     f.Sort,
 			Number:                   f.Number,
 			ShowOnlyFirstParagraph:   f.ShowOnlyFirstParagraph,
+			InlineJSON:               f.InlineJSON,
 			HideColumnsWithoutValues: false,
 		}
 		return yaml.Marshal(s)
@@ -56,6 +58,7 @@ func (f *Format) UnmarshalYAML(data []byte) error {
 		Number                   bool        `yaml:"number,omitempty"`
 		ShowOnlyFirstParagraph   bool        `yaml:"showOnlyFirstParagraph,omitempty"`
 		HideColumnsWithoutValues interface{} `yaml:"hideColumnsWithoutValues,omitempty"`
+		InlineJSON               bool        `yaml:"inlineJSON,omitempty"`
 	}{}
 	if err := yaml.Unmarshal(data, &s); err != nil {
 		return err
@@ -64,6 +67,7 @@ func (f *Format) UnmarshalYAML(data []byte) error {
 	f.Sort = s.Sort
 	f.Number = s.Number
 	f.ShowOnlyFirstParagraph = s.ShowOnlyFirstParagraph
+	f.InlineJSON = s.InlineJSON
 	switch v := s.HideColumnsWithoutValues.(type) {
 	case bool:
 		if v {
