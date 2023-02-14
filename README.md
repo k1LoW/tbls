@@ -117,11 +117,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       -
+        name: Checkout .tbls.yml
         uses: actions/checkout@v3
       -
         uses: k1low/setup-tbls@v1
       -
-        name: Run tbls for generate documdnt
+        name: Run tbls for generate database document
         run: tbls doc
 ```
 
