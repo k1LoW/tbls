@@ -79,29 +79,55 @@ $ export TBLS_VERSION=X.X.X
 $ yum install https://github.com/k1LoW/tbls/releases/download/v$TBLS_VERSION/tbls_$TBLS_VERSION-1_amd64.rpm
 ```
 
-**homebrew tap:**
+**Homebrew:**
 
 ```console
 $ brew install k1LoW/tap/tbls
 ```
 
-**manually:**
+**Manually:**
 
 Download binary from [releases page](https://github.com/k1LoW/tbls/releases)
 
 **go install:**
 
 ```console
-$ go install github.com/k1LoW/tbls@main
+$ go install github.com/k1LoW/tbls@latest
 ```
 
-**docker:**
+**Docker:**
 
 ```console
 $ docker pull ghcr.io/k1low/tbls:latest
 ```
 
-**temporary:**
+**On GitHub Actions:**
+
+```yml
+# .github/workflows/doc.yml
+name: Document
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  doc:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        uses: actions/checkout@v3
+      -
+        uses: k1low/setup-tbls@v1
+      -
+        name: Run tbls for generate documdnt
+        run: tbls doc
+```
+
+**:octocat: GitHub Actions for tbls is [here](https://github.com/k1LoW/setup-tbls).**
+
+**Temporary:**
 
 ``` console
 $ source <(curl https://raw.githubusercontent.com/k1LoW/tbls/main/use)
