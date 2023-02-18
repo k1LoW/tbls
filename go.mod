@@ -34,7 +34,7 @@ require (
 	github.com/xo/dburl v0.13.0
 	gitlab.com/golang-commonmark/mdurl v0.0.0-20191124015652-932350d1cb84
 	go.mongodb.org/mongo-driver v1.11.1
-	golang.org/x/image v0.3.0
+	golang.org/x/image v0.5.0
 	golang.org/x/oauth2 v0.0.0-20221014153046-6fdb5e3db783
 	google.golang.org/api v0.108.0
 )
@@ -115,7 +115,7 @@ require (
 	golang.org/x/sync v0.1.0 // indirect
 	golang.org/x/sys v0.1.0 // indirect
 	golang.org/x/term v0.1.0 // indirect
-	golang.org/x/text v0.6.0 // indirect
+	golang.org/x/text v0.7.0 // indirect
 	golang.org/x/tools v0.1.12 // indirect
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
