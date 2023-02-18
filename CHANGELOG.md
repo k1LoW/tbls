@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.62.1](https://github.com/k1LoW/tbls/compare/v1.62.0...v1.62.1) - 2023-02-18
+- Bump golang.org/x/image from 0.3.0 to 0.5.0 by @dependabot in https://github.com/k1LoW/tbls/pull/443
+- Bump golang.org/x/net from 0.1.0 to 0.7.0 by @dependabot in https://github.com/k1LoW/tbls/pull/444
+
 ## [v1.62.0](https://github.com/k1LoW/tbls/compare/v1.61.0...v1.62.0) - 2023-02-08
 - Bundle LICENSE file by @k1LoW in https://github.com/k1LoW/tbls/pull/433
 - Add `er.showColumnTypes.related:` for showing related columns only by @k1LoW in https://github.com/k1LoW/tbls/pull/432
