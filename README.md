@@ -922,6 +922,7 @@ relations:
     parentCardinality: one or more
     override: true
     def: posts->users
+```
 
 #### Automatically detect relations
 
