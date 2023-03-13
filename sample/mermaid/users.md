@@ -61,7 +61,7 @@ erDiagram
 "comments" }o--|| "users" : "FOREIGN KEY (user_id) REFERENCES users (id)"
 "posts" }o--|| "users" : "FOREIGN KEY (user_id) REFERENCES users (id)"
 "user_options" |o--|| "users" : "FOREIGN KEY (user_id) REFERENCES users (id)"
-"logs" }o--|| "users" : "logs-&gt;users"
+"logs" }o--|| "users" : "logs->users"
 
 "users" {
   int id PK
