@@ -1,3 +1,5 @@
+//go:build mssql
+
 package mssql
 
 import (

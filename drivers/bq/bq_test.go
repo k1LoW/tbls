@@ -1,3 +1,5 @@
+//go:build bq
+
 package bq
 
 import (

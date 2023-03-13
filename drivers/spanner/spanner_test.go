@@ -1,3 +1,5 @@
+//go:build spanner
+
 package spanner
 
 import (
