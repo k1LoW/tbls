@@ -1,3 +1,5 @@
+//go:build mariadb
+
 package mariadb
 
 import (

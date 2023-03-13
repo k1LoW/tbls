@@ -1,3 +1,5 @@
+//go:build mysql
+
 package mysql
 
 import (

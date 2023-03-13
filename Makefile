@@ -43,8 +43,7 @@ db_sqlite:
 	sqlite3 $(PWD)/testdata/testdb.sqlite3 < testdata/ddl/sqlite.sql
 
 test:
-	go test ./... -v -coverprofile=coverage.out -covermode=count
-	$(MAKE) testdoc
+	go test ./... -tags 'bq dynamo mariadb mongodb mssql mysql postgres redshift snowflake spanner sqlite' -coverprofile=coverage.out -covermode=count
 
 doc: build doc_sqlite
 	$(TBLS) doc pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -c testdata/test_tbls_postgres.yml -f sample/postgres95
