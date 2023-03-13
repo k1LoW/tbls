@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.63.0](https://github.com/k1LoW/tbls/compare/v1.62.1...v1.63.0) - 2023-03-13
+- Fix unclosed fenced code block in README by @onk in https://github.com/k1LoW/tbls/pull/445
+- Add build tag for test by @k1LoW in https://github.com/k1LoW/tbls/pull/451
+- Support CHECK constraints for MySQL8 by @k1LoW in https://github.com/k1LoW/tbls/pull/452
+- No html encoding is needed in mermaid by @k1LoW in https://github.com/k1LoW/tbls/pull/453
+
 ## [v1.62.1](https://github.com/k1LoW/tbls/compare/v1.62.0...v1.62.1) - 2023-02-18
 - Bump golang.org/x/image from 0.3.0 to 0.5.0 by @dependabot in https://github.com/k1LoW/tbls/pull/443
 - Bump golang.org/x/net from 0.1.0 to 0.7.0 by @dependabot in https://github.com/k1LoW/tbls/pull/444
