@@ -13,7 +13,7 @@ DROP FUNCTION IF EXISTS CustomerLevel;
 
 CREATE TABLE users (
   id int PRIMARY KEY AUTO_INCREMENT,
-  username varchar (50) UNIQUE NOT NULL,
+  username varchar (50) UNIQUE NOT NULL CHECK(char_length(username) > 4),
   password varchar (50) NOT NULL,
   email varchar (355) UNIQUE NOT NULL COMMENT 'ex. user@example.com',
   created timestamp NOT NULL,
@@ -114,7 +114,7 @@ DELIMITER ;
 DELIMITER $$
 CREATE FUNCTION CustomerLevel(
 	credit DECIMAL(10,2)
-) 
+)
 RETURNS VARCHAR(20)
 DETERMINISTIC
 BEGIN
@@ -122,7 +122,7 @@ BEGIN
 
     IF credit > 50000 THEN
 		SET customerLevel = 'PLATINUM';
-    ELSEIF (credit >= 50000 AND 
+    ELSEIF (credit >= 50000 AND
 			credit <= 10000) THEN
         SET customerLevel = 'GOLD';
     ELSEIF credit < 10000 THEN

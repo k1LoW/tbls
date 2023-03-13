@@ -17,7 +17,8 @@ CREATE TABLE `users` (
   `updated` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
-  UNIQUE KEY `email` (`email`)
+  UNIQUE KEY `email` (`email`),
+  CONSTRAINT `users_chk_1` CHECK ((char_length(`username`) > 4))
 ) ENGINE=InnoDB AUTO_INCREMENT=[Redacted by tbls] DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Users table'
 ```
 
@@ -36,11 +37,12 @@ CREATE TABLE `users` (
 
 ## 制約一覧
 
-| 名前       | タイプ         | 定義                             |
-| -------- | ----------- | ------------------------------ |
-| email    | UNIQUE      | UNIQUE KEY email (email)       |
-| PRIMARY  | PRIMARY KEY | PRIMARY KEY (id)               |
-| username | UNIQUE      | UNIQUE KEY username (username) |
+| 名前          | タイプ         | 定義                                    |
+| ----------- | ----------- | ------------------------------------- |
+| email       | UNIQUE      | UNIQUE KEY email (email)              |
+| PRIMARY     | PRIMARY KEY | PRIMARY KEY (id)                      |
+| username    | UNIQUE      | UNIQUE KEY username (username)        |
+| users_chk_1 | CHECK       | CHECK ((char_length(`username`) > 4)) |
 
 ## INDEX一覧
 

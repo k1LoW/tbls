@@ -18,6 +18,7 @@ import (
 var reFK = regexp.MustCompile(`FOREIGN KEY \((.+)\) REFERENCES ([^\s]+)\s?\((.+)\)`)
 var reAI = regexp.MustCompile(` AUTO_INCREMENT=[\d]+`)
 var supportGeneratedColumn = true
+var supportCheckConstraint = true
 
 // Mysql struct
 type Mysql struct {
@@ -78,6 +79,10 @@ func (m *Mysql) Analyze(s *schema.Schema) error {
 		if err != nil {
 			return err
 		}
+		verCheck, err := version.Parse("10.2.1")
+		if err != nil {
+			return err
+		}
 		splitted := strings.Split(s.Driver.DatabaseVersion, "-")
 		v, err := version.Parse(splitted[0])
 		if err != nil {
@@ -86,8 +91,15 @@ func (m *Mysql) Analyze(s *schema.Schema) error {
 		if v.LessThan(verGeneratedColumn) {
 			supportGeneratedColumn = false
 		}
+		if v.LessThan(verCheck) {
+			supportCheckConstraint = false
+		}
 	} else {
 		verGeneratedColumn, err := version.Parse("5.7.6")
+		if err != nil {
+			return err
+		}
+		verCheck, err := version.Parse("8.0.16")
 		if err != nil {
 			return err
 		}
@@ -97,6 +109,9 @@ func (m *Mysql) Analyze(s *schema.Schema) error {
 		}
 		if v.LessThan(verGeneratedColumn) {
 			supportGeneratedColumn = false
+		}
+		if v.LessThan(verCheck) {
+			supportCheckConstraint = false
 		}
 	}
 
@@ -346,7 +361,7 @@ AND table_name = ?;
 		tableOrder++
 	}
 
-	// bulk get constraints
+	// bulk get constraints (PRIMARY KEY, UNIQUE, FOREIGN KEY)
 	constraintRows, err := m.db.Query(`
 SELECT
   kcu.table_name,
@@ -432,6 +447,42 @@ GROUP BY kcu.table_name, kcu.constraint_name, sub.costraint_type, kcu.referenced
 		}
 
 		tableMap[tableName].Constraints = append(tableMap[tableName].Constraints, constraint)
+	}
+
+	// bulk get constraints (CHECK)
+	if supportCheckConstraint {
+		constraintRows, err := m.db.Query(`
+SELECT
+  t.table_name,
+  c.constraint_name,
+  c.check_clause
+FROM information_schema.check_constraints AS c
+JOIN information_schema.table_constraints AS t ON c.constraint_schema = t.constraint_schema AND c.constraint_name = t.constraint_name
+WHERE t.table_schema = ?
+`, s.Name)
+		if err != nil {
+			return errors.WithStack(err)
+		}
+		defer constraintRows.Close()
+
+		for constraintRows.Next() {
+			var (
+				tableName      string
+				constraintName string
+				checkClause    string
+			)
+			err = constraintRows.Scan(&tableName, &constraintName, &checkClause)
+			if err != nil {
+				return errors.WithStack(err)
+			}
+			constraint := &schema.Constraint{
+				Name:  constraintName,
+				Type:  "CHECK",
+				Def:   fmt.Sprintf("CHECK (%s)", checkClause),
+				Table: &tableName,
+			}
+			tableMap[tableName].Constraints = append(tableMap[tableName].Constraints, constraint)
+		}
 	}
 
 	functions, err := m.getFunctions()
