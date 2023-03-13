@@ -26,7 +26,7 @@ ci: depsdev build db test testdoc testdoc_hide_auto_increment test_too_many_tabl
 
 ci_windows: depsdev build db_sqlite testdoc_sqlite
 
-db: db_sqlite
+db: db_sqlite # MySQL8 use ./testdata/ddl/mysql:/docker-entrypoint-initdb.d
 	usql pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -f testdata/ddl/postgres95.sql
 	usql pg://postgres:pgpass@localhost:55413/testdb?sslmode=disable -f testdata/ddl/postgres.sql
 	usql my://root:mypass@localhost:33306/testdb -f testdata/ddl/mysql56.sql

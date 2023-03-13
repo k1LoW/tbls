@@ -17,7 +17,8 @@ CREATE TABLE `users` (
   `updated` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
-  UNIQUE KEY `email` (`email`)
+  UNIQUE KEY `email` (`email`),
+  CONSTRAINT `users_chk_1` CHECK ((char_length(`username`) > 4))
 ) ENGINE=InnoDB AUTO_INCREMENT=[Redacted by tbls] DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Users table'
 ```
 
@@ -41,6 +42,7 @@ CREATE TABLE `users` (
 | 1 | email | UNIQUE | UNIQUE KEY email (email) |
 | 2 | PRIMARY | PRIMARY KEY | PRIMARY KEY (id) |
 | 3 | username | UNIQUE | UNIQUE KEY username (username) |
+| 4 | users_chk_1 | CHECK | CHECK ((char_length(`username`) > 4)) |
 
 ## Indexes
 
