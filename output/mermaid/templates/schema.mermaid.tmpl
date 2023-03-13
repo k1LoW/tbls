@@ -3,13 +3,13 @@ erDiagram
 {{- $sd := .showDef -}}
 {{- range $j, $r := .Schema.Relations }}
 {{- if $r.HideForER }}{{ continue }}{{ end }}
-"{{ $r.Table.Name }}" {{ $r.Cardinality | lcardi }}--{{ $r.ParentCardinality | rcardi }} "{{ $r.ParentTable.Name }}" : "{{ if $sd }}{{ $r.Def | html }}{{ end }}"
+"{{ $r.Table.Name }}" {{ $r.Cardinality | lcardi }}--{{ $r.ParentCardinality | rcardi }} "{{ $r.ParentTable.Name }}" : "{{ if $sd }}{{ $r.Def }}{{ end }}"
 {{- end }}
 {{ range $i, $t := .Schema.Tables }}
 "{{ $t.Name }}" {
 {{- range $ii, $c := $t.Columns }}
   {{- if $c.HideForER }}{{ continue }}{{ end }}
-  {{ $c.Type | escape_mermaid }} {{ $c.Name }}{{ if $c.PK }} PK{{ end }}{{ if $c.FK }} FK{{ end }}{{ if $sc }} "{{ if ne $c.Comment "" }}\n{{ $c.Comment | html | escape_nl }}{{ end }}"{{ end }}
+  {{ $c.Type | escape_mermaid }} {{ $c.Name }}{{ if $c.PK }} PK{{ end }}{{ if $c.FK }} FK{{ end }}{{ if $sc }} "{{ if ne $c.Comment "" }}{{ $c.Comment | escape_nl }}{{ end }}"{{ end }}
 {{- end }}
 }
 {{- end }}

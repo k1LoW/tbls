@@ -40,7 +40,7 @@ erDiagram
 "comments" }o--|| "users" : "FOREIGN KEY (user_id) REFERENCES users (id)"
 "posts" }o--|| "users" : "FOREIGN KEY (user_id) REFERENCES users (id)"
 "user_options" |o--|| "users" : "FOREIGN KEY (user_id) REFERENCES users (id)"
-"logs" }o--|| "users" : "logs-&gt;users"
+"logs" }o--|| "users" : "logs->users"
 "logs" }o--o| "posts" : "Additional Relation"
 "logs" }o--o| "comments" : "Additional Relation"
 "logs" }o--o| "comment_stars" : "Additional Relation"
