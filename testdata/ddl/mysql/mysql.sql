@@ -94,6 +94,11 @@ CREATE TABLE CamelizeTable (
   created datetime NOT NULL
 );
 
+CREATE TABLE long_long_long_long_long_long_long_long_table_name (
+  id bigint PRIMARY KEY AUTO_INCREMENT,
+  created datetime NOT NULL
+);
+
 CREATE TABLE `hyphen-table` (
   id bigint PRIMARY KEY AUTO_INCREMENT,
   `hyphen-column` text NOT NULL,
