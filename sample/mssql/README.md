@@ -12,11 +12,6 @@ Sample database document.
 
 | Name | Columns | Comment | Type | Labels |
 | ---- | ------- | ------- | ---- | ------ |
-| [users](users.md) | 6 | Users table | BASIC TABLE |  |
-| [user_options](user_options.md) | 4 | User options table | BASIC TABLE |  |
-| [posts](posts.md) | 6 |  | BASIC TABLE | `green` `red` `blue` |
-| [comments](comments.md) | 6 |  | BASIC TABLE |  |
-| [comment_stars](comment_stars.md) | 6 |  | BASIC TABLE |  |
 | [logs](logs.md) | 7 |  | BASIC TABLE |  |
 | [post_comments](post_comments.md) | 7 | post and comments View table | VIEW |  |
 | [CamelizeTable](CamelizeTable.md) | 2 |  | BASIC TABLE |  |
@@ -25,6 +20,11 @@ Sample database document.
 | [name with spaces](name%20with%20spaces.md) | 1 |  | VIEW |  |
 | [Sales.Product](Sales.Product.md) | 2 |  | BASIC TABLE |  |
 | [Rabbits.Running](Rabbits.Running.md) | 3 |  | BASIC TABLE |  |
+| [users](users.md) | 6 | Users table | BASIC TABLE |  |
+| [user_options](user_options.md) | 4 | User options table | BASIC TABLE |  |
+| [posts](posts.md) | 6 |  | BASIC TABLE | `green` `red` `blue` |
+| [comments](comments.md) | 6 |  | BASIC TABLE |  |
+| [comment_stars](comment_stars.md) | 6 |  | BASIC TABLE |  |
 
 ## Stored procedures and functions
 

@@ -17,6 +17,7 @@ Sample database document.
 | [comments](comments.md) | 7 | Comments<br>Multi-line<br>table<br>comment | BASE TABLE |  |
 | [hyphen-table](hyphen-table.md) | 3 |  | BASE TABLE |  |
 | [logs](logs.md) | 7 | Auditログ | BASE TABLE |  |
+| [long_long_long_long_long_long_long_long_table_name](long_long_long_long_long_long_long_long_table_name.md) | 2 |  | BASE TABLE |  |
 | [post_comments](post_comments.md) | 7 | post and comments View table | VIEW |  |
 | [posts](posts.md) | 7 | Posts table | BASE TABLE | `green` `red` `blue` |
 | [user_options](user_options.md) | 4 | User options table | BASE TABLE |  |
@@ -78,6 +79,10 @@ erDiagram
   bigint comment_id
   bigint comment_star_id
   text payload
+  datetime created
+}
+"long_long_long_long_long_long_long_long_table_name" {
+  bigint id PK
   datetime created
 }
 "post_comments" {
