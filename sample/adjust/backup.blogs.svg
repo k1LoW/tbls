@@ -14,9 +14,9 @@
 <title>backup.blogs</title>
 <polygon fill="#efefef" stroke="transparent" points="357,-195.5 357,-230.5 610,-230.5 610,-195.5 357,-195.5"/>
 <polygon fill="none" stroke="#000000" points="357,-195.5 357,-230.5 610,-230.5 610,-195.5 357,-195.5"/>
-<text text-anchor="start" x="381.8532" y="-208.3" font-family="Arial Bold" font-size="18.00" fill="#000000">backup.blogs</text>
-<text text-anchor="start" x="487.893" y="-208.3" font-family="Arial" font-size="14.00" fill="#000000"> </text>
-<text text-anchor="start" x="491.7836" y="-208.3" font-family="Arial" font-size="14.00" fill="#666666">[BASE TABLE]</text>
+<text text-anchor="start" x="366.6961" y="-208.3" font-family="Arial Bold" font-size="18.00" fill="#000000">backup.blogs</text>
+<text text-anchor="start" x="472.7359" y="-208.3" font-family="Arial" font-size="14.00" fill="#000000">    </text>
+<text text-anchor="start" x="506.9407" y="-208.3" font-family="Arial" font-size="14.00" fill="#666666">[BASE TABLE]</text>
 <polygon fill="none" stroke="#000000" points="357,-165.5 357,-195.5 610,-195.5 610,-165.5 357,-165.5"/>
 <text text-anchor="start" x="364" y="-176.9" font-family="Arial" font-size="14.00" fill="#000000">id </text>
 <text text-anchor="start" x="378.7798" y="-176.9" font-family="Arial" font-size="14.00" fill="#666666">[integer]</text>

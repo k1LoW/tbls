@@ -14,9 +14,9 @@
 <title>logs</title>
 <polygon fill="#efefef" stroke="transparent" points="383.5,-592.5 383.5,-627.5 578.5,-627.5 578.5,-592.5 383.5,-592.5"/>
 <polygon fill="none" stroke="#000000" points="383.5,-592.5 383.5,-627.5 578.5,-627.5 578.5,-592.5 383.5,-592.5"/>
-<text text-anchor="start" x="443.4883" y="-605.3" font-family="Arial Bold" font-size="18.00" fill="#000000">logs</text>
-<text text-anchor="start" x="476.4949" y="-605.3" font-family="Arial" font-size="14.00" fill="#000000"> </text>
-<text text-anchor="start" x="480.3855" y="-605.3" font-family="Arial" font-size="14.00" fill="#666666">[table]</text>
+<text text-anchor="start" x="428.3312" y="-605.3" font-family="Arial Bold" font-size="18.00" fill="#000000">logs</text>
+<text text-anchor="start" x="461.3378" y="-605.3" font-family="Arial" font-size="14.00" fill="#000000">    </text>
+<text text-anchor="start" x="495.5426" y="-605.3" font-family="Arial" font-size="14.00" fill="#666666">[table]</text>
 <polygon fill="none" stroke="#000000" points="383.5,-562.5 383.5,-592.5 578.5,-592.5 578.5,-562.5 383.5,-562.5"/>
 <text text-anchor="start" x="390.5" y="-573.9" font-family="Arial" font-size="14.00" fill="#000000">id </text>
 <text text-anchor="start" x="405.2798" y="-573.9" font-family="Arial" font-size="14.00" fill="#666666">[INTEGER]</text>

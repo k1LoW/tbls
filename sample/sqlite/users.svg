@@ -14,9 +14,9 @@
 <title>users</title>
 <polygon fill="#efefef" stroke="transparent" points="889,-225.5 889,-260.5 1030,-260.5 1030,-225.5 889,-225.5"/>
 <polygon fill="none" stroke="#000000" points="889,-225.5 889,-260.5 1030,-260.5 1030,-225.5 889,-225.5"/>
-<text text-anchor="start" x="916.4893" y="-238.3" font-family="Arial Bold" font-size="18.00" fill="#000000">users</text>
-<text text-anchor="start" x="960.4939" y="-238.3" font-family="Arial" font-size="14.00" fill="#000000"> </text>
-<text text-anchor="start" x="964.3845" y="-238.3" font-family="Arial" font-size="14.00" fill="#666666">[table]</text>
+<text text-anchor="start" x="901.3322" y="-238.3" font-family="Arial Bold" font-size="18.00" fill="#000000">users</text>
+<text text-anchor="start" x="945.3368" y="-238.3" font-family="Arial" font-size="14.00" fill="#000000">    </text>
+<text text-anchor="start" x="979.5416" y="-238.3" font-family="Arial" font-size="14.00" fill="#666666">[table]</text>
 <polygon fill="none" stroke="#000000" points="889,-195.5 889,-225.5 1030,-225.5 1030,-195.5 889,-195.5"/>
 <text text-anchor="start" x="896" y="-206.9" font-family="Arial" font-size="14.00" fill="#000000">id </text>
 <text text-anchor="start" x="910.7798" y="-206.9" font-family="Arial" font-size="14.00" fill="#666666">[INTEGER]</text>

@@ -12,18 +12,18 @@
 <!-- posts -->
 <g id="node1" class="node">
 <title>posts</title>
-<polygon fill="#efefef" stroke="transparent" points="205,-292.5 205,-327.5 359,-327.5 359,-292.5 205,-292.5"/>
-<polygon fill="none" stroke="#000000" points="205,-292.5 205,-327.5 359,-327.5 359,-292.5 205,-292.5"/>
-<text text-anchor="start" x="211.8658" y="-305.3" font-family="Arial Bold" font-size="18.00" fill="#000000">posts</text>
-<text text-anchor="start" x="254.8804" y="-305.3" font-family="Arial" font-size="14.00" fill="#000000"> </text>
-<text text-anchor="start" x="258.771" y="-305.3" font-family="Arial" font-size="14.00" fill="#666666">[BASE TABLE]</text>
-<polygon fill="none" stroke="#000000" points="205,-262.5 205,-292.5 359,-292.5 359,-262.5 205,-262.5"/>
-<text text-anchor="start" x="212" y="-273.9" font-family="Arial" font-size="14.00" fill="#000000">id </text>
-<text text-anchor="start" x="226.7798" y="-273.9" font-family="Arial" font-size="14.00" fill="#666666">[bigint]</text>
-<polygon fill="none" stroke="#000000" points="205,-232.5 205,-262.5 359,-262.5 359,-232.5 205,-232.5"/>
-<text text-anchor="start" x="212" y="-243.9" font-family="Arial" font-size="14.00" fill="#000000">user_id </text>
-<text text-anchor="start" x="261.7882" y="-243.9" font-family="Arial" font-size="14.00" fill="#666666">[int]</text>
-<polygon fill="none" stroke="#000000" stroke-width="3" points="203.5,-231.5 203.5,-329.5 360.5,-329.5 360.5,-231.5 203.5,-231.5"/>
+<polygon fill="#efefef" stroke="transparent" points="190,-292.5 190,-327.5 374,-327.5 374,-292.5 190,-292.5"/>
+<polygon fill="none" stroke="#000000" points="190,-292.5 190,-327.5 374,-327.5 374,-292.5 190,-292.5"/>
+<text text-anchor="start" x="196.7087" y="-305.3" font-family="Arial Bold" font-size="18.00" fill="#000000">posts</text>
+<text text-anchor="start" x="239.7233" y="-305.3" font-family="Arial" font-size="14.00" fill="#000000">    </text>
+<text text-anchor="start" x="273.9281" y="-305.3" font-family="Arial" font-size="14.00" fill="#666666">[BASE TABLE]</text>
+<polygon fill="none" stroke="#000000" points="190,-262.5 190,-292.5 374,-292.5 374,-262.5 190,-262.5"/>
+<text text-anchor="start" x="197" y="-273.9" font-family="Arial" font-size="14.00" fill="#000000">id </text>
+<text text-anchor="start" x="211.7798" y="-273.9" font-family="Arial" font-size="14.00" fill="#666666">[bigint]</text>
+<polygon fill="none" stroke="#000000" points="190,-232.5 190,-262.5 374,-262.5 374,-232.5 190,-232.5"/>
+<text text-anchor="start" x="197" y="-243.9" font-family="Arial" font-size="14.00" fill="#000000">user_id </text>
+<text text-anchor="start" x="246.7882" y="-243.9" font-family="Arial" font-size="14.00" fill="#666666">[int]</text>
+<polygon fill="none" stroke="#000000" stroke-width="3" points="188.5,-231.5 188.5,-329.5 375.5,-329.5 375.5,-231.5 188.5,-231.5"/>
 </g>
 <!-- users -->
 <g id="node4" class="node">
@@ -65,8 +65,8 @@
 <!-- comments&#45;&gt;posts -->
 <g id="edge1" class="edge">
 <title>comments:post_id&#45;&gt;posts:id</title>
-<path fill="none" stroke="#000000" d="M247.1671,-510.901C270.1475,-502.0681 246.6197,-458.4308 237,-425 229.6003,-399.2844 212.3997,-399.7156 205,-374 193.14,-332.7835 162.1111,-277.5 205,-277.5"/>
-<polygon fill="#000000" stroke="#000000" points="246.8786,-510.9463 236.3008,-508.0546 241.9393,-511.7231 237,-512.5 237,-512.5 237,-512.5 241.9393,-511.7231 237.6992,-516.9454 246.8786,-510.9463 246.8786,-510.9463"/>
+<path fill="none" stroke="#000000" d="M246.9577,-510.9828C270.9723,-502.24 249.7095,-457.5456 237,-425 225.7874,-396.2876 201.2126,-402.7124 190,-374 174.3987,-334.0493 147.1111,-277.5 190,-277.5"/>
+<polygon fill="#000000" stroke="#000000" points="246.8859,-510.9936 236.3221,-508.0513 241.943,-511.7468 237,-512.5 237,-512.5 237,-512.5 241.943,-511.7468 237.6779,-516.9487 246.8859,-510.9936 246.8859,-510.9936"/>
 <text text-anchor="start" x="244.495" y="-522.5" font-family="Arial" font-size="10.00" fill="#000000">FOREIGN KEY (post_id) REFERENCES posts (id)</text>
 </g>
 <!-- logs -->
@@ -93,8 +93,8 @@
 <!-- logs&#45;&gt;posts -->
 <g id="edge2" class="edge">
 <title>logs:post_id&#45;&gt;posts:id</title>
-<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M330.8508,-526.4319C294.5931,-517.6903 329.8923,-457.053 341,-410 345.1099,-392.59 354.8901,-391.41 359,-374 368.8538,-332.2584 401.8889,-277.5 359,-277.5"/>
-<polygon fill="#000000" stroke="#000000" points="331.0549,-526.4533 340.529,-531.9753 336.0275,-526.9767 341,-527.5 341,-527.5 341,-527.5 336.0275,-526.9767 341.471,-523.0247 331.0549,-526.4533 331.0549,-526.4533"/>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M330.7447,-526.3989C293.6402,-517.3941 323.4733,-455.0576 341,-410 348.8686,-389.7714 366.1314,-394.2286 374,-374 389.5482,-334.0286 416.8889,-277.5 374,-277.5"/>
+<polygon fill="#000000" stroke="#000000" points="331.0571,-526.4324 340.5196,-531.9743 336.0286,-526.9662 341,-527.5 341,-527.5 341,-527.5 336.0286,-526.9662 341.4804,-523.0257 331.0571,-526.4324 331.0571,-526.4324"/>
 <text text-anchor="start" x="251.3245" y="-537.5" font-family="Arial" font-size="10.00" fill="#000000">Additional Relation</text>
 </g>
 </g>

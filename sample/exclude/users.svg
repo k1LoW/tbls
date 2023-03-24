@@ -12,30 +12,30 @@
 <!-- users -->
 <g id="node1" class="node">
 <title>users</title>
-<polygon fill="#efefef" stroke="transparent" points="565,-225.5 565,-260.5 724,-260.5 724,-225.5 565,-225.5"/>
-<polygon fill="none" stroke="#000000" points="565,-225.5 565,-260.5 724,-260.5 724,-225.5 565,-225.5"/>
-<text text-anchor="start" x="573.8708" y="-238.3" font-family="Arial Bold" font-size="18.00" fill="#000000">users</text>
-<text text-anchor="start" x="617.8754" y="-238.3" font-family="Arial" font-size="14.00" fill="#000000"> </text>
-<text text-anchor="start" x="621.766" y="-238.3" font-family="Arial" font-size="14.00" fill="#666666">[BASE TABLE]</text>
-<polygon fill="none" stroke="#000000" points="565,-195.5 565,-225.5 724,-225.5 724,-195.5 565,-195.5"/>
-<text text-anchor="start" x="572" y="-206.9" font-family="Arial" font-size="14.00" fill="#000000">id </text>
-<text text-anchor="start" x="586.7798" y="-206.9" font-family="Arial" font-size="14.00" fill="#666666">[int]</text>
-<polygon fill="none" stroke="#000000" points="565,-165.5 565,-195.5 724,-195.5 724,-165.5 565,-165.5"/>
-<text text-anchor="start" x="571.7693" y="-176.9" font-family="Arial" font-size="14.00" fill="#000000">username </text>
-<text text-anchor="start" x="637.8941" y="-176.9" font-family="Arial" font-size="14.00" fill="#666666">[varchar(50)]</text>
-<polygon fill="none" stroke="#000000" points="565,-135.5 565,-165.5 724,-165.5 724,-135.5 565,-135.5"/>
-<text text-anchor="start" x="572" y="-146.9" font-family="Arial" font-size="14.00" fill="#000000">password </text>
-<text text-anchor="start" x="635.7882" y="-146.9" font-family="Arial" font-size="14.00" fill="#666666">[varchar(50)]</text>
-<polygon fill="none" stroke="#000000" points="565,-105.5 565,-135.5 724,-135.5 724,-105.5 565,-105.5"/>
-<text text-anchor="start" x="572" y="-116.9" font-family="Arial" font-size="14.00" fill="#000000">email </text>
-<text text-anchor="start" x="609.3296" y="-116.9" font-family="Arial" font-size="14.00" fill="#666666">[varchar(355)]</text>
-<polygon fill="none" stroke="#000000" points="565,-75.5 565,-105.5 724,-105.5 724,-75.5 565,-75.5"/>
-<text text-anchor="start" x="572" y="-86.9" font-family="Arial" font-size="14.00" fill="#000000">created </text>
-<text text-anchor="start" x="622.5722" y="-86.9" font-family="Arial" font-size="14.00" fill="#666666">[timestamp]</text>
-<polygon fill="none" stroke="#000000" points="565,-45.5 565,-75.5 724,-75.5 724,-45.5 565,-45.5"/>
-<text text-anchor="start" x="572" y="-56.9" font-family="Arial" font-size="14.00" fill="#000000">updated </text>
-<text text-anchor="start" x="626.4768" y="-56.9" font-family="Arial" font-size="14.00" fill="#666666">[timestamp]</text>
-<polygon fill="none" stroke="#000000" stroke-width="3" points="563,-44.5 563,-262.5 725,-262.5 725,-44.5 563,-44.5"/>
+<polygon fill="#efefef" stroke="transparent" points="552,-225.5 552,-260.5 737,-260.5 737,-225.5 552,-225.5"/>
+<polygon fill="none" stroke="#000000" points="552,-225.5 552,-260.5 737,-260.5 737,-225.5 552,-225.5"/>
+<text text-anchor="start" x="558.7137" y="-238.3" font-family="Arial Bold" font-size="18.00" fill="#000000">users</text>
+<text text-anchor="start" x="602.7183" y="-238.3" font-family="Arial" font-size="14.00" fill="#000000">    </text>
+<text text-anchor="start" x="636.9231" y="-238.3" font-family="Arial" font-size="14.00" fill="#666666">[BASE TABLE]</text>
+<polygon fill="none" stroke="#000000" points="552,-195.5 552,-225.5 737,-225.5 737,-195.5 552,-195.5"/>
+<text text-anchor="start" x="559" y="-206.9" font-family="Arial" font-size="14.00" fill="#000000">id </text>
+<text text-anchor="start" x="573.7798" y="-206.9" font-family="Arial" font-size="14.00" fill="#666666">[int]</text>
+<polygon fill="none" stroke="#000000" points="552,-165.5 552,-195.5 737,-195.5 737,-165.5 552,-165.5"/>
+<text text-anchor="start" x="559" y="-176.9" font-family="Arial" font-size="14.00" fill="#000000">username </text>
+<text text-anchor="start" x="625.1248" y="-176.9" font-family="Arial" font-size="14.00" fill="#666666">[varchar(50)]</text>
+<polygon fill="none" stroke="#000000" points="552,-135.5 552,-165.5 737,-165.5 737,-135.5 552,-135.5"/>
+<text text-anchor="start" x="559" y="-146.9" font-family="Arial" font-size="14.00" fill="#000000">password </text>
+<text text-anchor="start" x="622.7882" y="-146.9" font-family="Arial" font-size="14.00" fill="#666666">[varchar(50)]</text>
+<polygon fill="none" stroke="#000000" points="552,-105.5 552,-135.5 737,-135.5 737,-105.5 552,-105.5"/>
+<text text-anchor="start" x="559" y="-116.9" font-family="Arial" font-size="14.00" fill="#000000">email </text>
+<text text-anchor="start" x="596.3296" y="-116.9" font-family="Arial" font-size="14.00" fill="#666666">[varchar(355)]</text>
+<polygon fill="none" stroke="#000000" points="552,-75.5 552,-105.5 737,-105.5 737,-75.5 552,-75.5"/>
+<text text-anchor="start" x="559" y="-86.9" font-family="Arial" font-size="14.00" fill="#000000">created </text>
+<text text-anchor="start" x="609.5722" y="-86.9" font-family="Arial" font-size="14.00" fill="#666666">[timestamp]</text>
+<polygon fill="none" stroke="#000000" points="552,-45.5 552,-75.5 737,-75.5 737,-45.5 552,-45.5"/>
+<text text-anchor="start" x="559" y="-56.9" font-family="Arial" font-size="14.00" fill="#000000">updated </text>
+<text text-anchor="start" x="613.4768" y="-56.9" font-family="Arial" font-size="14.00" fill="#666666">[timestamp]</text>
+<polygon fill="none" stroke="#000000" stroke-width="3" points="550,-44.5 550,-262.5 738,-262.5 738,-44.5 550,-44.5"/>
 </g>
 <!-- comment_stars -->
 <g id="node2" class="node">
@@ -67,8 +67,8 @@
 <!-- comment_stars&#45;&gt;users -->
 <g id="edge1" class="edge">
 <title>comment_stars:comment_user_id&#45;&gt;users:id</title>
-<path fill="none" stroke="#000000" d="M286.967,-474.6511C334.3965,-465.6901 289.883,-387.907 329,-343 408.0089,-252.2963 444.7104,-210.5 565,-210.5"/>
-<polygon fill="#000000" stroke="#000000" points="286.9639,-474.6513 276.6181,-471.0162 281.982,-475.0756 277,-475.5 277,-475.5 277,-475.5 281.982,-475.0756 277.3819,-479.9838 286.9639,-474.6513 286.9639,-474.6513"/>
+<path fill="none" stroke="#000000" d="M286.9727,-474.656C334.4614,-465.7459 290.4369,-388.3835 329,-343 403.6504,-255.1466 436.7138,-210.5 552,-210.5"/>
+<polygon fill="#000000" stroke="#000000" points="286.9644,-474.6566 276.6205,-471.016 281.9822,-475.0783 277,-475.5 277,-475.5 277,-475.5 281.9822,-475.0783 277.3795,-479.984 286.9644,-474.6566 286.9644,-474.6566"/>
 <text text-anchor="start" x="283.6085" y="-485.5" font-family="Arial" font-size="10.00" fill="#000000">FOREIGN KEY (comment_user_id) REFERENCES users (id)</text>
 </g>
 <!-- comments -->
@@ -104,8 +104,8 @@
 <!-- comments&#45;&gt;users -->
 <g id="edge2" class="edge">
 <title>comments:user_id&#45;&gt;users:id</title>
-<path fill="none" stroke="#000000" d="M585.145,-519.8576C647.6184,-511.234 585.1552,-417.502 575,-343 572.7572,-326.5463 567.2428,-323.4537 565,-307 559.2075,-264.5041 522.1111,-210.5 565,-210.5"/>
-<polygon fill="#000000" stroke="#000000" points="584.98,-519.868 574.7156,-516.009 579.99,-520.184 575,-520.5 575,-520.5 575,-520.5 579.99,-520.184 575.2844,-524.991 584.98,-519.868 584.98,-519.868"/>
+<path fill="none" stroke="#000000" d="M585.2171,-519.8423C648.6433,-511.0157 596.0873,-415.1735 575,-343 569.6752,-324.7753 557.3248,-325.2247 552,-307 539.9718,-265.8323 509.1111,-210.5 552,-210.5"/>
+<polygon fill="#000000" stroke="#000000" points="584.9793,-519.8575 574.7109,-516.0093 579.9897,-520.1787 575,-520.5 575,-520.5 575,-520.5 579.9897,-520.1787 575.2891,-524.9907 584.9793,-519.8575 584.9793,-519.8575"/>
 <text text-anchor="start" x="581.945" y="-530.5" font-family="Arial" font-size="10.00" fill="#000000">FOREIGN KEY (user_id) REFERENCES users (id)</text>
 </g>
 <!-- posts -->
@@ -141,8 +141,8 @@
 <!-- posts&#45;&gt;users -->
 <g id="edge3" class="edge">
 <title>posts:user_id&#45;&gt;users:id</title>
-<path fill="none" stroke="#000000" d="M669.8468,-549.9415C591.8771,-540.8622 642.0503,-423.083 680,-343 690.8201,-320.167 713.1799,-329.833 724,-307 742.3663,-268.2426 766.8889,-210.5 724,-210.5"/>
-<polygon fill="#000000" stroke="#000000" points="670.0151,-549.9506 679.7528,-554.9932 675.0075,-550.2253 680,-550.5 680,-550.5 680,-550.5 675.0075,-550.2253 680.2472,-546.0068 670.0151,-549.9506 670.0151,-549.9506"/>
+<path fill="none" stroke="#000000" d="M669.8247,-549.9302C591.5,-540.6691 637.2228,-420.6117 680,-343 694.4632,-316.759 722.5368,-333.241 737,-307 757.7027,-269.4386 779.8889,-210.5 737,-210.5"/>
+<polygon fill="#000000" stroke="#000000" points="670.0156,-549.9408 679.7483,-554.993 675.0078,-550.2204 680,-550.5 680,-550.5 680,-550.5 675.0078,-550.2204 680.2517,-546.007 670.0156,-549.9408 670.0156,-549.9408"/>
 <text text-anchor="start" x="686.945" y="-560.5" font-family="Arial" font-size="10.00" fill="#000000">FOREIGN KEY (user_id) REFERENCES users (id)</text>
 </g>
 <!-- user_options -->
@@ -169,8 +169,8 @@
 <!-- user_options&#45;&gt;users -->
 <g id="edge4" class="edge">
 <title>user_options:user_id&#45;&gt;users:id</title>
-<path fill="none" stroke="#000000" d="M1036.9892,-534.8859C965.7578,-525.4099 1049.0935,-408.5494 995,-343 909.6658,-239.5938 858.07,-210.5 724,-210.5"/>
-<polygon fill="#000000" stroke="#000000" points="1037.0188,-534.8876 1046.7244,-539.9916 1042.0094,-535.1938 1047,-535.5 1047,-535.5 1047,-535.5 1042.0094,-535.1938 1047.2756,-531.0084 1037.0188,-534.8876 1037.0188,-534.8876"/>
+<path fill="none" stroke="#000000" d="M1036.986,-534.8885C965.7047,-525.4533 1048.4456,-409.0787 995,-343 913.9364,-242.7751 865.9044,-210.5 737,-210.5"/>
+<polygon fill="#000000" stroke="#000000" points="1037.0186,-534.8904 1046.7257,-539.9916 1042.0093,-535.1952 1047,-535.5 1047,-535.5 1047,-535.5 1042.0093,-535.1952 1047.2743,-531.0084 1037.0186,-534.8904 1037.0186,-534.8904"/>
 <text text-anchor="start" x="993.945" y="-519.5" font-family="Arial" font-size="10.00" fill="#000000">FOREIGN KEY (user_id) REFERENCES users (id)</text>
 </g>
 </g>
