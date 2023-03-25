@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.64.0](https://github.com/k1LoW/tbls/compare/v1.63.0...v1.64.0) - 2023-03-25
+- [Breaking Change] Add workaround for overlapping characters in the table name area of ER diagrams. by @k1LoW in https://github.com/k1LoW/tbls/pull/456
+- [Breaking Change] Add workaround for overlapping text in table name area of ER diagram on table page by @k1LoW in https://github.com/k1LoW/tbls/pull/458
+
 ## [v1.63.0](https://github.com/k1LoW/tbls/compare/v1.62.1...v1.63.0) - 2023-03-13
 - Fix unclosed fenced code block in README by @onk in https://github.com/k1LoW/tbls/pull/445
 - Add build tag for test by @k1LoW in https://github.com/k1LoW/tbls/pull/451
