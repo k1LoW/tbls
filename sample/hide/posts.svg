@@ -14,9 +14,9 @@
 <title>posts</title>
 <polygon fill="#efefef" stroke="transparent" points="240,-592.5 240,-627.5 503,-627.5 503,-592.5 240,-592.5"/>
 <polygon fill="none" stroke="#000000" points="240,-592.5 240,-627.5 503,-627.5 503,-592.5 240,-592.5"/>
-<text text-anchor="start" x="301.3658" y="-605.3" font-family="Arial Bold" font-size="18.00" fill="#000000">posts</text>
-<text text-anchor="start" x="344.3804" y="-605.3" font-family="Arial" font-size="14.00" fill="#000000"> </text>
-<text text-anchor="start" x="348.271" y="-605.3" font-family="Arial" font-size="14.00" fill="#666666">[BASE TABLE]</text>
+<text text-anchor="start" x="286.2087" y="-605.3" font-family="Arial Bold" font-size="18.00" fill="#000000">posts</text>
+<text text-anchor="start" x="329.2233" y="-605.3" font-family="Arial" font-size="14.00" fill="#000000">    </text>
+<text text-anchor="start" x="363.4281" y="-605.3" font-family="Arial" font-size="14.00" fill="#666666">[BASE TABLE]</text>
 <polygon fill="none" stroke="#000000" points="240,-562.5 240,-592.5 503,-592.5 503,-562.5 240,-562.5"/>
 <text text-anchor="start" x="247" y="-573.9" font-family="Arial" font-size="14.00" fill="#000000">id </text>
 <text text-anchor="start" x="261.7798" y="-573.9" font-family="Arial" font-size="14.00" fill="#666666">[bigint]</text>

@@ -12,15 +12,15 @@
 <!-- time.bar -->
 <g id="node1" class="node">
 <title>time.bar</title>
-<polygon fill="#efefef" stroke="transparent" points="75,-75.5 75,-110.5 251,-110.5 251,-75.5 75,-75.5"/>
-<polygon fill="none" stroke="#000000" points="75,-75.5 75,-110.5 251,-110.5 251,-75.5 75,-75.5"/>
-<text text-anchor="start" x="81.8723" y="-88.3" font-family="Arial Bold" font-size="18.00" fill="#000000">time.bar</text>
-<text text-anchor="start" x="146.8739" y="-88.3" font-family="Arial" font-size="14.00" fill="#000000"> </text>
-<text text-anchor="start" x="150.7645" y="-88.3" font-family="Arial" font-size="14.00" fill="#666666">[BASE TABLE]</text>
-<polygon fill="none" stroke="#000000" points="75,-45.5 75,-75.5 251,-75.5 251,-45.5 75,-45.5"/>
-<text text-anchor="start" x="82" y="-56.9" font-family="Arial" font-size="14.00" fill="#000000">id </text>
-<text text-anchor="start" x="96.7798" y="-56.9" font-family="Arial" font-size="14.00" fill="#666666">[integer]</text>
-<polygon fill="none" stroke="#000000" stroke-width="3" points="73.5,-44.5 73.5,-112.5 252.5,-112.5 252.5,-44.5 73.5,-44.5"/>
+<polygon fill="#efefef" stroke="transparent" points="60,-75.5 60,-110.5 266,-110.5 266,-75.5 60,-75.5"/>
+<polygon fill="none" stroke="#000000" points="60,-75.5 60,-110.5 266,-110.5 266,-75.5 60,-75.5"/>
+<text text-anchor="start" x="66.7152" y="-88.3" font-family="Arial Bold" font-size="18.00" fill="#000000">time.bar</text>
+<text text-anchor="start" x="131.7168" y="-88.3" font-family="Arial" font-size="14.00" fill="#000000">    </text>
+<text text-anchor="start" x="165.9216" y="-88.3" font-family="Arial" font-size="14.00" fill="#666666">[BASE TABLE]</text>
+<polygon fill="none" stroke="#000000" points="60,-45.5 60,-75.5 266,-75.5 266,-45.5 60,-45.5"/>
+<text text-anchor="start" x="67" y="-56.9" font-family="Arial" font-size="14.00" fill="#000000">id </text>
+<text text-anchor="start" x="81.7798" y="-56.9" font-family="Arial" font-size="14.00" fill="#666666">[integer]</text>
+<polygon fill="none" stroke="#000000" stroke-width="3" points="58.5,-44.5 58.5,-112.5 267.5,-112.5 267.5,-44.5 58.5,-44.5"/>
 </g>
 <!-- time.referencing -->
 <g id="node2" class="node">
@@ -43,8 +43,8 @@
 <!-- time.referencing&#45;&gt;time.bar -->
 <g id="edge1" class="edge">
 <title>time.referencing:bar_id&#45;&gt;time.bar:id</title>
-<path fill="none" stroke="#000000" d="M293.0233,-279.9765C386.4611,-269.9035 368.5278,-117.0278 297,-45.5 254.8879,-3.3879 163,14.0556 163,-45.5"/>
-<polygon fill="#000000" stroke="#000000" points="292.9864,-279.9784 282.7653,-276.0061 287.9932,-280.2392 283,-280.5 283,-280.5 283,-280.5 287.9932,-280.2392 283.2347,-284.9939 292.9864,-279.9784 292.9864,-279.9784"/>
+<path fill="none" stroke="#000000" d="M292.9628,-277.9883C337.1991,-254.9387 346.736,-80.236 312,-45.5 265.1738,1.3262 163,20.7222 163,-45.5"/>
+<polygon fill="#000000" stroke="#000000" points="292.6966,-278.0553 281.8999,-276.1365 287.8483,-279.2777 283,-280.5 283,-280.5 283,-280.5 287.8483,-279.2777 284.1001,-284.8635 292.6966,-278.0553 292.6966,-278.0553"/>
 <text text-anchor="start" x="290.453" y="-290.5" font-family="Arial" font-size="10.00" fill="#000000">FOREIGN KEY (bar_id) REFERENCES &quot;time&quot;.bar(id)</text>
 </g>
 </g>
