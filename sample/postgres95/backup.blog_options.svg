@@ -34,32 +34,32 @@
 <!-- backup.blogs -->
 <g id="node2" class="node">
 <title>backup.blogs</title>
-<polygon fill="#efefef" stroke="transparent" points="372,-192.5 372,-227.5 625,-227.5 625,-192.5 372,-192.5"/>
-<polygon fill="none" stroke="#000000" points="372,-192.5 372,-227.5 625,-227.5 625,-192.5 372,-192.5"/>
-<text text-anchor="start" x="396.8532" y="-205.3" font-family="Arial Bold" font-size="18.00" fill="#000000">backup.blogs</text>
-<text text-anchor="start" x="502.893" y="-205.3" font-family="Arial" font-size="14.00" fill="#000000"> </text>
-<text text-anchor="start" x="506.7836" y="-205.3" font-family="Arial" font-size="14.00" fill="#666666">[BASE TABLE]</text>
-<polygon fill="none" stroke="#000000" points="372,-162.5 372,-192.5 625,-192.5 625,-162.5 372,-162.5"/>
-<text text-anchor="start" x="379" y="-173.9" font-family="Arial" font-size="14.00" fill="#000000">id </text>
-<text text-anchor="start" x="393.7798" y="-173.9" font-family="Arial" font-size="14.00" fill="#666666">[integer]</text>
-<polygon fill="none" stroke="#000000" points="372,-132.5 372,-162.5 625,-162.5 625,-132.5 372,-132.5"/>
-<text text-anchor="start" x="379" y="-143.9" font-family="Arial" font-size="14.00" fill="#000000">user_id </text>
-<text text-anchor="start" x="428.7882" y="-143.9" font-family="Arial" font-size="14.00" fill="#666666">[integer]</text>
-<polygon fill="none" stroke="#000000" points="372,-102.5 372,-132.5 625,-132.5 625,-102.5 372,-102.5"/>
-<text text-anchor="start" x="379" y="-113.9" font-family="Arial" font-size="14.00" fill="#000000">dump </text>
-<text text-anchor="start" x="417.899" y="-113.9" font-family="Arial" font-size="14.00" fill="#666666">[text]</text>
-<polygon fill="none" stroke="#000000" points="372,-72.5 372,-102.5 625,-102.5 625,-72.5 372,-72.5"/>
-<text text-anchor="start" x="379" y="-83.9" font-family="Arial" font-size="14.00" fill="#000000">created </text>
-<text text-anchor="start" x="429.5722" y="-83.9" font-family="Arial" font-size="14.00" fill="#666666">[timestamp without time zone]</text>
-<polygon fill="none" stroke="#000000" points="372,-42.5 372,-72.5 625,-72.5 625,-42.5 372,-42.5"/>
-<text text-anchor="start" x="378.6915" y="-53.9" font-family="Arial" font-size="14.00" fill="#000000">updated </text>
-<text text-anchor="start" x="433.1683" y="-53.9" font-family="Arial" font-size="14.00" fill="#666666">[timestamp without time zone]</text>
+<polygon fill="#efefef" stroke="transparent" points="357,-192.5 357,-227.5 640,-227.5 640,-192.5 357,-192.5"/>
+<polygon fill="none" stroke="#000000" points="357,-192.5 357,-227.5 640,-227.5 640,-192.5 357,-192.5"/>
+<text text-anchor="start" x="381.6961" y="-205.3" font-family="Arial Bold" font-size="18.00" fill="#000000">backup.blogs</text>
+<text text-anchor="start" x="487.7359" y="-205.3" font-family="Arial" font-size="14.00" fill="#000000">    </text>
+<text text-anchor="start" x="521.9407" y="-205.3" font-family="Arial" font-size="14.00" fill="#666666">[BASE TABLE]</text>
+<polygon fill="none" stroke="#000000" points="357,-162.5 357,-192.5 640,-192.5 640,-162.5 357,-162.5"/>
+<text text-anchor="start" x="364" y="-173.9" font-family="Arial" font-size="14.00" fill="#000000">id    </text>
+<text text-anchor="start" x="409.094" y="-173.9" font-family="Arial" font-size="14.00" fill="#666666">[integer]</text>
+<polygon fill="none" stroke="#000000" points="357,-132.5 357,-162.5 640,-162.5 640,-132.5 357,-132.5"/>
+<text text-anchor="start" x="364" y="-143.9" font-family="Arial" font-size="14.00" fill="#000000">user_id    </text>
+<text text-anchor="start" x="444.1024" y="-143.9" font-family="Arial" font-size="14.00" fill="#666666">[integer]</text>
+<polygon fill="none" stroke="#000000" points="357,-102.5 357,-132.5 640,-132.5 640,-102.5 357,-102.5"/>
+<text text-anchor="start" x="364" y="-113.9" font-family="Arial" font-size="14.00" fill="#000000">dump    </text>
+<text text-anchor="start" x="433.2132" y="-113.9" font-family="Arial" font-size="14.00" fill="#666666">[text]</text>
+<polygon fill="none" stroke="#000000" points="357,-72.5 357,-102.5 640,-102.5 640,-72.5 357,-72.5"/>
+<text text-anchor="start" x="364" y="-83.9" font-family="Arial" font-size="14.00" fill="#000000">created    </text>
+<text text-anchor="start" x="444.8864" y="-83.9" font-family="Arial" font-size="14.00" fill="#666666">[timestamp without time zone]</text>
+<polygon fill="none" stroke="#000000" points="357,-42.5 357,-72.5 640,-72.5 640,-42.5 357,-42.5"/>
+<text text-anchor="start" x="363.5344" y="-53.9" font-family="Arial" font-size="14.00" fill="#000000">updated    </text>
+<text text-anchor="start" x="448.3254" y="-53.9" font-family="Arial" font-size="14.00" fill="#666666">[timestamp without time zone]</text>
 </g>
 <!-- backup.blog_options&#45;&gt;backup.blogs -->
 <g id="edge1" class="edge">
 <title>backup.blog_options:blog_id&#45;&gt;backup.blogs:id</title>
-<path fill="none" stroke="#000000" d="M336.0053,-426.413C295.0119,-416.7114 313.054,-344.4703 346,-307 428.5577,-213.1053 542.4423,-364.8947 625,-271 652.4397,-239.7922 666.5556,-177.5 625,-177.5"/>
-<polygon fill="#000000" stroke="#000000" points="336.0586,-426.4187 345.5134,-431.9736 341.0293,-426.9593 346,-427.5 346,-427.5 346,-427.5 341.0293,-426.9593 346.4866,-423.0264 336.0586,-426.4187 336.0586,-426.4187"/>
+<path fill="none" stroke="#000000" d="M336.0036,-426.4115C294.9953,-416.6968 312.9327,-344.3633 346,-307 433.2453,-208.4199 552.7547,-369.5801 640,-271 667.5407,-239.8813 681.5556,-177.5 640,-177.5"/>
+<polygon fill="#000000" stroke="#000000" points="336.0588,-426.4174 345.5128,-431.9736 341.0294,-426.9587 346,-427.5 346,-427.5 346,-427.5 341.0294,-426.9587 346.4872,-423.0264 336.0588,-426.4174 336.0588,-426.4174"/>
 <text text-anchor="start" x="6.6045" y="-437.5" font-family="Arial" font-size="10.00" fill="#000000">FOREIGN KEY (blog_id) REFERENCES blogs(id) ON DELETE CASCADE</text>
 </g>
 </g>

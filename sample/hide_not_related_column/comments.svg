@@ -31,17 +31,17 @@
 <!-- posts -->
 <g id="node3" class="node">
 <title>posts</title>
-<polygon fill="#efefef" stroke="transparent" points="144,-102.5 144,-137.5 298,-137.5 298,-102.5 144,-102.5"/>
-<polygon fill="none" stroke="#000000" points="144,-102.5 144,-137.5 298,-137.5 298,-102.5 144,-102.5"/>
-<text text-anchor="start" x="150.8658" y="-115.3" font-family="Arial Bold" font-size="18.00" fill="#000000">posts</text>
-<text text-anchor="start" x="193.8804" y="-115.3" font-family="Arial" font-size="14.00" fill="#000000"> </text>
-<text text-anchor="start" x="197.771" y="-115.3" font-family="Arial" font-size="14.00" fill="#666666">[BASE TABLE]</text>
-<polygon fill="none" stroke="#000000" points="144,-72.5 144,-102.5 298,-102.5 298,-72.5 144,-72.5"/>
-<text text-anchor="start" x="151" y="-83.9" font-family="Arial" font-size="14.00" fill="#000000">id </text>
-<text text-anchor="start" x="165.7798" y="-83.9" font-family="Arial" font-size="14.00" fill="#666666">[bigint]</text>
-<polygon fill="none" stroke="#000000" points="144,-42.5 144,-72.5 298,-72.5 298,-42.5 144,-42.5"/>
-<text text-anchor="start" x="151" y="-53.9" font-family="Arial" font-size="14.00" fill="#000000">user_id </text>
-<text text-anchor="start" x="200.7882" y="-53.9" font-family="Arial" font-size="14.00" fill="#666666">[int]</text>
+<polygon fill="#efefef" stroke="transparent" points="114,-102.5 114,-137.5 298,-137.5 298,-102.5 114,-102.5"/>
+<polygon fill="none" stroke="#000000" points="114,-102.5 114,-137.5 298,-137.5 298,-102.5 114,-102.5"/>
+<text text-anchor="start" x="120.7087" y="-115.3" font-family="Arial Bold" font-size="18.00" fill="#000000">posts</text>
+<text text-anchor="start" x="163.7233" y="-115.3" font-family="Arial" font-size="14.00" fill="#000000">    </text>
+<text text-anchor="start" x="197.9281" y="-115.3" font-family="Arial" font-size="14.00" fill="#666666">[BASE TABLE]</text>
+<polygon fill="none" stroke="#000000" points="114,-72.5 114,-102.5 298,-102.5 298,-72.5 114,-72.5"/>
+<text text-anchor="start" x="121" y="-83.9" font-family="Arial" font-size="14.00" fill="#000000">id    </text>
+<text text-anchor="start" x="166.094" y="-83.9" font-family="Arial" font-size="14.00" fill="#666666">[bigint]</text>
+<polygon fill="none" stroke="#000000" points="114,-42.5 114,-72.5 298,-72.5 298,-42.5 114,-42.5"/>
+<text text-anchor="start" x="121" y="-53.9" font-family="Arial" font-size="14.00" fill="#000000">user_id    </text>
+<text text-anchor="start" x="201.1024" y="-53.9" font-family="Arial" font-size="14.00" fill="#666666">[int]</text>
 </g>
 <!-- comments&#45;&gt;posts -->
 <g id="edge2" class="edge">
@@ -53,14 +53,14 @@
 <!-- users -->
 <g id="node5" class="node">
 <title>users</title>
-<polygon fill="#efefef" stroke="transparent" points="403,-87.5 403,-122.5 558,-122.5 558,-87.5 403,-87.5"/>
-<polygon fill="none" stroke="#000000" points="403,-87.5 403,-122.5 558,-122.5 558,-87.5 403,-87.5"/>
-<text text-anchor="start" x="409.8708" y="-100.3" font-family="Arial Bold" font-size="18.00" fill="#000000">users</text>
-<text text-anchor="start" x="453.8754" y="-100.3" font-family="Arial" font-size="14.00" fill="#000000"> </text>
-<text text-anchor="start" x="457.766" y="-100.3" font-family="Arial" font-size="14.00" fill="#666666">[BASE TABLE]</text>
-<polygon fill="none" stroke="#000000" points="403,-57.5 403,-87.5 558,-87.5 558,-57.5 403,-57.5"/>
-<text text-anchor="start" x="410" y="-68.9" font-family="Arial" font-size="14.00" fill="#000000">id </text>
-<text text-anchor="start" x="424.7798" y="-68.9" font-family="Arial" font-size="14.00" fill="#666666">[int]</text>
+<polygon fill="#efefef" stroke="transparent" points="403,-87.5 403,-122.5 588,-122.5 588,-87.5 403,-87.5"/>
+<polygon fill="none" stroke="#000000" points="403,-87.5 403,-122.5 588,-122.5 588,-87.5 403,-87.5"/>
+<text text-anchor="start" x="409.7137" y="-100.3" font-family="Arial Bold" font-size="18.00" fill="#000000">users</text>
+<text text-anchor="start" x="453.7183" y="-100.3" font-family="Arial" font-size="14.00" fill="#000000">    </text>
+<text text-anchor="start" x="487.9231" y="-100.3" font-family="Arial" font-size="14.00" fill="#666666">[BASE TABLE]</text>
+<polygon fill="none" stroke="#000000" points="403,-57.5 403,-87.5 588,-87.5 588,-57.5 403,-57.5"/>
+<text text-anchor="start" x="410" y="-68.9" font-family="Arial" font-size="14.00" fill="#000000">id    </text>
+<text text-anchor="start" x="455.094" y="-68.9" font-family="Arial" font-size="14.00" fill="#666666">[int]</text>
 </g>
 <!-- comments&#45;&gt;users -->
 <g id="edge4" class="edge">
@@ -72,23 +72,23 @@
 <!-- logs -->
 <g id="node2" class="node">
 <title>logs</title>
-<polygon fill="#efefef" stroke="transparent" points="116,-632.5 116,-667.5 282,-667.5 282,-632.5 116,-632.5"/>
-<polygon fill="none" stroke="#000000" points="116,-632.5 116,-667.5 282,-667.5 282,-632.5 116,-632.5"/>
-<text text-anchor="start" x="133.8698" y="-645.3" font-family="Arial Bold" font-size="18.00" fill="#000000">logs</text>
-<text text-anchor="start" x="166.8764" y="-645.3" font-family="Arial" font-size="14.00" fill="#000000"> </text>
-<text text-anchor="start" x="170.767" y="-645.3" font-family="Arial" font-size="14.00" fill="#666666">[BASE TABLE]</text>
-<polygon fill="none" stroke="#000000" points="116,-602.5 116,-632.5 282,-632.5 282,-602.5 116,-602.5"/>
-<text text-anchor="start" x="123" y="-613.9" font-family="Arial" font-size="14.00" fill="#000000">user_id </text>
-<text text-anchor="start" x="172.7882" y="-613.9" font-family="Arial" font-size="14.00" fill="#666666">[int]</text>
-<polygon fill="none" stroke="#000000" points="116,-572.5 116,-602.5 282,-602.5 282,-572.5 116,-572.5"/>
-<text text-anchor="start" x="123" y="-583.9" font-family="Arial" font-size="14.00" fill="#000000">post_id </text>
-<text text-anchor="start" x="172.0182" y="-583.9" font-family="Arial" font-size="14.00" fill="#666666">[bigint]</text>
-<polygon fill="none" stroke="#000000" points="116,-542.5 116,-572.5 282,-572.5 282,-542.5 116,-542.5"/>
-<text text-anchor="start" x="123" y="-553.9" font-family="Arial" font-size="14.00" fill="#000000">comment_id </text>
-<text text-anchor="start" x="203.122" y="-553.9" font-family="Arial" font-size="14.00" fill="#666666">[bigint]</text>
-<polygon fill="none" stroke="#000000" points="116,-512.5 116,-542.5 282,-542.5 282,-512.5 116,-512.5"/>
-<text text-anchor="start" x="122.7644" y="-523.9" font-family="Arial" font-size="14.00" fill="#000000">comment_star_id </text>
-<text text-anchor="start" x="234.0028" y="-523.9" font-family="Arial" font-size="14.00" fill="#666666">[bigint]</text>
+<polygon fill="#efefef" stroke="transparent" points="86,-632.5 86,-667.5 282,-667.5 282,-632.5 86,-632.5"/>
+<polygon fill="none" stroke="#000000" points="86,-632.5 86,-667.5 282,-667.5 282,-632.5 86,-632.5"/>
+<text text-anchor="start" x="103.7127" y="-645.3" font-family="Arial Bold" font-size="18.00" fill="#000000">logs</text>
+<text text-anchor="start" x="136.7193" y="-645.3" font-family="Arial" font-size="14.00" fill="#000000">    </text>
+<text text-anchor="start" x="170.9241" y="-645.3" font-family="Arial" font-size="14.00" fill="#666666">[BASE TABLE]</text>
+<polygon fill="none" stroke="#000000" points="86,-602.5 86,-632.5 282,-632.5 282,-602.5 86,-602.5"/>
+<text text-anchor="start" x="93" y="-613.9" font-family="Arial" font-size="14.00" fill="#000000">user_id    </text>
+<text text-anchor="start" x="173.1024" y="-613.9" font-family="Arial" font-size="14.00" fill="#666666">[int]</text>
+<polygon fill="none" stroke="#000000" points="86,-572.5 86,-602.5 282,-602.5 282,-572.5 86,-572.5"/>
+<text text-anchor="start" x="93" y="-583.9" font-family="Arial" font-size="14.00" fill="#000000">post_id    </text>
+<text text-anchor="start" x="172.3324" y="-583.9" font-family="Arial" font-size="14.00" fill="#666666">[bigint]</text>
+<polygon fill="none" stroke="#000000" points="86,-542.5 86,-572.5 282,-572.5 282,-542.5 86,-542.5"/>
+<text text-anchor="start" x="93" y="-553.9" font-family="Arial" font-size="14.00" fill="#000000">comment_id    </text>
+<text text-anchor="start" x="203.4362" y="-553.9" font-family="Arial" font-size="14.00" fill="#666666">[bigint]</text>
+<polygon fill="none" stroke="#000000" points="86,-512.5 86,-542.5 282,-542.5 282,-512.5 86,-512.5"/>
+<text text-anchor="start" x="92.6073" y="-523.9" font-family="Arial" font-size="14.00" fill="#000000">comment_star_id    </text>
+<text text-anchor="start" x="234.1599" y="-523.9" font-family="Arial" font-size="14.00" fill="#666666">[bigint]</text>
 </g>
 <!-- logs&#45;&gt;comments -->
 <g id="edge1" class="edge">
@@ -100,20 +100,20 @@
 <!-- comment_stars -->
 <g id="node4" class="node">
 <title>comment_stars</title>
-<polygon fill="#efefef" stroke="transparent" points="386,-617.5 386,-652.5 620,-652.5 620,-617.5 386,-617.5"/>
-<polygon fill="none" stroke="#000000" points="386,-617.5 386,-652.5 620,-652.5 620,-617.5 386,-617.5"/>
-<text text-anchor="start" x="392.8671" y="-630.3" font-family="Arial Bold" font-size="18.00" fill="#000000">comment_stars</text>
-<text text-anchor="start" x="515.8791" y="-630.3" font-family="Arial" font-size="14.00" fill="#000000"> </text>
-<text text-anchor="start" x="519.7697" y="-630.3" font-family="Arial" font-size="14.00" fill="#666666">[BASE TABLE]</text>
-<polygon fill="none" stroke="#000000" points="386,-587.5 386,-617.5 620,-617.5 620,-587.5 386,-587.5"/>
-<text text-anchor="start" x="393" y="-598.9" font-family="Arial" font-size="14.00" fill="#000000">id </text>
-<text text-anchor="start" x="407.7798" y="-598.9" font-family="Arial" font-size="14.00" fill="#666666">[bigint]</text>
-<polygon fill="none" stroke="#000000" points="386,-557.5 386,-587.5 620,-587.5 620,-557.5 386,-557.5"/>
-<text text-anchor="start" x="393" y="-568.9" font-family="Arial" font-size="14.00" fill="#000000">comment_post_id </text>
-<text text-anchor="start" x="507.3604" y="-568.9" font-family="Arial" font-size="14.00" fill="#666666">[bigint]</text>
-<polygon fill="none" stroke="#000000" points="386,-527.5 386,-557.5 620,-557.5 620,-527.5 386,-527.5"/>
-<text text-anchor="start" x="393" y="-538.9" font-family="Arial" font-size="14.00" fill="#000000">comment_user_id </text>
-<text text-anchor="start" x="508.1304" y="-538.9" font-family="Arial" font-size="14.00" fill="#666666">[int]</text>
+<polygon fill="#efefef" stroke="transparent" points="386,-617.5 386,-652.5 650,-652.5 650,-617.5 386,-617.5"/>
+<polygon fill="none" stroke="#000000" points="386,-617.5 386,-652.5 650,-652.5 650,-617.5 386,-617.5"/>
+<text text-anchor="start" x="392.71" y="-630.3" font-family="Arial Bold" font-size="18.00" fill="#000000">comment_stars</text>
+<text text-anchor="start" x="515.722" y="-630.3" font-family="Arial" font-size="14.00" fill="#000000">    </text>
+<text text-anchor="start" x="549.9268" y="-630.3" font-family="Arial" font-size="14.00" fill="#666666">[BASE TABLE]</text>
+<polygon fill="none" stroke="#000000" points="386,-587.5 386,-617.5 650,-617.5 650,-587.5 386,-587.5"/>
+<text text-anchor="start" x="393" y="-598.9" font-family="Arial" font-size="14.00" fill="#000000">id    </text>
+<text text-anchor="start" x="438.094" y="-598.9" font-family="Arial" font-size="14.00" fill="#666666">[bigint]</text>
+<polygon fill="none" stroke="#000000" points="386,-557.5 386,-587.5 650,-587.5 650,-557.5 386,-557.5"/>
+<text text-anchor="start" x="393" y="-568.9" font-family="Arial" font-size="14.00" fill="#000000">comment_post_id    </text>
+<text text-anchor="start" x="537.6746" y="-568.9" font-family="Arial" font-size="14.00" fill="#666666">[bigint]</text>
+<polygon fill="none" stroke="#000000" points="386,-527.5 386,-557.5 650,-557.5 650,-527.5 386,-527.5"/>
+<text text-anchor="start" x="393" y="-538.9" font-family="Arial" font-size="14.00" fill="#000000">comment_user_id    </text>
+<text text-anchor="start" x="538.4446" y="-538.9" font-family="Arial" font-size="14.00" fill="#666666">[int]</text>
 </g>
 <!-- comment_stars&#45;&gt;comments -->
 <g id="edge3" class="edge">
