@@ -34,35 +34,35 @@
 <!-- users -->
 <g id="node2" class="node">
 <title>users</title>
-<polygon fill="#efefef" stroke="transparent" points="564,-222.5 564,-257.5 705,-257.5 705,-222.5 564,-222.5"/>
-<polygon fill="none" stroke="#000000" points="564,-222.5 564,-257.5 705,-257.5 705,-222.5 564,-222.5"/>
-<text text-anchor="start" x="591.4893" y="-235.3" font-family="Arial Bold" font-size="18.00" fill="#000000">users</text>
-<text text-anchor="start" x="635.4939" y="-235.3" font-family="Arial" font-size="14.00" fill="#000000"> </text>
-<text text-anchor="start" x="639.3845" y="-235.3" font-family="Arial" font-size="14.00" fill="#666666">[table]</text>
-<polygon fill="none" stroke="#000000" points="564,-192.5 564,-222.5 705,-222.5 705,-192.5 564,-192.5"/>
-<text text-anchor="start" x="571" y="-203.9" font-family="Arial" font-size="14.00" fill="#000000">id </text>
-<text text-anchor="start" x="585.7798" y="-203.9" font-family="Arial" font-size="14.00" fill="#666666">[INTEGER]</text>
-<polygon fill="none" stroke="#000000" points="564,-162.5 564,-192.5 705,-192.5 705,-162.5 564,-162.5"/>
-<text text-anchor="start" x="571" y="-173.9" font-family="Arial" font-size="14.00" fill="#000000">username </text>
-<text text-anchor="start" x="637.1248" y="-173.9" font-family="Arial" font-size="14.00" fill="#666666">[TEXT]</text>
-<polygon fill="none" stroke="#000000" points="564,-132.5 564,-162.5 705,-162.5 705,-132.5 564,-132.5"/>
-<text text-anchor="start" x="571" y="-143.9" font-family="Arial" font-size="14.00" fill="#000000">password </text>
-<text text-anchor="start" x="634.7882" y="-143.9" font-family="Arial" font-size="14.00" fill="#666666">[TEXT]</text>
-<polygon fill="none" stroke="#000000" points="564,-102.5 564,-132.5 705,-132.5 705,-102.5 564,-102.5"/>
-<text text-anchor="start" x="571" y="-113.9" font-family="Arial" font-size="14.00" fill="#000000">email </text>
-<text text-anchor="start" x="608.3296" y="-113.9" font-family="Arial" font-size="14.00" fill="#666666">[TEXT]</text>
-<polygon fill="none" stroke="#000000" points="564,-72.5 564,-102.5 705,-102.5 705,-72.5 564,-72.5"/>
-<text text-anchor="start" x="571" y="-83.9" font-family="Arial" font-size="14.00" fill="#000000">created </text>
-<text text-anchor="start" x="621.5722" y="-83.9" font-family="Arial" font-size="14.00" fill="#666666">[NUMERIC]</text>
-<polygon fill="none" stroke="#000000" points="564,-42.5 564,-72.5 705,-72.5 705,-42.5 564,-42.5"/>
-<text text-anchor="start" x="570.7139" y="-53.9" font-family="Arial" font-size="14.00" fill="#000000">updated </text>
-<text text-anchor="start" x="625.1907" y="-53.9" font-family="Arial" font-size="14.00" fill="#666666">[NUMERIC]</text>
+<polygon fill="#efefef" stroke="transparent" points="549,-222.5 549,-257.5 720,-257.5 720,-222.5 549,-222.5"/>
+<polygon fill="none" stroke="#000000" points="549,-222.5 549,-257.5 720,-257.5 720,-222.5 549,-222.5"/>
+<text text-anchor="start" x="576.3322" y="-235.3" font-family="Arial Bold" font-size="18.00" fill="#000000">users</text>
+<text text-anchor="start" x="620.3368" y="-235.3" font-family="Arial" font-size="14.00" fill="#000000">    </text>
+<text text-anchor="start" x="654.5416" y="-235.3" font-family="Arial" font-size="14.00" fill="#666666">[table]</text>
+<polygon fill="none" stroke="#000000" points="549,-192.5 549,-222.5 720,-222.5 720,-192.5 549,-192.5"/>
+<text text-anchor="start" x="556" y="-203.9" font-family="Arial" font-size="14.00" fill="#000000">id    </text>
+<text text-anchor="start" x="601.094" y="-203.9" font-family="Arial" font-size="14.00" fill="#666666">[INTEGER]</text>
+<polygon fill="none" stroke="#000000" points="549,-162.5 549,-192.5 720,-192.5 720,-162.5 549,-162.5"/>
+<text text-anchor="start" x="556" y="-173.9" font-family="Arial" font-size="14.00" fill="#000000">username    </text>
+<text text-anchor="start" x="652.439" y="-173.9" font-family="Arial" font-size="14.00" fill="#666666">[TEXT]</text>
+<polygon fill="none" stroke="#000000" points="549,-132.5 549,-162.5 720,-162.5 720,-132.5 549,-132.5"/>
+<text text-anchor="start" x="556" y="-143.9" font-family="Arial" font-size="14.00" fill="#000000">password    </text>
+<text text-anchor="start" x="650.1024" y="-143.9" font-family="Arial" font-size="14.00" fill="#666666">[TEXT]</text>
+<polygon fill="none" stroke="#000000" points="549,-102.5 549,-132.5 720,-132.5 720,-102.5 549,-102.5"/>
+<text text-anchor="start" x="556" y="-113.9" font-family="Arial" font-size="14.00" fill="#000000">email    </text>
+<text text-anchor="start" x="623.6438" y="-113.9" font-family="Arial" font-size="14.00" fill="#666666">[TEXT]</text>
+<polygon fill="none" stroke="#000000" points="549,-72.5 549,-102.5 720,-102.5 720,-72.5 549,-72.5"/>
+<text text-anchor="start" x="556" y="-83.9" font-family="Arial" font-size="14.00" fill="#000000">created    </text>
+<text text-anchor="start" x="636.8864" y="-83.9" font-family="Arial" font-size="14.00" fill="#666666">[NUMERIC]</text>
+<polygon fill="none" stroke="#000000" points="549,-42.5 549,-72.5 720,-72.5 720,-42.5 549,-42.5"/>
+<text text-anchor="start" x="555.5568" y="-53.9" font-family="Arial" font-size="14.00" fill="#000000">updated    </text>
+<text text-anchor="start" x="640.3478" y="-53.9" font-family="Arial" font-size="14.00" fill="#666666">[NUMERIC]</text>
 </g>
 <!-- user_options&#45;&gt;users -->
 <g id="edge1" class="edge">
 <title>user_options:user_id&#45;&gt;users:id</title>
-<path fill="none" stroke="#000000" d="M530.2116,-484.9069C480.3917,-456.6795 505.0869,-207.5 564,-207.5"/>
-<polygon fill="#000000" stroke="#000000" points="530.3334,-484.9391 538.8476,-491.8499 535.1667,-486.2196 540,-487.5 540,-487.5 540,-487.5 535.1667,-486.2196 541.1524,-483.1501 530.3334,-484.9391 530.3334,-484.9391"/>
+<path fill="none" stroke="#000000" d="M530.1041,-484.9069C478.936,-456.6795 490.2718,-207.5 549,-207.5"/>
+<polygon fill="#000000" stroke="#000000" points="530.3266,-484.9651 538.8593,-491.853 535.1633,-486.2326 540,-487.5 540,-487.5 540,-487.5 535.1633,-486.2326 541.1407,-483.147 530.3266,-484.9651 530.3266,-484.9651"/>
 <text text-anchor="start" x="6.9495" y="-497.5" font-family="Arial" font-size="10.00" fill="#000000">FOREIGN KEY (user_id) REFERENCES users (id) ON UPDATE NO ACTION ON DELETE CASCADE MATCH NONE</text>
 </g>
 </g>
