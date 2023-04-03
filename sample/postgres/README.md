@@ -29,7 +29,6 @@ Sample PostgreSQL database document.
 
 | Name | ReturnType | Arguments | Type |
 | ---- | ------- | ------- | ---- |
-| public.reset_comment | void | IN comment_id integer | PROCEDURE |
 | public.uuid_nil | uuid |  | FUNCTION |
 | public.uuid_ns_dns | uuid |  | FUNCTION |
 | public.uuid_ns_url | uuid |  | FUNCTION |
@@ -41,6 +40,7 @@ Sample PostgreSQL database document.
 | public.uuid_generate_v4 | uuid |  | FUNCTION |
 | public.uuid_generate_v5 | uuid | namespace uuid, name text | FUNCTION |
 | public.update_updated | trigger |  | FUNCTION |
+| public.reset_comment | void | IN comment_id integer | PROCEDURE |
 
 ## Relations
 
