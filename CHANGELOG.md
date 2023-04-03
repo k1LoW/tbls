@@ -1,5 +1,8 @@
 # Changelog
 
+## [v1.64.1](https://github.com/k1LoW/tbls/compare/v1.64.0...v1.64.1) - 2023-04-03
+- Add more workaround by @k1LoW in https://github.com/k1LoW/tbls/pull/461
+
 ## [v1.64.0](https://github.com/k1LoW/tbls/compare/v1.63.0...v1.64.0) - 2023-03-25
 - [Breaking Change] Add workaround for overlapping characters in the table name area of ER diagrams. by @k1LoW in https://github.com/k1LoW/tbls/pull/456
 - [Breaking Change] Add workaround for overlapping text in table name area of ER diagram on table page by @k1LoW in https://github.com/k1LoW/tbls/pull/458
