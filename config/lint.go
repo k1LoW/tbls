@@ -16,6 +16,7 @@ type Lint struct {
 	RequireIndexComment      RequireIndexComment      `yaml:"requireIndexComment"`
 	RequireConstraintComment RequireConstraintComment `yaml:"requireConstraintComment"`
 	RequireTriggerComment    RequireTriggerComment    `yaml:"requireTriggerComment"`
+	RequireTableLabels       RequireTableLabels       `yaml:"requireTableLabels"`
 	UnrelatedTable           UnrelatedTable           `yaml:"unrelatedTable"`
 	ColumnCount              ColumnCount              `yaml:"columnCount"`
 	RequireColumns           RequireColumns           `yaml:"requireColumns"`
@@ -284,6 +285,53 @@ func (r RequireTriggerComment) Check(s *schema.Schema, exclude []string) []RuleW
 		}
 	}
 	if r.AllOrNothing && !commented {
+		return []RuleWarn{}
+	}
+	return warns
+}
+
+// RequireTableLabels checks table labels
+type RequireTableLabels struct {
+	Enabled      bool     `yaml:"enabled"`
+	AllOrNothing bool     `yaml:"allOrNothing"`
+	Exclude      []string `yaml:"exclude"`
+}
+
+// IsEnabled return Rule is enabled or not
+func (r RequireTableLabels) IsEnabled() bool {
+	return r.Enabled
+}
+
+// Check table labels
+func (r RequireTableLabels) Check(s *schema.Schema, exclude []string) []RuleWarn {
+	warns := []RuleWarn{}
+	if !r.IsEnabled() {
+		return []RuleWarn{}
+	}
+	msg := "table labels required."
+	labeled := false
+
+	nt := s.NormalizeTableNames(r.Exclude)
+
+	for _, t := range s.Tables {
+		if match(exclude, t.Name) {
+			continue
+		}
+		if match(nt, t.Name) {
+			continue
+		}
+		if len(t.Labels) == 0 {
+			target := t.Name
+			warns = append(warns, RuleWarn{
+				Target:  target,
+				Message: msg,
+			})
+			continue
+		}
+		labeled = true
+	}
+
+	if r.AllOrNothing && !labeled {
 		return []RuleWarn{}
 	}
 	return warns
