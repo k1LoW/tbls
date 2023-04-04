@@ -347,6 +347,37 @@ func TestRequireColumns(t *testing.T) {
 	}
 }
 
+func TestRequireTableLabels(t *testing.T) {
+	tests := []struct {
+		enabled      bool
+		allOrNothing bool
+		exclude      []string
+		lintExclude  []string
+		want         int
+	}{
+		{true, false, []string{}, []string{}, 2},
+		{false, false, []string{}, []string{}, 0},
+		{true, true, []string{}, []string{}, 2},
+		{true, true, []string{"table_b"}, []string{}, 1},
+		{true, true, []string{"table_*"}, []string{}, 0},
+		{true, true, []string{}, []string{"table_c"}, 1},
+		{true, true, []string{}, []string{"table_*"}, 0},
+	}
+
+	for i, tt := range tests {
+		r := RequireTableLabels{
+			Enabled:      tt.enabled,
+			AllOrNothing: tt.allOrNothing,
+			Exclude:      tt.exclude,
+		}
+		s := newTestSchema(t)
+		warns := r.Check(s, tt.lintExclude)
+		if len(warns) != tt.want {
+			t.Errorf("TestRequireColumns(%d): got %v\nwant %v", i, len(warns), tt.want)
+		}
+	}
+}
+
 func TestDuplicateRelations(t *testing.T) {
 	tests := []struct {
 		enabled     bool

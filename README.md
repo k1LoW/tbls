@@ -747,6 +747,14 @@ lint:
     excludeTables:
       - logs
       - comment_stars
+  # require table labels
+  requireTableLabels:
+    enabled: true
+    # all commented, or all uncommented.
+    allOrNothing: false
+    # exclude tables from warnings
+    exclude:
+      - logs
   # find a table that has no relation
   unrelatedTable:
     enabled: true
