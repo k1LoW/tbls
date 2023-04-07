@@ -36,6 +36,18 @@ func SelectNamingStrategy(name string) (*NamingStrategy, error) {
 			ParentColumn: singularTableParentColumnNamer,
 		}, nil
 
+	case "identical":
+		return &NamingStrategy{
+			ParentTable:  defaultParentTableNamer,
+			ParentColumn: identicalParentColumnNamer,
+		}, nil
+
+	case "identicalSingularTableName":
+		return &NamingStrategy{
+			ParentTable:  singularTableParentTableNamer,
+			ParentColumn: identicalParentColumnNamer,
+		}, nil
+
 	default:
 		return nil, fmt.Errorf("Naming strategy does not exist. strategy: %s\n", name)
 	}
@@ -75,4 +87,8 @@ func singularTableParentTableNamer(name string) string {
 
 func singularTableParentColumnNamer(name string) string {
 	return "id"
+}
+
+func identicalParentColumnNamer(name string) string {
+	return name
 }

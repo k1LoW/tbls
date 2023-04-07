@@ -36,3 +36,21 @@ func TestSingularTableParentColumnNamer(t *testing.T) {
 		}
 	}
 }
+
+func TestIdenticalParentColumnNamer(t *testing.T) {
+	tests := []struct {
+		name string
+		want string
+	}{
+		// normal
+		{"user_id", "user_id"},
+	}
+
+	for _, tt := range tests {
+		got := identicalParentColumnNamer(tt.name)
+
+		if got != tt.want {
+			t.Errorf("name %v\ngot %v\nwant %v", tt.name, got, tt.want)
+		}
+	}
+}
