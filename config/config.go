@@ -723,6 +723,7 @@ func mergeDetectedRelations(s *schema.Schema, strategy *NamingStrategy) {
 	var (
 		err          error
 		parentColumn *schema.Column
+		parentTable  *schema.Table
 	)
 
 	for _, t := range s.Tables {
@@ -733,9 +734,16 @@ func mergeDetectedRelations(s *schema.Schema, strategy *NamingStrategy) {
 				Table:   t,
 			}
 
-			if relation.ParentTable, err = s.FindTableByName(strategy.ParentTableName(c.Name)); err != nil {
+			if parentTable, err = s.FindTableByName(strategy.ParentTableName(c.Name)); err != nil {
 				continue
 			}
+
+			if parentTable == t {
+				continue
+			}
+
+			relation.ParentTable = parentTable
+
 			if parentColumn, err = relation.ParentTable.FindColumnByName(strategy.ParentColumnName(c.Name)); err != nil {
 				continue
 			}
