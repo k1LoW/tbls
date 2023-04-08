@@ -15,6 +15,11 @@ jobs:
       - name: Check out source code
         uses: actions/checkout@v3
 
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version-file: go.mod
+
       - id: run-tagpr
         name: Run tagpr
         uses: Songmu/tagpr@v1
@@ -31,10 +36,13 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version-file: go.mod
+
       - name: Setup
         run: |
-          brew uninstall go@1.17
-          brew install go
           brew install goreleaser
           brew install sqlite3
 
@@ -163,7 +171,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-        
+
       - name: Login to ghcr.io
         uses: docker/login-action@v2
         with:
@@ -188,4 +196,3 @@ jobs:
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.version=${{ steps.latest_version.outputs.version }}
             org.opencontainers.image.source=https://github.com/k1LoW/tbls
-          
