@@ -1,5 +1,10 @@
 # Changelog
 
+## [v1.65.0](https://github.com/k1LoW/tbls/compare/v1.64.1...v1.65.0) - 2023-04-08
+- Add lint rule `lint.requireTableLabels:` by @k1LoW in https://github.com/k1LoW/tbls/pull/463
+- Add a NamingStrategy to map Post.user_id → User.user_id style detected relation by @yu-ichiro in https://github.com/k1LoW/tbls/pull/466
+- Add command `tbls ls` by @k1LoW in https://github.com/k1LoW/tbls/pull/467
+
 ## [v1.64.1](https://github.com/k1LoW/tbls/compare/v1.64.0...v1.64.1) - 2023-04-03
 - Add more workaround by @k1LoW in https://github.com/k1LoW/tbls/pull/461
 
