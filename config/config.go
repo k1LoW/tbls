@@ -851,7 +851,7 @@ func detectPKFK(s *schema.Schema) error {
 func matchLabels(il []string, l schema.Labels) bool {
 	for _, ll := range l {
 		for _, ill := range il {
-			if ll.Name == ill {
+			if wildcard.MatchSimple(ill, ll.Name) {
 				return true
 			}
 		}
