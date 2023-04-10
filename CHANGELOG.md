@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.65.2](https://github.com/k1LoW/tbls/compare/v1.65.1...v1.65.2) - 2023-04-10
+- Support wildcards ( `*` ) in `--label` option by @k1LoW in https://github.com/k1LoW/tbls/pull/470
+- Use schema.json in `tbls out` by @k1LoW in https://github.com/k1LoW/tbls/pull/472
+
 ## [v1.65.1](https://github.com/k1LoW/tbls/compare/v1.65.0...v1.65.1) - 2023-04-08
 - Fix CI by @k1LoW in https://github.com/k1LoW/tbls/pull/468
 
