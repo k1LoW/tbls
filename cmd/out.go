@@ -26,7 +26,6 @@ import (
 
 	"github.com/k1LoW/tbls/cmdutil"
 	"github.com/k1LoW/tbls/config"
-	"github.com/k1LoW/tbls/datasource"
 	"github.com/k1LoW/tbls/output"
 	tbls_config "github.com/k1LoW/tbls/output/config"
 	"github.com/k1LoW/tbls/output/dot"
@@ -74,12 +73,8 @@ var outCmd = &cobra.Command{
 			return err
 		}
 
-		s, err := datasource.Analyze(c.DSN)
+		s, err := getSchemaFromJSONorDSN(c)
 		if err != nil {
-			return err
-		}
-
-		if err := c.ModifySchema(s); err != nil {
 			return err
 		}
 

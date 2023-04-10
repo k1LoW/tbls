@@ -27,7 +27,6 @@ import (
 	"strings"
 
 	"github.com/k1LoW/tbls/config"
-	"github.com/k1LoW/tbls/datasource"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/minio/pkg/wildcard"
 	"github.com/olekukonko/tablewriter"
@@ -56,24 +55,9 @@ var lsCmd = &cobra.Command{
 			return err
 		}
 
-		var s *schema.Schema
-		if _, err := os.Stat(c.SchemaFilePath()); err == nil {
-			s, err = datasource.AnalyzeJSONStringOrFile(c.SchemaFilePath())
-			if err != nil {
-				return err
-			}
-		} else {
-			s, err = datasource.Analyze(c.DSN)
-			if err != nil {
-				return err
-			}
-			if err := c.ModifySchema(s); err != nil {
-				return err
-			}
-		}
-
-		if err := c.FilterTables(s); err != nil {
-			return err
+		s, err := getSchemaFromJSONorDSN(c)
+		if err != nil {
+			return nil
 		}
 
 		table := tablewriter.NewWriter(os.Stdout)
