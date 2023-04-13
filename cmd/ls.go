@@ -116,6 +116,9 @@ var lsCmd = &cobra.Command{
 func loadLsArgs(args []string) ([]config.Option, []string, error) {
 	pattern := args
 	options := []config.Option{}
+	if dsn != "" {
+		options = append(options, config.DSNURL(dsn))
+	}
 	options = append(options, config.Include(append(tables, includes...)))
 	options = append(options, config.Exclude(excludes))
 	options = append(options, config.IncludeLabels(labels))
@@ -125,6 +128,7 @@ func loadLsArgs(args []string) ([]config.Option, []string, error) {
 
 func init() {
 	rootCmd.AddCommand(lsCmd)
+	lsCmd.Flags().StringVarP(&dsn, "dsn", "", "", "data source name")
 	lsCmd.Flags().StringVarP(&configPath, "config", "c", "", "config file path")
 	lsCmd.Flags().StringSliceVarP(&tables, "table", "", []string{}, "target table (tables to include)")
 	lsCmd.Flags().StringSliceVarP(&includes, "include", "", []string{}, "tables to include")

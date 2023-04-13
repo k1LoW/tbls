@@ -201,6 +201,9 @@ func loadDocArgs(args []string) ([]config.Option, error) {
 	if len(args) == 1 {
 		options = append(options, config.DSNURL(args[0]))
 	}
+	if dsn != "" {
+		options = append(options, config.DSNURL(dsn))
+	}
 	return options, nil
 }
 
@@ -222,6 +225,7 @@ func outputErExists(s *schema.Schema, path string) bool {
 
 func init() {
 	rootCmd.AddCommand(docCmd)
+	docCmd.Flags().StringVarP(&dsn, "dsn", "", "", "data source name")
 	docCmd.Flags().BoolVarP(&force, "force", "f", false, "force")
 	docCmd.Flags().BoolVarP(&sort, "sort", "", false, "sort")
 	docCmd.Flags().StringVarP(&configPath, "config", "c", "", "config file path")

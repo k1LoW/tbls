@@ -68,6 +68,9 @@ var excludes []string
 // table labels to be included
 var labels []string
 
+// dsn
+var dsn string
+
 const rootUsageTemplate = `Usage:{{if .Runnable}}{{if ne .UseLine "tbls [flags]" }}
   {{.UseLine}}{{end}}{{end}}{{if .HasAvailableSubCommands}}
   {{.CommandPath}} [command]{{end}}{{if gt (len .Aliases) 0}}
