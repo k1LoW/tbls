@@ -35,7 +35,7 @@ import (
 
 // diffCmd represents the diff command
 var diffCmd = &cobra.Command{
-	Use:   "diff [DSN] [DOC_PATH]",
+	Use:   "diff [DSN] [DSN_OR_DOC_PATH]",
 	Short: "diff database and ( document or database )",
 	Long:  `'tbls diff' shows the difference between database schema and ( generated document or other database schema ).`,
 	Args:  cobra.MaximumNArgs(2),

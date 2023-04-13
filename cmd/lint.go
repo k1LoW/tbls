@@ -105,11 +105,15 @@ func loadLintArgs(args []string) ([]config.Option, error) {
 	if len(args) == 1 {
 		options = append(options, config.DSNURL(args[0]))
 	}
+	if dsn != "" {
+		options = append(options, config.DSNURL(dsn))
+	}
 	return options, nil
 }
 
 func init() {
 	rootCmd.AddCommand(lintCmd)
+	lintCmd.Flags().StringVarP(&dsn, "dsn", "", "", "data source name")
 	lintCmd.Flags().StringVarP(&configPath, "config", "c", "", "config file path")
 	lintCmd.Flags().StringVarP(&when, "when", "", "", "command execute condition")
 	err := lintCmd.MarkZshCompPositionalArgumentFile(2)

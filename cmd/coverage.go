@@ -112,11 +112,15 @@ func loadCoverageArgs(args []string) ([]config.Option, error) {
 	if len(args) == 1 {
 		options = append(options, config.DSNURL(args[0]))
 	}
+	if dsn != "" {
+		options = append(options, config.DSNURL(dsn))
+	}
 	return options, nil
 }
 
 func init() {
 	rootCmd.AddCommand(coverageCmd)
+	coverageCmd.Flags().StringVarP(&dsn, "dsn", "", "", "data source name")
 	coverageCmd.Flags().StringVarP(&configPath, "config", "c", "", "config file path")
 	coverageCmd.Flags().StringVarP(&cformat, "format", "t", "", "output format")
 	coverageCmd.Flags().StringVarP(&when, "when", "", "", "command execute condition")

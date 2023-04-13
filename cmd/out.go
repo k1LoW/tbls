@@ -135,6 +135,9 @@ func loadOutArgs(args []string) ([]config.Option, error) {
 	if len(args) > 1 {
 		return options, errors.WithStack(errors.New("too many arguments"))
 	}
+	if dsn != "" {
+		options = append(options, config.DSNURL(dsn))
+	}
 	if sort {
 		options = append(options, config.Sort(sort))
 	}
@@ -152,6 +155,7 @@ func loadOutArgs(args []string) ([]config.Option, error) {
 
 func init() {
 	rootCmd.AddCommand(outCmd)
+	outCmd.Flags().StringVarP(&dsn, "dsn", "", "", "data source name")
 	outCmd.Flags().BoolVarP(&sort, "sort", "", false, "sort")
 	outCmd.Flags().StringVarP(&configPath, "config", "c", "", "config file path")
 	outCmd.Flags().StringVarP(&format, "format", "t", "json", "output format")
