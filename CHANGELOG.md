@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.65.3](https://github.com/k1LoW/tbls/compare/v1.65.2...v1.65.3) - 2023-04-13
+- docs: add MacPorts install info by @herbygillot in https://github.com/k1LoW/tbls/pull/473
+- Add `--dsn` option by @k1LoW in https://github.com/k1LoW/tbls/pull/475
+
 ## [v1.65.2](https://github.com/k1LoW/tbls/compare/v1.65.1...v1.65.2) - 2023-04-10
 - Support wildcards ( `*` ) in `--label` option by @k1LoW in https://github.com/k1LoW/tbls/pull/470
 - Use schema.json in `tbls out` by @k1LoW in https://github.com/k1LoW/tbls/pull/472
