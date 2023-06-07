@@ -40,7 +40,7 @@ func (p *Postgres) Analyze(s *schema.Schema) error {
 	s.Driver = d
 
 	// current schema
-	var currentSchema string
+	var currentSchema sql.NullString
 	schemaRows, err := p.db.Query(`SELECT current_schema()`)
 	if err != nil {
 		return errors.WithStack(err)
@@ -52,7 +52,11 @@ func (p *Postgres) Analyze(s *schema.Schema) error {
 			return errors.WithStack(err)
 		}
 	}
-	s.Driver.Meta.CurrentSchema = currentSchema
+
+	if currentSchema.Valid {
+		s.Driver.Meta.CurrentSchema = currentSchema.String
+	}
+
 
 	// search_path
 	var searchPaths string
@@ -379,10 +383,10 @@ const queryFunctions95 = `SELECT
   pg_get_function_arguments(p.oid) AS arguments
 FROM pg_proc AS p
 LEFT JOIN pg_namespace AS n ON p.pronamespace = n.oid
-LEFT JOIN pg_type AS t ON t.oid = p.prorettype 
+LEFT JOIN pg_type AS t ON t.oid = p.prorettype
 WHERE n.nspname NOT IN ('pg_catalog', 'information_schema')`
 
-const queryFunctions = `SELECT 
+const queryFunctions = `SELECT
   n.nspname AS schema_name,
   p.proname AS specific_name,
   CASE WHEN p.prokind = 'p' THEN TEXT 'PROCEDURE' ELSE CASE WHEN p.prokind = 'f' THEN TEXT 'FUNCTION' ELSE CAST(p.prokind AS TEXT) END END,
@@ -390,11 +394,11 @@ const queryFunctions = `SELECT
   pg_get_function_arguments(p.oid) AS arguments
 FROM pg_proc AS p
 LEFT JOIN pg_namespace AS n ON p.pronamespace = n.oid
-LEFT JOIN pg_type AS t ON t.oid = p.prorettype 
+LEFT JOIN pg_type AS t ON t.oid = p.prorettype
 WHERE n.nspname NOT IN ('pg_catalog', 'information_schema')`
 
-const queryStoredProcedureSupported = `SELECT column_name 
-FROM information_schema.columns 
+const queryStoredProcedureSupported = `SELECT column_name
+FROM information_schema.columns
 WHERE table_name='pg_proc' and column_name='prokind';`
 
 func (p *Postgres) isProceduresSupported() (bool, error) {
