@@ -1,5 +1,8 @@
 # Changelog
 
+## [v1.65.4](https://github.com/k1LoW/tbls/compare/v1.65.3...v1.65.4) - 2023-06-07
+- Fix for when Postgres search path is empty by @codetheweb in https://github.com/k1LoW/tbls/pull/479
+
 ## [v1.65.3](https://github.com/k1LoW/tbls/compare/v1.65.2...v1.65.3) - 2023-04-13
 - docs: add MacPorts install info by @herbygillot in https://github.com/k1LoW/tbls/pull/473
 - Add `--dsn` option by @k1LoW in https://github.com/k1LoW/tbls/pull/475
