@@ -313,7 +313,7 @@ func (t *Table) ShowColumn(name string, hideColumns []string) bool {
 	return true
 }
 
-// Sort schema tables, columns, relations, and constrains
+// Sort schema tables, columns, relations, constrains and functions.
 func (s *Schema) Sort() error {
 	for _, t := range s.Tables {
 		for _, c := range t.Columns {
@@ -342,6 +342,9 @@ func (s *Schema) Sort() error {
 	})
 	sort.SliceStable(s.Relations, func(i, j int) bool {
 		return s.Relations[i].Table.Name < s.Relations[j].Table.Name
+	})
+	sort.SliceStable(s.Functions, func(i, j int) bool {
+		return s.Functions[i].Name < s.Functions[j].Name
 	})
 	return nil
 }
