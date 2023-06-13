@@ -2,6 +2,7 @@ package schema
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"sort"
 	"strings"
@@ -216,103 +217,6 @@ func (s *Schema) HasTableWithLabels() bool {
 	return false
 }
 
-// FindColumnByName find column by column name
-func (t *Table) FindColumnByName(name string) (*Column, error) {
-	for _, c := range t.Columns {
-		if c.Name == name {
-			return c, nil
-		}
-	}
-	return nil, errors.Errorf("not found column '%s' on table '%s'", name, t.Name)
-}
-
-// FindIndexByName find index by index name
-func (t *Table) FindIndexByName(name string) (*Index, error) {
-	for _, i := range t.Indexes {
-		if i.Name == name {
-			return i, nil
-		}
-	}
-	return nil, errors.Errorf("not found index '%s' on table '%s'", name, t.Name)
-}
-
-// FindConstraintByName find constraint by constraint name
-func (t *Table) FindConstraintByName(name string) (*Constraint, error) {
-	for _, c := range t.Constraints {
-		if c.Name == name {
-			return c, nil
-		}
-	}
-	return nil, errors.Errorf("not found constraint '%s' on table '%s'", name, t.Name)
-}
-
-// FindTriggerByName find trigger by trigger name
-func (t *Table) FindTriggerByName(name string) (*Trigger, error) {
-	for _, trig := range t.Triggers {
-		if trig.Name == name {
-			return trig, nil
-		}
-	}
-	return nil, errors.Errorf("not found trigger '%s' on table '%s'", name, t.Name)
-}
-
-// FindConstrainsByColumnName find constraint by column name
-func (t *Table) FindConstrainsByColumnName(name string) []*Constraint {
-	cts := []*Constraint{}
-	for _, ct := range t.Constraints {
-		for _, ctc := range ct.Columns {
-			if ctc == name {
-				cts = append(cts, ct)
-			}
-		}
-	}
-	return cts
-}
-
-func (t *Table) hasColumnWithValues(name string) bool {
-	for _, c := range t.Columns {
-		switch name {
-		case ColumnExtraDef:
-			if c.ExtraDef != "" {
-				return true
-			}
-		case ColumnOccurrences:
-			if c.Occurrences.Valid {
-				return true
-			}
-		case ColumnPercents:
-			if c.Percents.Valid {
-				return true
-			}
-		case ColumnChildren:
-			if len(c.ChildRelations) > 0 {
-				return true
-			}
-		case ColumnParents:
-			if len(c.ParentRelations) > 0 {
-				return true
-			}
-		case ColumnComment:
-			if c.Comment != "" {
-				return true
-			}
-		case ColumnLabels:
-			if len(c.Labels) > 0 {
-				return true
-			}
-		}
-	}
-	return false
-}
-
-func (t *Table) ShowColumn(name string, hideColumns []string) bool {
-	hideColumns = unique(append(DefaultHideColumns, hideColumns...))
-	if contains(hideColumns, name) {
-		return t.hasColumnWithValues(name)
-	}
-	return true
-}
-
 // Sort schema tables, columns, relations, and constrains
 func (s *Schema) Sort() error {
 	for _, t := range s.Tables {
@@ -412,6 +316,121 @@ func (s *Schema) Repair() error {
 	}
 
 	return nil
+}
+
+func (s *Schema) Clone() (c *Schema, err error) {
+	defer func() {
+		err = errors.WithStack(err)
+	}()
+	b, err := json.Marshal(s)
+	if err != nil {
+		return nil, err
+	}
+	c = &Schema{}
+	if err := json.Unmarshal(b, c); err != nil {
+		return nil, err
+	}
+	if err := c.Repair(); err != nil {
+		return nil, err
+	}
+	return c, nil
+}
+
+// FindColumnByName find column by column name
+func (t *Table) FindColumnByName(name string) (*Column, error) {
+	for _, c := range t.Columns {
+		if c.Name == name {
+			return c, nil
+		}
+	}
+	return nil, errors.Errorf("not found column '%s' on table '%s'", name, t.Name)
+}
+
+// FindIndexByName find index by index name
+func (t *Table) FindIndexByName(name string) (*Index, error) {
+	for _, i := range t.Indexes {
+		if i.Name == name {
+			return i, nil
+		}
+	}
+	return nil, errors.Errorf("not found index '%s' on table '%s'", name, t.Name)
+}
+
+// FindConstraintByName find constraint by constraint name
+func (t *Table) FindConstraintByName(name string) (*Constraint, error) {
+	for _, c := range t.Constraints {
+		if c.Name == name {
+			return c, nil
+		}
+	}
+	return nil, errors.Errorf("not found constraint '%s' on table '%s'", name, t.Name)
+}
+
+// FindTriggerByName find trigger by trigger name
+func (t *Table) FindTriggerByName(name string) (*Trigger, error) {
+	for _, trig := range t.Triggers {
+		if trig.Name == name {
+			return trig, nil
+		}
+	}
+	return nil, errors.Errorf("not found trigger '%s' on table '%s'", name, t.Name)
+}
+
+// FindConstrainsByColumnName find constraint by column name
+func (t *Table) FindConstrainsByColumnName(name string) []*Constraint {
+	cts := []*Constraint{}
+	for _, ct := range t.Constraints {
+		for _, ctc := range ct.Columns {
+			if ctc == name {
+				cts = append(cts, ct)
+			}
+		}
+	}
+	return cts
+}
+
+func (t *Table) hasColumnWithValues(name string) bool {
+	for _, c := range t.Columns {
+		switch name {
+		case ColumnExtraDef:
+			if c.ExtraDef != "" {
+				return true
+			}
+		case ColumnOccurrences:
+			if c.Occurrences.Valid {
+				return true
+			}
+		case ColumnPercents:
+			if c.Percents.Valid {
+				return true
+			}
+		case ColumnChildren:
+			if len(c.ChildRelations) > 0 {
+				return true
+			}
+		case ColumnParents:
+			if len(c.ParentRelations) > 0 {
+				return true
+			}
+		case ColumnComment:
+			if c.Comment != "" {
+				return true
+			}
+		case ColumnLabels:
+			if len(c.Labels) > 0 {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func (t *Table) ShowColumn(name string, hideColumns []string) bool {
+	hideColumns = unique(append(DefaultHideColumns, hideColumns...))
+	if contains(hideColumns, name) {
+		return t.hasColumnWithValues(name)
+	}
+	return true
 }
 
 func (t *Table) CollectTablesAndRelations(distance int, root bool) ([]*Table, []*Relation, error) {
