@@ -46,6 +46,7 @@ type Config struct {
 	Distance               int                    `yaml:"distance,omitempty"`
 	Lint                   Lint                   `yaml:"lint,omitempty"`
 	LintExclude            []string               `yaml:"lintExclude,omitempty"`
+	Viewpoints             []Viewpoint            `yaml:"viewpoints,omitempty"`
 	Relations              []AdditionalRelation   `yaml:"relations,omitempty"`
 	Comments               []AdditionalComment    `yaml:"comments,omitempty"`
 	Dict                   dict.Dict              `yaml:"dict,omitempty"`
@@ -436,7 +437,7 @@ func (c *Config) MergeAdditionalData(s *schema.Schema) error {
 	return nil
 }
 
-// FilterTables filter tables from schema.Schema
+// FilterTables filter tables from schema.Schema using include: and exclude: and includeLabels
 func (c *Config) FilterTables(s *schema.Schema) error {
 	i := append(c.Include, s.NormalizeTableNames(c.Include)...)
 	e := append(c.Exclude, s.NormalizeTableNames(c.Exclude)...)
