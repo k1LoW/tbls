@@ -29,15 +29,13 @@ var tmpl embed.FS
 // Md struct
 type Md struct {
 	config *config.Config
-	er     bool
 	tmpl   embed.FS
 }
 
 // New return Md
-func New(c *config.Config, er bool) *Md {
+func New(c *config.Config) *Md {
 	return &Md{
 		config: c,
-		er:     er,
 		tmpl:   tmpl,
 	}
 }
@@ -82,6 +80,7 @@ func (m *Md) OutputSchema(wr io.Writer, s *schema.Schema) error {
 	}
 	tmpl := template.Must(template.New("index").Funcs(output.Funcs(&m.config.MergedDict)).Parse(ts))
 	templateData := m.makeSchemaTemplateData(s)
+	templateData["er"] = m.config.NeedToGenerateERImages()
 	switch m.config.ER.Format {
 	case "mermaid":
 		buf := new(bytes.Buffer)
@@ -89,14 +88,8 @@ func (m *Md) OutputSchema(wr io.Writer, s *schema.Schema) error {
 		if err := mmd.OutputSchema(buf, s); err != nil {
 			return err
 		}
-		templateData["er"] = !m.config.ER.Skip
 		templateData["erDiagram"] = fmt.Sprintf("```mermaid\n%s```", buf.String())
 	default:
-		if m.er {
-			templateData["er"] = !m.config.ER.Skip
-		} else {
-			templateData["er"] = false
-		}
 		templateData["erDiagram"] = fmt.Sprintf("![er](%sschema.%s)", m.config.BaseUrl, m.config.ER.Format)
 	}
 
@@ -116,6 +109,7 @@ func (m *Md) OutputTable(wr io.Writer, t *schema.Table) error {
 	}
 	tmpl := template.Must(template.New(t.Name).Funcs(output.Funcs(&m.config.MergedDict)).Parse(ts))
 	templateData := m.makeTableTemplateData(t)
+	templateData["er"] = m.config.NeedToGenerateERImages()
 	switch m.config.ER.Format {
 	case "mermaid":
 		buf := new(bytes.Buffer)
@@ -123,14 +117,8 @@ func (m *Md) OutputTable(wr io.Writer, t *schema.Table) error {
 		if err := mmd.OutputTable(buf, t); err != nil {
 			return err
 		}
-		templateData["er"] = !m.config.ER.Skip
 		templateData["erDiagram"] = fmt.Sprintf("```mermaid\n%s```", buf.String())
 	default:
-		if m.er {
-			templateData["er"] = !m.config.ER.Skip
-		} else {
-			templateData["er"] = false
-		}
 		templateData["erDiagram"] = fmt.Sprintf("![er](%s%s.%s)", m.config.BaseUrl, mdurl.Encode(t.Name), m.config.ER.Format)
 	}
 
@@ -171,13 +159,7 @@ func Output(s *schema.Schema, c *config.Config, force bool) (e error) {
 	if err != nil {
 		return errors.WithStack(err)
 	}
-	er := false
-	if _, err := os.Lstat(filepath.Join(fullPath, fmt.Sprintf("schema.%s", c.ER.Format))); err == nil {
-		er = true
-	}
-
-	md := New(c, er)
-
+	md := New(c)
 	err = md.OutputSchema(file, s)
 	if err != nil {
 		return errors.WithStack(err)
@@ -191,14 +173,7 @@ func Output(s *schema.Schema, c *config.Config, force bool) (e error) {
 			_ = file.Close()
 			return errors.WithStack(err)
 		}
-
-		er := false
-		if _, err := os.Lstat(filepath.Join(fullPath, fmt.Sprintf("%s.%s", t.Name, c.ER.Format))); err == nil {
-			er = true
-		}
-
-		md := New(c, er)
-
+		md := New(c)
 		err = md.OutputTable(file, t)
 		if err != nil {
 			_ = file.Close()
@@ -216,7 +191,7 @@ func Output(s *schema.Schema, c *config.Config, force bool) (e error) {
 // DiffSchemas show diff databases.
 func DiffSchemas(s, s2 *schema.Schema, c, c2 *config.Config) (string, error) {
 	var diff string
-	md := New(c, false)
+	md := New(c)
 
 	// README.md
 	a := new(bytes.Buffer)
@@ -332,13 +307,7 @@ func DiffSchemaAndDocs(docPath string, s *schema.Schema, c *config.Config) (stri
 	}
 
 	// README.md
-	er := false
-	if _, err := os.Lstat(filepath.Join(fullPath, fmt.Sprintf("schema.%s", c.ER.Format))); err == nil {
-		er = true
-	}
-
-	md := New(c, er)
-
+	md := New(c)
 	b := new(bytes.Buffer)
 	err = md.OutputSchema(b, s)
 	if err != nil {
@@ -379,13 +348,9 @@ func DiffSchemaAndDocs(docPath string, s *schema.Schema, c *config.Config) (stri
 	}
 	for _, t := range s.Tables {
 		b := new(bytes.Buffer)
-		er := false
-		if _, err := os.Lstat(filepath.Join(fullPath, fmt.Sprintf("%s.%s", t.Name, c.ER.Format))); err == nil {
-			er = true
-		}
 		to := fmt.Sprintf("%s %s", mdsn, t.Name)
 
-		md := New(c, er)
+		md := New(c)
 
 		err := md.OutputTable(b, t)
 		if err != nil {
