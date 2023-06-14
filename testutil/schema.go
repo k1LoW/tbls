@@ -7,16 +7,24 @@ import (
 )
 
 func NewSchema(t *testing.T) *schema.Schema {
+	const (
+		tableAName     = "a"
+		tableBName     = "b"
+		labelBlueName  = "blue"
+		labelRedName   = "red"
+		labelGreenName = "green"
+	)
+
 	labelBlue := &schema.Label{
-		Name:    "blue",
+		Name:    labelBlueName,
 		Virtual: false,
 	}
 	labelRed := &schema.Label{
-		Name:    "red",
+		Name:    labelRedName,
 		Virtual: false,
 	}
 	labelGreen := &schema.Label{
-		Name:    "green",
+		Name:    labelGreenName,
 		Virtual: true,
 	}
 
@@ -32,7 +40,7 @@ func NewSchema(t *testing.T) *schema.Schema {
 	}
 
 	ta := &schema.Table{
-		Name:    "a",
+		Name:    tableAName,
 		Comment: "table a",
 		Columns: []*schema.Column{
 			ca,
@@ -66,7 +74,7 @@ func NewSchema(t *testing.T) *schema.Schema {
 		},
 	}
 	tb := &schema.Table{
-		Name:    "b",
+		Name:    tableBName,
 		Comment: "table b",
 		Columns: []*schema.Column{
 			cb,
@@ -99,6 +107,40 @@ func NewSchema(t *testing.T) *schema.Schema {
 		},
 		Relations: []*schema.Relation{
 			r,
+		},
+		Viewpoints: schema.Viewpoints{
+			&schema.Viewpoint{
+				Name: "table a b",
+				Desc: "select table a and b",
+				Tables: []string{
+					tableAName,
+					tableBName,
+				},
+			},
+			&schema.Viewpoint{
+				Name: "label blue",
+				Desc: "select label blue",
+				Labels: []string{
+					labelBlueName,
+				},
+			},
+			&schema.Viewpoint{
+				Name: "label green",
+				Desc: "select label green",
+				Labels: []string{
+					labelGreenName,
+				},
+			},
+			&schema.Viewpoint{
+				Name: "table a label red",
+				Desc: "select table a and label red\n\n- table a\n- label red",
+				Tables: []string{
+					tableAName,
+				},
+				Labels: []string{
+					labelRedName,
+				},
+			},
 		},
 		Driver: &schema.Driver{
 			Name:            "testdriver",

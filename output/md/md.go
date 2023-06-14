@@ -492,24 +492,30 @@ func (m *Md) makeSchemaTemplateData(s *schema.Schema) map[string]interface{} {
 	)
 
 	for i, v := range s.Viewpoints {
+		desc := v.Desc
+		if showOnlyFirstParagraph {
+			desc = output.ShowOnlyFirstParagraph(desc)
+		}
 		data := []string{
 			fmt.Sprintf("[%s](%sviewpoint-%d.md)", v.Name, m.config.BaseUrl, i),
-			v.Desc,
+			desc,
 		}
 		viewpointData = append(viewpointData, data)
 	}
 
 	if adjust {
 		return map[string]interface{}{
-			"Schema":    s,
-			"Tables":    adjustTable(tablesData),
-			"Functions": adjustTable(functionData),
+			"Schema":     s,
+			"Tables":     adjustTable(tablesData),
+			"Functions":  adjustTable(functionData),
+			"Viewpoints": adjustTable(viewpointData),
 		}
 	}
 	return map[string]interface{}{
-		"Schema":    s,
-		"Tables":    tablesData,
-		"Functions": functionData,
+		"Schema":     s,
+		"Tables":     tablesData,
+		"Functions":  functionData,
+		"Viewpoints": viewpointData,
 	}
 }
 

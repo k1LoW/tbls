@@ -1,5 +1,14 @@
 # testschema
 
+## Viewpoints
+
+| Name                                | Description                                                  |
+| ----------------------------------- | ------------------------------------------------------------ |
+| [table a b](viewpoint-0.md)         | select table a and b                                         |
+| [label blue](viewpoint-1.md)        | select label blue                                            |
+| [label green](viewpoint-2.md)       | select label green                                           |
+| [table a label red](viewpoint-3.md) | select table a and label red<br><br>- table a<br>- label red |
+
 ## Tables
 
 | Name      | Columns | Comment | Type | Labels         |

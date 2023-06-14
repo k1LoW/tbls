@@ -27,8 +27,10 @@ var tests = []struct {
 	{"--adjust option", "png", true, false, true, false, "b", "README.md", "md_test_README.md.adjust"},
 	{"number", "png", false, true, true, false, "b", "README.md", "md_test_README.md.number"},
 	{"spaceInTableName", "png", false, false, true, false, "a b", "README.md", "md_test_README.md.space_in_table_name"},
-	{"mermaid README.md", "mermaid", false, false, false, true, "b", "README.md", "md_test_README.md.mermaid"},
-	{"mermaid a.md", "mermaid", false, false, false, true, "b", "a.md", "md_test_a.md.mermaid"},
+	{"mermaid README.md", "mermaid", false, false, false, false, "b", "README.md", "md_test_README.md.mermaid"},
+	{"mermaid a.md", "mermaid", false, false, false, false, "b", "a.md", "md_test_a.md.mermaid"},
+	{"showOnlyFirstParagraph README.md", "png", false, false, false, true, "b", "README.md", "md_test_README.md.first_para"},
+	{"showOnlyFirstParagraph a.md", "png", false, false, false, true, "b", "a.md", "md_test_a.md.first_para"},
 }
 
 var testsTemplate = []struct {

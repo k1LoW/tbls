@@ -12,6 +12,13 @@
 {{ .Schema.Labels | label_join }}
 
 {{- end }}
+{{- if ne (len .Schema.Viewpoints) 0 }}
+
+## {{ "Viewpoints" | lookup }}
+{{ range $v := .Viewpoints }}
+|{{ range $d := $v }} {{ $d | nl2br }} |{{ end }}
+{{- end -}}
+{{- end }}
 
 ## {{ "Tables" | lookup }}
 {{ range $t := .Tables }}

@@ -7,14 +7,18 @@
 | [table a b](viewpoint-0.md) | select table a and b |
 | [label blue](viewpoint-1.md) | select label blue |
 | [label green](viewpoint-2.md) | select label green |
-| [table a label red](viewpoint-3.md) | select table a and label red<br><br>- table a<br>- label red |
+| [table a label red](viewpoint-3.md) | select table a and label red |
 
 ## Tables
 
 | Name | Columns | Comment | Type | Labels |
 | ---- | ------- | ------- | ---- | ------ |
 | [a](a.md) | 2 | TABLE A |  | `blue` `green` |
-| [a b](a%20b.md) | 2 | table b |  | `red` `green` |
+| [b](b.md) | 2 | table b |  | `red` `green` |
+
+## Relations
+
+![er](schema.png)
 
 ---
 
