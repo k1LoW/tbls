@@ -2,12 +2,12 @@
 
 ## Viewpoints
 
-| Name | Description |
-| ---- | ----------- |
-| [table a b](viewpoint-0.md) | select table a and b |
-| [label blue](viewpoint-1.md) | select label blue |
-| [label green](viewpoint-2.md) | select label green |
-| [table a label red](viewpoint-3.md) | select table a and label red<br><br>- table a<br>- label red |
+| # | Name | Description |
+| - | ---- | ----------- |
+| 1 | [table a b](viewpoint-0.md) | select table a and b |
+| 2 | [label blue](viewpoint-1.md) | select label blue |
+| 3 | [label green](viewpoint-2.md) | select label green |
+| 4 | [table a label red](viewpoint-3.md) | select table a and label red<br><br>- table a<br>- label red |
 
 ## Tables
 

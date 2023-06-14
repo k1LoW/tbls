@@ -479,6 +479,10 @@ func (m *Md) makeSchemaTemplateData(s *schema.Schema) map[string]interface{} {
 		functionData = append(functionData, data)
 	}
 
+	if number {
+		functionData = m.addNumberToTable(functionData)
+	}
+
 	// Viewpoints
 	viewpointData := [][]string{}
 	viewpointHeader := []string{
@@ -501,6 +505,10 @@ func (m *Md) makeSchemaTemplateData(s *schema.Schema) map[string]interface{} {
 			desc,
 		}
 		viewpointData = append(viewpointData, data)
+	}
+
+	if number {
+		viewpointData = m.addNumberToTable(viewpointData)
 	}
 
 	if adjust {
