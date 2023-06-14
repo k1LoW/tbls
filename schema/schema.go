@@ -247,6 +247,9 @@ func (s *Schema) Sort() error {
 	sort.SliceStable(s.Relations, func(i, j int) bool {
 		return s.Relations[i].Table.Name < s.Relations[j].Table.Name
 	})
+	sort.SliceStable(s.Functions, func(i, j int) bool {
+		return s.Functions[i].Name < s.Functions[j].Name
+	})
 	return nil
 }
 
