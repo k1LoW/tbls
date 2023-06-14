@@ -15,33 +15,35 @@ var tests = []struct {
 	format                 string
 	adjust                 bool
 	number                 bool
+	skipER                 bool
 	showOnlyFirstParagraph bool
 	tableBName             string
 	gotFile                string
 	wantFile               string
 }{
-	{"README.md", "png", false, false, false, "b", "README.md", "md_test_README.md"},
-	{"a.md", "png", false, false, false, "b", "a.md", "md_test_a.md"},
-	{"--adjust option", "png", true, false, false, "b", "README.md", "md_test_README.md.adjust"},
-	{"number", "png", false, true, false, "b", "README.md", "md_test_README.md.number"},
-	{"spaceInTableName", "png", false, false, false, "a b", "README.md", "md_test_README.md.space_in_table_name"},
-	{"mermaid README.md", "mermaid", false, false, false, "b", "README.md", "md_test_README.md.mermaid"},
-	{"mermaid a.md", "mermaid", false, false, false, "b", "a.md", "md_test_a.md.mermaid"},
+	{"README.md", "png", false, false, false, false, "b", "README.md", "md_test_README.md"},
+	{"a.md", "png", false, false, false, false, "b", "a.md", "md_test_a.md"},
+	{"--adjust option", "png", true, false, false, false, "b", "README.md", "md_test_README.md.adjust"},
+	{"number", "png", false, true, false, false, "b", "README.md", "md_test_README.md.number"},
+	{"spaceInTableName", "png", false, false, false, false, "a b", "README.md", "md_test_README.md.space_in_table_name"},
+	{"mermaid README.md", "mermaid", false, false, false, true, "b", "README.md", "md_test_README.md.mermaid"},
+	{"mermaid a.md", "mermaid", false, false, false, true, "b", "a.md", "md_test_a.md.mermaid"},
 }
 
 var testsTemplate = []struct {
 	name                   string
 	adjust                 bool
 	number                 bool
+	skipER                 bool
 	showOnlyFirstParagraph bool
 	gotFile                string
 	wantFile               string
 }{
-	{"README.md", false, false, false, "README.md", "md_template_test_README.md"},
-	{"a.md", false, false, false, "a.md", "md_template_test_a.md"},
-	{"--adjust option", true, false, false, "README.md", "md_template_test_README.md.adjust"},
-	{"number", false, true, false, "README.md", "md_template_test_README.md.number"},
-	{"showOnlyFirstParagraph", false, true, true, "README.md", "md_template_test_README.md.first_para"},
+	{"README.md", false, false, false, false, "README.md", "md_template_test_README.md"},
+	{"a.md", false, false, false, false, "a.md", "md_template_test_a.md"},
+	{"--adjust option", true, false, false, false, "README.md", "md_template_test_README.md.adjust"},
+	{"number", false, true, false, false, "README.md", "md_template_test_README.md.number"},
+	{"showOnlyFirstParagraph", false, true, true, false, "README.md", "md_template_test_README.md.first_para"},
 }
 
 func TestOutput(t *testing.T) {
@@ -54,9 +56,14 @@ func TestOutput(t *testing.T) {
 			}
 			tempDir := t.TempDir()
 			force := true
-			adjust := tt.adjust
 			erFormat := tt.format
-			if err := c.Load(filepath.Join(testdataDir(), "out_test_tbls.yml"), config.DocPath(tempDir), config.Adjust(adjust), config.ERFormat(erFormat)); err != nil {
+			opts := []config.Option{
+				config.DocPath(tempDir),
+				config.Adjust(tt.adjust),
+				config.ERFormat(erFormat),
+				config.ERSkip(tt.skipER),
+			}
+			if err := c.Load(filepath.Join(testdataDir(), "out_test_tbls.yml"), opts...); err != nil {
 				t.Error(err)
 			}
 			c.Format.Number = tt.number
@@ -92,9 +99,14 @@ func TestOutputTemplate(t *testing.T) {
 			}
 			tempDir := t.TempDir()
 			force := true
-			adjust := tt.adjust
 			erFormat := "png"
-			if err := c.Load(filepath.Join(testdataDir(), "out_templates_test_tbls.yml"), config.DocPath(tempDir), config.Adjust(adjust), config.ERFormat(erFormat)); err != nil {
+			opts := []config.Option{
+				config.DocPath(tempDir),
+				config.Adjust(tt.adjust),
+				config.ERFormat(erFormat),
+				config.ERSkip(tt.skipER),
+			}
+			if err := c.Load(filepath.Join(testdataDir(), "out_templates_test_tbls.yml"), opts...); err != nil {
 				t.Error(err)
 			}
 			c.Format.Number = tt.number
