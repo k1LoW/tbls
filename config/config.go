@@ -385,11 +385,27 @@ func (c *Config) ModifySchema(s *schema.Schema) error {
 	if c.Desc != "" {
 		s.Desc = c.Desc
 	}
-	if len(c.Labels) > 0 {
-		for _, l := range c.Labels {
-			s.Labels = s.Labels.Merge(l)
+	// set Labels
+	for _, l := range c.Labels {
+		s.Labels = s.Labels.Merge(l)
+	}
+	// set Viewpoints
+	for _, v := range c.Viewpoints {
+		s.Viewpoints = s.Viewpoints.Merge(&schema.Viewpoint{
+			Name:   v.Name,
+			Desc:   v.Desc,
+			Labels: v.Labels,
+			Tables: v.Tables,
+		})
+	}
+	for _, v := range s.Viewpoints {
+		for _, l := range v.Labels {
+			if !s.Labels.Contains(l) {
+				return fmt.Errorf("viewpoint '%s' has unknown label '%s'", v.Name, l)
+			}
 		}
 	}
+
 	if err := detectCardinality(s); err != nil {
 		return err
 	}

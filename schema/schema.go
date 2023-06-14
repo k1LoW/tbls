@@ -36,12 +36,43 @@ type Label struct {
 type Labels []*Label
 
 func (labels Labels) Merge(name string) Labels {
-	for _, l := range labels {
-		if l.Name == name {
-			return labels
-		}
+	if labels.Contains(name) {
+		return labels
 	}
 	return append(labels, &Label{Name: name, Virtual: true})
+}
+
+func (labels Labels) Contains(name string) bool {
+	for _, l := range labels {
+		if l.Name == name {
+			return true
+		}
+	}
+	return false
+}
+
+// Viewpoint is the struct for viewpoint information
+type Viewpoint struct {
+	Name   string   `yaml:"name,omitempty"`
+	Desc   string   `yaml:"desc,omitempty"`
+	Labels []string `yaml:"labels,omitempty"`
+	Tables []string `yaml:"tables,omitempty"`
+}
+
+type Viewpoints []*Viewpoint
+
+func (vs Viewpoints) Merge(in *Viewpoint) Viewpoints {
+	for i, v := range vs {
+		if sameElements(v.Labels, in.Labels) && sameElements(v.Tables, in.Tables) {
+			vs[i] = in
+			return vs
+		}
+		if v.Name == in.Name {
+			vs[i] = in
+			return vs
+		}
+	}
+	return append(vs, in)
 }
 
 // Index is the struct for database index
@@ -141,13 +172,14 @@ type Driver struct {
 
 // Schema is the struct for database schema
 type Schema struct {
-	Name      string      `json:"name"`
-	Desc      string      `json:"desc"`
-	Tables    []*Table    `json:"tables"`
-	Relations []*Relation `json:"relations"`
-	Functions []*Function `json:"functions"`
-	Driver    *Driver     `json:"driver"`
-	Labels    Labels      `json:"labels,omitempty"`
+	Name       string      `json:"name"`
+	Desc       string      `json:"desc"`
+	Tables     []*Table    `json:"tables"`
+	Relations  []*Relation `json:"relations"`
+	Functions  []*Function `json:"functions"`
+	Driver     *Driver     `json:"driver"`
+	Labels     Labels      `json:"labels,omitempty"`
+	Viewpoints Viewpoints  `json:"viewpoints,omitempty"`
 }
 
 func (s *Schema) NormalizeTableName(name string) string {
@@ -217,7 +249,7 @@ func (s *Schema) HasTableWithLabels() bool {
 	return false
 }
 
-// Sort schema tables, columns, relations, and constrains
+// Sort schema tables, columns, relations, constrains, and viewpoints
 func (s *Schema) Sort() error {
 	for _, t := range s.Tables {
 		for _, c := range t.Columns {
@@ -249,6 +281,9 @@ func (s *Schema) Sort() error {
 	})
 	sort.SliceStable(s.Functions, func(i, j int) bool {
 		return s.Functions[i].Name < s.Functions[j].Name
+	})
+	sort.SliceStable(s.Viewpoints, func(i, j int) bool {
+		return s.Viewpoints[i].Name < s.Viewpoints[j].Name
 	})
 	return nil
 }
@@ -522,4 +557,18 @@ func contains(s []string, e string) bool {
 		}
 	}
 	return false
+}
+
+func sameElements(a, b []string) bool {
+	for _, aa := range a {
+		if !contains(b, aa) {
+			return false
+		}
+	}
+	for _, bb := range b {
+		if !contains(a, bb) {
+			return false
+		}
+	}
+	return true
 }

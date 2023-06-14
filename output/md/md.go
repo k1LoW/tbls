@@ -455,41 +455,61 @@ func (m *Md) makeSchemaTemplateData(s *schema.Schema) map[string]interface{} {
 		tablesData = m.addNumberToTable(tablesData)
 	}
 
-	tablesSubroutineData := [][]string{}
-	tablesSubroutineHeader := []string{
+	// Functions
+	functionData := [][]string{}
+	functionHeader := []string{
 		m.config.MergedDict.Lookup("Name"),
 		m.config.MergedDict.Lookup("ReturnType"),
 		m.config.MergedDict.Lookup("Arguments"),
 		m.config.MergedDict.Lookup("Type"),
 	}
-	tablesSubroutineHeaderLine := []string{"----", "-------", "-------", "----"}
-	tablesSubroutineData = append(tablesSubroutineData,
-		tablesSubroutineHeader,
-		tablesSubroutineHeaderLine,
+	functionHeaderLine := []string{"----", "-------", "-------", "----"}
+	functionData = append(functionData,
+		functionHeader,
+		functionHeaderLine,
 	)
 
-	for _, t := range s.Functions {
+	for _, f := range s.Functions {
 		data := []string{
-			t.Name,
-			t.ReturnType,
-			t.Arguments,
-			t.Type,
+			f.Name,
+			f.ReturnType,
+			f.Arguments,
+			f.Type,
 		}
-		tablesSubroutineData = append(tablesSubroutineData, data)
+		functionData = append(functionData, data)
+	}
+
+	// Viewpoints
+	viewpointData := [][]string{}
+	viewpointHeader := []string{
+		m.config.MergedDict.Lookup("Name"),
+		m.config.MergedDict.Lookup("Description"),
+	}
+	viewpointHeaderLine := []string{"----", "-----------"}
+	viewpointData = append(viewpointData,
+		viewpointHeader,
+		viewpointHeaderLine,
+	)
+
+	for i, v := range s.Viewpoints {
+		data := []string{
+			fmt.Sprintf("[%s](%sviewpoint-%d.md)", v.Name, m.config.BaseUrl, i),
+			v.Desc,
+		}
+		viewpointData = append(viewpointData, data)
 	}
 
 	if adjust {
 		return map[string]interface{}{
 			"Schema":    s,
 			"Tables":    adjustTable(tablesData),
-			"Functions": adjustTable(tablesSubroutineData),
+			"Functions": adjustTable(functionData),
 		}
 	}
-
 	return map[string]interface{}{
 		"Schema":    s,
 		"Tables":    tablesData,
-		"Functions": tablesSubroutineData,
+		"Functions": functionData,
 	}
 }
 
