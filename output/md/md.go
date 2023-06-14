@@ -40,38 +40,6 @@ func New(c *config.Config) *Md {
 	}
 }
 
-func (m *Md) indexTemplate() (string, error) {
-	if len(m.config.Templates.MD.Index) > 0 {
-		tb, err := os.ReadFile(m.config.Templates.MD.Index)
-		if err != nil {
-			return "", errors.WithStack(err)
-		}
-		return string(tb), nil
-	} else {
-		tb, err := m.tmpl.ReadFile("templates/index.md.tmpl")
-		if err != nil {
-			return "", errors.WithStack(err)
-		}
-		return string(tb), nil
-	}
-}
-
-func (m *Md) tableTemplate() (string, error) {
-	if len(m.config.Templates.MD.Table) > 0 {
-		tb, err := os.ReadFile(m.config.Templates.MD.Table)
-		if err != nil {
-			return "", errors.WithStack(err)
-		}
-		return string(tb), nil
-	} else {
-		tb, err := m.tmpl.ReadFile("templates/table.md.tmpl")
-		if err != nil {
-			return "", errors.WithStack(err)
-		}
-		return string(tb), nil
-	}
-}
-
 // OutputSchema output .md format for all tables.
 func (m *Md) OutputSchema(wr io.Writer, s *schema.Schema) error {
 	ts, err := m.indexTemplate()
@@ -94,8 +62,7 @@ func (m *Md) OutputSchema(wr io.Writer, s *schema.Schema) error {
 	}
 
 	templateData["showOnlyFirstParagraph"] = m.config.Format.ShowOnlyFirstParagraph
-	err = tmpl.Execute(wr, templateData)
-	if err != nil {
+	if err := tmpl.Execute(wr, templateData); err != nil {
 		return errors.WithStack(err)
 	}
 	return nil
@@ -122,8 +89,7 @@ func (m *Md) OutputTable(wr io.Writer, t *schema.Table) error {
 		templateData["erDiagram"] = fmt.Sprintf("![er](%s%s.%s)", m.config.BaseUrl, mdurl.Encode(t.Name), m.config.ER.Format)
 	}
 
-	err = tmpl.Execute(wr, templateData)
-	if err != nil {
+	if err := tmpl.Execute(wr, templateData); err != nil {
 		return errors.WithStack(err)
 	}
 
@@ -160,8 +126,7 @@ func Output(s *schema.Schema, c *config.Config, force bool) (e error) {
 		return errors.WithStack(err)
 	}
 	md := New(c)
-	err = md.OutputSchema(file, s)
-	if err != nil {
+	if err := md.OutputSchema(file, s); err != nil {
 		return errors.WithStack(err)
 	}
 	fmt.Printf("%s\n", filepath.Join(docPath, "README.md"))
@@ -174,14 +139,12 @@ func Output(s *schema.Schema, c *config.Config, force bool) (e error) {
 			return errors.WithStack(err)
 		}
 		md := New(c)
-		err = md.OutputTable(file, t)
-		if err != nil {
+		if err := md.OutputTable(file, t); err != nil {
 			_ = file.Close()
 			return errors.WithStack(err)
 		}
 		fmt.Printf("%s\n", filepath.Join(docPath, fmt.Sprintf("%s.md", t.Name)))
-		err = file.Close()
-		if err != nil {
+		if err := file.Close(); err != nil {
 			return errors.WithStack(err)
 		}
 	}
@@ -309,8 +272,7 @@ func DiffSchemaAndDocs(docPath string, s *schema.Schema, c *config.Config) (stri
 	// README.md
 	md := New(c)
 	b := new(bytes.Buffer)
-	err = md.OutputSchema(b, s)
-	if err != nil {
+	if err := md.OutputSchema(b, s); err != nil {
 		return "", errors.WithStack(err)
 	}
 
@@ -352,8 +314,7 @@ func DiffSchemaAndDocs(docPath string, s *schema.Schema, c *config.Config) (stri
 
 		md := New(c)
 
-		err := md.OutputTable(b, t)
-		if err != nil {
+		if err := md.OutputTable(b, t); err != nil {
 			return "", errors.WithStack(err)
 		}
 		targetPath := filepath.Join(fullPath, fmt.Sprintf("%s.md", t.Name))
@@ -415,18 +376,36 @@ func DiffSchemaAndDocs(docPath string, s *schema.Schema, c *config.Config) (stri
 	return diff, nil
 }
 
-func outputExists(s *schema.Schema, path string) bool {
-	// README.md
-	if _, err := os.Lstat(filepath.Join(path, "README.md")); err == nil {
-		return true
-	}
-	// tables
-	for _, t := range s.Tables {
-		if _, err := os.Lstat(filepath.Join(path, fmt.Sprintf("%s.md", t.Name))); err == nil {
-			return true
+func (m *Md) indexTemplate() (string, error) {
+	if len(m.config.Templates.MD.Index) > 0 {
+		tb, err := os.ReadFile(m.config.Templates.MD.Index)
+		if err != nil {
+			return "", errors.WithStack(err)
 		}
+		return string(tb), nil
+	} else {
+		tb, err := m.tmpl.ReadFile("templates/index.md.tmpl")
+		if err != nil {
+			return "", errors.WithStack(err)
+		}
+		return string(tb), nil
 	}
-	return false
+}
+
+func (m *Md) tableTemplate() (string, error) {
+	if len(m.config.Templates.MD.Table) > 0 {
+		tb, err := os.ReadFile(m.config.Templates.MD.Table)
+		if err != nil {
+			return "", errors.WithStack(err)
+		}
+		return string(tb), nil
+	} else {
+		tb, err := m.tmpl.ReadFile("templates/table.md.tmpl")
+		if err != nil {
+			return "", errors.WithStack(err)
+		}
+		return string(tb), nil
+	}
 }
 
 func (m *Md) makeSchemaTemplateData(s *schema.Schema) map[string]interface{} {
@@ -750,4 +729,18 @@ func (m *Md) addNumberToTable(data [][]string) [][]string {
 	}
 
 	return data
+}
+
+func outputExists(s *schema.Schema, path string) bool {
+	// README.md
+	if _, err := os.Lstat(filepath.Join(path, "README.md")); err == nil {
+		return true
+	}
+	// tables
+	for _, t := range s.Tables {
+		if _, err := os.Lstat(filepath.Join(path, fmt.Sprintf("%s.md", t.Name))); err == nil {
+			return true
+		}
+	}
+	return false
 }
