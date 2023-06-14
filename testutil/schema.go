@@ -7,6 +7,19 @@ import (
 )
 
 func NewSchema(t *testing.T) *schema.Schema {
+	labelBlue := &schema.Label{
+		Name:    "blue",
+		Virtual: false,
+	}
+	labelRed := &schema.Label{
+		Name:    "red",
+		Virtual: false,
+	}
+	labelGreen := &schema.Label{
+		Name:    "green",
+		Virtual: true,
+	}
+
 	ca := &schema.Column{
 		Name:    "a",
 		Type:    "INTEGER",
@@ -29,6 +42,7 @@ func NewSchema(t *testing.T) *schema.Schema {
 				Comment: "column a2",
 			},
 		},
+		Labels: []*schema.Label{labelBlue, labelGreen},
 	}
 	ta.Indexes = []*schema.Index{
 		&schema.Index{
@@ -62,6 +76,7 @@ func NewSchema(t *testing.T) *schema.Schema {
 				Comment: "column b2",
 			},
 		},
+		Labels: []*schema.Label{labelRed, labelGreen},
 	}
 	r := &schema.Relation{
 		Table:             tb,

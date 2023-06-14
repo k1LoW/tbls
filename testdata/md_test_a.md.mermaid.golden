@@ -4,6 +4,10 @@
 
 TABLE A
 
+## Labels
+
+`blue` `green`
+
 ## Columns
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |

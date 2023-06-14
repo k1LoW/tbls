@@ -2,10 +2,10 @@
 
 ## Tables
 
-| Name | Columns | Comment | Type |
-| ---- | ------- | ------- | ---- |
-| [a](a.md) | 2 | TABLE A |  |
-| [a b](a%20b.md) | 2 | table b |  |
+| Name | Columns | Comment | Type | Labels |
+| ---- | ------- | ------- | ---- | ------ |
+| [a](a.md) | 2 | TABLE A |  | `blue` `green` |
+| [a b](a%20b.md) | 2 | table b |  | `red` `green` |
 
 ---
 
