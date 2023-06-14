@@ -8,7 +8,7 @@ TABLE A
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| a | INTEGER |  | false |  | [b](b.md) | COLUMN A |
+| a | INTEGER |  | false | [b](b.md) |  | COLUMN A |
 | a2 | TEXT |  | false |  |  | column a2 |
 
 ## Constraints
@@ -34,15 +34,15 @@ TABLE A
 ```mermaid
 erDiagram
 
-"a" }o--o| "b" : ""
+"b" }|--|| "a" : "FOREIGN KEY (b) REFERENCES a(a)"
 
 "a" {
   INTEGER a PK
   TEXT a2
 }
 "b" {
-  TEXT b
-  DATETIME b2
+  INTEGER b FK
+  TEXT b2
 }
 ```
 

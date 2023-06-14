@@ -23,6 +23,8 @@ import (
 
 var mdEscRep = strings.NewReplacer("`", "\\`")
 
+var _ output.Output = &Md{}
+
 //go:embed templates/*
 var tmpl embed.FS
 
@@ -49,6 +51,7 @@ func (m *Md) OutputSchema(wr io.Writer, s *schema.Schema) error {
 	tmpl := template.Must(template.New("index").Funcs(output.Funcs(&m.config.MergedDict)).Parse(ts))
 	templateData := m.makeSchemaTemplateData(s)
 	templateData["er"] = !m.config.ER.Skip
+	templateData["showOnlyFirstParagraph"] = m.config.Format.ShowOnlyFirstParagraph
 	switch m.config.ER.Format {
 	case "mermaid":
 		buf := new(bytes.Buffer)
@@ -60,8 +63,6 @@ func (m *Md) OutputSchema(wr io.Writer, s *schema.Schema) error {
 	default:
 		templateData["erDiagram"] = fmt.Sprintf("![er](%sschema.%s)", m.config.BaseUrl, m.config.ER.Format)
 	}
-
-	templateData["showOnlyFirstParagraph"] = m.config.Format.ShowOnlyFirstParagraph
 	if err := tmpl.Execute(wr, templateData); err != nil {
 		return errors.WithStack(err)
 	}
@@ -411,7 +412,9 @@ func (m *Md) tableTemplate() (string, error) {
 func (m *Md) makeSchemaTemplateData(s *schema.Schema) map[string]interface{} {
 	number := m.config.Format.Number
 	adjust := m.config.Format.Adjust
+	showOnlyFirstParagraph := m.config.Format.ShowOnlyFirstParagraph
 
+	// Tables
 	tablesData := [][]string{}
 	tablesHeader := []string{
 		m.config.MergedDict.Lookup("Name"),
@@ -433,7 +436,7 @@ func (m *Md) makeSchemaTemplateData(s *schema.Schema) map[string]interface{} {
 
 	for _, t := range s.Tables {
 		comment := t.Comment
-		if m.config.Format.ShowOnlyFirstParagraph {
+		if showOnlyFirstParagraph {
 			comment = output.ShowOnlyFirstParagraph(comment)
 		}
 		data := []string{

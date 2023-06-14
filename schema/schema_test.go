@@ -188,7 +188,9 @@ func TestSchema_Sort(t *testing.T) {
 			},
 		},
 	}
-	_ = schema.Sort()
+	if err := schema.Sort(); err != nil {
+		t.Error(err)
+	}
 	want := "a"
 	got := schema.Tables[0].Name
 	if got != want {

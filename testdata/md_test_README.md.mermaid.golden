@@ -12,15 +12,15 @@
 ```mermaid
 erDiagram
 
-"a" }o--o| "b" : ""
+"b" }|--|| "a" : "FOREIGN KEY (b) REFERENCES a(a)"
 
 "a" {
   INTEGER a PK
   TEXT a2
 }
 "b" {
-  TEXT b
-  DATETIME b2
+  INTEGER b FK
+  TEXT b2
 }
 ```
 
