@@ -399,10 +399,14 @@ func (c *Config) ModifySchema(s *schema.Schema) error {
 		})
 	}
 	for _, v := range s.Viewpoints {
+	L:
 		for _, l := range v.Labels {
-			if !s.Labels.Contains(l) {
-				return fmt.Errorf("viewpoint '%s' has unknown label '%s'", v.Name, l)
+			for _, t := range s.Tables {
+				if t.Labels.Contains(l) {
+					continue L
+				}
 			}
+			return fmt.Errorf("viewpoint '%s' has unknown label '%s'", v.Name, l)
 		}
 	}
 
