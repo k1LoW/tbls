@@ -21,11 +21,11 @@ var tests = []struct {
 	gotFile                string
 	wantFile               string
 }{
-	{"README.md", "png", false, false, false, false, "b", "README.md", "md_test_README.md"},
-	{"a.md", "png", false, false, false, false, "b", "a.md", "md_test_a.md"},
-	{"--adjust option", "png", true, false, false, false, "b", "README.md", "md_test_README.md.adjust"},
-	{"number", "png", false, true, false, false, "b", "README.md", "md_test_README.md.number"},
-	{"spaceInTableName", "png", false, false, false, false, "a b", "README.md", "md_test_README.md.space_in_table_name"},
+	{"README.md", "png", false, false, true, false, "b", "README.md", "md_test_README.md"},
+	{"a.md", "png", false, false, true, false, "b", "a.md", "md_test_a.md"},
+	{"--adjust option", "png", true, false, true, false, "b", "README.md", "md_test_README.md.adjust"},
+	{"number", "png", false, true, true, false, "b", "README.md", "md_test_README.md.number"},
+	{"spaceInTableName", "png", false, false, true, false, "a b", "README.md", "md_test_README.md.space_in_table_name"},
 	{"mermaid README.md", "mermaid", false, false, false, true, "b", "README.md", "md_test_README.md.mermaid"},
 	{"mermaid a.md", "mermaid", false, false, false, true, "b", "a.md", "md_test_a.md.mermaid"},
 }
@@ -39,11 +39,11 @@ var testsTemplate = []struct {
 	gotFile                string
 	wantFile               string
 }{
-	{"README.md", false, false, false, false, "README.md", "md_template_test_README.md"},
-	{"a.md", false, false, false, false, "a.md", "md_template_test_a.md"},
-	{"--adjust option", true, false, false, false, "README.md", "md_template_test_README.md.adjust"},
-	{"number", false, true, false, false, "README.md", "md_template_test_README.md.number"},
-	{"showOnlyFirstParagraph", false, true, true, false, "README.md", "md_template_test_README.md.first_para"},
+	{"README.md", false, false, true, false, "README.md", "md_template_test_README.md"},
+	{"a.md", false, false, true, false, "a.md", "md_template_test_a.md"},
+	{"--adjust option", true, false, true, false, "README.md", "md_template_test_README.md.adjust"},
+	{"number", false, true, true, false, "README.md", "md_template_test_README.md.number"},
+	{"showOnlyFirstParagraph", false, true, true, true, "README.md", "md_template_test_README.md.first_para"},
 }
 
 func TestOutput(t *testing.T) {
@@ -145,9 +145,13 @@ func TestDiffSchemaAndDocs(t *testing.T) {
 			}
 			docPath := t.TempDir()
 			force := true
-			adjust := tt.adjust
-			erFormat := tt.format
-			if err := c.Load(filepath.Join(testdataDir(), "out_test_tbls.yml"), config.DocPath(docPath), config.Adjust(adjust), config.ERFormat(erFormat)); err != nil {
+			opts := []config.Option{
+				config.DocPath(docPath),
+				config.Adjust(tt.adjust),
+				config.ERFormat(tt.format),
+				config.ERSkip(tt.skipER),
+			}
+			if err := c.Load(filepath.Join(testdataDir(), "out_test_tbls.yml"), opts...); err != nil {
 				t.Error(err)
 			}
 			c.Format.Number = tt.number

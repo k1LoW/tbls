@@ -80,7 +80,7 @@ func (m *Md) OutputSchema(wr io.Writer, s *schema.Schema) error {
 	}
 	tmpl := template.Must(template.New("index").Funcs(output.Funcs(&m.config.MergedDict)).Parse(ts))
 	templateData := m.makeSchemaTemplateData(s)
-	templateData["er"] = m.config.NeedToGenerateERImages()
+	templateData["er"] = !m.config.ER.Skip
 	switch m.config.ER.Format {
 	case "mermaid":
 		buf := new(bytes.Buffer)
@@ -109,7 +109,7 @@ func (m *Md) OutputTable(wr io.Writer, t *schema.Table) error {
 	}
 	tmpl := template.Must(template.New(t.Name).Funcs(output.Funcs(&m.config.MergedDict)).Parse(ts))
 	templateData := m.makeTableTemplateData(t)
-	templateData["er"] = m.config.NeedToGenerateERImages()
+	templateData["er"] = !m.config.ER.Skip
 	switch m.config.ER.Format {
 	case "mermaid":
 		buf := new(bytes.Buffer)
