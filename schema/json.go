@@ -12,22 +12,25 @@ func (s Schema) MarshalJSON() ([]byte, error) {
 	if len(s.Relations) == 0 {
 		s.Relations = []*Relation{}
 	}
+
 	return json.Marshal(&struct {
-		Name      string      `json:"name"`
-		Desc      string      `json:"desc"`
-		Tables    []*Table    `json:"tables"`
-		Relations []*Relation `json:"relations"`
-		Functions []*Function `json:"functions"`
-		Driver    *Driver     `json:"driver"`
-		Labels    Labels      `json:"labels,omitempty"`
+		Name       string       `json:"name"`
+		Desc       string       `json:"desc"`
+		Tables     []*Table     `json:"tables"`
+		Relations  []*Relation  `json:"relations"`
+		Functions  []*Function  `json:"functions"`
+		Driver     *Driver      `json:"driver"`
+		Labels     Labels       `json:"labels,omitempty"`
+		Viewpoints []*Viewpoint `json:"viewpoints,omitempty"`
 	}{
-		Name:      s.Name,
-		Desc:      s.Desc,
-		Tables:    s.Tables,
-		Relations: s.Relations,
-		Driver:    s.Driver,
-		Functions: s.Functions,
-		Labels:    s.Labels,
+		Name:       s.Name,
+		Desc:       s.Desc,
+		Tables:     s.Tables,
+		Relations:  s.Relations,
+		Driver:     s.Driver,
+		Functions:  s.Functions,
+		Labels:     s.Labels,
+		Viewpoints: s.Viewpoints,
 	})
 }
 
@@ -184,6 +187,23 @@ func (r Relation) MarshalJSON() ([]byte, error) {
 		ParentCardinality: r.ParentCardinality.String(),
 		Def:               r.Def,
 		Virtual:           r.Virtual,
+	})
+}
+
+// MarshalJSON return custom JSON byte
+func (v Viewpoint) MarshalJSON() ([]byte, error) {
+	return json.Marshal(&struct {
+		Name     string   `json:"name,omitempty"`
+		Desc     string   `json:"desc,omitempty"`
+		Labels   []string `json:"labels,omitempty"`
+		Tables   []string `json:"tables,omitempty"`
+		Distance int      `json:"distance,omitempty"`
+	}{
+		Name:     v.Name,
+		Desc:     v.Desc,
+		Labels:   v.Labels,
+		Tables:   v.Tables,
+		Distance: v.Distance,
 	})
 }
 

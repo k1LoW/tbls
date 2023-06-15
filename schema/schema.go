@@ -53,13 +53,13 @@ func (labels Labels) Contains(name string) bool {
 
 // Viewpoint is the struct for viewpoint information
 type Viewpoint struct {
-	Name     string   `yaml:"name,omitempty"`
-	Desc     string   `yaml:"desc,omitempty"`
-	Labels   []string `yaml:"labels,omitempty"`
-	Tables   []string `yaml:"tables,omitempty"`
-	Distance int      `yaml:"distance,omitempty"`
+	Name     string   `json:"name,omitempty"`
+	Desc     string   `json:"desc,omitempty"`
+	Labels   []string `json:"labels,omitempty"`
+	Tables   []string `json:"tables,omitempty"`
+	Distance int      `json:"distance,omitempty"`
 
-	Schema *Schema `yaml:"-"`
+	Schema *Schema `json:"-"`
 }
 
 type Viewpoints []*Viewpoint
@@ -293,6 +293,64 @@ func (s *Schema) Sort() error {
 
 // Repair column relations
 func (s *Schema) Repair() error {
+	if err := s.repairWithoutViewpoints(); err != nil {
+		return err
+	}
+	// viewpoints should be created using as complete a schema as possible
+	for _, v := range s.Viewpoints {
+		cs, err := s.cloneWithoutViewpoints()
+		if err != nil {
+			return errors.Wrap(err, "failed to repair viewpoint")
+		}
+		if err := cs.Filter(&FilterOption{
+			Include:       v.Tables,
+			IncludeLabels: v.Labels,
+			Distance:      v.Distance,
+		}); err != nil {
+			return errors.Wrap(err, "failed to repair viewpoint")
+		}
+		v.Schema = cs
+	}
+	return nil
+}
+
+func (s *Schema) Clone() (c *Schema, err error) {
+	defer func() {
+		err = errors.WithStack(err)
+	}()
+	b, err := json.Marshal(s)
+	if err != nil {
+		return nil, err
+	}
+	c = &Schema{}
+	if err := json.Unmarshal(b, c); err != nil {
+		return nil, err
+	}
+	if err := c.Repair(); err != nil {
+		return nil, err
+	}
+	return c, nil
+}
+
+func (s *Schema) cloneWithoutViewpoints() (c *Schema, err error) {
+	defer func() {
+		err = errors.WithStack(err)
+	}()
+	b, err := json.Marshal(s)
+	if err != nil {
+		return nil, err
+	}
+	c = &Schema{}
+	if err := json.Unmarshal(b, c); err != nil {
+		return nil, err
+	}
+	if err := c.repairWithoutViewpoints(); err != nil {
+		return nil, err
+	}
+	return c, nil
+}
+
+func (s *Schema) repairWithoutViewpoints() error {
 	for _, t := range s.Tables {
 		if len(t.Columns) == 0 {
 			t.Columns = nil
@@ -356,41 +414,7 @@ func (s *Schema) Repair() error {
 		s.Functions = nil
 	}
 
-	// viewpoints should be created using as complete a schema as possible
-	for _, v := range s.Viewpoints {
-		cs, err := s.Clone()
-		if err != nil {
-			return errors.Wrap(err, "failed to repair viewpoint")
-		}
-		if err := cs.Filter(&FilterOption{
-			Include:       v.Tables,
-			IncludeLabels: v.Labels,
-			Distance:      v.Distance,
-		}); err != nil {
-			return errors.Wrap(err, "failed to repair viewpoint")
-		}
-		v.Schema = cs
-	}
-
 	return nil
-}
-
-func (s *Schema) Clone() (c *Schema, err error) {
-	defer func() {
-		err = errors.WithStack(err)
-	}()
-	b, err := json.Marshal(s)
-	if err != nil {
-		return nil, err
-	}
-	c = &Schema{}
-	if err := json.Unmarshal(b, c); err != nil {
-		return nil, err
-	}
-	if err := c.Repair(); err != nil {
-		return nil, err
-	}
-	return c, nil
 }
 
 // FindColumnByName find column by column name
