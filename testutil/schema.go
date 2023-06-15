@@ -148,5 +148,8 @@ func NewSchema(t *testing.T) *schema.Schema {
 			Meta:            &schema.DriverMeta{},
 		},
 	}
+	if err := s.Repair(); err != nil {
+		t.Fatal(err)
+	}
 	return s
 }

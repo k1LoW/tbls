@@ -57,6 +57,8 @@ type Viewpoint struct {
 	Desc   string   `yaml:"desc,omitempty"`
 	Labels []string `yaml:"labels,omitempty"`
 	Tables []string `yaml:"tables,omitempty"`
+
+	Schema *Schema `yaml:"-"`
 }
 
 type Viewpoints []*Viewpoint
@@ -351,6 +353,22 @@ func (s *Schema) Repair() error {
 	}
 	if len(s.Functions) == 0 {
 		s.Functions = nil
+	}
+
+	// viewpoints should be created using as complete a schema as possible
+	for _, v := range s.Viewpoints {
+		cs, err := s.Clone()
+		if err != nil {
+			return errors.Wrap(err, "failed to repair viewpoint")
+		}
+		if err := cs.Filter(&FilterOption{
+			Include:       v.Tables,
+			IncludeLabels: v.Labels,
+			Distance:      0,
+		}); err != nil {
+			return errors.Wrap(err, "failed to repair viewpoint")
+		}
+		v.Schema = cs
 	}
 
 	return nil

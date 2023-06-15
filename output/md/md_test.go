@@ -22,7 +22,7 @@ var tests = []struct {
 	gotFile                string
 	wantFile               string
 }{
-	{"README.md", "png", false, false, true, false, "b", "README.md", "md_test_README.md"},
+	{"README.md", "png", false, false, false, false, "b", "README.md", "md_test_README.md"},
 	{"a.md", "png", false, false, true, false, "b", "a.md", "md_test_a.md"},
 	{"--adjust option", "png", true, false, true, false, "b", "README.md", "md_test_README.md.adjust"},
 	{"number", "png", false, true, true, false, "b", "README.md", "md_test_README.md.number"},
@@ -31,6 +31,9 @@ var tests = []struct {
 	{"mermaid a.md", "mermaid", false, false, false, false, "b", "a.md", "md_test_a.md.mermaid"},
 	{"showOnlyFirstParagraph README.md", "png", false, false, false, true, "b", "README.md", "md_test_README.md.first_para"},
 	{"showOnlyFirstParagraph a.md", "png", false, false, false, true, "b", "a.md", "md_test_a.md.first_para"},
+
+	{"viewpoint-1.md", "png", false, false, false, false, "b", "viewpoint-1.md", "md_test_viewpoint-1.md"},
+	{"viewpoint-1.md", "mermaid", false, false, false, false, "b", "viewpoint-1.md", "md_test_viewpoint-1.md.mermaid"},
 }
 
 var testsTemplate = []struct {
