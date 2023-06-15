@@ -52,7 +52,17 @@
           "comment": ""
         }
       ],
-      "def": ""
+      "def": "",
+      "labels": [
+        {
+          "Name": "blue",
+          "Virtual": false
+        },
+        {
+          "Name": "green",
+          "Virtual": true
+        }
+      ]
     },
     {
       "name": "b",
@@ -77,7 +87,17 @@
       "indexes": [],
       "constraints": [],
       "triggers": [],
-      "def": ""
+      "def": "",
+      "labels": [
+        {
+          "Name": "red",
+          "Virtual": false
+        },
+        {
+          "Name": "green",
+          "Virtual": true
+        }
+      ]
     }
   ],
   "relations": [
@@ -101,5 +121,39 @@
     "name": "testdriver",
     "database_version": "1.0.0",
     "meta": {}
-  }
+  },
+  "viewpoints": [
+    {
+      "name": "table a b",
+      "desc": "select table a and b",
+      "tables": [
+        "a",
+        "b"
+      ]
+    },
+    {
+      "name": "label blue",
+      "desc": "select label blue",
+      "labels": [
+        "blue"
+      ]
+    },
+    {
+      "name": "label green",
+      "desc": "select label green",
+      "labels": [
+        "green"
+      ]
+    },
+    {
+      "name": "table a label red",
+      "desc": "select table a and label red\n\n- table a\n- label red",
+      "labels": [
+        "red"
+      ],
+      "tables": [
+        "a"
+      ]
+    }
+  ]
 }

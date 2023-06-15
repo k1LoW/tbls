@@ -12,8 +12,9 @@ type Templates struct {
 // MD holds the paths to the markdown template files.
 // If populated the files are used to override the default ones.
 type MD struct {
-	Index string `yaml:"index,omitempty"`
-	Table string `yaml:"table,omitempty"`
+	Index     string `yaml:"index,omitempty"`
+	Table     string `yaml:"table,omitempty"`
+	Viewpoint string `yaml:"viewpoint,omitempty"`
 }
 
 // Dot holds the paths to the dot template files.

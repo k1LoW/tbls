@@ -2,6 +2,7 @@ package schema
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"sort"
 	"strings"
@@ -35,12 +36,46 @@ type Label struct {
 type Labels []*Label
 
 func (labels Labels) Merge(name string) Labels {
-	for _, l := range labels {
-		if l.Name == name {
-			return labels
-		}
+	if labels.Contains(name) {
+		return labels
 	}
 	return append(labels, &Label{Name: name, Virtual: true})
+}
+
+func (labels Labels) Contains(name string) bool {
+	for _, l := range labels {
+		if l.Name == name {
+			return true
+		}
+	}
+	return false
+}
+
+// Viewpoint is the struct for viewpoint information
+type Viewpoint struct {
+	Name     string   `json:"name,omitempty"`
+	Desc     string   `json:"desc,omitempty"`
+	Labels   []string `json:"labels,omitempty"`
+	Tables   []string `json:"tables,omitempty"`
+	Distance int      `json:"distance,omitempty"`
+
+	Schema *Schema `json:"-"`
+}
+
+type Viewpoints []*Viewpoint
+
+func (vs Viewpoints) Merge(in *Viewpoint) Viewpoints {
+	for i, v := range vs {
+		if sameElements(v.Labels, in.Labels) && sameElements(v.Tables, in.Tables) {
+			vs[i] = in
+			return vs
+		}
+		if v.Name == in.Name {
+			vs[i] = in
+			return vs
+		}
+	}
+	return append(vs, in)
 }
 
 // Index is the struct for database index
@@ -140,13 +175,14 @@ type Driver struct {
 
 // Schema is the struct for database schema
 type Schema struct {
-	Name      string      `json:"name"`
-	Desc      string      `json:"desc"`
-	Tables    []*Table    `json:"tables"`
-	Relations []*Relation `json:"relations"`
-	Functions []*Function `json:"functions"`
-	Driver    *Driver     `json:"driver"`
-	Labels    Labels      `json:"labels,omitempty"`
+	Name       string      `json:"name"`
+	Desc       string      `json:"desc"`
+	Tables     []*Table    `json:"tables"`
+	Relations  []*Relation `json:"relations"`
+	Functions  []*Function `json:"functions"`
+	Driver     *Driver     `json:"driver"`
+	Labels     Labels      `json:"labels,omitempty"`
+	Viewpoints Viewpoints  `json:"viewpoints,omitempty"`
 }
 
 func (s *Schema) NormalizeTableName(name string) string {
@@ -214,6 +250,171 @@ func (s *Schema) HasTableWithLabels() bool {
 		}
 	}
 	return false
+}
+
+// Sort schema tables, columns, relations, constrains, and viewpoints
+func (s *Schema) Sort() error {
+	for _, t := range s.Tables {
+		for _, c := range t.Columns {
+			sort.SliceStable(c.ParentRelations, func(i, j int) bool {
+				return c.ParentRelations[i].Table.Name < c.ParentRelations[j].Table.Name
+			})
+			sort.SliceStable(c.ChildRelations, func(i, j int) bool {
+				return c.ChildRelations[i].Table.Name < c.ChildRelations[j].Table.Name
+			})
+		}
+		sort.SliceStable(t.Columns, func(i, j int) bool {
+			return t.Columns[i].Name < t.Columns[j].Name
+		})
+		sort.SliceStable(t.Indexes, func(i, j int) bool {
+			return t.Indexes[i].Name < t.Indexes[j].Name
+		})
+		sort.SliceStable(t.Constraints, func(i, j int) bool {
+			return t.Constraints[i].Name < t.Constraints[j].Name
+		})
+		sort.SliceStable(t.Triggers, func(i, j int) bool {
+			return t.Triggers[i].Name < t.Triggers[j].Name
+		})
+	}
+	sort.SliceStable(s.Tables, func(i, j int) bool {
+		return s.Tables[i].Name < s.Tables[j].Name
+	})
+	sort.SliceStable(s.Relations, func(i, j int) bool {
+		return s.Relations[i].Table.Name < s.Relations[j].Table.Name
+	})
+	sort.SliceStable(s.Functions, func(i, j int) bool {
+		return s.Functions[i].Name < s.Functions[j].Name
+	})
+	sort.SliceStable(s.Viewpoints, func(i, j int) bool {
+		return s.Viewpoints[i].Name < s.Viewpoints[j].Name
+	})
+	return nil
+}
+
+// Repair column relations
+func (s *Schema) Repair() error {
+	if err := s.repairWithoutViewpoints(); err != nil {
+		return err
+	}
+	// viewpoints should be created using as complete a schema as possible
+	for _, v := range s.Viewpoints {
+		cs, err := s.cloneWithoutViewpoints()
+		if err != nil {
+			return errors.Wrap(err, "failed to repair viewpoint")
+		}
+		if err := cs.Filter(&FilterOption{
+			Include:       v.Tables,
+			IncludeLabels: v.Labels,
+			Distance:      v.Distance,
+		}); err != nil {
+			return errors.Wrap(err, "failed to repair viewpoint")
+		}
+		v.Schema = cs
+	}
+	return nil
+}
+
+func (s *Schema) Clone() (c *Schema, err error) {
+	defer func() {
+		err = errors.WithStack(err)
+	}()
+	b, err := json.Marshal(s)
+	if err != nil {
+		return nil, err
+	}
+	c = &Schema{}
+	if err := json.Unmarshal(b, c); err != nil {
+		return nil, err
+	}
+	if err := c.Repair(); err != nil {
+		return nil, err
+	}
+	return c, nil
+}
+
+func (s *Schema) cloneWithoutViewpoints() (c *Schema, err error) {
+	defer func() {
+		err = errors.WithStack(err)
+	}()
+	b, err := json.Marshal(s)
+	if err != nil {
+		return nil, err
+	}
+	c = &Schema{}
+	if err := json.Unmarshal(b, c); err != nil {
+		return nil, err
+	}
+	if err := c.repairWithoutViewpoints(); err != nil {
+		return nil, err
+	}
+	return c, nil
+}
+
+func (s *Schema) repairWithoutViewpoints() error {
+	for _, t := range s.Tables {
+		if len(t.Columns) == 0 {
+			t.Columns = nil
+		}
+		if len(t.Indexes) == 0 {
+			t.Indexes = nil
+		}
+		if len(t.Constraints) == 0 {
+			t.Constraints = nil
+		}
+		for _, ct := range t.Constraints {
+			if len(ct.Columns) == 0 {
+				ct.Columns = nil
+			}
+			if len(ct.ReferencedColumns) == 0 {
+				ct.ReferencedColumns = nil
+			}
+		}
+		if len(t.Triggers) == 0 {
+			t.Triggers = nil
+		}
+		for i, rt := range t.ReferencedTables {
+			tt, err := s.FindTableByName(rt.Name)
+			if err != nil {
+				rt.External = true
+				tt = rt
+			}
+			t.ReferencedTables[i] = tt
+		}
+	}
+
+	for _, r := range s.Relations {
+		t, err := s.FindTableByName(r.Table.Name)
+		if err != nil {
+			return errors.Wrap(err, "failed to repair relation")
+		}
+		for i, rc := range r.Columns {
+			c, err := t.FindColumnByName(rc.Name)
+			if err != nil {
+				return errors.Wrap(err, "failed to repair relation")
+			}
+			c.ParentRelations = append(c.ParentRelations, r)
+			r.Columns[i] = c
+		}
+		r.Table = t
+		pt, err := s.FindTableByName(r.ParentTable.Name)
+		if err != nil {
+			return errors.Wrap(err, "failed to repair relation")
+		}
+		for i, rc := range r.ParentColumns {
+			pc, err := pt.FindColumnByName(rc.Name)
+			if err != nil {
+				return errors.Wrap(err, "failed to repair relation")
+			}
+			pc.ChildRelations = append(pc.ChildRelations, r)
+			r.ParentColumns[i] = pc
+		}
+		r.ParentTable = pt
+	}
+	if len(s.Functions) == 0 {
+		s.Functions = nil
+	}
+
+	return nil
 }
 
 // FindColumnByName find column by column name
@@ -313,110 +514,6 @@ func (t *Table) ShowColumn(name string, hideColumns []string) bool {
 	return true
 }
 
-// Sort schema tables, columns, relations, constrains and functions.
-func (s *Schema) Sort() error {
-	for _, t := range s.Tables {
-		for _, c := range t.Columns {
-			sort.SliceStable(c.ParentRelations, func(i, j int) bool {
-				return c.ParentRelations[i].Table.Name < c.ParentRelations[j].Table.Name
-			})
-			sort.SliceStable(c.ChildRelations, func(i, j int) bool {
-				return c.ChildRelations[i].Table.Name < c.ChildRelations[j].Table.Name
-			})
-		}
-		sort.SliceStable(t.Columns, func(i, j int) bool {
-			return t.Columns[i].Name < t.Columns[j].Name
-		})
-		sort.SliceStable(t.Indexes, func(i, j int) bool {
-			return t.Indexes[i].Name < t.Indexes[j].Name
-		})
-		sort.SliceStable(t.Constraints, func(i, j int) bool {
-			return t.Constraints[i].Name < t.Constraints[j].Name
-		})
-		sort.SliceStable(t.Triggers, func(i, j int) bool {
-			return t.Triggers[i].Name < t.Triggers[j].Name
-		})
-	}
-	sort.SliceStable(s.Tables, func(i, j int) bool {
-		return s.Tables[i].Name < s.Tables[j].Name
-	})
-	sort.SliceStable(s.Relations, func(i, j int) bool {
-		return s.Relations[i].Table.Name < s.Relations[j].Table.Name
-	})
-	sort.SliceStable(s.Functions, func(i, j int) bool {
-		return s.Functions[i].Name < s.Functions[j].Name
-	})
-	return nil
-}
-
-// Repair column relations
-func (s *Schema) Repair() error {
-	for _, t := range s.Tables {
-		if len(t.Columns) == 0 {
-			t.Columns = nil
-		}
-		if len(t.Indexes) == 0 {
-			t.Indexes = nil
-		}
-		if len(t.Constraints) == 0 {
-			t.Constraints = nil
-		}
-		for _, ct := range t.Constraints {
-			if len(ct.Columns) == 0 {
-				ct.Columns = nil
-			}
-			if len(ct.ReferencedColumns) == 0 {
-				ct.ReferencedColumns = nil
-			}
-		}
-		if len(t.Triggers) == 0 {
-			t.Triggers = nil
-		}
-		for i, rt := range t.ReferencedTables {
-			tt, err := s.FindTableByName(rt.Name)
-			if err != nil {
-				rt.External = true
-				tt = rt
-			}
-			t.ReferencedTables[i] = tt
-		}
-	}
-
-	for _, r := range s.Relations {
-		t, err := s.FindTableByName(r.Table.Name)
-		if err != nil {
-			return errors.Wrap(err, "failed to repair relation")
-		}
-		for i, rc := range r.Columns {
-			c, err := t.FindColumnByName(rc.Name)
-			if err != nil {
-				return errors.Wrap(err, "failed to repair relation")
-			}
-			c.ParentRelations = append(c.ParentRelations, r)
-			r.Columns[i] = c
-		}
-		r.Table = t
-		pt, err := s.FindTableByName(r.ParentTable.Name)
-		if err != nil {
-			return errors.Wrap(err, "failed to repair relation")
-		}
-		for i, rc := range r.ParentColumns {
-			pc, err := pt.FindColumnByName(rc.Name)
-			if err != nil {
-				return errors.Wrap(err, "failed to repair relation")
-			}
-			pc.ChildRelations = append(pc.ChildRelations, r)
-			r.ParentColumns[i] = pc
-		}
-		r.ParentTable = pt
-	}
-	if len(s.Functions) == 0 {
-		s.Functions = nil
-	}
-
-	return nil
-}
-
 func (t *Table) CollectTablesAndRelations(distance int, root bool) ([]*Table, []*Relation, error) {
 	tables := []*Table{}
 	relations := []*Relation{}
@@ -503,4 +600,18 @@ func contains(s []string, e string) bool {
 		}
 	}
 	return false
+}
+
+func sameElements(a, b []string) bool {
+	for _, aa := range a {
+		if !contains(b, aa) {
+			return false
+		}
+	}
+	for _, bb := range b {
+		if !contains(a, bb) {
+			return false
+		}
+	}
+	return true
 }

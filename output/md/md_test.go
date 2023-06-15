@@ -7,6 +7,7 @@ import (
 
 	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/schema"
+	"github.com/k1LoW/tbls/testutil"
 	"github.com/tenntenn/golden"
 )
 
@@ -21,13 +22,18 @@ var tests = []struct {
 	gotFile                string
 	wantFile               string
 }{
-	{"README.md", "png", false, false, true, false, "b", "README.md", "md_test_README.md"},
+	{"README.md", "png", false, false, false, false, "b", "README.md", "md_test_README.md"},
 	{"a.md", "png", false, false, true, false, "b", "a.md", "md_test_a.md"},
 	{"--adjust option", "png", true, false, true, false, "b", "README.md", "md_test_README.md.adjust"},
 	{"number", "png", false, true, true, false, "b", "README.md", "md_test_README.md.number"},
 	{"spaceInTableName", "png", false, false, true, false, "a b", "README.md", "md_test_README.md.space_in_table_name"},
-	{"mermaid README.md", "mermaid", false, false, false, true, "b", "README.md", "md_test_README.md.mermaid"},
-	{"mermaid a.md", "mermaid", false, false, false, true, "b", "a.md", "md_test_a.md.mermaid"},
+	{"mermaid README.md", "mermaid", false, false, false, false, "b", "README.md", "md_test_README.md.mermaid"},
+	{"mermaid a.md", "mermaid", false, false, false, false, "b", "a.md", "md_test_a.md.mermaid"},
+	{"showOnlyFirstParagraph README.md", "png", false, false, false, true, "b", "README.md", "md_test_README.md.first_para"},
+	{"showOnlyFirstParagraph a.md", "png", false, false, false, true, "b", "a.md", "md_test_a.md.first_para"},
+
+	{"viewpoint-1.md", "png", false, false, false, false, "b", "viewpoint-1.md", "md_test_viewpoint-1.md"},
+	{"viewpoint-1.md", "mermaid", false, false, false, false, "b", "viewpoint-1.md", "md_test_viewpoint-1.md.mermaid"},
 }
 
 var testsTemplate = []struct {
@@ -49,7 +55,12 @@ var testsTemplate = []struct {
 func TestOutput(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			s := newTestSchema(tt.tableBName)
+			s := testutil.NewSchema(t)
+			tb, err := s.FindTableByName("b")
+			if err != nil {
+				t.Fatal(err)
+			}
+			tb.Name = tt.tableBName
 			c, err := config.New()
 			if err != nil {
 				t.Error(err)
@@ -92,7 +103,7 @@ func TestOutput(t *testing.T) {
 func TestOutputTemplate(t *testing.T) {
 	for _, tt := range testsTemplate {
 		t.Run(tt.name, func(t *testing.T) {
-			s := newTestSchema("b")
+			s := testutil.NewSchema(t)
 			c, err := config.New()
 			if err != nil {
 				t.Error(err)
@@ -138,7 +149,7 @@ func TestOutputTemplate(t *testing.T) {
 func TestDiffSchemaAndDocs(t *testing.T) {
 	for _, tt := range tests {
 		func() {
-			s := newTestSchema("b")
+			s := testutil.NewSchema(t)
 			c, err := config.New()
 			if err != nil {
 				t.Error(err)
@@ -175,8 +186,8 @@ func TestDiffSchemaAndDocs(t *testing.T) {
 
 func TestDiffSchemas(t *testing.T) {
 	testData := func() (s, s2 *schema.Schema, c *config.Config) {
-		s = newTestSchema("b")
-		s2 = newTestSchema("b")
+		s = testutil.NewSchema(t)
+		s2 = testutil.NewSchema(t)
 		c, _ = config.New()
 		return
 	}
@@ -234,85 +245,4 @@ func testdataDir() string {
 	wd, _ := os.Getwd()
 	dir, _ := filepath.Abs(filepath.Join(filepath.Dir(filepath.Dir(wd)), "testdata"))
 	return dir
-}
-
-func newTestSchema(tableBName string) *schema.Schema {
-	ca := &schema.Column{
-		Name:    "a",
-		Type:    "INTEGER",
-		Comment: "column a",
-	}
-	cb := &schema.Column{
-		Name:    "b",
-		Type:    "TEXT",
-		Comment: "column b",
-	}
-
-	ta := &schema.Table{
-		Name:    "a",
-		Comment: "table a",
-		Columns: []*schema.Column{
-			ca,
-			{
-				Name:    "a2",
-				Type:    "TEXT",
-				Comment: "column a2",
-			},
-		},
-	}
-	ta.Indexes = []*schema.Index{
-		{
-			Name:    "PRIMARY KEY",
-			Def:     "PRIMARY KEY(a)",
-			Table:   &ta.Name,
-			Columns: []string{"a"},
-		},
-	}
-	ta.Constraints = []*schema.Constraint{
-		{
-			Name:  "PRIMARY",
-			Table: &ta.Name,
-			Def:   "PRIMARY KEY (a)",
-		},
-	}
-	ta.Triggers = []*schema.Trigger{
-		{
-			Name: "update_a_a2",
-			Def:  "CREATE CONSTRAINT TRIGGER update_a_a2 AFTER INSERT OR UPDATE ON a",
-		},
-	}
-	tb := &schema.Table{
-		Name:    tableBName,
-		Comment: "table b",
-		Columns: []*schema.Column{
-			cb,
-			{
-				Name:    "b2",
-				Type:    "DATETIME",
-				Comment: "column b2",
-			},
-		},
-	}
-	r := &schema.Relation{
-		Table:             ta,
-		Columns:           []*schema.Column{ca},
-		Cardinality:       schema.ZeroOrMore,
-		ParentTable:       tb,
-		ParentColumns:     []*schema.Column{cb},
-		ParentCardinality: schema.ZeroOrOne,
-	}
-	ca.ParentRelations = []*schema.Relation{r}
-	cb.ChildRelations = []*schema.Relation{r}
-
-	s := &schema.Schema{
-		Name: "testschema",
-		Tables: []*schema.Table{
-			ta,
-			tb,
-		},
-		Relations: []*schema.Relation{
-			r,
-		},
-	}
-	return s
 }

@@ -46,6 +46,7 @@ type Config struct {
 	Distance               int                    `yaml:"distance,omitempty"`
 	Lint                   Lint                   `yaml:"lint,omitempty"`
 	LintExclude            []string               `yaml:"lintExclude,omitempty"`
+	Viewpoints             []Viewpoint            `yaml:"viewpoints,omitempty"`
 	Relations              []AdditionalRelation   `yaml:"relations,omitempty"`
 	Comments               []AdditionalComment    `yaml:"comments,omitempty"`
 	Dict                   dict.Dict              `yaml:"dict,omitempty"`
@@ -384,10 +385,9 @@ func (c *Config) ModifySchema(s *schema.Schema) error {
 	if c.Desc != "" {
 		s.Desc = c.Desc
 	}
-	if len(c.Labels) > 0 {
-		for _, l := range c.Labels {
-			s.Labels = s.Labels.Merge(l)
-		}
+	// set Labels
+	for _, l := range c.Labels {
+		s.Labels = s.Labels.Merge(l)
 	}
 	if err := detectCardinality(s); err != nil {
 		return err
@@ -420,6 +420,42 @@ func (c *Config) ModifySchema(s *schema.Schema) error {
 	if err := c.detectShowColumnsForER(s); err != nil {
 		return err
 	}
+
+	// set Viewpoints
+	// viewpoints should be created using as complete a schema as possible
+	for _, v := range c.Viewpoints {
+		cs, err := s.Clone()
+		if err != nil {
+			return err
+		}
+		if err := cs.Filter(&schema.FilterOption{
+			Include:       v.Tables,
+			IncludeLabels: v.Labels,
+			Distance:      v.Distance,
+		}); err != nil {
+			return err
+		}
+		s.Viewpoints = s.Viewpoints.Merge(&schema.Viewpoint{
+			Name:     v.Name,
+			Desc:     v.Desc,
+			Labels:   v.Labels,
+			Tables:   v.Tables,
+			Distance: v.Distance,
+			Schema:   cs,
+		})
+	}
+	for _, v := range s.Viewpoints {
+	L:
+		for _, l := range v.Labels {
+			for _, t := range s.Tables {
+				if t.Labels.Contains(l) {
+					continue L
+				}
+			}
+			return fmt.Errorf("viewpoint '%s' has unknown label '%s'", v.Name, l)
+		}
+	}
+
 	return nil
 }
 
@@ -436,65 +472,14 @@ func (c *Config) MergeAdditionalData(s *schema.Schema) error {
 	return nil
 }
 
-// FilterTables filter tables from schema.Schema
+// FilterTables filter tables from schema.Schema using include: and exclude: and includeLabels
 func (c *Config) FilterTables(s *schema.Schema) error {
-	i := append(c.Include, s.NormalizeTableNames(c.Include)...)
-	e := append(c.Exclude, s.NormalizeTableNames(c.Exclude)...)
-
-	includes := []*schema.Table{}
-	excludes := []*schema.Table{}
-	for _, t := range s.Tables {
-		li, mi := matchLength(i, t.Name)
-		le, me := matchLength(e, t.Name)
-		ml := matchLabels(c.includeLabels, t.Labels)
-		switch {
-		case mi:
-			if me && li < le {
-				excludes = append(excludes, t)
-				continue
-			}
-			includes = append(includes, t)
-		case ml:
-			if me {
-				excludes = append(excludes, t)
-				continue
-			}
-			includes = append(includes, t)
-		case len(c.Include) == 0 && len(c.includeLabels) == 0:
-			if me {
-				excludes = append(excludes, t)
-				continue
-			}
-			includes = append(includes, t)
-		default:
-			excludes = append(excludes, t)
-		}
-	}
-
-	collects := []*schema.Table{}
-	for _, t := range includes {
-		ts, _, err := t.CollectTablesAndRelations(c.Distance, true)
-		if err != nil {
-			return err
-		}
-		for _, tt := range ts {
-			if !tt.Contains(includes) {
-				collects = append(collects, tt)
-			}
-		}
-	}
-
-	for _, t := range excludes {
-		if t.Contains(collects) {
-			continue
-		}
-		err := excludeTableFromSchema(t.Name, s)
-		if err != nil {
-			return errors.Wrap(errors.WithStack(err), fmt.Sprintf("failed to filter table '%s'", t.Name))
-		}
-	}
-
-	return nil
+	return s.Filter(&schema.FilterOption{
+		Include:       c.Include,
+		Exclude:       c.Exclude,
+		IncludeLabels: c.includeLabels,
+		Distance:      c.Distance,
+	})
 }
 
 func (c *Config) mergeDictFromSchema(s *schema.Schema) {

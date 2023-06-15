@@ -8,11 +8,15 @@ TABLE A
   
 THIS IS TABLE A
 
+## Labels
+
+`blue` `green`
+
 ## Columns
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
-| a | INTEGER |  | false |  | [b](b.md) | COLUMN A |
+| a | INTEGER |  | false | [b](b.md) |  | COLUMN A |
 | a2 | TEXT |  | false |  |  | column a2 |
 
 ## Constraints

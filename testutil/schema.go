@@ -7,6 +7,27 @@ import (
 )
 
 func NewSchema(t *testing.T) *schema.Schema {
+	const (
+		tableAName     = "a"
+		tableBName     = "b"
+		labelBlueName  = "blue"
+		labelRedName   = "red"
+		labelGreenName = "green"
+	)
+
+	labelBlue := &schema.Label{
+		Name:    labelBlueName,
+		Virtual: false,
+	}
+	labelRed := &schema.Label{
+		Name:    labelRedName,
+		Virtual: false,
+	}
+	labelGreen := &schema.Label{
+		Name:    labelGreenName,
+		Virtual: true,
+	}
+
 	ca := &schema.Column{
 		Name:    "a",
 		Type:    "INTEGER",
@@ -19,7 +40,7 @@ func NewSchema(t *testing.T) *schema.Schema {
 	}
 
 	ta := &schema.Table{
-		Name:    "a",
+		Name:    tableAName,
 		Comment: "table a",
 		Columns: []*schema.Column{
 			ca,
@@ -29,6 +50,7 @@ func NewSchema(t *testing.T) *schema.Schema {
 				Comment: "column a2",
 			},
 		},
+		Labels: []*schema.Label{labelBlue, labelGreen},
 	}
 	ta.Indexes = []*schema.Index{
 		&schema.Index{
@@ -52,7 +74,7 @@ func NewSchema(t *testing.T) *schema.Schema {
 		},
 	}
 	tb := &schema.Table{
-		Name:    "b",
+		Name:    tableBName,
 		Comment: "table b",
 		Columns: []*schema.Column{
 			cb,
@@ -62,6 +84,7 @@ func NewSchema(t *testing.T) *schema.Schema {
 				Comment: "column b2",
 			},
 		},
+		Labels: []*schema.Label{labelRed, labelGreen},
 	}
 	r := &schema.Relation{
 		Table:             tb,
@@ -85,11 +108,48 @@ func NewSchema(t *testing.T) *schema.Schema {
 		Relations: []*schema.Relation{
 			r,
 		},
+		Viewpoints: schema.Viewpoints{
+			&schema.Viewpoint{
+				Name: "table a b",
+				Desc: "select table a and b",
+				Tables: []string{
+					tableAName,
+					tableBName,
+				},
+			},
+			&schema.Viewpoint{
+				Name: "label blue",
+				Desc: "select label blue",
+				Labels: []string{
+					labelBlueName,
+				},
+			},
+			&schema.Viewpoint{
+				Name: "label green",
+				Desc: "select label green",
+				Labels: []string{
+					labelGreenName,
+				},
+			},
+			&schema.Viewpoint{
+				Name: "table a label red",
+				Desc: "select table a and label red\n\n- table a\n- label red",
+				Tables: []string{
+					tableAName,
+				},
+				Labels: []string{
+					labelRedName,
+				},
+			},
+		},
 		Driver: &schema.Driver{
 			Name:            "testdriver",
 			DatabaseVersion: "1.0.0",
 			Meta:            &schema.DriverMeta{},
 		},
+	}
+	if err := s.Repair(); err != nil {
+		t.Fatal(err)
 	}
 	return s
 }

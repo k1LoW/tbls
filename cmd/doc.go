@@ -93,7 +93,7 @@ var docCmd = &cobra.Command{
 		}
 
 		if c.NeedToGenerateERImages() {
-			if err := withDot(s, c, force); err != nil {
+			if err := gviz.Output(s, c, force); err != nil {
 				return err
 			}
 		}
@@ -111,52 +111,6 @@ var docCmd = &cobra.Command{
 
 		return nil
 	},
-}
-
-func withDot(s *schema.Schema, c *config.Config, force bool) error {
-	erFormat := c.ER.Format
-	outputPath := c.DocPath
-	fullPath, err := filepath.Abs(outputPath)
-	if err != nil {
-		return errors.WithStack(err)
-	}
-
-	if !force && outputErExists(s, fullPath) {
-		return errors.New("output ER diagram files already exists")
-	}
-
-	err = os.MkdirAll(fullPath, 0755) // #nosec
-	if err != nil {
-		return errors.WithStack(err)
-	}
-
-	erFileName := fmt.Sprintf("schema.%s", erFormat)
-	fmt.Printf("%s\n", filepath.Join(outputPath, erFileName))
-
-	file, err := os.OpenFile(filepath.Join(fullPath, erFileName), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644) // #nosec
-	if err != nil {
-		return errors.WithStack(err)
-	}
-	g := gviz.New(c)
-	if err := g.OutputSchema(file, s); err != nil {
-		return errors.WithStack(err)
-	}
-
-	// tables
-	for _, t := range s.Tables {
-		erFileName := fmt.Sprintf("%s.%s", t.Name, erFormat)
-		fmt.Printf("%s\n", filepath.Join(outputPath, erFileName))
-
-		file, err := os.OpenFile(filepath.Join(fullPath, erFileName), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644) // #nosec
-		if err != nil {
-			return errors.WithStack(err)
-		}
-		if err := g.OutputTable(file, t); err != nil {
-			return errors.WithStack(err)
-		}
-	}
-
-	return nil
 }
 
 func withSchemaFile(s *schema.Schema, c *config.Config) (e error) {
@@ -205,22 +159,6 @@ func loadDocArgs(args []string) ([]config.Option, error) {
 		options = append(options, config.DSNURL(dsn))
 	}
 	return options, nil
-}
-
-func outputErExists(s *schema.Schema, path string) bool {
-	// schema.png
-	erFileName := fmt.Sprintf("schema.%s", erFormat)
-	if _, err := os.Lstat(filepath.Join(path, erFileName)); err == nil {
-		return true
-	}
-	// tables
-	for _, t := range s.Tables {
-		erFileName := fmt.Sprintf("%s.%s", t.Name, erFormat)
-		if _, err := os.Lstat(filepath.Join(path, erFileName)); err == nil {
-			return true
-		}
-	}
-	return false
 }
 
 func init() {
