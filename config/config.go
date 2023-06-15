@@ -321,6 +321,15 @@ func (c *Config) validate() error {
 	if !contains(SupportERFormat, c.ER.Format) {
 		return fmt.Errorf("unsupported ER format: %s", c.ER.Format)
 	}
+	for i, v := range c.Viewpoints {
+		if v.Name == "" {
+			return fmt.Errorf("viewpoints[%d] name is required", i)
+		}
+		if v.Desc == "" {
+			return fmt.Errorf("viewpoints[%d] description is required", i)
+		}
+	}
+
 	return nil
 }
 
