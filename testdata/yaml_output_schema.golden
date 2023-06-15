@@ -36,6 +36,11 @@ tables:
     def: CREATE CONSTRAINT TRIGGER update_a_a2 AFTER INSERT OR UPDATE ON a
     comment: ""
   def: ""
+  labels:
+  - name: blue
+    virtual: false
+  - name: green
+    virtual: true
 - name: b
   type: ""
   comment: table b
@@ -54,6 +59,11 @@ tables:
   constraints: []
   triggers: []
   def: ""
+  labels:
+  - name: red
+    virtual: false
+  - name: green
+    virtual: true
 relations:
 - table: b
   columns:
@@ -70,3 +80,27 @@ driver:
   name: testdriver
   databaseVersion: 1.0.0
   meta: {}
+viewpoints:
+- name: table a b
+  desc: select table a and b
+  tables:
+  - a
+  - b
+- name: label blue
+  desc: select label blue
+  labels:
+  - blue
+- name: label green
+  desc: select label green
+  labels:
+  - green
+- name: table a label red
+  desc: |-
+    select table a and label red
+    
+    - table a
+    - label red
+  labels:
+  - red
+  tables:
+  - a

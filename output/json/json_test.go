@@ -19,8 +19,7 @@ func TestOutputSchema(t *testing.T) {
 	s := testutil.NewSchema(t)
 	o := new(JSON)
 	buf := &bytes.Buffer{}
-	err := o.OutputSchema(buf, s)
-	if err != nil {
+	if err := o.OutputSchema(buf, s); err != nil {
 		t.Error(err)
 	}
 	got := buf.String()

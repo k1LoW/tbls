@@ -25,8 +25,7 @@ func (j *JSON) OutputSchema(wr io.Writer, s *schema.Schema) error {
 	if !j.inline {
 		encoder.SetIndent("", "  ")
 	}
-	err := encoder.Encode(s)
-	if err != nil {
+	if err := encoder.Encode(s); err != nil {
 		return err
 	}
 	return nil
@@ -38,8 +37,7 @@ func (j *JSON) OutputTable(wr io.Writer, t *schema.Table) error {
 	if !j.inline {
 		encoder.SetIndent("", "  ")
 	}
-	err := encoder.Encode(t)
-	if err != nil {
+	if err := encoder.Encode(t); err != nil {
 		return err
 	}
 	return nil

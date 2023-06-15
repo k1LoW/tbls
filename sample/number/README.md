@@ -25,10 +25,10 @@ Sample database document.
 
 ## Stored procedures and functions
 
-| Name | ReturnType | Arguments | Type |
-| ---- | ------- | ------- | ---- |
-| CustomerLevel | varchar | credit decimal | FUNCTION |
-| GetAllComments |  |  | PROCEDURE |
+| # | Name | ReturnType | Arguments | Type |
+| - | ---- | ------- | ------- | ---- |
+| 1 | CustomerLevel | varchar | credit decimal | FUNCTION |
+| 2 | GetAllComments |  |  | PROCEDURE |
 
 ## Relations
 
