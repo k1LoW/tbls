@@ -431,16 +431,17 @@ func (c *Config) ModifySchema(s *schema.Schema) error {
 		if err := cs.Filter(&schema.FilterOption{
 			Include:       v.Tables,
 			IncludeLabels: v.Labels,
-			Distance:      0,
+			Distance:      v.Distance,
 		}); err != nil {
 			return err
 		}
 		s.Viewpoints = s.Viewpoints.Merge(&schema.Viewpoint{
-			Name:   v.Name,
-			Desc:   v.Desc,
-			Labels: v.Labels,
-			Tables: v.Tables,
-			Schema: cs,
+			Name:     v.Name,
+			Desc:     v.Desc,
+			Labels:   v.Labels,
+			Tables:   v.Tables,
+			Distance: v.Distance,
+			Schema:   cs,
 		})
 	}
 	for _, v := range s.Viewpoints {

@@ -53,10 +53,11 @@ func (labels Labels) Contains(name string) bool {
 
 // Viewpoint is the struct for viewpoint information
 type Viewpoint struct {
-	Name   string   `yaml:"name,omitempty"`
-	Desc   string   `yaml:"desc,omitempty"`
-	Labels []string `yaml:"labels,omitempty"`
-	Tables []string `yaml:"tables,omitempty"`
+	Name     string   `yaml:"name,omitempty"`
+	Desc     string   `yaml:"desc,omitempty"`
+	Labels   []string `yaml:"labels,omitempty"`
+	Tables   []string `yaml:"tables,omitempty"`
+	Distance int      `yaml:"distance,omitempty"`
 
 	Schema *Schema `yaml:"-"`
 }
@@ -364,7 +365,7 @@ func (s *Schema) Repair() error {
 		if err := cs.Filter(&FilterOption{
 			Include:       v.Tables,
 			IncludeLabels: v.Labels,
-			Distance:      0,
+			Distance:      v.Distance,
 		}); err != nil {
 			return errors.Wrap(err, "failed to repair viewpoint")
 		}

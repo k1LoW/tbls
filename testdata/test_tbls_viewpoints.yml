@@ -26,6 +26,12 @@ viewpoints:
       - logs
       - users
       - posts
+  -
+    name: Around the users table
+    desc: Tables related to the users table
+    tables:
+      - users
+    distance: 1
 relations:
   -
     table: logs

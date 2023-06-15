@@ -14,6 +14,7 @@ Sample database document.
 | ---- | ----------- |
 | [Content](viewpoint-0.md) | Content as an asset for blogging services |
 | [Ops](viewpoint-1.md) | Tables to be referenced during operation |
+| [Around the users table](viewpoint-2.md) | Tables related to the users table |
 
 ## Tables
 
