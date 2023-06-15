@@ -67,7 +67,7 @@ CREATE TABLE posts (
   created timestamp without time zone NOT NULL,
   updated timestamp without time zone,
   CONSTRAINT posts_id_pk PRIMARY KEY(id),
-  CONSTRAINT posts_user_id_fk FOREIGN KEY(user_id) REFERENCES users(id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE,
+  CONSTRAINT posts_user_id_fk FOREIGN KEY(user_id) REFERENCES users(id) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE SET NULL (user_id),
   UNIQUE(user_id, title)
 );
 COMMENT ON TABLE posts IS 'Posts table';

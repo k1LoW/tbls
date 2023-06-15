@@ -14,7 +14,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-var reFK = regexp.MustCompile(`FOREIGN KEY \((.+)\) REFERENCES ([^\s]+)\s?\((.+)\)`)
+var reFK = regexp.MustCompile(`FOREIGN KEY \((.+)\) REFERENCES ([^\s\)]+)\s?\(([^\)]+)\)`)
 var reVersion = regexp.MustCompile(`([0-9]+(\.[0-9]+)*)`)
 
 // Postgres struct
@@ -56,7 +56,6 @@ func (p *Postgres) Analyze(s *schema.Schema) error {
 	if currentSchema.Valid {
 		s.Driver.Meta.CurrentSchema = currentSchema.String
 	}
-
 
 	// search_path
 	var searchPaths string
@@ -311,18 +310,9 @@ ORDER BY tgrelid
 
 	// Relations
 	for _, r := range relations {
-		result := reFK.FindAllStringSubmatch(r.Def, -1)
-		if len(result) < 1 || len(result[0]) < 4 {
-			return errors.Errorf("can not parse foreign key: %s", r.Def)
-		}
-		strColumns := []string{}
-		for _, c := range strings.Split(result[0][1], ", ") {
-			strColumns = append(strColumns, strings.ReplaceAll(c, `"`, ""))
-		}
-		strParentTable := strings.ReplaceAll(result[0][2], `"`, "")
-		strParentColumns := []string{}
-		for _, c := range strings.Split(result[0][3], ", ") {
-			strParentColumns = append(strParentColumns, strings.ReplaceAll(c, `"`, ""))
+		strColumns, strParentTable, strParentColumns, err := parseFK(r.Def)
+		if err != nil {
+			return err
 		}
 		for _, c := range strColumns {
 			column, err := r.Table.FindColumnByName(c)
@@ -687,4 +677,21 @@ func convertConstraintType(t string) string {
 	default:
 		return t
 	}
+}
+
+func parseFK(def string) ([]string, string, []string, error) {
+	result := reFK.FindAllStringSubmatch(def, -1)
+	if len(result) < 1 || len(result[0]) < 4 {
+		return nil, "", nil, errors.Errorf("can not parse foreign key: %s", def)
+	}
+	strColumns := []string{}
+	for _, c := range strings.Split(result[0][1], ", ") {
+		strColumns = append(strColumns, strings.ReplaceAll(c, `"`, ""))
+	}
+	strParentTable := strings.ReplaceAll(result[0][2], `"`, "")
+	strParentColumns := []string{}
+	for _, c := range strings.Split(result[0][3], ", ") {
+		strParentColumns = append(strParentColumns, strings.ReplaceAll(c, `"`, ""))
+	}
+	return strColumns, strParentTable, strParentColumns, nil
 }
