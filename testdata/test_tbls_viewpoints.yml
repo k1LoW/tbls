@@ -32,6 +32,11 @@ viewpoints:
     tables:
       - users
     distance: 1
+  -
+    name: Secure data
+    desc: Tables with secure data
+    labels:
+      - secure
 relations:
   -
     table: logs

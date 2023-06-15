@@ -24,7 +24,7 @@ func (s *Schema) Filter(opt *FilterOption) error {
 	for _, t := range s.Tables {
 		li, mi := matchLength(i, t.Name)
 		le, me := matchLength(e, t.Name)
-		ml := matchLabels(opt.IncludeLabels, t.Labels)
+		ml := matchTableOrColumnLabels(opt.IncludeLabels, t)
 		switch {
 		case mi:
 			if me && li < le {
@@ -114,6 +114,18 @@ func excludeTableFromSchema(name string, s *Schema) error {
 	s.Relations = relations
 
 	return nil
+}
+
+func matchTableOrColumnLabels(il []string, t *Table) bool {
+	if matchLabels(il, t.Labels) {
+		return true
+	}
+	for _, c := range t.Columns {
+		if matchLabels(il, c.Labels) {
+			return true
+		}
+	}
+	return false
 }
 
 func matchLabels(il []string, l Labels) bool {
