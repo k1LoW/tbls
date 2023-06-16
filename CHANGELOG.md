@@ -1,5 +1,19 @@
 # Changelog
 
+## [v1.66.0](https://github.com/k1LoW/tbls/compare/v1.65.4...v1.66.0) - 2023-06-16
+### Breaking Changes 🛠
+- Sort functions when config.Config.Format.Sort = true by @k1LoW in https://github.com/k1LoW/tbls/pull/484
+- Read from config to generate ER diagram or not by @k1LoW in https://github.com/k1LoW/tbls/pull/485
+- Support filtering by column labels by @k1LoW in https://github.com/k1LoW/tbls/pull/487
+### New Features 🎉
+- Support for making viewpoints by @k1LoW in https://github.com/k1LoW/tbls/pull/486
+### Fix bug 🐛
+- Fix parsing foreign key constraints by @k1LoW in https://github.com/k1LoW/tbls/pull/489
+### Other Changes
+- Add pronunciation by @muno92 in https://github.com/k1LoW/tbls/pull/481
+- Bump github.com/snowflakedb/gosnowflake from 1.6.16 to 1.6.19 by @dependabot in https://github.com/k1LoW/tbls/pull/483
+- Add viewpoint validation by @k1LoW in https://github.com/k1LoW/tbls/pull/488
+
 ## [v1.65.4](https://github.com/k1LoW/tbls/compare/v1.65.3...v1.65.4) - 2023-06-07
 - Fix for when Postgres search path is empty by @codetheweb in https://github.com/k1LoW/tbls/pull/479
 
