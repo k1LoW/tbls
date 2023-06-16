@@ -103,7 +103,7 @@
 <title>public.posts:user_id&#45;&gt;public.users:id</title>
 <path fill="none" stroke="#000000" d="M737.0044,-580.0041C826.9796,-570.4561 713.8135,-425.3085 778,-343 859.9553,-237.9059 913.728,-210.5 1047,-210.5"/>
 <polygon fill="#000000" stroke="#000000" points="736.9877,-580.0048 726.7772,-576.0055 731.9939,-580.2524 727,-580.5 727,-580.5 727,-580.5 731.9939,-580.2524 727.2228,-584.9945 736.9877,-580.0048 736.9877,-580.0048"/>
-<text text-anchor="start" x="734.0535" y="-590.5" font-family="Arial" font-size="10.00" fill="#000000">FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE</text>
+<text text-anchor="start" x="734.2185" y="-590.5" font-family="Arial" font-size="10.00" fill="#000000">FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL (user_id)</text>
 </g>
 <!-- public.comments -->
 <g id="node4" class="node">

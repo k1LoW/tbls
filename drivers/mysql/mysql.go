@@ -15,7 +15,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-var reFK = regexp.MustCompile(`FOREIGN KEY \((.+)\) REFERENCES ([^\s]+)\s?\((.+)\)`)
+var reFK = regexp.MustCompile(`FOREIGN KEY \((.+)\) REFERENCES ([^\s\)]+)\s?\(([^\)]+)\)`)
 var reAI = regexp.MustCompile(` AUTO_INCREMENT=[\d]+`)
 var supportGeneratedColumn = true
 var supportCheckConstraint = true
@@ -498,13 +498,7 @@ WHERE t.table_schema = ?
 		return tableOrderMap[relations[i].Table.Name] < tableOrderMap[relations[j].Table.Name]
 	})
 	for _, r := range relations {
-		result := reFK.FindAllStringSubmatch(r.Def, -1)
-		if len(result) == 0 || len(result[0]) < 4 {
-			return errors.Errorf("can not parse foreign key: %s", r.Def)
-		}
-		strColumns := strings.Split(result[0][1], ", ")
-		strParentTable := result[0][2]
-		strParentColumns := strings.Split(result[0][3], ", ")
+		strColumns, strParentTable, strParentColumns, err := parseFK(r.Def)
 		for _, c := range strColumns {
 			column, err := r.Table.FindColumnByName(c)
 			if err != nil {
@@ -638,4 +632,15 @@ SELECT table_name, table_type, table_comment FROM information_schema.tables WHER
 
 func convertColumnNullable(str string) bool {
 	return str != "NO"
+}
+
+func parseFK(def string) ([]string, string, []string, error) {
+	result := reFK.FindAllStringSubmatch(def, -1)
+	if len(result) < 1 || len(result[0]) < 4 {
+		return nil, "", nil, errors.Errorf("can not parse foreign key: %s", def)
+	}
+	strColumns := strings.Split(result[0][1], ", ")
+	strParentTable := strings.Trim(result[0][2], `"`)
+	strParentColumns := strings.Split(result[0][3], ", ")
+	return strColumns, strParentTable, strParentColumns, nil
 }

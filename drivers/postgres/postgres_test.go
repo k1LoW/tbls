@@ -7,6 +7,7 @@ import (
 	"os"
 	"testing"
 
+	"github.com/google/go-cmp/cmp"
 	"github.com/k1LoW/tbls/schema"
 	_ "github.com/lib/pq"
 	"github.com/xo/dburl"
@@ -66,5 +67,35 @@ func TestInfo(t *testing.T) {
 	}
 	if d.DatabaseVersion == "" {
 		t.Errorf("got not empty string.")
+	}
+}
+
+func TestParseFK(t *testing.T) {
+	tests := []struct {
+		in              string
+		wantCols        []string
+		wantParentTable string
+		wantParentCols  []string
+	}{
+		{"FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE", []string{"user_id"}, "users", []string{"id"}},
+		{"FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL (user_id)", []string{"user_id"}, "users", []string{"id"}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.in, func(t *testing.T) {
+			gotCols, gotParentTable, gotParentCols, err := parseFK(tt.in)
+			if err != nil {
+				t.Error(err)
+				return
+			}
+			if diff := cmp.Diff(gotCols, tt.wantCols, nil); diff != "" {
+				t.Error(diff)
+			}
+			if gotParentTable != tt.wantParentTable {
+				t.Errorf("got %v want %v", gotParentTable, tt.wantParentTable)
+			}
+			if diff := cmp.Diff(gotParentCols, tt.wantParentCols, nil); diff != "" {
+				t.Error(diff)
+			}
+		})
 	}
 }
