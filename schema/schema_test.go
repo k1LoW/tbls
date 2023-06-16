@@ -3,12 +3,35 @@ package schema
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"os"
 	"path/filepath"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
 )
+
+func TestNormalizeTableName(t *testing.T) {
+	tests := []struct {
+		s    *Schema
+		name string
+		want string
+	}{
+		{&Schema{}, "testtable", "testtable"},
+		{&Schema{Driver: &Driver{Name: "postgres", Meta: &DriverMeta{CurrentSchema: "public"}}}, "testtable", "public.testtable"},
+		{&Schema{Driver: &Driver{Name: "mysql", Meta: &DriverMeta{CurrentSchema: "public"}}}, "testtable", "testtable"},
+		{&Schema{Driver: &Driver{Name: "postgres", Meta: &DriverMeta{CurrentSchema: ""}}}, "testtable", "testtable"},
+		{&Schema{Driver: &Driver{Name: "postgres", Meta: &DriverMeta{CurrentSchema: "public"}}}, "other.testtable", "other.testtable"},
+	}
+	for i, tt := range tests {
+		t.Run(fmt.Sprintf("%d", i), func(t *testing.T) {
+			got := tt.s.NormalizeTableName(tt.name)
+			if got != tt.want {
+				t.Errorf("got %v\nwant %v", got, tt.want)
+			}
+		})
+	}
+}
 
 func TestSchema_FindTableByName(t *testing.T) {
 	schema := Schema{
