@@ -19,6 +19,7 @@ DROP TABLE IF EXISTS user_access_logs;
 DROP TABLE IF EXISTS user_options;
 DROP TABLE IF EXISTS users;
 DROP FUNCTION IF EXISTS update_updated();
+DROP PROCEDURE IF EXISTS reset_comment();
 DROP SCHEMA IF EXISTS administrator;
 DROP SCHEMA IF EXISTS backup;
 DROP SCHEMA IF EXISTS time;
@@ -222,8 +223,8 @@ CREATE TABLE time.referencing (
 
 CREATE OR REPLACE PROCEDURE reset_comment (comment_id int) AS '
   begin
-    update comments 
-    set comment = "updated" 
+    update comments
+    set comment = "updated"
     where id = comment_id;
 
     commit;
