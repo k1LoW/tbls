@@ -433,7 +433,7 @@ func (c *Config) ModifySchema(s *schema.Schema) error {
 	// set Viewpoints
 	// viewpoints should be created using as complete a schema as possible
 	for _, v := range c.Viewpoints {
-		cs, err := s.Clone()
+		cs, err := s.CloneWithoutViewpoints()
 		if err != nil {
 			return err
 		}

@@ -298,7 +298,7 @@ func (s *Schema) Repair() error {
 	}
 	// viewpoints should be created using as complete a schema as possible
 	for _, v := range s.Viewpoints {
-		cs, err := s.cloneWithoutViewpoints()
+		cs, err := s.CloneWithoutViewpoints()
 		if err != nil {
 			return errors.Wrap(err, "failed to repair viewpoint")
 		}
@@ -332,7 +332,7 @@ func (s *Schema) Clone() (c *Schema, err error) {
 	return c, nil
 }
 
-func (s *Schema) cloneWithoutViewpoints() (c *Schema, err error) {
+func (s *Schema) CloneWithoutViewpoints() (c *Schema, err error) {
 	defer func() {
 		err = errors.WithStack(err)
 	}()
