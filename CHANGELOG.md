@@ -1,5 +1,14 @@
 # Changelog
 
+## [v1.67.0](https://github.com/k1LoW/tbls/compare/v1.66.0...v1.67.0) - 2023-06-17
+### New Features 🎉
+- Support grouping tables in viewpoints by @k1LoW in https://github.com/k1LoW/tbls/pull/493
+### Fix bug 🐛
+- Fix schema.Schema.NormalizeTableName by @k1LoW in https://github.com/k1LoW/tbls/pull/490
+### Other Changes
+- Use CloneWithoutViewpoints in config.Config.ModifySchema by @k1LoW in https://github.com/k1LoW/tbls/pull/492
+- Use lo by @k1LoW in https://github.com/k1LoW/tbls/pull/494
+
 ## [v1.66.0](https://github.com/k1LoW/tbls/compare/v1.65.4...v1.66.0) - 2023-06-16
 ### Breaking Changes 🛠
 - Sort functions when config.Config.Format.Sort = true by @k1LoW in https://github.com/k1LoW/tbls/pull/484
