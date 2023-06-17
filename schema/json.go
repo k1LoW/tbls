@@ -190,23 +190,6 @@ func (r Relation) MarshalJSON() ([]byte, error) {
 	})
 }
 
-// MarshalJSON return custom JSON byte
-func (v Viewpoint) MarshalJSON() ([]byte, error) {
-	return json.Marshal(&struct {
-		Name     string   `json:"name,omitempty"`
-		Desc     string   `json:"desc,omitempty"`
-		Labels   []string `json:"labels,omitempty"`
-		Tables   []string `json:"tables,omitempty"`
-		Distance int      `json:"distance,omitempty"`
-	}{
-		Name:     v.Name,
-		Desc:     v.Desc,
-		Labels:   v.Labels,
-		Tables:   v.Tables,
-		Distance: v.Distance,
-	})
-}
-
 // UnmarshalJSON unmarshal JSON to schema.Table
 func (t *Table) UnmarshalJSON(data []byte) error {
 	s := struct {
