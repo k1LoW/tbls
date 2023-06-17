@@ -6,6 +6,7 @@ import (
 
 	"github.com/minio/pkg/wildcard"
 	"github.com/pkg/errors"
+	"github.com/samber/lo"
 )
 
 type FilterOption struct {
@@ -72,7 +73,9 @@ func (s *Schema) SepareteTablesThatAreIncludedOrNot(opt *FilterOption) ([]*Table
 			return nil, nil, err
 		}
 		for _, tt := range ts {
-			if !tt.Contains(includes) {
+			if !lo.ContainsBy(includes, func(t *Table) bool {
+				return tt.Name == t.Name
+			}) {
 				includes2 = append(includes2, tt)
 			}
 		}
@@ -80,7 +83,9 @@ func (s *Schema) SepareteTablesThatAreIncludedOrNot(opt *FilterOption) ([]*Table
 
 	excludes2 := []*Table{}
 	for _, t := range excludes {
-		if t.Contains(includes2) {
+		if lo.ContainsBy(includes2, func(tt *Table) bool {
+			return tt.Name == t.Name
+		}) {
 			continue
 		}
 		excludes2 = append(excludes2, t)

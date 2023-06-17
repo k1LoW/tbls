@@ -319,7 +319,7 @@ func (c *Config) validate() error {
 	if err := c.checkVersion(ver.Version); err != nil {
 		return err
 	}
-	if !contains(SupportERFormat, c.ER.Format) {
+	if !lo.Contains(SupportERFormat, c.ER.Format) {
 		return fmt.Errorf("unsupported ER format: %s", c.ER.Format)
 	}
 	for i, v := range c.Viewpoints {
@@ -824,7 +824,7 @@ func detectCardinality(s *schema.Schema) error {
 					continue
 				}
 				for _, cc := range c.Columns {
-					if !contains(columns, cc) {
+					if !lo.Contains(columns, cc) {
 						continue LL
 					}
 				}
@@ -898,13 +898,4 @@ func matchLabels(il []string, l schema.Labels) bool {
 func match(s []string, e string) bool {
 	_, m := matchLength(s, e)
 	return m
-}
-
-func contains(s []string, e string) bool {
-	for _, v := range s {
-		if e == v {
-			return true
-		}
-	}
-	return false
 }

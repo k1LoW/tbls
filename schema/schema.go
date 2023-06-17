@@ -9,6 +9,7 @@ import (
 
 	"github.com/k1LoW/tbls/dict"
 	"github.com/pkg/errors"
+	"github.com/samber/lo"
 )
 
 const (
@@ -43,12 +44,9 @@ func (labels Labels) Merge(name string) Labels {
 }
 
 func (labels Labels) Contains(name string) bool {
-	for _, l := range labels {
-		if l.Name == name {
-			return true
-		}
-	}
-	return false
+	return lo.ContainsBy(labels, func(item *Label) bool {
+		return item.Name == name
+	})
 }
 
 // Viewpoint is the struct for viewpoint information
@@ -516,8 +514,8 @@ func (t *Table) hasColumnWithValues(name string) bool {
 }
 
 func (t *Table) ShowColumn(name string, hideColumns []string) bool {
-	hideColumns = unique(append(DefaultHideColumns, hideColumns...))
-	if contains(hideColumns, name) {
+	hideColumns = lo.Uniq(append(DefaultHideColumns, hideColumns...))
+	if lo.Contains(hideColumns, name) {
 		return t.hasColumnWithValues(name)
 	}
 	return true
@@ -580,47 +578,9 @@ func (t *Table) CollectTablesAndRelations(distance int, root bool) ([]*Table, []
 	return uTables, uRelations, nil
 }
 
-func (t *Table) Contains(ts []*Table) bool {
-	for _, tt := range ts {
-		if t.Name == tt.Name {
-			return true
-		}
-	}
-	return false
-}
-
-func unique(in []string) []string {
-	u := []string{}
-	m := map[string]struct{}{}
-	for _, s := range in {
-		if _, ok := m[s]; ok {
-			continue
-		}
-		u = append(u, s)
-		m[s] = struct{}{}
-	}
-	return u
-}
-
-func contains(s []string, e string) bool {
-	for _, v := range s {
-		if e == v {
-			return true
-		}
-	}
-	return false
-}
-
 func sameElements(a, b []string) bool {
-	for _, aa := range a {
-		if !contains(b, aa) {
-			return false
-		}
+	if len(a) == len(b) && lo.Every(a, b) {
+		return true
 	}
-	for _, bb := range b {
-		if !contains(a, bb) {
-			return false
-		}
-	}
-	return true
+	return false
 }

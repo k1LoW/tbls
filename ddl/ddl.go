@@ -4,6 +4,8 @@ import (
 	"bufio"
 	"strings"
 	"unicode/utf8"
+
+	"github.com/samber/lo"
 )
 
 // ParseReferencedTables parse DDL of view table and list tables referenced by view table.
@@ -88,12 +90,12 @@ func ParseReferencedTables(src string) []string {
 
 	result := []string{}
 	for _, t := range tables {
-		if contains(with, t) {
+		if lo.Contains(with, t) {
 			continue
 		}
 		result = append(result, t)
 	}
-	return unique(result)
+	return lo.Uniq(result)
 }
 
 func isSkipSymbol(r rune) bool {
@@ -118,26 +120,4 @@ func isSpace(r rune) bool {
 		return true
 	}
 	return false
-}
-
-func contains(s []string, e string) bool {
-	for _, v := range s {
-		if e == v {
-			return true
-		}
-	}
-	return false
-}
-
-func unique(in []string) []string {
-	u := []string{}
-	m := map[string]struct{}{}
-	for _, s := range in {
-		if _, ok := m[s]; ok {
-			continue
-		}
-		u = append(u, s)
-		m[s] = struct{}{}
-	}
-	return u
 }
