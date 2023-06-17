@@ -470,6 +470,7 @@ func (c *Config) ModifySchema(s *schema.Schema) error {
 				Desc:   g.Desc,
 				Tables: g.Tables,
 				Labels: g.Labels,
+				Color:  g.Color,
 			})
 			left, right := lo.Difference(tables, lo.Map(gt, func(t *schema.Table, _ int) string {
 				return t.Name

@@ -16,6 +16,13 @@ import (
 //go:embed templates/*
 var tmpl embed.FS
 
+var defaultColors = []string{
+	"#1F91BE",
+	"#B2CF3E",
+	"#F0BA32",
+	"#8858AA",
+}
+
 // Dot struct
 type Dot struct {
 	config *config.Config
@@ -85,7 +92,7 @@ func (d *Dot) OutputViewpoint(wr io.Writer, v *schema.Viewpoint) error {
 	tables := v.Schema.Tables
 	groups := []map[string]interface{}{}
 	nogroup := v.Schema.Tables
-	for _, g := range v.Groups {
+	for i, g := range v.Groups {
 		tables, _, err := v.Schema.SepareteTablesThatAreIncludedOrNot(&schema.FilterOption{
 			Include:       g.Tables,
 			IncludeLabels: g.Labels,
@@ -93,10 +100,15 @@ func (d *Dot) OutputViewpoint(wr io.Writer, v *schema.Viewpoint) error {
 		if err != nil {
 			return errors.WithStack(err)
 		}
+		color := g.Color
+		if color == "" {
+			color = defaultColors[i%len(defaultColors)]
+		}
 		d := map[string]interface{}{
 			"Name":   g.Name,
 			"Desc":   g.Desc,
 			"Tables": tables,
+			"Color":  color,
 		}
 		groups = append(groups, d)
 		nogroup = lo.Without(nogroup, tables...)

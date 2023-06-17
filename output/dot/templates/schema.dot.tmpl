@@ -10,6 +10,10 @@ digraph "{{ .Name }}" {
   {{- range $i, $g := .Groups }}
   subgraph cluster_group_{{ $i }} {
     label="{{ $g.Name }}";
+    style = "rounded,filled,setlinewidth(3)";
+    color = "{{ $g.Color }}";
+    fillcolor = "#FFFFFF00"
+
     {{- range $j, $t := $g.Tables }}
     "{{ $t.Name }}" [shape=none, label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="6">
                    <tr><td bgcolor="#EFEFEF"><font face="Arial Bold" point-size="18">{{ $t.Name | html }}</font>&nbsp;&nbsp;&nbsp;&nbsp;<font color="#666666">[{{ $t.Type | html }}]</font>{{ if $sc }}{{ if ne $t.Comment "" }}<br /><font color="#333333">{{ $t.Comment | html | nl2br_slash }}</font>{{ end }}{{ end }}</td></tr>

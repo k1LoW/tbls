@@ -14,4 +14,5 @@ type ViewpointGroup struct {
 	Desc   string   `yaml:"desc,omitempty"`
 	Labels []string `yaml:"labels,omitempty"`
 	Tables []string `yaml:"tables,omitempty"`
+	Color  string   `yaml:"color,omitempty"`
 }

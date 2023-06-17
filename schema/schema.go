@@ -68,6 +68,7 @@ type ViewpointGroup struct {
 	Desc   string   `json:"desc,omitempty"`
 	Labels []string `json:"labels,omitempty"`
 	Tables []string `json:"tables,omitempty"`
+	Color  string   `json:"color,omitempty"`
 }
 
 type Viewpoints []*Viewpoint
