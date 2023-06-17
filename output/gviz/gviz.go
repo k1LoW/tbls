@@ -55,7 +55,7 @@ func (g *Gviz) OutputTable(wr io.Writer, t *schema.Table) error {
 // OutputViewpoint generage image for viewpoint.
 func (g *Gviz) OutputViewpoint(wr io.Writer, v *schema.Viewpoint) error {
 	buf := &bytes.Buffer{}
-	if err := g.dot.OutputSchema(buf, v.Schema); err != nil {
+	if err := g.dot.OutputViewpoint(buf, v); err != nil {
 		return errors.WithStack(err)
 	}
 	return g.render(wr, buf.Bytes())

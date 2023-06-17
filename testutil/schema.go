@@ -130,6 +130,15 @@ func NewSchema(t *testing.T) *schema.Schema {
 				Labels: []string{
 					labelGreenName,
 				},
+				Groups: []*schema.ViewpointGroup{
+					&schema.ViewpointGroup{
+						Name: "label red",
+						Desc: "select label red",
+						Labels: []string{
+							labelRedName,
+						},
+					},
+				},
 			},
 			&schema.Viewpoint{
 				Name: "table a label red",

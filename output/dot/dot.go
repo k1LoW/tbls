@@ -10,6 +10,7 @@ import (
 	"github.com/k1LoW/tbls/output"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/pkg/errors"
+	"github.com/samber/lo"
 )
 
 //go:embed templates/*
@@ -27,6 +28,96 @@ func New(c *config.Config) *Dot {
 		config: c,
 		tmpl:   tmpl,
 	}
+}
+
+// OutputSchema output dot format for full relation.
+func (d *Dot) OutputSchema(wr io.Writer, s *schema.Schema) error {
+	ts, err := d.schemaTemplate()
+	if err != nil {
+		return errors.WithStack(err)
+	}
+	tmpl := template.Must(template.New(s.Name).Funcs(output.Funcs(&d.config.MergedDict)).Parse(ts))
+	if err := tmpl.Execute(wr, map[string]interface{}{
+		"Name":        s.Name,
+		"Tables":      s.Tables,
+		"Relations":   s.Relations,
+		"showComment": d.config.ER.Comment,
+		"showDef":     !d.config.ER.HideDef,
+	}); err != nil {
+		return errors.WithStack(err)
+	}
+
+	return nil
+}
+
+// OutputTable output dot format for table.
+func (d *Dot) OutputTable(wr io.Writer, t *schema.Table) error {
+	tables, relations, err := t.CollectTablesAndRelations(*d.config.ER.Distance, true)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
+	ts, err := d.tableTemplate()
+	if err != nil {
+		return errors.WithStack(err)
+	}
+	tmpl := template.Must(template.New(t.Name).Funcs(output.Funcs(&d.config.MergedDict)).Parse(ts))
+	if err := tmpl.Execute(wr, map[string]interface{}{
+		"Table":       tables[0],
+		"Tables":      tables[1:],
+		"Relations":   relations,
+		"showComment": d.config.ER.Comment,
+		"showDef":     !d.config.ER.HideDef,
+	}); err != nil {
+		return errors.WithStack(err)
+	}
+
+	return nil
+}
+
+// OutputViewpoint output dot format for viewpoint.
+func (d *Dot) OutputViewpoint(wr io.Writer, v *schema.Viewpoint) error {
+	ts, err := d.schemaTemplate()
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
+	tables := v.Schema.Tables
+	groups := []map[string]interface{}{}
+	nogroup := v.Schema.Tables
+	for _, g := range v.Groups {
+		tables, _, err := v.Schema.SepareteTablesThatAreIncludedOrNot(&schema.FilterOption{
+			Include:       g.Tables,
+			IncludeLabels: g.Labels,
+		})
+		if err != nil {
+			return err
+		}
+		d := map[string]interface{}{
+			"Name":   g.Name,
+			"Desc":   g.Desc,
+			"Tables": tables,
+		}
+		groups = append(groups, d)
+		nogroup = lo.Without(nogroup, tables...)
+	}
+	if len(v.Groups) > 0 && len(nogroup) > 0 {
+		tables = nogroup
+	}
+
+	tmpl := template.Must(template.New(v.Name).Funcs(output.Funcs(&d.config.MergedDict)).Parse(ts))
+	if err := tmpl.Execute(wr, map[string]interface{}{
+		"Name":        v.Name,
+		"Tables":      tables,
+		"Relations":   v.Schema.Relations,
+		"Groups":      groups,
+		"showComment": d.config.ER.Comment,
+		"showDef":     !d.config.ER.HideDef,
+	}); err != nil {
+		return errors.WithStack(err)
+	}
+
+	return nil
 }
 
 func (d *Dot) schemaTemplate() (string, error) {
@@ -59,49 +150,4 @@ func (d *Dot) tableTemplate() (string, error) {
 		}
 		return string(tb), nil
 	}
-}
-
-// OutputSchema output dot format for full relation.
-func (d *Dot) OutputSchema(wr io.Writer, s *schema.Schema) error {
-	ts, err := d.schemaTemplate()
-	if err != nil {
-		return errors.WithStack(err)
-	}
-	tmpl := template.Must(template.New(s.Name).Funcs(output.Funcs(&d.config.MergedDict)).Parse(ts))
-	err = tmpl.Execute(wr, map[string]interface{}{
-		"Schema":      s,
-		"showComment": d.config.ER.Comment,
-		"showDef":     !d.config.ER.HideDef,
-	})
-	if err != nil {
-		return errors.WithStack(err)
-	}
-
-	return nil
-}
-
-// OutputTable output dot format for table.
-func (d *Dot) OutputTable(wr io.Writer, t *schema.Table) error {
-	tables, relations, err := t.CollectTablesAndRelations(*d.config.ER.Distance, true)
-	if err != nil {
-		return errors.WithStack(err)
-	}
-
-	ts, err := d.tableTemplate()
-	if err != nil {
-		return errors.WithStack(err)
-	}
-	tmpl := template.Must(template.New(t.Name).Funcs(output.Funcs(&d.config.MergedDict)).Parse(ts))
-	err = tmpl.Execute(wr, map[string]interface{}{
-		"Table":       tables[0],
-		"Tables":      tables[1:],
-		"Relations":   relations,
-		"showComment": d.config.ER.Comment,
-		"showDef":     !d.config.ER.HideDef,
-	})
-	if err != nil {
-		return errors.WithStack(err)
-	}
-
-	return nil
 }

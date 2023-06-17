@@ -53,13 +53,21 @@ func (labels Labels) Contains(name string) bool {
 
 // Viewpoint is the struct for viewpoint information
 type Viewpoint struct {
-	Name     string   `json:"name,omitempty"`
-	Desc     string   `json:"desc,omitempty"`
-	Labels   []string `json:"labels,omitempty"`
-	Tables   []string `json:"tables,omitempty"`
-	Distance int      `json:"distance,omitempty"`
+	Name     string            `json:"name,omitempty"`
+	Desc     string            `json:"desc,omitempty"`
+	Labels   []string          `json:"labels,omitempty"`
+	Tables   []string          `json:"tables,omitempty"`
+	Distance int               `json:"distance,omitempty"`
+	Groups   []*ViewpointGroup `json:"groups,omitempty"`
 
 	Schema *Schema `json:"-"`
+}
+
+type ViewpointGroup struct {
+	Name   string   `json:"name,omitempty"`
+	Desc   string   `json:"desc,omitempty"`
+	Labels []string `json:"labels,omitempty"`
+	Tables []string `json:"tables,omitempty"`
 }
 
 type Viewpoints []*Viewpoint
