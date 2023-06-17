@@ -11,6 +11,7 @@ import (
 	"github.com/k1LoW/tbls/ddl"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/pkg/errors"
+	"github.com/samber/lo"
 )
 
 var reFK = regexp.MustCompile(`FOREIGN KEY \((.+)\) REFERENCES ([^\s\)]+)\s?\(([^\)]+)\)`)
@@ -353,7 +354,7 @@ SELECT name, sql FROM sqlite_master WHERE type = 'trigger' AND tbl_name = ?;
 
 	filtered := []*schema.Table{}
 	for _, t := range tables {
-		if !contains(shadowTables, t.Name) {
+		if !lo.Contains(shadowTables, t.Name) {
 			filtered = append(filtered, t)
 		}
 	}
@@ -483,15 +484,6 @@ func parseCheckConstraints(table *schema.Table, sql string) []*schema.Constraint
 	}
 
 	return constraints
-}
-
-func contains(s []string, e string) bool {
-	for _, v := range s {
-		if e == v {
-			return true
-		}
-	}
-	return false
 }
 
 func parseFK(def string) ([]string, string, []string, error) {

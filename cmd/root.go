@@ -34,6 +34,7 @@ import (
 	"github.com/k1LoW/tbls/datasource"
 	"github.com/k1LoW/tbls/output/json"
 	"github.com/k1LoW/tbls/version"
+	"github.com/samber/lo"
 	"github.com/spf13/cobra"
 )
 
@@ -239,7 +240,7 @@ func genValidArgsFunc(prefix string) func(cmd *cobra.Command, args []string, toC
 // getExtSubCmds
 func getExtSubCmds(prefix string) ([]string, error) {
 	subCmds := []string{}
-	paths := unique(filepath.SplitList(os.Getenv("PATH")))
+	paths := lo.Uniq(filepath.SplitList(os.Getenv("PATH")))
 	for _, p := range paths {
 		if strings.TrimSpace(p) == "" {
 			continue
@@ -267,7 +268,7 @@ func getExtSubCmds(prefix string) ([]string, error) {
 		}
 	}
 	sortpkg.Strings(subCmds)
-	return unique(subCmds), nil
+	return lo.Uniq(subCmds), nil
 }
 
 func printError(err error) {
@@ -278,17 +279,4 @@ func printError(err error) {
 	} else {
 		fmt.Println(err)
 	}
-}
-
-func unique(paths []string) []string {
-	exist := map[string]bool{}
-	np := []string{}
-	for _, p := range paths {
-		if exist[p] {
-			continue
-		}
-		exist[p] = true
-		np = append(np, p)
-	}
-	return np
 }
