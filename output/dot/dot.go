@@ -91,7 +91,7 @@ func (d *Dot) OutputViewpoint(wr io.Writer, v *schema.Viewpoint) error {
 			IncludeLabels: g.Labels,
 		})
 		if err != nil {
-			return err
+			return errors.WithStack(err)
 		}
 		d := map[string]interface{}{
 			"Name":   g.Name,

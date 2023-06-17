@@ -441,9 +441,6 @@ func (c *Config) ModifySchema(s *schema.Schema) error {
 
 	// set Viewpoints
 	// viewpoints should be created using as complete a schema as possible
-	tables := lo.Map(s.Tables, func(t *schema.Table, _ int) string {
-		return t.Name
-	})
 	for _, v := range c.Viewpoints {
 		cs, err := s.CloneWithoutViewpoints()
 		if err != nil {
@@ -456,14 +453,31 @@ func (c *Config) ModifySchema(s *schema.Schema) error {
 		}); err != nil {
 			return err
 		}
-		groups := make([]*schema.ViewpointGroup, len(v.Groups))
+		groups := []*schema.ViewpointGroup{}
+		tables := lo.Map(cs.Tables, func(t *schema.Table, _ int) string {
+			return t.Name
+		})
 		for _, g := range v.Groups {
+			gt, _, err := cs.SepareteTablesThatAreIncludedOrNot(&schema.FilterOption{
+				Include:       g.Tables,
+				IncludeLabels: g.Labels,
+			})
+			if err != nil {
+				return err
+			}
 			groups = append(groups, &schema.ViewpointGroup{
 				Name:   g.Name,
 				Desc:   g.Desc,
 				Tables: g.Tables,
 				Labels: g.Labels,
 			})
+			left, right := lo.Difference(tables, lo.Map(gt, func(t *schema.Table, _ int) string {
+				return t.Name
+			}))
+			if len(right) > 0 {
+				return fmt.Errorf("viewpoint group '%s' has duplicate tables %v", g.Name, right)
+			}
+			tables = left
 		}
 		s.Viewpoints = s.Viewpoints.Merge(&schema.Viewpoint{
 			Name:     v.Name,
@@ -474,14 +488,6 @@ func (c *Config) ModifySchema(s *schema.Schema) error {
 			Groups:   groups,
 			Schema:   cs,
 		})
-		vts := lo.Map(cs.Tables, func(t *schema.Table, _ int) string {
-			return t.Name
-		})
-		left, right := lo.Difference(tables, vts)
-		if len(right) > 0 {
-			return fmt.Errorf("viewpoint '%s' has duplicate tables %v", v.Name, right)
-		}
-		tables = left
 	}
 	for _, v := range s.Viewpoints {
 	L:
