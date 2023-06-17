@@ -15,6 +15,7 @@ import (
 	ver "github.com/k1LoW/tbls/version"
 	"github.com/minio/pkg/wildcard"
 	"github.com/pkg/errors"
+	"github.com/samber/lo"
 )
 
 const DefaultDocPath = "dbdoc"
@@ -328,6 +329,14 @@ func (c *Config) validate() error {
 		if v.Desc == "" {
 			return fmt.Errorf("viewpoints[%d] description is required", i)
 		}
+		for j, g := range v.Groups {
+			if g.Name == "" {
+				return fmt.Errorf("viewpoints[%d].groups[%d] name is required", i, j)
+			}
+			if g.Desc == "" {
+				return fmt.Errorf("viewpoints[%d].groups[%d] description is required", i, j)
+			}
+		}
 	}
 
 	return nil
@@ -444,12 +453,40 @@ func (c *Config) ModifySchema(s *schema.Schema) error {
 		}); err != nil {
 			return err
 		}
+		groups := []*schema.ViewpointGroup{}
+		tables := lo.Map(cs.Tables, func(t *schema.Table, _ int) string {
+			return t.Name
+		})
+		for _, g := range v.Groups {
+			gt, _, err := cs.SepareteTablesThatAreIncludedOrNot(&schema.FilterOption{
+				Include:       g.Tables,
+				IncludeLabels: g.Labels,
+			})
+			if err != nil {
+				return err
+			}
+			groups = append(groups, &schema.ViewpointGroup{
+				Name:   g.Name,
+				Desc:   g.Desc,
+				Tables: g.Tables,
+				Labels: g.Labels,
+				Color:  g.Color,
+			})
+			left, right := lo.Difference(tables, lo.Map(gt, func(t *schema.Table, _ int) string {
+				return t.Name
+			}))
+			if len(right) > 0 {
+				return fmt.Errorf("viewpoint group '%s' has duplicate tables %v", g.Name, right)
+			}
+			tables = left
+		}
 		s.Viewpoints = s.Viewpoints.Merge(&schema.Viewpoint{
 			Name:     v.Name,
 			Desc:     v.Desc,
 			Labels:   v.Labels,
 			Tables:   v.Tables,
 			Distance: v.Distance,
+			Groups:   groups,
 			Schema:   cs,
 		})
 	}

@@ -33,6 +33,7 @@ var tests = []struct {
 	{"showOnlyFirstParagraph a.md", "png", false, false, false, true, "b", "a.md", "md_test_a.md.first_para"},
 
 	{"viewpoint-1.md", "png", false, false, false, false, "b", "viewpoint-1.md", "md_test_viewpoint-1.md"},
+	{"viewpoint-2.md", "png", false, false, false, false, "b", "viewpoint-2.md", "md_test_viewpoint-2.md"},
 	{"viewpoint-1.md", "mermaid", false, false, false, false, "b", "viewpoint-1.md", "md_test_viewpoint-1.md.mermaid"},
 }
 

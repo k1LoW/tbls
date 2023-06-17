@@ -1,13 +1,31 @@
 {{- $sc := .showComment -}}
 {{- $sd := .showDef -}}
-digraph "{{ .Schema.Name }}" {
+digraph "{{ .Name }}" {
   // Config
   graph [rankdir=TB, layout=dot, fontname="Arial"];
   node [shape=record, fontsize=14, margin=0.6, fontname="Arial"];
   edge [fontsize=10, labelfloat=false, splines=none, fontname="Arial"];
 
   // Tables
-  {{- range $i, $t := .Schema.Tables }}
+  {{- range $i, $g := .Groups }}
+  subgraph cluster_group_{{ $i }} {
+    label="{{ $g.Name }}";
+    style = "rounded,filled,setlinewidth(3),bold";
+    color = "{{ $g.Color }}";
+    fillcolor = "#FFFFFF00"
+
+    {{- range $j, $t := $g.Tables }}
+    "{{ $t.Name }}" [shape=none, label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="6">
+                   <tr><td bgcolor="#EFEFEF"><font face="Arial Bold" point-size="18">{{ $t.Name | html }}</font>&nbsp;&nbsp;&nbsp;&nbsp;<font color="#666666">[{{ $t.Type | html }}]</font>{{ if $sc }}{{ if ne $t.Comment "" }}<br /><font color="#333333">{{ $t.Comment | html | nl2br_slash }}</font>{{ end }}{{ end }}</td></tr>
+                   {{- range $ii, $c := $t.Columns }}
+                   {{- if $c.HideForER }}{{ continue }}{{ end }}
+                   <tr><td port="{{ $c.Name | html }}" align="left">{{ $c.Name | html }}&nbsp;&nbsp;&nbsp;&nbsp;<font color="#666666">[{{ $c.Type | html }}]</font>{{ if $sc }}{{ if ne $c.Comment "" }} {{ $c.Comment | html | nl2space }}{{ end }}{{ end }}</td></tr>
+                   {{- end }}
+                </table>>];
+    {{- end }}
+  }
+  {{- end }}
+  {{- range $i, $t := .Tables }}
   "{{ $t.Name }}" [shape=none, label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="6">
                  <tr><td bgcolor="#EFEFEF"><font face="Arial Bold" point-size="18">{{ $t.Name | html }}</font>&nbsp;&nbsp;&nbsp;&nbsp;<font color="#666666">[{{ $t.Type | html }}]</font>{{ if $sc }}{{ if ne $t.Comment "" }}<br /><font color="#333333">{{ $t.Comment | html | nl2br_slash }}</font>{{ end }}{{ end }}</td></tr>
                  {{- range $ii, $c := $t.Columns }}
@@ -18,7 +36,7 @@ digraph "{{ .Schema.Name }}" {
   {{- end }}
 
   // Relations
-  {{- range $j, $r := .Schema.Relations }}
+  {{- range $j, $r := .Relations }}
   {{- if $r.HideForER }}{{ continue }}{{ end }}
   "{{ $r.Table.Name }}":{{ $c := index $r.Columns 0 }}"{{ $c.Name }}" -> "{{ $r.ParentTable.Name }}":{{ $pc := index $r.ParentColumns 0 }}"{{ $pc.Name }}" [dir=back, arrowtail=crow, {{ if $r.Virtual }}style="dashed",{{ end }} taillabel=<<table cellpadding="5" border="0" cellborder="0"><tr><td>{{ if $sd }}{{ $r.Def | html }}{{ end }}</td></tr></table>>];
   {{- end }}

@@ -32,6 +32,12 @@ viewpoints:
     tables:
       - users
     distance: 1
+    groups:
+      -
+        name: Content
+        desc: Content as an asset for blogging services
+        labels:
+          - content
   -
     name: Secure data
     desc: Tables with secure data

@@ -16,6 +16,21 @@ type FilterOption struct {
 }
 
 func (s *Schema) Filter(opt *FilterOption) error {
+	_, excludes, err := s.SepareteTablesThatAreIncludedOrNot(opt)
+	if err != nil {
+		return err
+	}
+	for _, t := range excludes {
+		err := excludeTableFromSchema(t.Name, s)
+		if err != nil {
+			return errors.Wrap(errors.WithStack(err), fmt.Sprintf("failed to filter table '%s'", t.Name))
+		}
+	}
+
+	return nil
+}
+
+func (s *Schema) SepareteTablesThatAreIncludedOrNot(opt *FilterOption) ([]*Table, []*Table, error) {
 	i := append(opt.Include, s.NormalizeTableNames(opt.Include)...)
 	e := append(opt.Exclude, s.NormalizeTableNames(opt.Exclude)...)
 
@@ -49,30 +64,34 @@ func (s *Schema) Filter(opt *FilterOption) error {
 		}
 	}
 
-	collects := []*Table{}
+	includes2 := []*Table{}
 	for _, t := range includes {
+		includes2 = append(includes2, t)
 		ts, _, err := t.CollectTablesAndRelations(opt.Distance, true)
 		if err != nil {
-			return err
+			return nil, nil, err
 		}
 		for _, tt := range ts {
 			if !tt.Contains(includes) {
-				collects = append(collects, tt)
+				includes2 = append(includes2, tt)
 			}
 		}
 	}
 
+	excludes2 := []*Table{}
 	for _, t := range excludes {
-		if t.Contains(collects) {
+		if t.Contains(includes2) {
 			continue
 		}
-		err := excludeTableFromSchema(t.Name, s)
-		if err != nil {
-			return errors.Wrap(errors.WithStack(err), fmt.Sprintf("failed to filter table '%s'", t.Name))
-		}
+		excludes2 = append(excludes2, t)
 	}
 
-	return nil
+	// assert
+	if len(s.Tables) != len(includes2)+len(excludes2) {
+		return nil, nil, errors.Errorf("failed to separate tables. expected: %d, actual: %d", len(s.Tables), len(includes2)+len(excludes2))
+	}
+
+	return includes2, excludes2, nil
 }
 
 func excludeTableFromSchema(name string, s *Schema) error {

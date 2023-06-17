@@ -6,12 +6,21 @@ Tables related to the users table
 
 ## Tables
 
+### Content
+
+Content as an asset for blogging services
+
 | Name | Columns | Comment | Type | Labels |
 | ---- | ------- | ------- | ---- | ------ |
 | [comment_stars](comment_stars.md) | 6 |  | BASE TABLE | `content` |
 | [comments](comments.md) | 7 | Comments<br>Multi-line<br>table<br>comment | BASE TABLE | `content` |
-| [logs](logs.md) | 7 | Auditログ | BASE TABLE |  |
 | [posts](posts.md) | 7 | Posts table | BASE TABLE | `content` |
+
+### -
+
+| Name | Columns | Comment | Type | Labels |
+| ---- | ------- | ------- | ---- | ------ |
+| [logs](logs.md) | 7 | Auditログ | BASE TABLE |  |
 | [user_options](user_options.md) | 4 | User options table | BASE TABLE | `user` |
 | [users](users.md) | 6 | Users table | BASE TABLE | `user` |
 

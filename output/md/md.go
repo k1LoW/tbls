@@ -18,6 +18,7 @@ import (
 	"github.com/mattn/go-runewidth"
 	"github.com/pkg/errors"
 	"github.com/pmezard/go-difflib/difflib"
+	"github.com/samber/lo"
 	"gitlab.com/golang-commonmark/mdurl"
 )
 
@@ -104,10 +105,11 @@ func (m *Md) OutputViewpoint(wr io.Writer, i int, v *schema.Viewpoint) error {
 		return errors.WithStack(err)
 	}
 	tmpl := template.Must(template.New("viewpoint").Funcs(output.Funcs(&m.config.MergedDict)).Parse(ts))
-	templateData := m.makeSchemaTemplateData(v.Schema)
+	templateData, err := m.makeViewpointTemplateData(v)
+	if err != nil {
+		return errors.WithStack(err)
+	}
 	templateData["er"] = !m.config.ER.Skip
-	templateData["Name"] = v.Name
-	templateData["Desc"] = v.Desc
 	switch m.config.ER.Format {
 	case "mermaid":
 		buf := new(bytes.Buffer)
@@ -508,117 +510,22 @@ func (m *Md) makeSchemaTemplateData(s *schema.Schema) map[string]interface{} {
 	number := m.config.Format.Number
 	adjust := m.config.Format.Adjust
 	showOnlyFirstParagraph := m.config.Format.ShowOnlyFirstParagraph
+	hasTableWithLabels := s.HasTableWithLabels()
 
 	// Tables
-	tablesData := [][]string{}
-	tablesHeader := []string{
-		m.config.MergedDict.Lookup("Name"),
-		m.config.MergedDict.Lookup("Columns"),
-		m.config.MergedDict.Lookup("Comment"),
-		m.config.MergedDict.Lookup("Type"),
-	}
-	tablesHeaderLine := []string{"----", "-------", "-------", "----"}
-
-	if s.HasTableWithLabels() {
-		tablesHeader = append(tablesHeader, m.config.MergedDict.Lookup("Labels"))
-		tablesHeaderLine = append(tablesHeaderLine, "------")
-	}
-
-	tablesData = append(tablesData,
-		tablesHeader,
-		tablesHeaderLine,
-	)
-
-	for _, t := range s.Tables {
-		comment := t.Comment
-		if showOnlyFirstParagraph {
-			comment = output.ShowOnlyFirstParagraph(comment)
-		}
-		data := []string{
-			fmt.Sprintf("[%s](%s%s.md)", t.Name, m.config.BaseUrl, mdurl.Encode(t.Name)),
-			fmt.Sprintf("%d", len(t.Columns)),
-			comment,
-			t.Type,
-		}
-		if s.HasTableWithLabels() {
-			data = append(data, output.LabelJoin(t.Labels))
-		}
-		tablesData = append(tablesData, data)
-	}
-
-	if number {
-		tablesData = m.addNumberToTable(tablesData)
-	}
+	tablesData := m.tablesData(s.Tables, number, adjust, showOnlyFirstParagraph, hasTableWithLabels)
 
 	// Functions
-	functionData := [][]string{}
-	functionHeader := []string{
-		m.config.MergedDict.Lookup("Name"),
-		m.config.MergedDict.Lookup("ReturnType"),
-		m.config.MergedDict.Lookup("Arguments"),
-		m.config.MergedDict.Lookup("Type"),
-	}
-	functionHeaderLine := []string{"----", "-------", "-------", "----"}
-	functionData = append(functionData,
-		functionHeader,
-		functionHeaderLine,
-	)
-
-	for _, f := range s.Functions {
-		data := []string{
-			f.Name,
-			f.ReturnType,
-			f.Arguments,
-			f.Type,
-		}
-		functionData = append(functionData, data)
-	}
-
-	if number {
-		functionData = m.addNumberToTable(functionData)
-	}
+	functionsData := m.functionsData(s.Functions, number, adjust, showOnlyFirstParagraph)
 
 	// Viewpoints
-	viewpointData := [][]string{}
-	viewpointHeader := []string{
-		m.config.MergedDict.Lookup("Name"),
-		m.config.MergedDict.Lookup("Description"),
-	}
-	viewpointHeaderLine := []string{"----", "-----------"}
-	viewpointData = append(viewpointData,
-		viewpointHeader,
-		viewpointHeaderLine,
-	)
+	viewpointsData := m.viewpointsData(s.Viewpoints, number, adjust, showOnlyFirstParagraph)
 
-	for i, v := range s.Viewpoints {
-		desc := v.Desc
-		if showOnlyFirstParagraph {
-			desc = output.ShowOnlyFirstParagraph(desc)
-		}
-		data := []string{
-			fmt.Sprintf("[%s](%sviewpoint-%d.md)", v.Name, m.config.BaseUrl, i),
-			desc,
-		}
-		viewpointData = append(viewpointData, data)
-	}
-
-	if number {
-		viewpointData = m.addNumberToTable(viewpointData)
-	}
-
-	if adjust {
-		return map[string]interface{}{
-			"Schema":     s,
-			"Tables":     adjustTable(tablesData),
-			"Functions":  adjustTable(functionData),
-			"Viewpoints": adjustTable(viewpointData),
-		}
-	}
 	return map[string]interface{}{
 		"Schema":     s,
 		"Tables":     tablesData,
-		"Functions":  functionData,
-		"Viewpoints": viewpointData,
+		"Functions":  functionsData,
+		"Viewpoints": viewpointsData,
 	}
 }
 
@@ -808,11 +715,170 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 	}
 }
 
+func (m *Md) makeViewpointTemplateData(v *schema.Viewpoint) (map[string]interface{}, error) {
+	number := m.config.Format.Number
+	adjust := m.config.Format.Adjust
+	showOnlyFirstParagraph := m.config.Format.ShowOnlyFirstParagraph
+	hasTableWithLabels := v.Schema.HasTableWithLabels()
+
+	data := m.makeSchemaTemplateData(v.Schema)
+	data["Name"] = v.Name
+	data["Desc"] = v.Desc
+
+	groups := []map[string]interface{}{}
+	nogroup := v.Schema.Tables
+	for _, g := range v.Groups {
+		tables, _, err := v.Schema.SepareteTablesThatAreIncludedOrNot(&schema.FilterOption{
+			Include:       g.Tables,
+			IncludeLabels: g.Labels,
+		})
+		if err != nil {
+			return nil, err
+		}
+		d := map[string]interface{}{
+			"Name":   g.Name,
+			"Desc":   g.Desc,
+			"Tables": m.tablesData(tables, number, adjust, showOnlyFirstParagraph, hasTableWithLabels),
+		}
+		groups = append(groups, d)
+		nogroup = lo.Without(nogroup, tables...)
+	}
+	if len(v.Groups) > 0 && len(nogroup) > 0 {
+		d := map[string]interface{}{
+			"Name":   "-",
+			"Desc":   "",
+			"Tables": m.tablesData(nogroup, number, adjust, showOnlyFirstParagraph, hasTableWithLabels),
+		}
+		groups = append(groups, d)
+	}
+	data["Groups"] = groups
+
+	return data, nil
+}
+
 func (m *Md) adjustColumnHeader(columnsHeader *[]string, columnsHeaderLine *[]string, hasColumn bool, name string) {
 	if hasColumn {
 		*columnsHeader = append(*columnsHeader, m.config.MergedDict.Lookup(name))
 		*columnsHeaderLine = append(*columnsHeaderLine, strings.Repeat("-", runewidth.StringWidth(m.config.MergedDict.Lookup(name))))
 	}
+}
+
+func (m *Md) tablesData(tables []*schema.Table, number, adjust, showOnlyFirstParagraph, hasTableWithLabels bool) [][]string {
+	data := [][]string{}
+	header := []string{
+		m.config.MergedDict.Lookup("Name"),
+		m.config.MergedDict.Lookup("Columns"),
+		m.config.MergedDict.Lookup("Comment"),
+		m.config.MergedDict.Lookup("Type"),
+	}
+	headerLine := []string{"----", "-------", "-------", "----"}
+
+	if hasTableWithLabels {
+		header = append(header, m.config.MergedDict.Lookup("Labels"))
+		headerLine = append(headerLine, "------")
+	}
+
+	data = append(data,
+		header,
+		headerLine,
+	)
+
+	for _, t := range tables {
+		comment := t.Comment
+		if showOnlyFirstParagraph {
+			comment = output.ShowOnlyFirstParagraph(comment)
+		}
+		d := []string{
+			fmt.Sprintf("[%s](%s%s.md)", t.Name, m.config.BaseUrl, mdurl.Encode(t.Name)),
+			fmt.Sprintf("%d", len(t.Columns)),
+			comment,
+			t.Type,
+		}
+		if hasTableWithLabels {
+			d = append(d, output.LabelJoin(t.Labels))
+		}
+		data = append(data, d)
+	}
+
+	if number {
+		data = m.addNumberToTable(data)
+	}
+
+	if adjust {
+		data = adjustTable(data)
+	}
+
+	return data
+}
+
+func (m *Md) functionsData(functions []*schema.Function, number, adjust, showOnlyFirstParagraph bool) [][]string {
+	data := [][]string{}
+	header := []string{
+		m.config.MergedDict.Lookup("Name"),
+		m.config.MergedDict.Lookup("ReturnType"),
+		m.config.MergedDict.Lookup("Arguments"),
+		m.config.MergedDict.Lookup("Type"),
+	}
+	headerLine := []string{"----", "-------", "-------", "----"}
+	data = append(data,
+		header,
+		headerLine,
+	)
+
+	for _, f := range functions {
+		d := []string{
+			f.Name,
+			f.ReturnType,
+			f.Arguments,
+			f.Type,
+		}
+		data = append(data, d)
+	}
+
+	if number {
+		data = m.addNumberToTable(data)
+	}
+
+	if adjust {
+		data = adjustTable(data)
+	}
+
+	return data
+}
+
+func (m *Md) viewpointsData(viewpoints []*schema.Viewpoint, number, adjust, showOnlyFirstParagraph bool) [][]string {
+	data := [][]string{}
+	header := []string{
+		m.config.MergedDict.Lookup("Name"),
+		m.config.MergedDict.Lookup("Description"),
+	}
+	headerLine := []string{"----", "-----------"}
+	data = append(data,
+		header,
+		headerLine,
+	)
+
+	for i, v := range viewpoints {
+		desc := v.Desc
+		if showOnlyFirstParagraph {
+			desc = output.ShowOnlyFirstParagraph(desc)
+		}
+		d := []string{
+			fmt.Sprintf("[%s](%sviewpoint-%d.md)", v.Name, m.config.BaseUrl, i),
+			desc,
+		}
+		data = append(data, d)
+	}
+
+	if number {
+		data = m.addNumberToTable(data)
+	}
+
+	if adjust {
+		data = adjustTable(data)
+	}
+
+	return data
 }
 
 func adjustData(data *[]string, hasData bool, value string) {

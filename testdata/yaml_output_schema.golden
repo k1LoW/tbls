@@ -94,6 +94,11 @@ viewpoints:
   desc: select label green
   labels:
   - green
+  groups:
+  - name: label red
+    desc: select label red
+    labels:
+    - red
 - name: table a label red
   desc: |-
     select table a and label red

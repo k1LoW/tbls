@@ -7,8 +7,22 @@
 {{- end }}
 
 ## {{ "Tables" | lookup }}
+{{- if eq (len .Groups) 0 }}
 {{ range $t := .Tables }}
 |{{ range $d := $t }} {{ $d | nl2br }} |{{ end }}
+{{- end -}}
+{{- else }}
+{{- range $g := .Groups }}
+
+### {{ $g.Name }}
+{{ if ne $g.Desc "" }}
+{{ $g.Desc | nl2mdnl }}
+{{ end }}
+
+{{- range $t := $g.Tables }}
+|{{ range $d := $t }} {{ $d | nl2br }} |{{ end }}
+{{- end -}}
+{{- end -}}
 {{- end -}}
 {{- if .er }}
 
