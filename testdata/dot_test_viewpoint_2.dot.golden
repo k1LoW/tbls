@@ -7,7 +7,7 @@ digraph "label green" {
   // Tables
   subgraph cluster_group_0 {
     label="label red";
-    style = "rounded,filled,setlinewidth(3)";
+    style = "rounded,filled,setlinewidth(3),bold";
     color = "#1F91BE";
     fillcolor = "#FFFFFF00"
     "b" [shape=none, label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="6">

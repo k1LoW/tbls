@@ -10,7 +10,7 @@ digraph "{{ .Name }}" {
   {{- range $i, $g := .Groups }}
   subgraph cluster_group_{{ $i }} {
     label="{{ $g.Name }}";
-    style = "rounded,filled,setlinewidth(3)";
+    style = "rounded,filled,setlinewidth(3),bold";
     color = "{{ $g.Color }}";
     fillcolor = "#FFFFFF00"
 
