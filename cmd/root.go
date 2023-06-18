@@ -112,7 +112,7 @@ var rootCmd = &cobra.Command{
 	RunE: func(cmd *cobra.Command, args []string) error {
 		configPath, args := cmdutil.PickOption(args, []string{"-c", "--config"})
 		when, args := cmdutil.PickOption(args, []string{"--when"})
-
+		dsn, args := cmdutil.PickOption(args, []string{"--dsn"})
 		if allow, err := cmdutil.IsAllowedToExecute(when); !allow || err != nil {
 			if err != nil {
 				return err
@@ -144,8 +144,11 @@ var rootCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		err = cfg.Load(configPath)
-		if err != nil {
+		opts := []config.Option{}
+		if dsn != "" {
+			opts = append(opts, config.DSNURL(dsn))
+		}
+		if err := cfg.Load(configPath, opts...); err != nil {
 			return err
 		}
 
@@ -202,6 +205,7 @@ func init() {
 	rootCmd.SetUsageTemplate(rootUsageTemplate)
 	rootCmd.Flags().StringVarP(&when, "when", "", "", "command execute condition")
 	rootCmd.Flags().StringVarP(&configPath, "config", "c", "", "config file path")
+	rootCmd.Flags().StringVarP(&dsn, "dsn", "", "", "data source name")
 }
 
 // genValidArgsFunc
