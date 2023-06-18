@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.67.1](https://github.com/k1LoW/tbls/compare/v1.67.0...v1.67.1) - 2023-06-18
+### New Features 🎉
+- Support `--dsn` option for external subcommands by @k1LoW in https://github.com/k1LoW/tbls/pull/495
+
 ## [v1.67.0](https://github.com/k1LoW/tbls/compare/v1.66.0...v1.67.0) - 2023-06-17
 ### New Features 🎉
 - Support grouping tables in viewpoints by @k1LoW in https://github.com/k1LoW/tbls/pull/493
