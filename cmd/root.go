@@ -31,7 +31,6 @@ import (
 
 	"github.com/k1LoW/tbls/cmdutil"
 	"github.com/k1LoW/tbls/config"
-	"github.com/k1LoW/tbls/datasource"
 	"github.com/k1LoW/tbls/output/json"
 	"github.com/k1LoW/tbls/version"
 	"github.com/samber/lo"
@@ -152,15 +151,8 @@ var rootCmd = &cobra.Command{
 			return err
 		}
 
-		if cfg.DSN.URL != "" {
-			s, err := datasource.Analyze(cfg.DSN)
-			if err != nil {
-				return err
-			}
-			if err := cfg.ModifySchema(s); err != nil {
-				return err
-			}
-
+		s, err := getSchemaFromJSONorDSN(cfg)
+		if err == nil {
 			envs = append(envs, fmt.Sprintf("TBLS_DSN=%s", cfg.DSN.URL))
 			envs = append(envs, fmt.Sprintf("TBLS_CONFIG_PATH=%s", cfg.Path))
 			o := json.New(true)
