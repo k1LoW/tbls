@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.68.1](https://github.com/k1LoW/tbls/compare/v1.68.0...v1.68.1) - 2023-07-08
+### Other Changes
+- Bump google.golang.org/grpc from 1.51.0 to 1.53.0 by @dependabot in https://github.com/k1LoW/tbls/pull/500
+
 ## [v1.68.0](https://github.com/k1LoW/tbls/compare/v1.67.1...v1.68.0) - 2023-06-23
 ### Breaking Changes 🛠
 - Use schema.json for subcommand by @k1LoW in https://github.com/k1LoW/tbls/pull/497
