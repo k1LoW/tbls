@@ -172,7 +172,7 @@ SELECT
     ), 1, 2, '') AS index_columns,
   c.is_system_named
 FROM sys.key_constraints AS c
-LEFT JOIN sys.indexes AS i ON i.object_id = c.parent_object_id AND i.index_id = c.unique_index_id
+INNER JOIN sys.indexes AS i ON i.object_id = c.parent_object_id AND i.index_id = c.unique_index_id
 WHERE i.object_id = object_id(@p1)
 GROUP BY c.name, i.index_id, i.type_desc, i.is_unique, i.is_primary_key, i.is_unique_constraint, c.is_system_named, i.object_id
 ORDER BY i.index_id
