@@ -247,6 +247,7 @@ SELECT
 FROM sys.foreign_keys AS f
 WHERE f.parent_object_id = object_id(@p1)
 GROUP BY f.name, f.parent_object_id, f.referenced_object_id, delete_referential_action_desc, update_referential_action_desc, f.is_system_named, f.object_id
+ORDER BY f.name
 `, fmt.Sprintf("%s.%s", tableSchema, tableName))
 		if err != nil {
 			return errors.WithStack(err)
