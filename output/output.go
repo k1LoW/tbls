@@ -42,6 +42,9 @@ func Funcs(d *dict.Dict) map[string]interface{} {
 			r := strings.NewReplacer("\r\n", "\\n", "\n", "\\n", "\r", "\\n")
 			return r.Replace(text)
 		},
+		"escape_double_quote": func(text string) string {
+			return strings.ReplaceAll(text, "\"", "#quot;")
+		},
 		"show_only_first_paragraph": ShowOnlyFirstParagraph,
 		"lookup": func(text string) string {
 			return d.Lookup(text)
