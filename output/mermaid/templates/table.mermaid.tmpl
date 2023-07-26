@@ -9,7 +9,7 @@ erDiagram
 "{{ .Table.Name }}" {
 {{- range $i, $c := .Table.Columns }}
   {{- if $c.HideForER }}{{ continue }}{{ end }}
-  {{ $c.Type | escape_mermaid }} {{ $c.Name }}{{ if $c.PK }} PK{{ end }}{{ if $c.FK }} FK{{ end }}{{ if $sc }} "{{ if ne $c.Comment "" }}{{ $c.Comment | escape_nl }}{{ end }}"{{ end }}
+  {{ $c.Type | escape_mermaid }} {{ $c.Name }}{{ if $c.PK }} PK{{ end }}{{ if $c.FK }} FK{{ end }}{{ if $sc }} "{{ if ne $c.Comment "" }}{{ $c.Comment | escape_nl | escape_double_quote }}{{ end }}"{{ end }}
 {{- end }}
 }
 
@@ -17,7 +17,7 @@ erDiagram
 "{{ $t.Name }}" {
 {{- range $ii, $c := $t.Columns }}
   {{- if $c.HideForER }}{{ continue }}{{ end }}
-  {{ $c.Type | escape_mermaid }} {{ $c.Name }}{{ if $c.PK }} PK{{ end }}{{ if $c.FK }} FK{{ end }}{{ if $sc }} "{{ if ne $c.Comment "" }}{{ $c.Comment | escape_nl }}{{ end }}"{{ end }}
+  {{ $c.Type | escape_mermaid }} {{ $c.Name }}{{ if $c.PK }} PK{{ end }}{{ if $c.FK }} FK{{ end }}{{ if $sc }} "{{ if ne $c.Comment "" }}{{ $c.Comment | escape_nl | escape_double_quote }}{{ end }}"{{ end }}
 {{- end }}
 }
 {{- end }}
