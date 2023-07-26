@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.68.2](https://github.com/k1LoW/tbls/compare/v1.68.1...v1.68.2) - 2023-07-26
+### Fix bug 🐛
+- Add escape double quotes for mermaid by @kaitosawada in https://github.com/k1LoW/tbls/pull/504
+### Other Changes
+- #478: replace STRING_AGG to allow older MSSQL versions by @Lytchev in https://github.com/k1LoW/tbls/pull/502
+
 ## [v1.68.1](https://github.com/k1LoW/tbls/compare/v1.68.0...v1.68.1) - 2023-07-08
 ### Other Changes
 - Bump google.golang.org/grpc from 1.51.0 to 1.53.0 by @dependabot in https://github.com/k1LoW/tbls/pull/500
