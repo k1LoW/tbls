@@ -38,6 +38,7 @@ Key features of `tbls` are:
     - [Lint](#lint)
     - [Comments](#comments)
     - [Relations](#relations)
+    - [Viewpoints](#viewpoints)
     - [Dictionary](#dictionary)
     - [Personalized Templates](#personalized-templates)
     - [Required Version](#required-version)
@@ -919,6 +920,7 @@ relations:
 
 ![img](sample/mysql/logs.svg)
 
+
 #### Override relations
 
 If you want to override an existing relation, set the `override:` to `true`.
@@ -1030,6 +1032,41 @@ All configuration values can be set by expanding the environment variables.
 ``` yaml
 # .tbls.yml
 dsn: my://${MYSQL_USER}:${MYSQL_PASSWORD}@hostname:3306/${MYSQL_DATABASE}
+```
+
+### Viewpoints
+Viewpoints of your database schema based on concerns of your domain and add description to them.
+You can also define groups of tables within viewpoints.
+
+``` yaml
+# .tbls.yml
+
+viewpoints:
+  -
+    name: comments on post
+    desc: Users can comment on each post multiple times and put a star on each comments.
+    tables:
+      - users
+      - posts
+      - comments
+      - comment_stars
+      - post_comments
+      - post_comment_stars
+    groups:
+      -
+        name: Comments
+        desc: Tables about comments
+        tables:
+          - posts
+          - comments
+          - post_comments
+      -
+        name: Stars
+        desc: Tables about stars
+        tables:
+          - comment_stars
+          - post_comment_stars
+
 ```
 
 ## Output formats
