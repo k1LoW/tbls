@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.69.1](https://github.com/k1LoW/tbls/compare/v1.69.0...v1.69.1) - 2023-10-02
+### Other Changes
+- Fix linux arm64 release build by @mmizutani in https://github.com/k1LoW/tbls/pull/512
+
 ## [v1.69.0](https://github.com/k1LoW/tbls/compare/v1.68.2...v1.69.0) - 2023-10-02
 ### New Features 🎉
 - Add an arm64 architecture variant of the Linux build by @mmizutani in https://github.com/k1LoW/tbls/pull/510
