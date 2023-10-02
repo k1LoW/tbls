@@ -4,7 +4,7 @@ before:
     - go mod tidy
 builds:
 -
-  id: tbls-linux-amd64
+  id: tbls-linux
   flags:
     - -a
     - -tags
@@ -21,26 +21,13 @@ builds:
     - linux
   goarch:
     - amd64
--
-  id: tbls-linux-arm64
-  flags:
-    - -a
-    - -tags
-    - netgo
-    - -installsuffix
-    - netgo
-  ldflags:
-    - -s -w -X github.com/k1LoW/tbls.version={{.Version}} -X github.com/k1LoW/tbls.commit={{.FullCommit}} -X github.com/k1LoW/tbls.date={{.Date}} -X github.com/k1LoW/tbls/version.Version={{.Version}}
-    - -linkmode external
-    - -extldflags '-static'
-  env:
-    - CGO_ENABLED=1
-    - CC=aarch64-linux-gnu-gcc
-    - CXX=aarch64-linux-gnu-g++
-  goos:
-    - linux
-  goarch:
     - arm64
+  overrides:
+    - goos: linux
+      goarch: arm64
+      env:
+        - CC=aarch64-linux-gnu-gcc
+        - CXX=aarch64-linux-gnu-g++
 archives:
 -
   id: tbls-archive
