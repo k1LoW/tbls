@@ -31,7 +31,7 @@ jobs:
 
       - name: Release (dry-run)
         run: |
-          goreleaser release --config .goreleaser/darwin.yml --clean --snapshot --skip=publish
+          goreleaser release --config .goreleaser/darwin.yml --clean --snapshot --skip-publish
 
   linux-release-test:
     runs-on: ubuntu-latest
