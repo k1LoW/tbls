@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.69.2](https://github.com/k1LoW/tbls/compare/v1.69.1...v1.69.2) - 2023-10-03
+### Other Changes
+- Fix the command line argument for goreleaser release command by @mmizutani in https://github.com/k1LoW/tbls/pull/514
+
 ## [v1.69.1](https://github.com/k1LoW/tbls/compare/v1.69.0...v1.69.1) - 2023-10-02
 ### Other Changes
 - Fix linux arm64 release build by @mmizutani in https://github.com/k1LoW/tbls/pull/512
