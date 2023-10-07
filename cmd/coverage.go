@@ -29,7 +29,6 @@ import (
 	"github.com/k1LoW/tbls/cmdutil"
 	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/coverage"
-	"github.com/k1LoW/tbls/datasource"
 	"github.com/labstack/gommon/color"
 	"github.com/mattn/go-runewidth"
 	"github.com/pkg/errors"
@@ -65,7 +64,7 @@ var coverageCmd = &cobra.Command{
 			return err
 		}
 
-		s, err := datasource.Analyze(c.DSN)
+		s, err := getSchemaFromJSONorDSN(c)
 		if err != nil {
 			return err
 		}

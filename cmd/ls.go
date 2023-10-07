@@ -57,7 +57,7 @@ var lsCmd = &cobra.Command{
 
 		s, err := getSchemaFromJSONorDSN(c)
 		if err != nil {
-			return nil
+			return err
 		}
 
 		table := tablewriter.NewWriter(os.Stdout)
