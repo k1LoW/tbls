@@ -642,6 +642,15 @@ func newTestSchema(t *testing.T) *schema.Schema {
 			Name:            "testdriver",
 			DatabaseVersion: "1.0.0",
 		},
+		Viewpoints: []*schema.Viewpoint{
+			&schema.Viewpoint{
+				Name: "testviewpoint",
+				Desc: "testviewpoint desc",
+				Tables: []string{
+					"table_c", // table_a and table_b is not included
+				},
+			},
+		},
 	}
 	return s
 }
@@ -678,4 +687,33 @@ func newTestNoRelationSchema(t *testing.T) *schema.Schema {
 	}
 	s.Relations = nil
 	return s
+}
+
+func TestRequireViewpoints(t *testing.T) {
+	tests := []struct {
+		enabled     bool
+		lintExclude []string
+		exclude     []string
+		want        int
+	}{
+		{true, []string{}, []string{}, 2},
+		{false, []string{}, []string{}, 0},
+		{true, []string{"table_a"}, []string{}, 1},
+		{true, []string{"*_a"}, []string{}, 1},
+		{true, []string{}, []string{"table_b"}, 1},
+	}
+
+	for i, tt := range tests {
+		r := RequireViewpoints{
+			Enabled: tt.enabled,
+			Exclude: tt.exclude,
+		}
+		s := newTestSchema(t)
+
+		s.Tables[0].Type = "VIEW"
+		warns := r.Check(s, tt.lintExclude)
+		if len(warns) != tt.want {
+			t.Errorf("TestRequireViewpoints(%d): got %v\nwant %v", i, len(warns), tt.want)
+		}
+	}
 }

@@ -801,6 +801,11 @@ lint:
     enabled: true
     exclude:
       - schema_migrations
+  # checks if tables are included in at leaset one viewpoint
+  requireViewpoints: 
+    enabled: true
+    exclued:
+      - schema_migrations
 ```
 
 ### Filter tables
