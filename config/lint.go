@@ -23,6 +23,7 @@ type Lint struct {
 	DuplicateRelations       DuplicateRelations       `yaml:"duplicateRelations"`
 	RequireForeignKeyIndex   RequireForeignKeyIndex   `yaml:"requireForeignKeyIndex"`
 	LabelStyleBigQuery       LabelStyleBigQuery       `yaml:"labelStyleBigQuery"`
+	RequireViewpoints        RequireViewpoints        `yaml:"requireViewpoints"`
 }
 
 // RuleWarn is struct of Rule error
@@ -663,4 +664,49 @@ func checkLabelStyleBigQuery(label string) bool {
 		return false
 	}
 	return true
+}
+
+// RequireViewpoints checks if the table is included in any viewpoints.
+type RequireViewpoints struct {
+	Enabled bool     `yaml:"enabled"`
+	Exclude []string `yaml:"exclude"`
+}
+
+// IsEnabled return Rule is enabled or not
+func (r RequireViewpoints) IsEnabled() bool {
+	return r.Enabled
+}
+
+// Check if the table is included in any viewpoints.
+func (r RequireViewpoints) Check(s *schema.Schema, exclude []string) []RuleWarn {
+	warns := []RuleWarn{}
+	if !r.IsEnabled() {
+		return warns
+	}
+	msgFmt := "table `%s` is not included in any viewpoints."
+
+T:
+	for _, t := range s.Tables {
+		if match(exclude, t.Name) {
+			continue
+		}
+
+		if match(r.Exclude, t.Name) {
+			continue
+		}
+
+		for _, v := range s.Viewpoints {
+			for _, vt := range v.Tables {
+				if vt == t.Name {
+					continue T
+				}
+			}
+		}
+		warns = append(warns, RuleWarn{
+			Target:  t.Name,
+			Message: fmt.Sprintf(msgFmt, t.Name),
+		})
+	}
+
+	return warns
 }
