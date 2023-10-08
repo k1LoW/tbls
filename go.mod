@@ -12,7 +12,7 @@ require (
 	github.com/gertd/go-pluralize v0.2.1
 	github.com/go-sql-driver/mysql v1.7.1
 	github.com/goccy/go-graphviz v0.1.1
-	github.com/goccy/go-yaml v1.11.2
+	github.com/goccy/go-yaml v1.11.1
 	github.com/google/go-cmp v0.5.9
 	github.com/google/go-github/v49 v49.1.0
 	github.com/k1LoW/duration v1.2.0
@@ -54,7 +54,6 @@ require (
 	github.com/JohnCGriffin/overflow v0.0.0-20211019200055-46fa312c352c // indirect
 	github.com/ProtonMail/go-crypto v0.0.0-20230923063757-afb1ddc0824c // indirect
 	github.com/andybalholm/brotli v1.0.5 // indirect
-	github.com/apache/arrow/go/v10 v10.0.1 // indirect
 	github.com/apache/arrow/go/v12 v12.0.1 // indirect
 	github.com/apache/thrift v0.19.0 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.21.1 // indirect
@@ -97,7 +96,6 @@ require (
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/flatbuffers v23.5.26+incompatible // indirect
-	github.com/google/go-github/v52 v52.0.0 // indirect
 	github.com/google/go-github/v55 v55.0.0 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/google/s2a-go v0.1.7 // indirect
