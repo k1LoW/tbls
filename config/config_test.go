@@ -132,20 +132,27 @@ func TestMergeAditionalData(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	err = c.LoadConfigFile(filepath.Join(testdataDir(), "config_test_tbls.yml"))
-	if err != nil {
+	if err := c.LoadConfigFile(filepath.Join(testdataDir(), "config_test_tbls.yml")); err != nil {
 		t.Error(err)
 	}
-	err = c.MergeAdditionalData(&s)
-	if err != nil {
+	if err := c.MergeAdditionalData(&s); err != nil {
 		t.Error(err)
 	}
 	if want := 1; len(s.Relations) != want {
 		t.Errorf("got %v\nwant %v", len(s.Relations), want)
 	}
-	users, _ := s.FindTableByName("users")
-	posts, _ := s.FindTableByName("posts")
-	title, _ := posts.FindColumnByName("title")
+	users, err := s.FindTableByName("users")
+	if err != nil {
+		t.Fatal(err)
+	}
+	posts, err := s.FindTableByName("posts")
+	if err != nil {
+		t.Fatal(err)
+	}
+	title, err := posts.FindColumnByName("title")
+	if err != nil {
+		t.Fatal(err)
+	}
 	if want := "post title"; title.Comment != want {
 		t.Errorf("got %v\nwant %v", title.Comment, want)
 	}
