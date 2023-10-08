@@ -1,5 +1,12 @@
 # Changelog
 
+## [v1.70.0](https://github.com/k1LoW/tbls/compare/v1.69.2...v1.70.0) - 2023-10-08
+### New Features 🎉
+- feat:requireViewpoints by @macoto1995 in https://github.com/k1LoW/tbls/pull/517
+- `coverage` command support loading schema.json by @k1LoW in https://github.com/k1LoW/tbls/pull/518
+### Other Changes
+- Bump up go and pkg version by @k1LoW in https://github.com/k1LoW/tbls/pull/520
+
 ## [v1.69.2](https://github.com/k1LoW/tbls/compare/v1.69.1...v1.69.2) - 2023-10-03
 ### Other Changes
 - Fix the command line argument for goreleaser release command by @mmizutani in https://github.com/k1LoW/tbls/pull/514
