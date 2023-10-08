@@ -1,5 +1,20 @@
 # Changelog
 
+## [v1.69.2](https://github.com/k1LoW/tbls/compare/v1.69.1...v1.69.2) - 2023-10-03
+### Other Changes
+- Fix the command line argument for goreleaser release command by @mmizutani in https://github.com/k1LoW/tbls/pull/514
+
+## [v1.69.1](https://github.com/k1LoW/tbls/compare/v1.69.0...v1.69.1) - 2023-10-02
+### Other Changes
+- Fix linux arm64 release build by @mmizutani in https://github.com/k1LoW/tbls/pull/512
+
+## [v1.69.0](https://github.com/k1LoW/tbls/compare/v1.68.2...v1.69.0) - 2023-10-02
+### New Features 🎉
+- Add an arm64 architecture variant of the Linux build by @mmizutani in https://github.com/k1LoW/tbls/pull/510
+### Other Changes
+- Added description about Viewpoints in README.md by @macoto1995 in https://github.com/k1LoW/tbls/pull/507
+- Add release test by @k1LoW in https://github.com/k1LoW/tbls/pull/511
+
 ## [v1.68.2](https://github.com/k1LoW/tbls/compare/v1.68.1...v1.68.2) - 2023-07-26
 ### Fix bug 🐛
 - Add escape double quotes for mermaid by @kaitosawada in https://github.com/k1LoW/tbls/pull/504

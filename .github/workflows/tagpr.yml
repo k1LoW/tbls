@@ -58,7 +58,7 @@ jobs:
       - name: Install packages
         run: |
           sudo apt-get update
-          sudo apt-get install sqlite3
+          sudo apt-get install sqlite3 gcc-aarch64-linux-gnu
 
       - name: Install aws-cli
         uses: isbang/setup-awscli@v0.1.0
@@ -97,7 +97,7 @@ jobs:
         with:
           distribution: goreleaser
           version: latest
-          args: --config .goreleaser/linux.yml --rm-clean
+          args: --config .goreleaser/linux.yml --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

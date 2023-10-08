@@ -512,12 +512,10 @@ func (c *Config) ModifySchema(s *schema.Schema) error {
 
 // MergeAdditionalData merge relations: comments: to schema.Schema
 func (c *Config) MergeAdditionalData(s *schema.Schema) error {
-	err := mergeAdditionalRelations(s, c.Relations)
-	if err != nil {
+	if err := mergeAdditionalRelations(s, c.Relations); err != nil {
 		return err
 	}
-	err = mergeAdditionalComments(s, c.Comments)
-	if err != nil {
+	if err := mergeAdditionalComments(s, c.Comments); err != nil {
 		return err
 	}
 	return nil
