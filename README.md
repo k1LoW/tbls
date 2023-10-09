@@ -92,6 +92,12 @@ $ brew install k1LoW/tap/tbls
 $ sudo port install tbls
 ```
 
+**[aqua](https://aquaproj.github.io/):**
+
+```console
+$ aqua g -i k1LoW/tbls
+```
+
 **Manually:**
 
 Download binary from [releases page](https://github.com/k1LoW/tbls/releases)
