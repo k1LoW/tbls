@@ -1,5 +1,10 @@
 # Changelog
 
+## [v1.70.1](https://github.com/k1LoW/tbls/compare/v1.70.0...v1.70.1) - 2023-10-12
+### Other Changes
+- docs: add the installation guide with aqua by @suzuki-shunsuke in https://github.com/k1LoW/tbls/pull/522
+- Bump golang.org/x/net from 0.16.0 to 0.17.0 by @dependabot in https://github.com/k1LoW/tbls/pull/524
+
 ## [v1.70.0](https://github.com/k1LoW/tbls/compare/v1.69.2...v1.70.0) - 2023-10-08
 ### New Features 🎉
 - feat:requireViewpoints by @macoto1995 in https://github.com/k1LoW/tbls/pull/517
