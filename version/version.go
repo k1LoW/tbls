@@ -4,4 +4,4 @@ package version
 const Name string = "tbls"
 
 // Version for this
-var Version = "1.70.0"
+var Version = "1.70.1"
