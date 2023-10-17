@@ -290,7 +290,10 @@ func (s *Schema) Sort() error {
 		return s.Relations[i].Table.Name < s.Relations[j].Table.Name
 	})
 	sort.SliceStable(s.Functions, func(i, j int) bool {
-		return s.Functions[i].Name < s.Functions[j].Name
+		if s.Functions[i].Name != s.Functions[j].Name {
+			return s.Functions[i].Name < s.Functions[j].Name
+		}
+		return s.Functions[i].Arguments < s.Functions[j].Arguments
 	})
 	sort.SliceStable(s.Viewpoints, func(i, j int) bool {
 		return s.Viewpoints[i].Name < s.Viewpoints[j].Name

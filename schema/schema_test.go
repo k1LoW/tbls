@@ -210,6 +210,16 @@ func TestSchema_Sort(t *testing.T) {
 				},
 			},
 		},
+		Functions: []*Function{
+			&Function{
+				Name:   "b",
+				Arguments: "arg b",
+			},
+			&Function{
+				Name:   "b",
+				Arguments: "arg a",
+			},
+		},
 	}
 	if err := schema.Sort(); err != nil {
 		t.Error(err)
@@ -223,6 +233,11 @@ func TestSchema_Sort(t *testing.T) {
 	got2 := schema.Tables[0].Columns[0].Name
 	if got2 != want2 {
 		t.Errorf("got %v\nwant %v", got2, want2)
+	}
+	want3 := "arg a"
+	got3 := schema.Functions[0].Arguments
+	if got3 != want3 {
+		t.Errorf("got %v\nwant %v", got3, want3)
 	}
 }
 
