@@ -79,7 +79,7 @@ func TestOutputTable(t *testing.T) {
 
 			o := New(c)
 			got := &bytes.Buffer{}
-			if err := o.OutputTable(got, ta); err != nil {
+			if err := o.OutputTable(got, ta, s.Viewpoints); err != nil {
 				t.Error(err)
 			}
 			if os.Getenv("UPDATE_GOLDEN") != "" {

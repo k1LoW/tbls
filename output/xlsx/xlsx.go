@@ -66,7 +66,7 @@ func (x *Xlsx) OutputSchema(wr io.Writer, s *schema.Schema) (e error) {
 }
 
 // OutputTable output Xlsx format for table.
-func (x *Xlsx) OutputTable(wr io.Writer, t *schema.Table) (e error) {
+func (x *Xlsx) OutputTable(wr io.Writer, t *schema.Table, _v schema.Viewpoints) (e error) {
 	w, err := excl.Create()
 	if err != nil {
 		return err

@@ -95,6 +95,6 @@ func (c *Config) OutputSchema(wr io.Writer, s *schema.Schema) error {
 	return nil
 }
 
-func (c *Config) OutputTable(wr io.Writer, t *schema.Table) error {
+func (c *Config) OutputTable(wr io.Writer, t *schema.Table, _v schema.Viewpoints) error {
 	return errors.New("not supported")
 }

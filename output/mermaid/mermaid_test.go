@@ -98,7 +98,7 @@ func TestOutputTable(t *testing.T) {
 
 	o := New(c)
 	got := &bytes.Buffer{}
-	if err := o.OutputTable(got, ta); err != nil {
+	if err := o.OutputTable(got, ta, s.Viewpoints); err != nil {
 		t.Error(err)
 	}
 	f := fmt.Sprintf("mermaid_test_a")
@@ -130,7 +130,7 @@ func TestOutputTableTemplate(t *testing.T) {
 
 	o := New(c)
 	got := &bytes.Buffer{}
-	if err := o.OutputTable(got, ta); err != nil {
+	if err := o.OutputTable(got, ta, s.Viewpoints); err != nil {
 		t.Error(err)
 	}
 	f := fmt.Sprintf("mermaid_template_test_a")

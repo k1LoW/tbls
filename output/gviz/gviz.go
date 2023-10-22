@@ -44,9 +44,9 @@ func (g *Gviz) OutputSchema(wr io.Writer, s *schema.Schema) error {
 }
 
 // OutputTable generage image for table.
-func (g *Gviz) OutputTable(wr io.Writer, t *schema.Table) error {
+func (g *Gviz) OutputTable(wr io.Writer, t *schema.Table, v schema.Viewpoints) error {
 	buf := &bytes.Buffer{}
-	if err := g.dot.OutputTable(buf, t); err != nil {
+	if err := g.dot.OutputTable(buf, t, v); err != nil {
 		return errors.WithStack(err)
 	}
 	return g.render(wr, buf.Bytes())
@@ -127,7 +127,7 @@ func Output(s *schema.Schema, c *config.Config, force bool) (e error) {
 		if err != nil {
 			return errors.WithStack(err)
 		}
-		if err := g.OutputTable(f, t); err != nil {
+		if err := g.OutputTable(f, t, s.Viewpoints); err != nil {
 			return errors.WithStack(err)
 		}
 	}

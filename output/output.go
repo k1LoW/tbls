@@ -15,7 +15,7 @@ import (
 // Output is interface for output
 type Output interface {
 	OutputSchema(wr io.Writer, s *schema.Schema) error
-	OutputTable(wr io.Writer, s *schema.Table) error
+	OutputTable(wr io.Writer, s *schema.Table, viewpoints schema.Viewpoints) error
 }
 
 var escapeMermaidRe = regexp.MustCompile(`[^a-zA-Z0-9_\-]`)

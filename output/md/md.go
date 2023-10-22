@@ -71,19 +71,19 @@ func (m *Md) OutputSchema(wr io.Writer, s *schema.Schema) error {
 }
 
 // OutputTable output md format for table.
-func (m *Md) OutputTable(wr io.Writer, t *schema.Table) error {
+func (m *Md) OutputTable(wr io.Writer, t *schema.Table, viewpoints schema.Viewpoints) error {
 	ts, err := m.tableTemplate()
 	if err != nil {
 		return errors.WithStack(err)
 	}
 	tmpl := template.Must(template.New(t.Name).Funcs(output.Funcs(&m.config.MergedDict)).Parse(ts))
-	templateData := m.makeTableTemplateData(t)
+	templateData := m.makeTableTemplateData(t, viewpoints)
 	templateData["er"] = !m.config.ER.Skip
 	switch m.config.ER.Format {
 	case "mermaid":
 		buf := new(bytes.Buffer)
 		mmd := mermaid.New(m.config)
-		if err := mmd.OutputTable(buf, t); err != nil {
+		if err := mmd.OutputTable(buf, t, viewpoints); err != nil {
 			return err
 		}
 		templateData["erDiagram"] = fmt.Sprintf("```mermaid\n%s```", buf.String())
@@ -169,7 +169,7 @@ func Output(s *schema.Schema, c *config.Config, force bool) (e error) {
 			_ = f.Close()
 			return errors.WithStack(err)
 		}
-		if err := md.OutputTable(f, t); err != nil {
+		if err := md.OutputTable(f, t, s.Viewpoints); err != nil {
 			_ = f.Close()
 			return errors.WithStack(err)
 		}
@@ -250,7 +250,7 @@ func DiffSchemas(s, s2 *schema.Schema, c, c2 *config.Config) (string, error) {
 		diffed[tName] = struct{}{}
 
 		a := new(bytes.Buffer)
-		if err := md.OutputTable(a, t); err != nil {
+		if err := md.OutputTable(a, t, s.Viewpoints); err != nil {
 			return "", errors.WithStack(err)
 		}
 		from := fmt.Sprintf("%s %s", mdsnA, tName)
@@ -258,7 +258,7 @@ func DiffSchemas(s, s2 *schema.Schema, c, c2 *config.Config) (string, error) {
 		b := new(bytes.Buffer)
 		t2, err := s2.FindTableByName(tName)
 		if err == nil {
-			if err := md.OutputTable(b, t2); err != nil {
+			if err := md.OutputTable(b, t2, s.Viewpoints); err != nil {
 				return "", errors.WithStack(err)
 			}
 		}
@@ -287,7 +287,7 @@ func DiffSchemas(s, s2 *schema.Schema, c, c2 *config.Config) (string, error) {
 		from := fmt.Sprintf("%s %s", mdsnA, tName)
 
 		b := new(bytes.Buffer)
-		if err := md.OutputTable(b, t); err != nil {
+		if err := md.OutputTable(b, t, s.Viewpoints); err != nil {
 			return "", errors.WithStack(err)
 		}
 		to := fmt.Sprintf("%s %s", mdsnB, tName)
@@ -359,7 +359,7 @@ func DiffSchemaAndDocs(docPath string, s *schema.Schema, c *config.Config) (stri
 	for _, t := range s.Tables {
 		buf := new(bytes.Buffer)
 		to := fmt.Sprintf("%s %s", mdsn, t.Name)
-		if err := md.OutputTable(buf, t); err != nil {
+		if err := md.OutputTable(buf, t, s.Viewpoints); err != nil {
 			return "", errors.WithStack(err)
 		}
 		fn := fmt.Sprintf("%s.md", t.Name)
@@ -529,7 +529,7 @@ func (m *Md) makeSchemaTemplateData(s *schema.Schema) map[string]interface{} {
 	}
 }
 
-func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
+func (m *Md) makeTableTemplateData(t *schema.Table, viewpoints schema.Viewpoints) map[string]interface{} {
 	number := m.config.Format.Number
 	adjust := m.config.Format.Adjust
 	hideColumns := m.config.Format.HideColumnsWithoutValues
@@ -586,6 +586,32 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 		adjustData(&data, t.ShowColumn(schema.ColumnComment, hideColumns), c.Comment)
 		adjustData(&data, t.ShowColumn(schema.ColumnLabels, hideColumns), output.LabelJoin(c.Labels))
 		columnsData = append(columnsData, data)
+	}
+
+	// Viewpoints
+	viewpointsData := [][]string{
+		{
+			m.config.MergedDict.Lookup("Name"),
+
+			m.config.MergedDict.Lookup("Definition"),
+		},
+		{"----", "----------"},
+	}
+
+	fmt.Println(m.config.Viewpoints)
+	for vi, v := range viewpoints {
+		for _, vt := range v.Tables {
+			if vt == t.Name {
+				data := []string{
+					fmt.Sprintf("[%s](%sviewpoint-%d.md)", v.Name, m.config.BaseUrl, vi),
+					v.Desc,
+				}
+
+				// output data to standard output
+				fmt.Println(data)
+				viewpointsData = append(viewpointsData, data)
+			}
+		}
 	}
 
 	// Constraints
@@ -689,6 +715,7 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 
 	if number {
 		columnsData = m.addNumberToTable(columnsData)
+		viewpointsData = m.addNumberToTable(viewpointsData)
 		constraintsData = m.addNumberToTable(constraintsData)
 		indexesData = m.addNumberToTable(indexesData)
 		triggersData = m.addNumberToTable(triggersData)
@@ -698,6 +725,7 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 		return map[string]interface{}{
 			"Table":            t,
 			"Columns":          adjustTable(columnsData),
+			"Viewpoints":       adjustTable(viewpointsData),
 			"Constraints":      adjustTable(constraintsData),
 			"Indexes":          adjustTable(indexesData),
 			"Triggers":         adjustTable(triggersData),
@@ -708,6 +736,7 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 	return map[string]interface{}{
 		"Table":            t,
 		"Columns":          columnsData,
+		"Viewpoints":       viewpointsData,
 		"Constraints":      constraintsData,
 		"Indexes":          indexesData,
 		"Triggers":         triggersData,

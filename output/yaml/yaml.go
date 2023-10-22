@@ -21,7 +21,7 @@ func (j *YAML) OutputSchema(wr io.Writer, s *schema.Schema) error {
 }
 
 // OutputTable output YAML format for table.
-func (j *YAML) OutputTable(wr io.Writer, t *schema.Table) error {
+func (j *YAML) OutputTable(wr io.Writer, t *schema.Table, _v schema.Viewpoints) error {
 	encoder := yaml.NewEncoder(wr)
 	err := encoder.Encode(t)
 	if err != nil {

@@ -82,7 +82,7 @@ func (m *Mermaid) OutputSchema(wr io.Writer, s *schema.Schema) error {
 }
 
 // OutputTable output dot format for table.
-func (m *Mermaid) OutputTable(wr io.Writer, t *schema.Table) error {
+func (m *Mermaid) OutputTable(wr io.Writer, t *schema.Table, _v schema.Viewpoints) error {
 	tables, relations, err := t.CollectTablesAndRelations(*m.config.ER.Distance, true)
 	if err != nil {
 		return errors.WithStack(err)

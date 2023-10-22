@@ -32,7 +32,7 @@ func (j *JSON) OutputSchema(wr io.Writer, s *schema.Schema) error {
 }
 
 // OutputTable output JSON format for table.
-func (j *JSON) OutputTable(wr io.Writer, t *schema.Table) error {
+func (j *JSON) OutputTable(wr io.Writer, t *schema.Table, _v schema.Viewpoints) error {
 	encoder := json.NewEncoder(wr)
 	if !j.inline {
 		encoder.SetIndent("", "  ")
