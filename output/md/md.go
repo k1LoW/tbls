@@ -538,6 +538,7 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 	number := m.config.Format.Number
 	adjust := m.config.Format.Adjust
 	hideColumns := m.config.Format.HideColumnsWithoutValues
+	showOnlyFirstParagraph := m.config.Format.ShowOnlyFirstParagraph
 
 	// Columns
 	columnsData := [][]string{}
@@ -603,9 +604,13 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 	}
 
 	for _, v := range t.Viewpoints {
+		desc := v.Desc
+		if showOnlyFirstParagraph {
+			desc = output.ShowOnlyFirstParagraph(desc)
+		}
 		data := []string{
 			fmt.Sprintf("[%s](viewpoint-%d.md)", v.Name, v.Index),
-			v.Desc,
+			desc,
 		}
 
 		viewpointsData = append(viewpointsData, data)
