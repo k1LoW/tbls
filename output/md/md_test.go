@@ -3,6 +3,7 @@ package md
 import (
 	"os"
 	"path/filepath"
+	"slices"
 	"testing"
 
 	"github.com/k1LoW/tbls/config"
@@ -62,6 +63,11 @@ func TestOutput(t *testing.T) {
 				t.Fatal(err)
 			}
 			tb.Name = tt.tableBName
+			for _, v := range s.Viewpoints {
+				if vti := slices.Index(v.Tables, "b"); vti != -1 {
+					v.Tables[vti] = tt.tableBName
+				}
+			}
 			c, err := config.New()
 			if err != nil {
 				t.Error(err)
