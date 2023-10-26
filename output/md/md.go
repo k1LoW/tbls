@@ -129,6 +129,11 @@ func (m *Md) OutputViewpoint(wr io.Writer, i int, v *schema.Viewpoint) error {
 
 // Output generate markdown files.
 func Output(s *schema.Schema, c *config.Config, force bool) (e error) {
+	s, err := s.SetViewpointsToTables()
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
 	docPath := c.DocPath
 
 	fullPath, err := filepath.Abs(docPath)
@@ -588,6 +593,24 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 		columnsData = append(columnsData, data)
 	}
 
+	// Viewpoints
+	viewpointsData := [][]string{
+		[]string{
+			m.config.MergedDict.Lookup("Name"),
+			m.config.MergedDict.Lookup("Definition"),
+		},
+		[]string{"----", "----------"},
+	}
+
+	for _, v := range t.Viewpoints {
+		data := []string{
+			fmt.Sprintf("[%s](viewpoint-%d.md)", v.Name, v.Index),
+			v.Desc,
+		}
+
+		viewpointsData = append(viewpointsData, data)
+	}
+
 	// Constraints
 	constraintsData := [][]string{
 		[]string{
@@ -698,6 +721,7 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 		return map[string]interface{}{
 			"Table":            t,
 			"Columns":          adjustTable(columnsData),
+			"Viewpoints":       adjustTable(viewpointsData),
 			"Constraints":      adjustTable(constraintsData),
 			"Indexes":          adjustTable(indexesData),
 			"Triggers":         adjustTable(triggersData),
@@ -708,6 +732,7 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 	return map[string]interface{}{
 		"Table":            t,
 		"Columns":          columnsData,
+		"Viewpoints":       viewpointsData,
 		"Constraints":      constraintsData,
 		"Indexes":          indexesData,
 		"Triggers":         triggersData,
