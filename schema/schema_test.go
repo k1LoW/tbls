@@ -11,6 +11,54 @@ import (
 	"github.com/google/go-cmp/cmp"
 )
 
+func TestSetViewpointsToTables(t *testing.T) {
+	viewpointAName := "va"
+	viewpointBName := "vb"
+
+	tests := []struct {
+		viewpointATables     []string
+		viewpointBTables     []string
+		wantTableAViewpoints []*TableViewpoint
+	}{
+		{[]string{"a"}, []string{"b"}, []*TableViewpoint{{Name: viewpointAName}}},
+		{[]string{"a", "b"}, []string{"a"}, []*TableViewpoint{{
+			Index: 0,
+			Name:  viewpointAName,
+		}, {
+			Index: 1,
+			Name:  viewpointBName,
+		}}},
+	}
+
+	for _, tt := range tests {
+		t.Run(fmt.Sprintf("%v", tt.viewpointATables), func(t *testing.T) {
+			fmt.Println(tt.viewpointATables)
+			s := newTestSchema(t)
+			s.Viewpoints = []*Viewpoint{
+				{
+					Name:   viewpointAName,
+					Tables: tt.viewpointATables,
+				},
+				{
+					Name:   viewpointBName,
+					Tables: tt.viewpointBTables,
+				},
+			}
+			result, err := s.SetViewpointsToTables()
+			if err != nil {
+				t.Error(err)
+			}
+			gotTable, _ := result.FindTableByName("a")
+			got := gotTable.Viewpoints
+			want := tt.wantTableAViewpoints
+
+			if diff := cmp.Diff(got, want, nil); diff != "" {
+				t.Errorf("%s", diff)
+			}
+		})
+	}
+}
+
 func TestNormalizeTableName(t *testing.T) {
 	tests := []struct {
 		s    *Schema
@@ -212,11 +260,11 @@ func TestSchema_Sort(t *testing.T) {
 		},
 		Functions: []*Function{
 			&Function{
-				Name:   "b",
+				Name:      "b",
 				Arguments: "arg b",
 			},
 			&Function{
-				Name:   "b",
+				Name:      "b",
 				Arguments: "arg a",
 			},
 		},

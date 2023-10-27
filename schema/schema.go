@@ -131,19 +131,26 @@ type Column struct {
 	HideForER       bool            `json:"-"`
 }
 
+type TableViewpoint struct {
+	Index int    `json:"index"`
+	Name  string `json:"name"`
+	Desc  string `json:"desc"`
+}
+
 // Table is the struct for database table
 type Table struct {
-	Name             string        `json:"name"`
-	Type             string        `json:"type"`
-	Comment          string        `json:"comment"`
-	Columns          []*Column     `json:"columns"`
-	Indexes          []*Index      `json:"indexes"`
-	Constraints      []*Constraint `json:"constraints"`
-	Triggers         []*Trigger    `json:"triggers"`
-	Def              string        `json:"def"`
-	Labels           Labels        `json:"labels,omitempty"`
-	ReferencedTables []*Table      `json:"referenced_tables,omitempty" yaml:"referencedTables,omitempty"`
-	External         bool          `json:"-"` // Table external to the schema
+	Name             string            `json:"name"`
+	Type             string            `json:"type"`
+	Comment          string            `json:"comment"`
+	Columns          []*Column         `json:"columns"`
+	Viewpoints       []*TableViewpoint `json:"viewpoints"`
+	Indexes          []*Index          `json:"indexes"`
+	Constraints      []*Constraint     `json:"constraints"`
+	Triggers         []*Trigger        `json:"triggers"`
+	Def              string            `json:"def"`
+	Labels           Labels            `json:"labels,omitempty"`
+	ReferencedTables []*Table          `json:"referenced_tables,omitempty" yaml:"referencedTables,omitempty"`
+	External         bool              `json:"-"` // Table external to the schema
 }
 
 // Relation is the struct for table relation
@@ -190,6 +197,24 @@ type Schema struct {
 	Driver     *Driver     `json:"driver"`
 	Labels     Labels      `json:"labels,omitempty"`
 	Viewpoints Viewpoints  `json:"viewpoints,omitempty"`
+}
+
+func (s *Schema) SetViewpointsToTables() (*Schema, error) {
+	for vi, v := range s.Viewpoints {
+		// Add viewpoints to table
+		for _, t := range v.Tables {
+			table, err := s.FindTableByName(t)
+			if err != nil {
+				return s, err
+			}
+			table.Viewpoints = append(table.Viewpoints, &TableViewpoint{
+				Index: vi,
+				Name:  v.Name,
+				Desc:  v.Desc,
+			})
+		}
+	}
+	return s, nil
 }
 
 func (s *Schema) NormalizeTableName(name string) string {
