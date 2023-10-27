@@ -34,7 +34,14 @@
 |{{ range $d := $l }} {{ $d | nl2br }} |{{ end }}
 {{- end }}
 
-{{ $len := len .Constraints }}{{ if ne $len 2 -}}
+{{ $len := len .Viewpoints }}{{ if ne $len 2 -}}
+## {{ "Viewpoints" | lookup }}
+{{ range $l := .Viewpoints }}
+|{{ range $d := $l }} {{ $d | nl2br }} |{{ end }}
+{{- end }}
+
+{{ end -}}
+{{ $len := len .Constraints -}}{{ if ne $len 2 -}}
 ## {{ "Constraints" | lookup }}
 {{ range $l := .Constraints }}
 |{{ range $d := $l }} {{ $d | nl2br }} |{{ end }}

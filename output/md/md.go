@@ -129,6 +129,11 @@ func (m *Md) OutputViewpoint(wr io.Writer, i int, v *schema.Viewpoint) error {
 
 // Output generate markdown files.
 func Output(s *schema.Schema, c *config.Config, force bool) (e error) {
+	s, err := s.SetViewpointsToTables()
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
 	docPath := c.DocPath
 
 	fullPath, err := filepath.Abs(docPath)
@@ -533,6 +538,7 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 	number := m.config.Format.Number
 	adjust := m.config.Format.Adjust
 	hideColumns := m.config.Format.HideColumnsWithoutValues
+	showOnlyFirstParagraph := m.config.Format.ShowOnlyFirstParagraph
 
 	// Columns
 	columnsData := [][]string{}
@@ -586,6 +592,28 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 		adjustData(&data, t.ShowColumn(schema.ColumnComment, hideColumns), c.Comment)
 		adjustData(&data, t.ShowColumn(schema.ColumnLabels, hideColumns), output.LabelJoin(c.Labels))
 		columnsData = append(columnsData, data)
+	}
+
+	// Viewpoints
+	viewpointsData := [][]string{
+		[]string{
+			m.config.MergedDict.Lookup("Name"),
+			m.config.MergedDict.Lookup("Definition"),
+		},
+		[]string{"----", "----------"},
+	}
+
+	for _, v := range t.Viewpoints {
+		desc := v.Desc
+		if showOnlyFirstParagraph {
+			desc = output.ShowOnlyFirstParagraph(desc)
+		}
+		data := []string{
+			fmt.Sprintf("[%s](viewpoint-%d.md)", v.Name, v.Index),
+			desc,
+		}
+
+		viewpointsData = append(viewpointsData, data)
 	}
 
 	// Constraints
@@ -698,6 +726,7 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 		return map[string]interface{}{
 			"Table":            t,
 			"Columns":          adjustTable(columnsData),
+			"Viewpoints":       adjustTable(viewpointsData),
 			"Constraints":      adjustTable(constraintsData),
 			"Indexes":          adjustTable(indexesData),
 			"Triggers":         adjustTable(triggersData),
@@ -708,6 +737,7 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 	return map[string]interface{}{
 		"Table":            t,
 		"Columns":          columnsData,
+		"Viewpoints":       viewpointsData,
 		"Constraints":      constraintsData,
 		"Indexes":          indexesData,
 		"Triggers":         triggersData,
