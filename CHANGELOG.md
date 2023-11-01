@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.71.0](https://github.com/k1LoW/tbls/compare/v1.70.2...v1.71.0) - 2023-10-27
+### Breaking Changes 🛠
+- feat:refer viewpoints from tables by @macoto1995 in https://github.com/k1LoW/tbls/pull/532
+### Other Changes
+- Bump google.golang.org/grpc from 1.58.2 to 1.58.3 by @dependabot in https://github.com/k1LoW/tbls/pull/531
+
 ## [v1.70.2](https://github.com/k1LoW/tbls/compare/v1.70.1...v1.70.2) - 2023-10-17
 ### Other Changes
 - Add arguments as second sort key for functions. by @corydoraspanda in https://github.com/k1LoW/tbls/pull/527
