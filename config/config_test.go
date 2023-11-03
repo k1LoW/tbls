@@ -254,15 +254,29 @@ func TestModifySchema(t *testing.T) {
 		t.Error(err)
 	}
 	tests := []struct {
-		name      string
-		desc      string
-		labels    []string
-		comments  []AdditionalComment
-		relations []AdditionalRelation
-		wantRel   int
+		name             string
+		desc             string
+		labels           []string
+		comments         []AdditionalComment
+		relations        []AdditionalRelation
+		viewpointATables []string
+		viewpointBTables []string
+		wantRel          int
 	}{
-		{"", "", []string{}, nil, nil, 3},
-		{"mod_name_and_desc", "this is test schema", []string{}, nil, nil, 3},
+		{"", "", []string{}, nil, nil, []string{
+			"users",
+			"posts",
+		}, []string{
+			"users",
+			"user_options",
+		}, 3},
+		{"mod_name_and_desc", "this is test schema", []string{}, nil, nil, []string{
+			"users",
+			"posts",
+		}, []string{
+			"users",
+			"user_options",
+		}, 3},
 		{"relations", "", []string{}, nil, []AdditionalRelation{
 			{
 				Table:         "users",
@@ -270,6 +284,12 @@ func TestModifySchema(t *testing.T) {
 				Columns:       []string{"id"},
 				ParentColumns: []string{"id"},
 			},
+		}, []string{
+			"users",
+			"posts",
+		}, []string{
+			"users",
+			"user_options",
 		}, 4},
 		{"not_override", "", []string{}, nil, []AdditionalRelation{
 			{
@@ -280,6 +300,12 @@ func TestModifySchema(t *testing.T) {
 				Def:           "Additional Relation",
 				Override:      false,
 			},
+		}, []string{
+			"users",
+			"posts",
+		}, []string{
+			"users",
+			"user_options",
 		}, 4},
 		{"override", "", []string{}, nil, []AdditionalRelation{
 			{
@@ -292,6 +318,12 @@ func TestModifySchema(t *testing.T) {
 				Def:               "Override Relation",
 				Override:          true,
 			},
+		}, []string{
+			"users",
+			"posts",
+		}, []string{
+			"users",
+			"user_options",
 		}, 3},
 	}
 	for _, tt := range tests {
@@ -301,11 +333,21 @@ func TestModifySchema(t *testing.T) {
 			c.Labels = tt.labels
 			c.Comments = tt.comments
 			c.Relations = tt.relations
+			c.Viewpoints = append(c.Viewpoints, Viewpoint{
+				Name:   "A",
+				Desc:   "Viewpoint A",
+				Tables: tt.viewpointATables,
+			})
+			c.Viewpoints = append(c.Viewpoints, Viewpoint{
+				Name:   "B",
+				Desc:   "Viewpoint B",
+				Tables: tt.viewpointBTables,
+			})
+
 			s := newTestSchemaViaJSON(t)
 			if err := c.ModifySchema(s); err != nil {
 				t.Error(err)
 			}
-
 			got, err := json.MarshalIndent(s, "", "  ")
 			if err != nil {
 				t.Error(err)

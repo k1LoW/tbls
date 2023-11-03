@@ -199,24 +199,6 @@ type Schema struct {
 	Viewpoints Viewpoints  `json:"viewpoints,omitempty"`
 }
 
-func (s *Schema) SetViewpointsToTables() (*Schema, error) {
-	for vi, v := range s.Viewpoints {
-		// Add viewpoints to table
-		for _, t := range v.Tables {
-			table, err := s.FindTableByName(t)
-			if err != nil {
-				return s, err
-			}
-			table.Viewpoints = append(table.Viewpoints, &TableViewpoint{
-				Index: vi,
-				Name:  v.Name,
-				Desc:  v.Desc,
-			})
-		}
-	}
-	return s, nil
-}
-
 func (s *Schema) NormalizeTableName(name string) string {
 	if s.Driver != nil && s.Driver.Meta != nil && s.Driver.Meta.CurrentSchema != "" && (s.Driver.Name == "postgres" || s.Driver.Name == "redshift") && !strings.Contains(name, ".") {
 		return fmt.Sprintf("%s.%s", s.Driver.Meta.CurrentSchema, name)

@@ -423,5 +423,23 @@
     "name": "sqlite",
     "database_version": "3.39.4",
     "meta": {}
-  }
+  },
+  "viewpoints": [
+    {
+      "name": "A",
+      "desc": "Viewpoint A",
+      "tables": [
+        "users",
+        "posts"
+      ]
+    },
+    {
+      "name": "B",
+      "desc": "Viewpoint B",
+      "tables": [
+        "users",
+        "user_options"
+      ]
+    }
+  ]
 }
