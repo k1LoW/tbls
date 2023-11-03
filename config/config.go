@@ -507,6 +507,11 @@ func (c *Config) ModifySchema(s *schema.Schema) error {
 		}
 	}
 
+	_, err := s.SetViewpointsToTables()
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
 	return nil
 }
 
