@@ -34,6 +34,12 @@ CREATE TABLE `logs` (
 | payload | text |  | true |  |  |  |  |
 | created | datetime |  | false |  |  |  |  |
 
+## Viewpoints
+
+| Name | Definition |
+| ---- | ---------- |
+| [Ops](viewpoint-1.md) | Tables to be referenced during operation |
+
 ## Constraints
 
 | Name | Type | Definition |

@@ -129,11 +129,6 @@ func (m *Md) OutputViewpoint(wr io.Writer, i int, v *schema.Viewpoint) error {
 
 // Output generate markdown files.
 func Output(s *schema.Schema, c *config.Config, force bool) (e error) {
-	s, err := s.SetViewpointsToTables()
-	if err != nil {
-		return errors.WithStack(err)
-	}
-
 	docPath := c.DocPath
 
 	fullPath, err := filepath.Abs(docPath)

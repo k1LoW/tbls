@@ -506,6 +506,22 @@ func (c *Config) ModifySchema(s *schema.Schema) error {
 			return fmt.Errorf("viewpoint '%s' has unknown label '%s'", v.Name, l)
 		}
 	}
+	for vi, v := range s.Viewpoints {
+		// Add viewpoints to table
+
+		for _, t := range v.Tables {
+			println(v.Name, t)
+			table, err := s.FindTableByName(t)
+			if err != nil {
+				return err
+			}
+			table.Viewpoints = append(table.Viewpoints, &schema.TableViewpoint{
+				Index: vi,
+				Name:  v.Name,
+				Desc:  v.Desc,
+			})
+		}
+	}
 
 	return nil
 }

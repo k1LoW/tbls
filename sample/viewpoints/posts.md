@@ -41,6 +41,12 @@ CREATE TABLE `posts` (
 | created | datetime |  | false |  |  |  |  |  |
 | updated | datetime |  | true |  |  |  |  |  |
 
+## Viewpoints
+
+| Name | Definition |
+| ---- | ---------- |
+| [Ops](viewpoint-1.md) | Tables to be referenced during operation |
+
 ## Constraints
 
 | Name | Type | Definition |
