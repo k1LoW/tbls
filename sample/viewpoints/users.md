@@ -39,6 +39,13 @@ CREATE TABLE `users` (
 | created | timestamp |  | false |  |  |  |  |  |
 | updated | timestamp |  | true |  |  |  |  |  |
 
+## Viewpoints
+
+| Name | Definition |
+| ---- | ---------- |
+| [Ops](viewpoint-1.md) | Tables to be referenced during operation |
+| [Around the users table](viewpoint-2.md) | Tables related to the users table |
+
 ## Constraints
 
 | Name | Type | Definition |
