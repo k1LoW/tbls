@@ -54,7 +54,7 @@ erDiagram
 "logs" }o--|| "users" : "logs->users"
 "logs" }o--o| "posts" : "Additional Relation"
 "logs" }o--o| "comments" : "Additional Relation"
-"logs" }o--o| "comment_stars" : "Additional Relation"
+"logs" ||--|| "comment_stars" : "Additional Relation"
 
 "logs" {
   bigint id PK

@@ -654,15 +654,24 @@ func (c *Config) detectShowColumnsForER(s *schema.Schema) error {
 
 func mergeAdditionalRelations(s *schema.Schema, relations []AdditionalRelation) error {
 	for _, r := range relations {
+		c, err := schema.ToCardinality(r.Cardinality)
+		if err != nil {
+			return errors.Wrap(err, "failed to add relation")
+		}
+		pc, err := schema.ToCardinality(r.ParentCardinality)
+		if err != nil {
+			return errors.Wrap(err, "failed to add relation")
+		}
 		relation := &schema.Relation{
-			Virtual: true,
+			Cardinality:       c,
+			ParentCardinality: pc,
+			Virtual:           true,
 		}
 		if r.Def != "" {
 			relation.Def = r.Def
 		} else {
 			relation.Def = "Additional Relation"
 		}
-		var err error
 		relation.Table, err = s.FindTableByName(r.Table)
 		if err != nil {
 			return errors.Wrap(err, "failed to add relation")

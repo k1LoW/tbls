@@ -58,7 +58,7 @@ CREATE TABLE `comment_stars` (
 ```mermaid
 erDiagram
 
-"logs" }o--o| "comment_stars" : "Additional Relation"
+"logs" ||--|| "comment_stars" : "Additional Relation"
 "comment_stars" }o--|| "comments" : "FOREIGN KEY (comment_post_id, comment_user_id) REFERENCES comments (post_id, user_id)"
 "comment_stars" }o--|| "users" : "FOREIGN KEY (comment_user_id) REFERENCES users (id)"
 
