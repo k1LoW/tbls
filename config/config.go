@@ -407,9 +407,6 @@ func (c *Config) ModifySchema(s *schema.Schema) error {
 	for _, l := range c.Labels {
 		s.Labels = s.Labels.Merge(l)
 	}
-	if err := detectCardinality(s); err != nil {
-		return err
-	}
 	if err := detectPKFK(s); err != nil {
 		return err
 	}
@@ -657,15 +654,24 @@ func (c *Config) detectShowColumnsForER(s *schema.Schema) error {
 
 func mergeAdditionalRelations(s *schema.Schema, relations []AdditionalRelation) error {
 	for _, r := range relations {
+		c, err := schema.ToCardinality(r.Cardinality)
+		if err != nil {
+			return errors.Wrap(err, "failed to add relation")
+		}
+		pc, err := schema.ToCardinality(r.ParentCardinality)
+		if err != nil {
+			return errors.Wrap(err, "failed to add relation")
+		}
 		relation := &schema.Relation{
-			Virtual: true,
+			Cardinality:       c,
+			ParentCardinality: pc,
+			Virtual:           true,
 		}
 		if r.Def != "" {
 			relation.Def = r.Def
 		} else {
 			relation.Def = "Additional Relation"
 		}
-		var err error
 		relation.Table, err = s.FindTableByName(r.Table)
 		if err != nil {
 			return errors.Wrap(err, "failed to add relation")
@@ -822,8 +828,9 @@ func matchLength(s []string, e string) (int, bool) {
 	return 0, false
 }
 
+// detectCardinality detects the cardinality of the relations
+// This function should be applied to the completed schema
 func detectCardinality(s *schema.Schema) error {
-	// This function should be applied to the completed schema
 	for _, r := range s.Relations {
 		// child
 		if r.Cardinality == schema.UnknownCardinality {
