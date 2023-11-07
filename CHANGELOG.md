@@ -1,5 +1,10 @@
 # Changelog
 
+## [v1.71.1](https://github.com/k1LoW/tbls/compare/v1.71.0...v1.71.1) - 2023-11-07
+### Fix bug 🐛
+- fix #535 by @majimaccho in https://github.com/k1LoW/tbls/pull/536
+- Fix handling cardinality by @k1LoW in https://github.com/k1LoW/tbls/pull/538
+
 ## [v1.71.0](https://github.com/k1LoW/tbls/compare/v1.70.2...v1.71.0) - 2023-10-27
 ### Breaking Changes 🛠
 - feat:refer viewpoints from tables by @macoto1995 in https://github.com/k1LoW/tbls/pull/532
