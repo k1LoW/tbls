@@ -591,6 +591,13 @@ dsn: mongodb://mongoadmin:secret@localhost:27017/test
 dsn: mongodb://mongoadmin:secret@localhost:27017/test?sampleSize=20
 ```
 
+If a field has multiple types, the `multipleFieldType` query can be used to list all the types.
+
+``` yaml
+# .tbls.yml
+dsn: mongodb://mongoadmin:secret@localhost:27017/test?sampleSize=20&multipleFieldType=true
+```
+
 **JSON:**
 
 The JSON file output by the `tbls out -t json` command can be read as a datasource.
