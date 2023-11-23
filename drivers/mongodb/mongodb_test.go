@@ -5,6 +5,7 @@ package mongodb
 import (
 	"context"
 	"net/url"
+	"reflect"
 	"strings"
 	"testing"
 
@@ -38,7 +39,7 @@ func TestAnalyze(t *testing.T) {
 	s := &schema.Schema{
 		Name: "MongoDB local `docker-mongo-sample-datasets`",
 	}
-	driver, err := New(ctx, client, dbName, 10)
+	driver, err := New(ctx, client, dbName, 10, false)
 	if err != nil {
 		t.Errorf("%v", err)
 	}
@@ -69,24 +70,24 @@ func Test_addColumnType(t *testing.T) {
 	}
 
 	tests := []struct {
-		name string
-		list []*schema.Column
+		name       string
+		list       []*schema.Column
 		columnName string
-		valueType string
-		want []*schema.Column
+		valueType  string
+		want       []*schema.Column
 	}{
 		{
-			name: "Existing types are not added"
-			list: columns,
+			name:       "Existing types are not added",
+			list:       columns,
 			columnName: "username",
-			valueType: "string",
-			want: columns,
+			valueType:  "string",
+			want:       columns,
 		},
 		{
-			name: "New types are added with comma separation"
-			list: columns,
+			name:       "New types are added with comma separation",
+			list:       columns,
 			columnName: "age",
-			valueType: "string",
+			valueType:  "string",
 			want: []*schema.Column{
 				{
 					Name: "username",
@@ -95,8 +96,8 @@ func Test_addColumnType(t *testing.T) {
 				{
 					Name: "age",
 					Type: "int,string",
-				}
-			}
+				},
+			},
 		},
 	}
 
