@@ -4,7 +4,9 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"slices"
 	"sort"
+	"strings"
 
 	"github.com/k1LoW/tbls/dict"
 	"github.com/k1LoW/tbls/schema"
@@ -14,19 +16,23 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+const columnTypeSeparator = ","
+
 type Mongodb struct {
-	ctx        context.Context
-	client     *mongo.Client
-	dbName     string
-	sampleSize int64
+	ctx               context.Context
+	client            *mongo.Client
+	dbName            string
+	sampleSize        int64
+	multipleFieldType bool
 }
 
-func New(ctx context.Context, client *mongo.Client, dbName string, sampleSize int64) (*Mongodb, error) {
+func New(ctx context.Context, client *mongo.Client, dbName string, sampleSize int64, multipleFieldType bool) (*Mongodb, error) {
 	return &Mongodb{
-		ctx:        ctx,
-		client:     client,
-		dbName:     dbName,
-		sampleSize: sampleSize,
+		ctx:               ctx,
+		client:            client,
+		dbName:            dbName,
+		sampleSize:        sampleSize,
+		multipleFieldType: multipleFieldType,
 	}, nil
 }
 
@@ -120,6 +126,10 @@ func (d *Mongodb) listFields(collection *mongo.Collection) ([]*schema.Column, er
 			if !columnInColumns(column, columns) {
 				columns = append(columns, column)
 			}
+
+			if d.multipleFieldType {
+				columns = addColumnType(columns, key, valueType)
+			}
 		}
 	}
 	for _, col := range columns {
@@ -143,6 +153,25 @@ func columnInColumns(a *schema.Column, list []*schema.Column) bool {
 		}
 	}
 	return false
+}
+
+// addColumnType adds a new type to the specified column
+func addColumnType(list []*schema.Column, columnName, valueType string) []*schema.Column {
+	columns := make([]*schema.Column, len(list))
+
+	for i, col := range list {
+		column := *col
+		if column.Name == columnName {
+			types := append(strings.Split(column.Type, columnTypeSeparator), valueType)
+			slices.Sort(types)
+			uniqTypes := slices.Compact(types)
+			column.Type = strings.Join(uniqTypes, columnTypeSeparator)
+		}
+
+		columns[i] = &column
+	}
+
+	return columns
 }
 
 func (d *Mongodb) listIndexes(collection *mongo.Collection) ([]*schema.Index, error) {

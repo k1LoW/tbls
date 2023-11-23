@@ -5,6 +5,7 @@ package mongodb
 import (
 	"context"
 	"net/url"
+	"reflect"
 	"strings"
 	"testing"
 
@@ -38,7 +39,7 @@ func TestAnalyze(t *testing.T) {
 	s := &schema.Schema{
 		Name: "MongoDB local `docker-mongo-sample-datasets`",
 	}
-	driver, err := New(ctx, client, dbName, 10)
+	driver, err := New(ctx, client, dbName, 10, false)
 	if err != nil {
 		t.Errorf("%v", err)
 	}
@@ -53,5 +54,59 @@ func TestAnalyze(t *testing.T) {
 	want := table.Name
 	if want == "" {
 		t.Errorf("got not empty string.")
+	}
+}
+
+func Test_addColumnType(t *testing.T) {
+	columns := []*schema.Column{
+		{
+			Name: "username",
+			Type: "string",
+		},
+		{
+			Name: "age",
+			Type: "int",
+		},
+	}
+
+	tests := []struct {
+		name       string
+		list       []*schema.Column
+		columnName string
+		valueType  string
+		want       []*schema.Column
+	}{
+		{
+			name:       "Existing types are not added",
+			list:       columns,
+			columnName: "username",
+			valueType:  "string",
+			want:       columns,
+		},
+		{
+			name:       "New types are added with comma separation",
+			list:       columns,
+			columnName: "age",
+			valueType:  "string",
+			want: []*schema.Column{
+				{
+					Name: "username",
+					Type: "string",
+				},
+				{
+					Name: "age",
+					Type: "int,string",
+				},
+			},
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			got := addColumnType(test.list, test.columnName, test.valueType)
+			if !reflect.DeepEqual(got, test.want) {
+				t.Errorf("got %v\nwant %v", got, test.want)
+			}
+		})
 	}
 }

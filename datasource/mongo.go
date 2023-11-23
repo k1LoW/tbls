@@ -14,7 +14,10 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-const defaultSampleSize = 1000
+const (
+	defaultSampleSize        = 1000
+	defaultMultipleFieldType = false
+)
 
 // AnalyzeMongodb analyze `mongodb://`
 func AnalyzeMongodb(urlstr string) (*schema.Schema, error) {
@@ -50,7 +53,11 @@ func AnalyzeMongodb(urlstr string) (*schema.Schema, error) {
 	if err != nil {
 		sampleSize = defaultSampleSize
 	}
-	driver, err := mongodb.New(ctx, client, dbName, sampleSize)
+	multipleFieldType, err := strconv.ParseBool(values.Get("multipleFieldType"))
+	if err != nil {
+		multipleFieldType = defaultMultipleFieldType
+	}
+	driver, err := mongodb.New(ctx, client, dbName, sampleSize, multipleFieldType)
 	if err != nil {
 		return s, err
 	}
