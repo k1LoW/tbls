@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.72.0](https://github.com/k1LoW/tbls/compare/v1.71.1...v1.72.0) - 2023-11-23
+### New Features 🎉
+- feat: [MongoDB] Support multiple type field by @mrtc0 in https://github.com/k1LoW/tbls/pull/540
+
 ## [v1.71.1](https://github.com/k1LoW/tbls/compare/v1.71.0...v1.71.1) - 2023-11-07
 ### Fix bug 🐛
 - fix #535 by @majimaccho in https://github.com/k1LoW/tbls/pull/536
