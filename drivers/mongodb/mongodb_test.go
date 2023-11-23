@@ -65,7 +65,7 @@ func Test_addColumnType(t *testing.T) {
 		{
 			Name: "age",
 			Type: "int",
-		}
+		},
 	}
 
 	tests := []struct {
