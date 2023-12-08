@@ -2,7 +2,6 @@ package mermaid
 
 import (
 	"bytes"
-	"fmt"
 	"os"
 	"path/filepath"
 	"testing"
@@ -72,7 +71,7 @@ func TestOutputSchemaTemplate(t *testing.T) {
 	if err := o.OutputSchema(got, s); err != nil {
 		t.Error(err)
 	}
-	f := fmt.Sprintf("mermaid_template_test_schema")
+	f := "mermaid_template_test_schema"
 	if os.Getenv("UPDATE_GOLDEN") != "" {
 		golden.Update(t, testdataDir(), f, got)
 		return
@@ -101,7 +100,7 @@ func TestOutputTable(t *testing.T) {
 	if err := o.OutputTable(got, ta); err != nil {
 		t.Error(err)
 	}
-	f := fmt.Sprintf("mermaid_test_a")
+	f := "mermaid_test_a"
 	if os.Getenv("UPDATE_GOLDEN") != "" {
 		golden.Update(t, testdataDir(), f, got)
 		return
@@ -133,7 +132,7 @@ func TestOutputTableTemplate(t *testing.T) {
 	if err := o.OutputTable(got, ta); err != nil {
 		t.Error(err)
 	}
-	f := fmt.Sprintf("mermaid_template_test_a")
+	f := "mermaid_template_test_a"
 	if os.Getenv("UPDATE_GOLDEN") != "" {
 		golden.Update(t, testdataDir(), f, got)
 		return
