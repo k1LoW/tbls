@@ -6,6 +6,7 @@ on:
       - main
   pull_request:
     paths:
+      - .github/workflows/release-test.yml
       - .goreleaser/*.yml
 
 jobs:
@@ -29,6 +30,11 @@ jobs:
           brew install goreleaser
           brew install sqlite3
 
+      - name: Install
+        run: |
+          go install github.com/k1LoW/tbls@latest
+          tbls version
+
       - name: Release (dry-run)
         run: |
           goreleaser release --config .goreleaser/darwin.yml --clean --snapshot --skip-publish
@@ -49,10 +55,15 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up Go on Ubuntu
+      - name: Set up Go
         uses: actions/setup-go@v4
         with:
           go-version-file: go.mod
+
+      - name: Install
+        run: |
+          go install github.com/k1LoW/tbls@latest
+          tbls version
 
       - name: Run GoReleaser (dry-run)
         uses: goreleaser/goreleaser-action@v5
@@ -64,7 +75,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   windows-release-test:
-    runs-on: windows-2019
+    strategy:
+      matrix:
+        os: [windows-2019, windows-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Use LF
         run: |
@@ -83,10 +97,15 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up Go on Windows
+      - name: Set up Go
         uses: actions/setup-go@v4
         with:
           go-version-file: go.mod
+
+      - name: Install
+        run: |
+          go install github.com/k1LoW/tbls@latest
+          tbls version
 
       - name: Run GoReleaser (dry-run)
         uses: goreleaser/goreleaser-action@v5
