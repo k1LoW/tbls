@@ -30,6 +30,10 @@ jobs:
           brew install goreleaser
           brew install sqlite3
 
+      - name: Install
+        run: |
+          go install github.com/k1LoW/tbls@latest
+
       - name: Release (dry-run)
         run: |
           goreleaser release --config .goreleaser/darwin.yml --clean --snapshot --skip-publish
@@ -50,10 +54,14 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up Go on Ubuntu
+      - name: Set up Go
         uses: actions/setup-go@v4
         with:
           go-version-file: go.mod
+
+      - name: Install
+        run: |
+          go install github.com/k1LoW/tbls@latest
 
       - name: Run GoReleaser (dry-run)
         uses: goreleaser/goreleaser-action@v5
@@ -87,10 +95,14 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up Go on Windows
+      - name: Set up Go
         uses: actions/setup-go@v4
         with:
           go-version-file: go.mod
+
+      - name: Install
+        run: |
+          go install github.com/k1LoW/tbls@latest
 
       - name: Run GoReleaser (dry-run)
         uses: goreleaser/goreleaser-action@v5
