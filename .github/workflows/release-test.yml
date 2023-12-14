@@ -6,6 +6,7 @@ on:
       - main
   pull_request:
     paths:
+      - .github/workflows/release-test.yml
       - .goreleaser/*.yml
 
 jobs:
@@ -64,7 +65,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   windows-release-test:
-    runs-on: windows-2019
+    strategy:
+      matrix:
+        os: [windows-2019, windows-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Use LF
         run: |
