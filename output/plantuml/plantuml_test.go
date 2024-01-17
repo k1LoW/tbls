@@ -2,7 +2,6 @@ package plantuml
 
 import (
 	"bytes"
-	"fmt"
 	"os"
 	"path/filepath"
 	"testing"
@@ -73,7 +72,7 @@ func TestOutputSchemaTemplate(t *testing.T) {
 	if err := o.OutputSchema(got, s); err != nil {
 		t.Error(err)
 	}
-	f := fmt.Sprintf("plantuml_template_test_schema.puml")
+	f := "plantuml_template_test_schema.puml"
 	if os.Getenv("UPDATE_GOLDEN") != "" {
 		golden.Update(t, testdataDir(), f, got)
 		return
@@ -102,7 +101,7 @@ func TestOutputTable(t *testing.T) {
 	if err := o.OutputTable(got, ta); err != nil {
 		t.Error(err)
 	}
-	f := fmt.Sprintf("plantuml_test_a.puml")
+	f := "plantuml_test_a.puml"
 	if os.Getenv("UPDATE_GOLDEN") != "" {
 		golden.Update(t, testdataDir(), f, got)
 		return
@@ -133,7 +132,7 @@ func TestOutputTableTemplate(t *testing.T) {
 	if err := o.OutputTable(got, ta); err != nil {
 		t.Error(err)
 	}
-	f := fmt.Sprintf("plantuml_template_test_a.puml")
+	f := "plantuml_template_test_a.puml"
 	if os.Getenv("UPDATE_GOLDEN") != "" {
 		golden.Update(t, testdataDir(), f, got)
 		return

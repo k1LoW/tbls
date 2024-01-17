@@ -1,5 +1,17 @@
 # Changelog
 
+## [v1.72.1](https://github.com/k1LoW/tbls/compare/v1.72.0...v1.72.1) - 2024-01-09
+### Other Changes
+- chore: unnecessary use of fmt.Sprintf by @testwill in https://github.com/k1LoW/tbls/pull/544
+- Add more build environment test by @k1LoW in https://github.com/k1LoW/tbls/pull/546
+- Bump golang.org/x/crypto from 0.14.0 to 0.17.0 by @dependabot in https://github.com/k1LoW/tbls/pull/547
+- Bump github.com/cloudflare/circl from 1.3.3 to 1.3.7 by @dependabot in https://github.com/k1LoW/tbls/pull/549
+- Bump github.com/dvsekhvalnov/jose2go from 1.5.0 to 1.6.0 by @dependabot in https://github.com/k1LoW/tbls/pull/550
+
+## [v1.72.0](https://github.com/k1LoW/tbls/compare/v1.71.1...v1.72.0) - 2023-11-23
+### New Features 🎉
+- feat: [MongoDB] Support multiple type field by @mrtc0 in https://github.com/k1LoW/tbls/pull/540
+
 ## [v1.71.1](https://github.com/k1LoW/tbls/compare/v1.71.0...v1.71.1) - 2023-11-07
 ### Fix bug 🐛
 - fix #535 by @majimaccho in https://github.com/k1LoW/tbls/pull/536
