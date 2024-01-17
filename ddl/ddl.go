@@ -54,8 +54,8 @@ func ParseReferencedTables(src string) []string {
 		return start, nil, nil
 	})
 
-	tables := []string{}
-	with := []string{}
+	var tables []string
+	var with []string
 	tFrom := false
 	tJoin := false
 	tWith := false
@@ -74,13 +74,13 @@ func ParseReferencedTables(src string) []string {
 			tWith = false
 		default:
 			if tFrom {
-				tables = append(tables, strings.Replace(token, "`", "", -1))
+				tables = append(tables, strings.ReplaceAll(token, "`", ""))
 			}
 			if tJoin {
-				tables = append(tables, strings.Replace(token, "`", "", -1))
+				tables = append(tables, strings.ReplaceAll(token, "`", ""))
 			}
 			if tWith {
-				with = append(with, strings.Replace(token, "`", "", -1))
+				with = append(with, strings.ReplaceAll(token, "`", ""))
 			}
 			tFrom = false
 			tJoin = false
@@ -88,7 +88,7 @@ func ParseReferencedTables(src string) []string {
 		}
 	}
 
-	result := []string{}
+	var result []string
 	for _, t := range tables {
 		if lo.Contains(with, t) {
 			continue
