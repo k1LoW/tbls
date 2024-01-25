@@ -24,7 +24,7 @@ jobs:
         name: Run tagpr
         uses: Songmu/tagpr@v1
 
-  darwin-release:
+  darwin-assets:
     needs: tagpr
     if: needs.tagpr.outputs.tagpr-tag != ''
     runs-on: macos-latest
@@ -43,14 +43,18 @@ jobs:
 
       - name: Setup
         run: |
-          brew install goreleaser
           brew install sqlite3
 
-      - name: Release
-        run: |
-          make release_darwin
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v5
+        with:
+          distribution: goreleaser
+          version: latest
+          args: --config .goreleaser/darwin.yml --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  linux-release:
+  linux-assets:
     needs: tagpr
     if: needs.tagpr.outputs.tagpr-tag != ''
     runs-on: ubuntu-latest
@@ -101,7 +105,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  windows-release:
+  windows-assets:
     needs: tagpr
     if: needs.tagpr.outputs.tagpr-tag != ''
     runs-on: windows-2019
@@ -196,3 +200,12 @@ jobs:
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.version=${{ steps.latest_version.outputs.version }}
             org.opencontainers.image.source=https://github.com/k1LoW/tbls
+  release:
+    needs: [tagpr, darwin-assets, linux-assets, windows-assets, dockerimage]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Release
+        run: |
+          gh api /repos/${{ github.repository }}/releases/generate-notes -f tag_name=${{ needs.tagpr.outputs.tagpr-tag }} --jq .body | gh release edit ${{ needs.tagpr.outputs.tagpr-tag }} --repo ${{ github.repository }} --draft=false --latest --notes-file=-
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

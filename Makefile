@@ -180,7 +180,4 @@ prerelease_for_tagpr: depsdev
 	gocredits -w .
 	git add CHANGELOG.md CREDITS go.mod go.sum
 
-release_darwin:
-	goreleaser --config .goreleaser/darwin.yml --clean
-
 .PHONY: default test
