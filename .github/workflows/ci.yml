@@ -65,7 +65,7 @@ jobs:
           scan-type: 'fs'
 
       - name: Run octocov
-        uses: k1LoW/octocov-action@v0
+        uses: k1LoW/octocov-action@v1
         env:
           DEBUG: true
   windows-test:
