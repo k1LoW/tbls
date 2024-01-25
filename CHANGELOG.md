@@ -1,5 +1,10 @@
 # Changelog
 
+## [v1.73.2](https://github.com/k1LoW/tbls/compare/v1.72.2...v1.73.2) - 2024-01-25
+### Other Changes
+- Fix CD pipeline by @k1LoW in https://github.com/k1LoW/tbls/pull/554
+- Update pkgs by @k1LoW in https://github.com/k1LoW/tbls/pull/556
+
 ## [v1.72.2](https://github.com/k1LoW/tbls/compare/v1.72.1...v1.72.2) - 2024-01-25
 ### Other Changes
 - Update go-graphviz to v0.1.2 by @k1LoW in https://github.com/k1LoW/tbls/pull/552
