@@ -104,7 +104,7 @@ jobs:
 
       - name: Upload assets
         run: |
-          gh release upload ${{ needs.tagpr.outputs.tagpr-tag }} dist/tbls_${{ needs.tagpr.outputs.tagpr-tag }}_linux_arm64.tar.gz dist/tbls_${{ needs.tagpr.outputs.tagpr-tag }}_linux_amd64.tar.gz dist/checksums-linux.txt --repo ${{ github.repository }} --clobber
+          gh release upload ${{ needs.tagpr.outputs.tagpr-tag }} dist/tbls_${{ needs.tagpr.outputs.tagpr-tag }}_linux_arm64.tar.gz dist/tbls_${{ needs.tagpr.outputs.tagpr-tag }}_linux_amd64.tar.gz dist/tbls_${{ needs.tagpr.outputs.tagpr-tag }}_amd64.apk dist/tbls_${{ needs.tagpr.outputs.tagpr-tag }}_amd64.deb dist/tbls_${{ needs.tagpr.outputs.tagpr-tag }}_amd64.rpm dist/tbls_${{ needs.tagpr.outputs.tagpr-tag }}_arm64.apk dist/tbls_${{ needs.tagpr.outputs.tagpr-tag }}_arm64.deb dist/tbls_${{ needs.tagpr.outputs.tagpr-tag }}_arm64.rpm dist/checksums-linux.txt --repo ${{ github.repository }} --clobber
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
