@@ -1,5 +1,10 @@
 # Changelog
 
+## [v1.72.2](https://github.com/k1LoW/tbls/compare/v1.72.1...v1.72.2) - 2024-01-25
+### Other Changes
+- Update go-graphviz to v0.1.2 by @k1LoW in https://github.com/k1LoW/tbls/pull/552
+- Use octocov-action@v1 by @k1LoW in https://github.com/k1LoW/tbls/pull/553
+
 ## [v1.72.1](https://github.com/k1LoW/tbls/compare/v1.72.0...v1.72.1) - 2024-01-09
 ### Other Changes
 - chore: unnecessary use of fmt.Sprintf by @testwill in https://github.com/k1LoW/tbls/pull/544
