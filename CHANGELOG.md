@@ -1,5 +1,7 @@
 # Changelog
 
+## [v1.73.1](https://github.com/k1LoW/tbls/compare/v1.73.0...v1.73.1) - 2024-01-25
+
 ## [v1.73.0](https://github.com/k1LoW/tbls/compare/v1.72.2...v1.73.0) - 2024-01-25
 ### Other Changes
 - Fix CD pipeline by @k1LoW in https://github.com/k1LoW/tbls/pull/554
