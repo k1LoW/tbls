@@ -11,7 +11,7 @@ require (
 	github.com/beta/freetype v0.0.1
 	github.com/gertd/go-pluralize v0.2.1
 	github.com/go-sql-driver/mysql v1.7.1
-	github.com/goccy/go-graphviz v0.1.1
+	github.com/goccy/go-graphviz v0.1.2
 	github.com/goccy/go-yaml v1.11.1
 	github.com/google/go-cmp v0.5.9
 	github.com/google/go-github/v49 v49.1.0
@@ -36,7 +36,7 @@ require (
 	github.com/xo/dburl v0.16.0
 	gitlab.com/golang-commonmark/mdurl v0.0.0-20191124015652-932350d1cb84
 	go.mongodb.org/mongo-driver v1.12.1
-	golang.org/x/image v0.13.0
+	golang.org/x/image v0.14.0
 	golang.org/x/oauth2 v0.13.0
 	google.golang.org/api v0.145.0
 )
