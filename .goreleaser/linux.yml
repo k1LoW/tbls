@@ -64,3 +64,6 @@ nfpms:
       - apk
     bindir: /usr/bin
     epoch: 1
+release:
+  draft: true
+  replace_existing_draft: true
