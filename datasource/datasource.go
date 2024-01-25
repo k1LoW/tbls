@@ -11,8 +11,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/google/go-github/v49/github"
-	"github.com/k1LoW/go-github-client/v49/factory"
+	"github.com/google/go-github/v58/github"
+	"github.com/k1LoW/go-github-client/v58/factory"
 	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/drivers"
 	"github.com/k1LoW/tbls/drivers/mariadb"
