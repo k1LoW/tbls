@@ -50,9 +50,15 @@ jobs:
         with:
           distribution: goreleaser
           version: latest
-          args: --config .goreleaser/darwin.yml --clean
+          args: --config .goreleaser/darwin.yml --clean --skip=publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload assets
+        run: |
+          gh release upload ${{ needs.tagpr.outputs.tagpr-tag }} dist/tbls_${{ needs.tagpr.outputs.tagpr-tag }}_darwin_arm64.zip dist/tbls_${{ needs.tagpr.outputs.tagpr-tag }}_darwin_amd64.zip dist/checksums-darwin.txt --repo ${{ github.repository }} --clobber
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   linux-assets:
     needs: tagpr
@@ -82,12 +88,12 @@ jobs:
           docker compose up -d
           sleep 20s
 
-      - name: Run GoReleaser (dry-run)
+      - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v5
         with:
           distribution: goreleaser
           version: latest
-          args: --config .goreleaser/linux.yml --clean --snapshot --skip=publish
+          args: --config .goreleaser/linux.yml --clean --skip=publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -96,14 +102,11 @@ jobs:
           env TBLS=dist/tbls-linux_linux_amd64_v1/tbls make depsdev db doc
           git restore .
 
-      - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v5
-        with:
-          distribution: goreleaser
-          version: latest
-          args: --config .goreleaser/linux.yml --clean
+      - name: Upload assets
+        run: |
+          gh release upload ${{ needs.tagpr.outputs.tagpr-tag }} dist/tbls_${{ needs.tagpr.outputs.tagpr-tag }}_linux_arm64.tar.gz dist/tbls_${{ needs.tagpr.outputs.tagpr-tag }}_linux_amd64.tar.gz dist/checksums-linux.txt --repo ${{ github.repository }} --clobber
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   windows-assets:
     needs: tagpr
@@ -141,9 +144,15 @@ jobs:
         with:
           distribution: goreleaser
           version: latest
-          args: --config .goreleaser/windows.yml --clean
+          args: --config .goreleaser/windows.yml --clean --skip=publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload assets
+        run: |
+          gh release upload ${{ needs.tagpr.outputs.tagpr-tag }} dist/tbls_${{ needs.tagpr.outputs.tagpr-tag }}_windows_amd64.zip dist/checksums-windows.txt --repo ${{ github.repository }} --clobber
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   dockerimage:
     needs: tagpr
@@ -200,6 +209,7 @@ jobs:
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.version=${{ steps.latest_version.outputs.version }}
             org.opencontainers.image.source=https://github.com/k1LoW/tbls
+
   release:
     needs: [tagpr, darwin-assets, linux-assets, windows-assets, dockerimage]
     runs-on: ubuntu-latest
