@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/antonmedv/expr"
+	"github.com/expr-lang/expr"
 	"github.com/pkg/errors"
 )
 
