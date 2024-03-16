@@ -1,5 +1,10 @@
 # Changelog
 
+## [v1.73.3](https://github.com/k1LoW/tbls/compare/v1.73.2...v1.73.3) - 2024-03-13
+### Other Changes
+- Fix some minor typos in README by @mmizutani in https://github.com/k1LoW/tbls/pull/563
+- Bump google.golang.org/protobuf from 1.32.0 to 1.33.0 by @dependabot in https://github.com/k1LoW/tbls/pull/565
+
 ## [v1.73.2](https://github.com/k1LoW/tbls/compare/v1.72.2...v1.73.2) - 2024-01-25
 ### Other Changes
 - Fix CD pipeline by @k1LoW in https://github.com/k1LoW/tbls/pull/554
