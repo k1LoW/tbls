@@ -338,7 +338,7 @@ script:
   - tbls lint
 ```
 
-> **Tips:** If your CI based on Debian/Ubuntu (`/bin/sh -> dash`), you can use following install command `curl -sL https://raw.githubusercontent.com/k1LoW/tbls/main/use > use-tbls.tmp && . ./use-tbls.tmp && rm ./use-tbls.tmp`
+> **Tips:** If your CI based on Debian/Ubuntu (`/bin/sh -> dash`), you can use the following install command `curl -sL https://raw.githubusercontent.com/k1LoW/tbls/main/use > use-tbls.tmp && . ./use-tbls.tmp && rm ./use-tbls.tmp`
 
 > **Tips:** If the order of the columns does not match, you can use the `--sort` option.
 
@@ -411,7 +411,7 @@ dsn: my://dbuser:dbpass@hostname:3306/dbname
 
 #### Support Datasource
 
-tbls support following databases/datasources.
+tbls supports the following databases/datasources.
 
 **PostgreSQL:**
 
@@ -814,10 +814,10 @@ lint:
     enabled: true
     exclude:
       - schema_migrations
-  # checks if tables are included in at leaset one viewpoint
+  # checks if tables are included in at least one viewpoint
   requireViewpoints: 
     enabled: true
-    exclued:
+    exclude:
       - schema_migrations
 ```
 
@@ -1062,7 +1062,7 @@ You can also define groups of tables within viewpoints.
 viewpoints:
   -
     name: comments on post
-    desc: Users can comment on each post multiple times and put a star on each comments.
+    desc: Users can comment on each post multiple times and put a star on each comment.
     tables:
       - users
       - posts
