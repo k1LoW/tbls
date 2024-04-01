@@ -1,0 +1,36 @@
+version: 2
+updates:
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    groups:
+      dependencies:
+        patterns:
+          - "*"
+    schedule:
+      interval: "monthly"
+      time: "08:00"
+      timezone: "Asia/Tokyo"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    open-pull-requests-limit: 10
+    assignees:
+      - "k1LoW"
+
+  - package-ecosystem: "gomod"
+    directory: "/"
+    groups:
+      dependencies:
+        patterns:
+          - "*"
+    schedule:
+      interval: "monthly"
+      time: "08:00"
+      timezone: "Asia/Tokyo"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    open-pull-requests-limit: 10
+    assignees:
+      - "k1LoW"
