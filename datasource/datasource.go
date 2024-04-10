@@ -169,7 +169,8 @@ func AnalyzeGitHubContent(dsn config.DSN) (*schema.Schema, error) {
 	}
 	ctx := context.Background()
 	s := &schema.Schema{}
-	c, err := factory.NewGithubClient()
+	options := []factory.Option{factory.OwnerRepo(splitted[0] + "/" + splitted[1])}
+	c, err := factory.NewGithubClient(options...)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
