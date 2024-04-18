@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.74.0](https://github.com/k1LoW/tbls/compare/v1.73.3...v1.74.0) - 2024-04-13
+### Other Changes
+- chore(deps): bump the dependencies group with 5 updates by @dependabot in https://github.com/k1LoW/tbls/pull/568
+- Update go-github-client version and and use new options in `NewGithubClient`. by @kromiii in https://github.com/k1LoW/tbls/pull/572
+- chore(deps): bump the dependencies group with 15 updates by @dependabot in https://github.com/k1LoW/tbls/pull/573
+
 ## [v1.73.3](https://github.com/k1LoW/tbls/compare/v1.73.2...v1.73.3) - 2024-03-13
 ### Other Changes
 - Fix some minor typos in README by @mmizutani in https://github.com/k1LoW/tbls/pull/563
