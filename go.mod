@@ -1,6 +1,6 @@
 module github.com/k1LoW/tbls
 
-go 1.22.1
+go 1.22.2
 
 require (
 	cloud.google.com/go/bigquery v1.60.0
@@ -111,6 +111,7 @@ require (
 	github.com/josharian/txtarfs v0.0.0-20210615234325-77aca6df5bca // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/k1LoW/fontdir v0.1.1 // indirect
+	github.com/k1LoW/ghfs v1.3.1 // indirect
 	github.com/klauspost/compress v1.17.4 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.6 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
