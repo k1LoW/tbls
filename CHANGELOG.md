@@ -1,5 +1,10 @@
 # Changelog
 
+## [v1.74.1](https://github.com/k1LoW/tbls/compare/v1.74.0...v1.74.1) - 2024-05-01
+### Other Changes
+- chore(deps): bump golang.org/x/net from 0.22.0 to 0.23.0 by @dependabot in https://github.com/k1LoW/tbls/pull/575
+- chore(deps): bump the dependencies group with 7 updates by @dependabot in https://github.com/k1LoW/tbls/pull/577
+
 ## [v1.74.0](https://github.com/k1LoW/tbls/compare/v1.73.3...v1.74.0) - 2024-04-13
 ### Other Changes
 - chore(deps): bump the dependencies group with 5 updates by @dependabot in https://github.com/k1LoW/tbls/pull/568
