@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.74.2](https://github.com/k1LoW/tbls/compare/v1.74.1...v1.74.2) - 2024-05-02
+### Fix bug 🐛
+- Support the case where name in index_info is NULL. by @k1LoW in https://github.com/k1LoW/tbls/pull/579
+
 ## [v1.74.1](https://github.com/k1LoW/tbls/compare/v1.74.0...v1.74.1) - 2024-05-01
 ### Other Changes
 - chore(deps): bump golang.org/x/net from 0.22.0 to 0.23.0 by @dependabot in https://github.com/k1LoW/tbls/pull/575
