@@ -2,7 +2,6 @@ package datasource
 
 import (
 	"bytes"
-	"context"
 	"encoding/json"
 	"io"
 	"net/http"
@@ -11,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/google/go-github/v58/github"
+	"github.com/k1LoW/ghfs"
 	"github.com/k1LoW/go-github-client/v58/factory"
 	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/drivers"
@@ -167,25 +166,22 @@ func AnalyzeGitHubContent(dsn config.DSN) (*schema.Schema, error) {
 	if len(splitted) != 3 {
 		return nil, errors.Errorf("invalid dsn: %s", dsn)
 	}
-	ctx := context.Background()
 	s := &schema.Schema{}
 	options := []factory.Option{factory.OwnerRepo(splitted[0] + "/" + splitted[1])}
 	c, err := factory.NewGithubClient(options...)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
-	f, _, _, err := c.Repositories.GetContents(ctx, splitted[0], splitted[1], splitted[2], &github.RepositoryContentGetOptions{})
+	o := ghfs.Client(c)
+	fsys, err := ghfs.New(splitted[0], splitted[1], o)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
-	if f == nil {
-		return nil, errors.Errorf("invalid dsn: %s", dsn)
-	}
-	cc, err := f.GetContent()
+	b, err := fsys.ReadFile(splitted[2])
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
-	dec := json.NewDecoder(strings.NewReader(cc))
+	dec := json.NewDecoder(bytes.NewReader(b))
 	if err := dec.Decode(s); err != nil {
 		return s, errors.WithStack(err)
 	}

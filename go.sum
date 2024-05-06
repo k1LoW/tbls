@@ -247,6 +247,8 @@ github.com/k1LoW/ffff v0.2.0/go.mod h1:XuWQte6DCVCGKkvfeOFHTihuYWusf7dU+kp9jot7F
 github.com/k1LoW/fontdir v0.1.0/go.mod h1:9Zbr3T3BXZ5ypr1BM/JwzZN4bqBvl1+JnSTTg1c+zHg=
 github.com/k1LoW/fontdir v0.1.1 h1:MGpv3LbkbpdVsEX6BCtsYeoQUZSzvb1RF1c/cfumUUw=
 github.com/k1LoW/fontdir v0.1.1/go.mod h1:9Zbr3T3BXZ5ypr1BM/JwzZN4bqBvl1+JnSTTg1c+zHg=
+github.com/k1LoW/ghfs v1.3.1 h1:xq/VenCDhSUDf1IsL0LBfWIn3QTCOOd8+pE0SNZF6wM=
+github.com/k1LoW/ghfs v1.3.1/go.mod h1:IaAooDKpTdx/I0lSethYNMowo0rs0h/+btPPHdZlnE4=
 github.com/k1LoW/go-github-client/v58 v58.0.12 h1:rIK+H2cSpK0ptOxNq0jITGu3ffRjLTe5ITCz1jik5c0=
 github.com/k1LoW/go-github-client/v58 v58.0.12/go.mod h1:HFCYt6OBzCfusKY4aVYi4E3T4pbDDNdHQuWOL0pHkdI=
 github.com/klauspost/compress v1.17.4 h1:Ej5ixsIri7BrIjBkRZLTo6ghwrEtHFk7ijlczPW4fZ4=
