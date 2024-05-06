@@ -181,7 +181,7 @@ func AnalyzeGitHubContent(dsn config.DSN) (*schema.Schema, error) {
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
-	dec := json.NewDecoder(strings.NewReader(string(b)))
+	dec := json.NewDecoder(bytes.NewReader(b))
 	if err := dec.Decode(s); err != nil {
 		return s, errors.WithStack(err)
 	}
