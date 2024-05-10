@@ -37,10 +37,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// adjust is a flag on whethre to adjust the notation width of the table
+// adjust is a flag on whether to adjust the notation width of the table
 var adjust bool
 
-// force is a flag on whether to force genarate
+// force is a flag on whether to force generate
 var force bool
 
 // sort is a flag on whether to sort tables, columns, and more

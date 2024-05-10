@@ -862,7 +862,7 @@ func detectCardinality(s *schema.Schema) error {
 
 		// parent
 		if r.ParentCardinality == schema.UnknownCardinality {
-			// whether the child colums are nullable or not.
+			// whether the child columns are nullable or not.
 			nullable := true
 			for _, c := range r.Columns {
 				if !c.Nullable {
