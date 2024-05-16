@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.75.0](https://github.com/k1LoW/tbls/compare/v1.74.4...v1.75.0) - 2024-05-16
+### Breaking Changes 🛠
+- Embed tzdata by @k1LoW in https://github.com/k1LoW/tbls/pull/585
+
 ## [v1.74.4](https://github.com/k1LoW/tbls/compare/v1.74.3...v1.74.4) - 2024-05-16
 ### Other Changes
 - Fix some minor typos by @fkmy in https://github.com/k1LoW/tbls/pull/583
