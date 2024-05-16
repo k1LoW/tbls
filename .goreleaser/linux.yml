@@ -8,7 +8,7 @@ builds:
   flags:
     - -a
     - -tags
-    - netgo
+    - netgo,timetzdata
     - -installsuffix
     - netgo
   ldflags:
