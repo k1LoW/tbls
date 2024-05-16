@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.74.3](https://github.com/k1LoW/tbls/compare/v1.74.2...v1.74.3) - 2024-05-06
+### Other Changes
+- Use `ghfs` for AnalyzeGithubContent by @kromiii in https://github.com/k1LoW/tbls/pull/581
+
 ## [v1.74.2](https://github.com/k1LoW/tbls/compare/v1.74.1...v1.74.2) - 2024-05-02
 ### Fix bug 🐛
 - Support the case where name in index_info is NULL. by @k1LoW in https://github.com/k1LoW/tbls/pull/579
