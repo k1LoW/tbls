@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.74.4](https://github.com/k1LoW/tbls/compare/v1.74.3...v1.74.4) - 2024-05-16
+### Other Changes
+- Fix some minor typos by @fkmy in https://github.com/k1LoW/tbls/pull/583
+
 ## [v1.74.3](https://github.com/k1LoW/tbls/compare/v1.74.2...v1.74.3) - 2024-05-06
 ### Other Changes
 - Use `ghfs` for AnalyzeGithubContent by @kromiii in https://github.com/k1LoW/tbls/pull/581
