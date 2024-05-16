@@ -159,7 +159,7 @@ lint:
 	golangci-lint run ./...
 
 build:
-	go build -ldflags="$(BUILD_LDFLAGS)"
+	go build -tags timetzdata -ldflags="$(BUILD_LDFLAGS)"
 
 depsdev:
 	go install github.com/linyows/git-semv/cmd/git-semv@v1.2.0
