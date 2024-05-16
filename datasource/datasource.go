@@ -86,12 +86,12 @@ func Analyze(dsn config.DSN) (*schema.Schema, error) {
 	}
 
 	db, err := dburl.Open(urlstr)
-	defer func() {
-		_ = db.Close()
-	}()
 	if err != nil {
 		return s, errors.WithStack(err)
 	}
+	defer func() {
+		_ = db.Close()
+	}()
 	if err := db.Ping(); err != nil {
 		return s, errors.WithStack(err)
 	}
