@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.76.0](https://github.com/k1LoW/tbls/compare/v1.75.0...v1.76.0) - 2024-06-04
+### Breaking Changes 🛠
+- Show table comments for related tables of View (#587) by @majimaccho in https://github.com/k1LoW/tbls/pull/590
+### Other Changes
+- chore(deps): bump the dependencies group with 10 updates by @dependabot in https://github.com/k1LoW/tbls/pull/588
+
 ## [v1.75.0](https://github.com/k1LoW/tbls/compare/v1.74.4...v1.75.0) - 2024-05-16
 ### Breaking Changes 🛠
 - Embed tzdata by @k1LoW in https://github.com/k1LoW/tbls/pull/585
