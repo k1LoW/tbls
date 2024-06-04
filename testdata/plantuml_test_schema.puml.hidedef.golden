@@ -20,6 +20,9 @@ table("b", "b") {
   column("# b", "INTEGER", "")
   column("b2", "TEXT", "")
 }
+view("view", "view") {
+  column("view_column", "INTEGER", "")
+}
 
 ' relations
 "b" }|--|| "a" : ""

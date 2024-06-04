@@ -15,6 +15,7 @@
 | ---- | ------- | ------- | ---- | ------ |
 | [a](a.md) | 2 | TABLE A |  | `blue` `green` |
 | [a b](a%20b.md) | 2 | table b |  | `red` `green` |
+| [view](view.md) | 1 | view | VIEW |  |
 
 ---
 

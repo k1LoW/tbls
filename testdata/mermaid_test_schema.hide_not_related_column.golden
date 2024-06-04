@@ -8,3 +8,5 @@ erDiagram
 "b" {
   INTEGER b FK
 }
+"view" {
+}

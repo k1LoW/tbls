@@ -4,10 +4,11 @@
 
 ## Tables
 
-| Name      | Columns | Comment                        | Type | Labels         |
-| --------- | ------- | ------------------------------ | ---- | -------------- |
-| [a](a.md) | 2       | TABLE A<br><br>THIS IS TABLE A |      | `blue` `green` |
-| [b](b.md) | 2       | table b                        |      | `red` `green`  |
+| Name            | Columns | Comment                        | Type | Labels         |
+| --------------- | ------- | ------------------------------ | ---- | -------------- |
+| [a](a.md)       | 2       | TABLE A<br><br>THIS IS TABLE A |      | `blue` `green` |
+| [b](b.md)       | 2       | table b                        |      | `red` `green`  |
+| [view](view.md) | 1       | view                           | VIEW |                |
 
 ---
 

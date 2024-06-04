@@ -10,3 +10,6 @@ erDiagram
   INTEGER b FK
   TEXT b2
 }
+"view" {
+  INTEGER view_column
+}
