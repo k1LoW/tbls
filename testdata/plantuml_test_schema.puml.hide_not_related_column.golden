@@ -18,6 +18,8 @@ table("a", "a") {
 table("b", "b") {
   column("# b", "INTEGER", "")
 }
+view("view", "view") {
+}
 
 ' relations
 "b" }|--|| "a" : "FOREIGN KEY (b) REFERENCES a(a)"

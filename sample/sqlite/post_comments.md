@@ -18,12 +18,6 @@ CREATE VIEW post_comments AS
 
 </details>
 
-## Referenced Tables
-
-- [posts](posts.md)
-- [comments](comments.md)
-- [users](users.md)
-
 ## Columns
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
@@ -35,6 +29,14 @@ CREATE VIEW post_comments AS
 | comment_user | TEXT |  | true |  |  | comments.users.username |
 | created | NUMERIC |  | true |  |  | comments.created |
 | updated | NUMERIC |  | true |  |  | comments.updated |
+
+## Referenced Tables
+
+| Name | Columns | Comment | Type | Labels |
+| ---- | ------- | ------- | ---- | ------ |
+| [posts](posts.md) | 6 |  | table | `green` `red` `blue` |
+| [comments](comments.md) | 6 |  | table |  |
+| [users](users.md) | 6 |  | table |  |
 
 ## Relations
 

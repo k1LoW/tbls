@@ -25,12 +25,6 @@ CREATE VIEW post_comments AS (
 
 </details>
 
-## Referenced Tables
-
-- [public.posts](public.posts.md)
-- [public.comments](public.comments.md)
-- [public.users](public.users.md)
-
 ## Columns
 
 | Name         | Type                        | Default | Nullable | Children | Parents | Comment                 |
@@ -42,6 +36,14 @@ CREATE VIEW post_comments AS (
 | comment_user | varchar(50)                 |         | true     |          |         | comments.users.username |
 | created      | timestamp without time zone |         | true     |          |         | comments.created        |
 | updated      | timestamp without time zone |         | true     |          |         | comments.updated        |
+
+## Referenced Tables
+
+| Name                                  | Columns | Comment                                    | Type       |
+| ------------------------------------- | ------- | ------------------------------------------ | ---------- |
+| [public.posts](public.posts.md)       | 8       | Posts table                                | BASE TABLE |
+| [public.comments](public.comments.md) | 7       | Comments<br>Multi-line<br>table<br>comment | BASE TABLE |
+| [public.users](public.users.md)       | 6       | Users table                                | BASE TABLE |
 
 ## Relations
 

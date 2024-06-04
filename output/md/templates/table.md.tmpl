@@ -15,11 +15,7 @@
 ```
 
 </details>
-{{- end }}{{ $len := len .ReferencedTables }}{{ if ne $len 0 }}
 
-## {{ "Referenced Tables" | lookup }}
-{{ range $rt := .ReferencedTables }}
-- {{ $rt }}{{ end }}
 {{- end }}
 {{- if ne (len .Table.Labels) 0 }}
 
@@ -34,6 +30,13 @@
 |{{ range $d := $l }} {{ $d | nl2br }} |{{ end }}
 {{- end }}
 
+{{ $len := len .ReferencedTables }}{{ if ne $len 2 -}}
+## {{ "Referenced Tables" | lookup }}
+{{ range $l := .ReferencedTables }}
+|{{ range $d := $l }} {{ $d | nl2br }} |{{ end }}
+{{- end }}
+
+{{ end -}}
 {{ $len := len .Viewpoints }}{{ if ne $len 2 -}}
 ## {{ "Viewpoints" | lookup }}
 {{ range $l := .Viewpoints }}

@@ -32,7 +32,7 @@ var tests = []struct {
 	{"mermaid a.md", "mermaid", false, false, false, false, "b", "a.md", "md_test_a.md.mermaid"},
 	{"showOnlyFirstParagraph README.md", "png", false, false, false, true, "b", "README.md", "md_test_README.md.first_para"},
 	{"showOnlyFirstParagraph a.md", "png", false, false, false, true, "b", "a.md", "md_test_a.md.first_para"},
-
+	{"view.md", "png", false, false, true, false, "b", "view.md", "md_test_view.md"},
 	{"viewpoint-1.md", "png", false, false, false, false, "b", "viewpoint-1.md", "md_test_viewpoint-1.md"},
 	{"viewpoint-2.md", "png", false, false, false, false, "b", "viewpoint-2.md", "md_test_viewpoint-2.md"},
 	{"viewpoint-1.md", "mermaid", false, false, false, false, "b", "viewpoint-1.md", "md_test_viewpoint-1.md.mermaid"},
@@ -49,6 +49,7 @@ var testsTemplate = []struct {
 }{
 	{"README.md", false, false, true, false, "README.md", "md_template_test_README.md"},
 	{"a.md", false, false, true, false, "a.md", "md_template_test_a.md"},
+	{"view.md", false, false, true, false, "view.md", "md_template_test_view.md"},
 	{"--adjust option", true, false, true, false, "README.md", "md_template_test_README.md.adjust"},
 	{"number", false, true, true, false, "README.md", "md_template_test_README.md.number"},
 	{"showOnlyFirstParagraph", false, true, true, true, "README.md", "md_template_test_README.md.first_para"},

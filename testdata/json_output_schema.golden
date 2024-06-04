@@ -98,6 +98,28 @@
           "Virtual": true
         }
       ]
+    },
+    {
+      "name": "view",
+      "type": "VIEW",
+      "comment": "view",
+      "columns": [
+        {
+          "name": "view_column",
+          "type": "INTEGER",
+          "nullable": false,
+          "default": null,
+          "comment": "column of view"
+        }
+      ],
+      "indexes": [],
+      "constraints": [],
+      "triggers": [],
+      "def": "CREATE VIEW view AS SELECT a, b FROM a JOIN b ON a.a = b.b",
+      "referenced_tables": [
+        "a",
+        "b"
+      ]
     }
   ],
   "relations": [

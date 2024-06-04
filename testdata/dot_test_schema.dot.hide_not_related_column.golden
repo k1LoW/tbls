@@ -13,6 +13,9 @@ digraph "testschema" {
                  <tr><td bgcolor="#EFEFEF"><font face="Arial Bold" point-size="18">b</font>&nbsp;&nbsp;&nbsp;&nbsp;<font color="#666666">[]</font></td></tr>
                  <tr><td port="b" align="left">b&nbsp;&nbsp;&nbsp;&nbsp;<font color="#666666">[INTEGER]</font></td></tr>
               </table>>];
+  "view" [shape=none, label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="6">
+                 <tr><td bgcolor="#EFEFEF"><font face="Arial Bold" point-size="18">view</font>&nbsp;&nbsp;&nbsp;&nbsp;<font color="#666666">[VIEW]</font></td></tr>
+              </table>>];
 
   // Relations
   "b":"b" -> "a":"a" [dir=back, arrowtail=crow,  taillabel=<<table cellpadding="5" border="0" cellborder="0"><tr><td>FOREIGN KEY (b) REFERENCES a(a)</td></tr></table>>];

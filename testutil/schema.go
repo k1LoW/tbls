@@ -10,6 +10,7 @@ func NewSchema(t *testing.T) *schema.Schema {
 	const (
 		tableAName     = "a"
 		tableBName     = "b"
+		tableViewName  = "view"
 		labelBlueName  = "blue"
 		labelRedName   = "red"
 		labelGreenName = "green"
@@ -37,6 +38,12 @@ func NewSchema(t *testing.T) *schema.Schema {
 		Name:    "b",
 		Type:    "INTEGER",
 		Comment: "column b",
+	}
+
+	cView := &schema.Column{
+		Name:    "view_column",
+		Type:    "INTEGER",
+		Comment: "column of view",
 	}
 
 	ta := &schema.Table{
@@ -86,6 +93,21 @@ func NewSchema(t *testing.T) *schema.Schema {
 		},
 		Labels: []*schema.Label{labelRed, labelGreen},
 	}
+
+	tView := &schema.Table{
+		Name:    tableViewName,
+		Comment: "view",
+		Columns: []*schema.Column{
+			cView,
+		},
+		Type: "VIEW",
+		Def:  "CREATE VIEW view AS SELECT a, b FROM a JOIN b ON a.a = b.b",
+		ReferencedTables: []*schema.Table{
+			ta,
+			tb,
+		},
+	}
+
 	r := &schema.Relation{
 		Table:             tb,
 		Columns:           []*schema.Column{cb},
@@ -104,6 +126,7 @@ func NewSchema(t *testing.T) *schema.Schema {
 		Tables: []*schema.Table{
 			ta,
 			tb,
+			tView,
 		},
 		Relations: []*schema.Relation{
 			r,

@@ -13,12 +13,6 @@ CREATE VIEW post_comment AS (select `c`.`id` AS `id`,`p`.`title` AS `title`,`u2`
 
 </details>
 
-## Referenced Tables
-
-- [post](post.md)
-- [comment](comment.md)
-- [user](user.md)
-
 ## Columns
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
@@ -30,6 +24,14 @@ CREATE VIEW post_comment AS (select `c`.`id` AS `id`,`p`.`title` AS `title`,`u2`
 | comment_user | varchar(50) |  | true |  |  | comment.user.username |
 | created | datetime |  | true |  |  | comment.created |
 | updated | datetime |  | true |  |  | comment.updated |
+
+## Referenced Tables
+
+| Name | Columns | Comment | Type | Labels |
+| ---- | ------- | ------- | ---- | ------ |
+| [post](post.md) | 7 | Post table | BASE TABLE | `green` `red` `blue` |
+| [comment](comment.md) | 6 | Comment<br>Multi-line<br>table<br>comment | BASE TABLE |  |
+| [user](user.md) | 6 | User table | BASE TABLE |  |
 
 ## Relations
 

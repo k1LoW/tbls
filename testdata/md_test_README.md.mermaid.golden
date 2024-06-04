@@ -15,6 +15,7 @@
 | ---- | ------- | ------- | ---- | ------ |
 | [a](a.md) | 2 | TABLE A |  | `blue` `green` |
 | [b](b.md) | 2 | table b |  | `red` `green` |
+| [view](view.md) | 1 | view | VIEW |  |
 
 ## Relations
 
@@ -30,6 +31,9 @@ erDiagram
 "b" {
   INTEGER b FK
   TEXT b2
+}
+"view" {
+  INTEGER view_column
 }
 ```
 
