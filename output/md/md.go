@@ -701,20 +701,22 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 	}
 
 	// Referenced Tables
-	referencedTables := []string{}
+	hasReferencedTableWithLabels := false
 	for _, rt := range t.ReferencedTables {
-		if rt.External {
-			referencedTables = append(referencedTables, rt.Name)
-			continue
+		if len(rt.Labels) > 0 {
+			hasReferencedTableWithLabels = true
+			break
 		}
-		referencedTables = append(referencedTables, fmt.Sprintf("[%s](%s%s.md)", rt.Name, m.config.BaseUrl, mdurl.Encode(rt.Name)))
 	}
+
+	referencedTables := m.tablesData(t.ReferencedTables, number, adjust, showOnlyFirstParagraph, hasReferencedTableWithLabels)
 
 	if number {
 		columnsData = m.addNumberToTable(columnsData)
 		constraintsData = m.addNumberToTable(constraintsData)
 		indexesData = m.addNumberToTable(indexesData)
 		triggersData = m.addNumberToTable(triggersData)
+		referencedTables = m.addNumberToTable(referencedTables)
 	}
 
 	if adjust {
@@ -725,7 +727,7 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 			"Constraints":      adjustTable(constraintsData),
 			"Indexes":          adjustTable(indexesData),
 			"Triggers":         adjustTable(triggersData),
-			"ReferencedTables": referencedTables,
+			"ReferencedTables": adjustTable(referencedTables),
 		}
 	}
 
