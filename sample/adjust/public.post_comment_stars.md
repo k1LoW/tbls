@@ -21,12 +21,6 @@ CREATE MATERIALIZED VIEW post_comment_stars AS (
 
 </details>
 
-## Referenced Tables
-
-- [public.comments](public.comments.md)
-- [public.comment_stars](public.comment_stars.md)
-- [public.users](public.users.md)
-
 ## Columns
 
 | Name              | Type                        | Default | Nullable | Children | Parents | Comment |
@@ -36,6 +30,14 @@ CREATE MATERIALIZED VIEW post_comment_stars AS (
 | comment_star_user | varchar(50)                 |         | true     |          |         |         |
 | created           | timestamp without time zone |         | true     |          |         |         |
 | updated           | timestamp without time zone |         | true     |          |         |         |
+
+## Referenced Tables
+
+| Name                                            | Columns | Comment                                    | Type       |
+| ----------------------------------------------- | ------- | ------------------------------------------ | ---------- |
+| [public.comments](public.comments.md)           | 7       | Comments<br>Multi-line<br>table<br>comment | BASE TABLE |
+| [public.comment_stars](public.comment_stars.md) | 6       |                                            | BASE TABLE |
+| [public.users](public.users.md)                 | 6       | Users table                                | BASE TABLE |
 
 ## Relations
 

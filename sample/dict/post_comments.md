@@ -13,12 +13,6 @@ CREATE VIEW post_comments AS (select `c`.`id` AS `id`,`p`.`title` AS `title`,`u2
 
 </details>
 
-## Referenced Tables
-
-- [posts](posts.md)
-- [comments](comments.md)
-- [users](users.md)
-
 ## カラム一覧
 
 | 名前           | タイプ          | デフォルト値       | Nullable | 子テーブル      | 親テーブル      | コメント                                       |
@@ -30,6 +24,14 @@ CREATE VIEW post_comments AS (select `c`.`id` AS `id`,`p`.`title` AS `title`,`u2
 | comment_user | varchar(50)  |              | true     |            |            |                                            |
 | created      | datetime     |              | true     |            |            |                                            |
 | updated      | datetime     |              | true     |            |            |                                            |
+
+## Referenced Tables
+
+| 名前                        | カラム一覧           | コメント                                           | タイプ           |
+| ------------------------- | --------------- | ---------------------------------------------- | ------------- |
+| [posts](posts.md)         | 7               | Posts table                                    | BASE TABLE    |
+| [comments](comments.md)   | 7               | Comments<br>Multi-line<br>table<br>comment     | BASE TABLE    |
+| [users](users.md)         | 6               | Users table                                    | BASE TABLE    |
 
 ## ER図
 

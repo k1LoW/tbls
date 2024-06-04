@@ -14,15 +14,17 @@ CREATE VIEW "name with spaces" AS (
 
 </details>
 
-## Referenced Tables
-
-- [posts](posts.md)
-
 ## Columns
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
 | title | varchar(255) |  | false |  |  |  |
+
+## Referenced Tables
+
+| Name | Columns | Comment | Type | Labels |
+| ---- | ------- | ------- | ---- | ------ |
+| [posts](posts.md) | 6 |  | BASIC TABLE | `green` `red` `blue` |
 
 ## Relations
 
