@@ -27,10 +27,6 @@ FROM `bigquery-public-data.crypto_bitcoin.transactions` as transactions,
 
 </details>
 
-## Referenced Tables
-
-- [transactions](transactions.md)
-
 ## Columns
 
 | Name | Type | Default | Nullable | Children | Parents | Description |
@@ -46,6 +42,12 @@ FROM `bigquery-public-data.crypto_bitcoin.transactions` as transactions,
 | type | STRING |  | true |  |  |  |
 | addresses | STRING |  | true |  |  |  |
 | value | NUMERIC |  | true |  |  |  |
+
+## Referenced Tables
+
+| Name | Columns | Description | Type |
+| ---- | ------- | ------- | ---- |
+| [transactions](transactions.md) | 34 | All transactions.<br>Data is exported using https://github.com/blockchain-etl/bitcoin-etl<br> | TABLE |
 
 ## Relations
 
