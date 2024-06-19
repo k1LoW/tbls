@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.76.1](https://github.com/k1LoW/tbls/compare/v1.76.0...v1.76.1) - 2024-06-19
+### New Features 🎉
+- Postgres: Support "$user" search path by @mjpieters in https://github.com/k1LoW/tbls/pull/594
+### Other Changes
+- Address lint errors by @mjpieters in https://github.com/k1LoW/tbls/pull/595
+
 ## [v1.76.0](https://github.com/k1LoW/tbls/compare/v1.75.0...v1.76.0) - 2024-06-04
 ### Breaking Changes 🛠
 - Show table comments for related tables of View (#587) by @majimaccho in https://github.com/k1LoW/tbls/pull/590
