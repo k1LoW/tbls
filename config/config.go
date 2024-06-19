@@ -550,47 +550,6 @@ func (c *Config) mergeDictFromSchema(s *schema.Schema) {
 	}
 }
 
-func excludeTableFromSchema(name string, s *schema.Schema) error {
-	// Tables
-	tables := []*schema.Table{}
-	for _, t := range s.Tables {
-		if t.Name != name {
-			tables = append(tables, t)
-		}
-		for _, c := range t.Columns {
-			// ChildRelations
-			childRelations := []*schema.Relation{}
-			for _, r := range c.ChildRelations {
-				if r.Table.Name != name && r.ParentTable.Name != name {
-					childRelations = append(childRelations, r)
-				}
-			}
-			c.ChildRelations = childRelations
-
-			// ParentRelations
-			parentRelations := []*schema.Relation{}
-			for _, r := range c.ParentRelations {
-				if r.Table.Name != name && r.ParentTable.Name != name {
-					parentRelations = append(parentRelations, r)
-				}
-			}
-			c.ParentRelations = parentRelations
-		}
-	}
-	s.Tables = tables
-
-	// Relations
-	relations := []*schema.Relation{}
-	for _, r := range s.Relations {
-		if r.Table.Name != name && r.ParentTable.Name != name {
-			relations = append(relations, r)
-		}
-	}
-	s.Relations = relations
-
-	return nil
-}
-
 // MaskedDSN return DSN mask password
 func (c *Config) MaskedDSN() (string, error) {
 	u, err := url.Parse(c.DSN.URL)
@@ -903,17 +862,6 @@ func detectPKFK(s *schema.Schema) error {
 		}
 	}
 	return nil
-}
-
-func matchLabels(il []string, l schema.Labels) bool {
-	for _, ll := range l {
-		for _, ill := range il {
-			if wildcard.MatchSimple(ill, ll.Name) {
-				return true
-			}
-		}
-	}
-	return false
 }
 
 func match(s []string, e string) bool {
