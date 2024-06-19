@@ -70,7 +70,27 @@ func (p *Postgres) Analyze(s *schema.Schema) error {
 			return errors.WithStack(err)
 		}
 	}
-	s.Driver.Meta.SearchPaths = strings.Split(searchPaths, ", ")
+	splitPaths := strings.Split(searchPaths, ", ")
+	// Replace "$user" with the current username
+	for idx, path := range splitPaths {
+		if path == `"$user"` {
+			var userName string
+			userNameRows, err := p.db.Query(`SELECT current_user`)
+			if err != nil {
+				return errors.WithStack(err)
+			}
+			defer userNameRows.Close()
+			for userNameRows.Next() {
+				err := userNameRows.Scan(&userName)
+				if err != nil {
+					return errors.WithStack(err)
+				}
+			}
+			splitPaths[idx] = userName
+		}
+	}
+
+	s.Driver.Meta.SearchPaths = splitPaths
 
 	fullTableNames := []string{}
 
@@ -649,7 +669,6 @@ func detectFullTableName(name string, searchPaths, fullTableNames []string) (str
 	for _, n := range fullTableNames {
 		if strings.HasSuffix(n, name) {
 			for _, p := range searchPaths {
-				// TODO: Support $user
 				if n == fmt.Sprintf("%s.%s", p, name) {
 					fns = append(fns, n)
 				}
