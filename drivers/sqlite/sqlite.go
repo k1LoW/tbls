@@ -366,6 +366,9 @@ SELECT name, sql FROM sqlite_master WHERE type = 'trigger' AND tbl_name = ?;
 	// Relations
 	for _, r := range relations {
 		strColumns, strParentTable, strParentColumns, err := parseFK(r.Def)
+		if err != nil {
+			return err
+		}
 		for _, c := range strColumns {
 			column, err := r.Table.FindColumnByName(c)
 			if err != nil {

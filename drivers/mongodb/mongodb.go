@@ -95,7 +95,8 @@ func (d *Mongodb) listFields(collection *mongo.Collection) ([]*schema.Column, er
 			return columns, err
 		}
 		total += 1
-		for key, value := range result.Map() {
+		for _, entry := range result {
+			key, value := entry.Key, entry.Value
 			var valueType string
 			switch value.(type) {
 			case string:
