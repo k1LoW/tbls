@@ -35,7 +35,7 @@ jobs:
           tbls version
 
       - name: Run GoReleaser (dry-run)
-        uses: goreleaser/goreleaser-action@v5
+        uses: goreleaser/goreleaser-action@v6
         with:
           distribution: goreleaser
           version: latest
@@ -70,7 +70,7 @@ jobs:
           tbls version
 
       - name: Run GoReleaser (dry-run)
-        uses: goreleaser/goreleaser-action@v5
+        uses: goreleaser/goreleaser-action@v6
         with:
           distribution: goreleaser
           version: latest
@@ -112,7 +112,7 @@ jobs:
           tbls version
 
       - name: Run GoReleaser (dry-run)
-        uses: goreleaser/goreleaser-action@v5
+        uses: goreleaser/goreleaser-action@v6
         with:
           distribution: goreleaser
           version: latest
