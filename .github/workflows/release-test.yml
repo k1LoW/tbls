@@ -27,7 +27,6 @@ jobs:
 
       - name: Setup
         run: |
-          brew install goreleaser
           brew install sqlite3
 
       - name: Install
@@ -35,9 +34,14 @@ jobs:
           go install github.com/k1LoW/tbls@latest
           tbls version
 
-      - name: Release (dry-run)
-        run: |
-          goreleaser release --config .goreleaser/darwin.yml --clean --snapshot --skip-publish
+      - name: Run GoReleaser (dry-run)
+        uses: goreleaser/goreleaser-action@v6
+        with:
+          distribution: goreleaser
+          version: latest
+          args: --config .goreleaser/darwin.yml --clean --snapshot --skip=publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   linux-release-test:
     runs-on: ubuntu-latest
@@ -66,7 +70,7 @@ jobs:
           tbls version
 
       - name: Run GoReleaser (dry-run)
-        uses: goreleaser/goreleaser-action@v5
+        uses: goreleaser/goreleaser-action@v6
         with:
           distribution: goreleaser
           version: latest
@@ -108,7 +112,7 @@ jobs:
           tbls version
 
       - name: Run GoReleaser (dry-run)
-        uses: goreleaser/goreleaser-action@v5
+        uses: goreleaser/goreleaser-action@v6
         with:
           distribution: goreleaser
           version: latest

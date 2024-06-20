@@ -1,3 +1,4 @@
+version: 2
 before:
   hooks:
     - go mod download
@@ -34,7 +35,6 @@ checksum:
 snapshot:
   name_template: "{{ .Version }}-next"
 changelog:
-  skip: true
   sort: asc
   filters:
     exclude:
