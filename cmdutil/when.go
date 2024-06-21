@@ -1,49 +1,62 @@
 package cmdutil
 
 import (
-	"fmt"
 	"os"
 	"strings"
 
 	"github.com/expr-lang/expr"
+	"github.com/expr-lang/expr/ast"
 	"github.com/pkg/errors"
 )
+
+// AST walker which replaces `$IDENTIFIER` with `Env.IDENTIFIER` member lookup expressions.
+type EnvPatcher struct{}
+
+func (EnvPatcher) Visit(node *ast.Node) {
+	if n, ok := (*node).(*ast.IdentifierNode); ok && n.Value[0] == '$' && n.Value != "$env" {
+		ast.Patch(
+			node,
+			&ast.MemberNode{
+				Node:     &ast.IdentifierNode{Value: "Env"},
+				Property: &ast.StringNode{Value: n.Value[1:]},
+			},
+		)
+	}
+}
+
+// The predefined variables of a when expression
+type WhenEnv struct {
+	Env map[string]string
+}
+
+var NewWhenEnv = func() *WhenEnv {
+	return &WhenEnv{Env: envMap()}
+}
 
 func IsAllowedToExecute(when string) (bool, error) {
 	if when == "" {
 		return true, nil
 	}
-	ropts := []string{}
-	em := envMap()
-	for k := range em {
-		ropts = append(ropts, fmt.Sprintf("$%s", k), fmt.Sprintf("Env.%s", k))
-	}
-	r := strings.NewReplacer(ropts...)
-	when = r.Replace(when)
-	got, err := expr.Eval(fmt.Sprintf("(%s) == true", when), struct {
-		Env map[string]string
-	}{
-		Env: em,
-	})
+
+	whenEnv := NewWhenEnv()
+	// when expressions must produce a boolean result
+	program, err := expr.Compile(when, expr.Patch(&EnvPatcher{}), expr.AsBool(), expr.Env(whenEnv))
 	if err != nil {
 		return false, errors.WithStack(err)
 	}
-	return got.(bool), nil
+	if got, err := expr.Run(program, whenEnv); err != nil {
+		return false, errors.WithStack(err)
+	} else {
+		return got.(bool), nil
+	}
 }
 
 func envMap() map[string]string {
 	m := map[string]string{}
 	for _, kv := range os.Environ() {
-		if !strings.Contains(kv, "=") {
-			continue
+		if k, v, ok := strings.Cut(kv, "="); ok {
+			m[k] = v
 		}
-		parts := strings.SplitN(kv, "=", 2)
-		k := parts[0]
-		if len(parts) < 2 {
-			m[k] = ""
-			continue
-		}
-		m[k] = parts[1]
 	}
 	return m
 }
