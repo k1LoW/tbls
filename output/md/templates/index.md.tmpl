@@ -31,6 +31,15 @@
 |{{ range $d := $t }} {{ $d | nl2br }} |{{ end }}
 {{- end -}}
 {{- end -}}
+
+{{ if ne (len .Enums) 0 }}
+
+## {{ "Enums" | lookup }}
+{{ range $t := .Enums }}
+|{{ range $d := $t }} {{ $d | nl2br }} |{{ end }}
+{{- end -}}
+{{- end -}}
+
 {{- if .er }}
 
 ## {{ "Relations" | lookup }}

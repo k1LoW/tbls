@@ -15,6 +15,7 @@ type MD struct {
 	Index     string `yaml:"index,omitempty"`
 	Table     string `yaml:"table,omitempty"`
 	Viewpoint string `yaml:"viewpoint,omitempty"`
+	Enum      string `yaml:"enum,omitempty"`
 }
 
 // Dot holds the paths to the dot template files.

@@ -92,6 +92,12 @@ relations:
   def: FOREIGN KEY (b) REFERENCES a(a)
   virtual: false
 functions: []
+enums:
+- name: enum
+  values:
+  - one
+  - two
+  - three
 driver:
   name: testdriver
   databaseVersion: 1.0.0

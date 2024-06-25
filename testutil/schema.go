@@ -14,6 +14,7 @@ func NewSchema(t *testing.T) *schema.Schema {
 		labelBlueName  = "blue"
 		labelRedName   = "red"
 		labelGreenName = "green"
+		enumName       = "enum"
 	)
 
 	labelBlue := &schema.Label{
@@ -108,6 +109,11 @@ func NewSchema(t *testing.T) *schema.Schema {
 		},
 	}
 
+	enum := &schema.Enum{
+		Name:   enumName,
+		Values: []string{"one", "two", "three"},
+	}
+
 	r := &schema.Relation{
 		Table:             tb,
 		Columns:           []*schema.Column{cb},
@@ -127,6 +133,9 @@ func NewSchema(t *testing.T) *schema.Schema {
 			ta,
 			tb,
 			tView,
+		},
+		Enums: []*schema.Enum{
+			enum,
 		},
 		Relations: []*schema.Relation{
 			r,

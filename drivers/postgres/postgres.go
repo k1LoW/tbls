@@ -329,6 +329,13 @@ ORDER BY tgrelid
 	}
 	s.Functions = functions
 
+	// Enums
+	enums, err := p.getEnums()
+	if err != nil {
+		return err
+	}
+	s.Enums = enums
+
 	s.Tables = tables
 
 	// Relations
@@ -488,6 +495,31 @@ func (p *Postgres) getFunctionsByQuery(query string) ([]*schema.Function, error)
 		functions = append(functions, function)
 	}
 	return functions, nil
+}
+
+func (p *Postgres) getEnums() ([]*schema.Enum, error) {
+	enums := []*schema.Enum{}
+
+	enumsResult, err := p.db.Query(`SELECT t.typname AS enum_name, ARRAY_AGG(e.enumlabel) AS enum_values
+										  FROM pg_type t, pg_enum e
+										  WHERE t.typcategory = 'E'
+										  AND t.oid = e.enumtypid
+										  GROUP BY t.typname `)
+
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+	defer enumsResult.Close()
+
+	for enumsResult.Next() {
+		var enum schema.Enum
+		err := enumsResult.Scan(&enum.Name, pq.Array(&enum.Values))
+		if err != nil {
+			return enums, errors.WithStack(err)
+		}
+		enums = append(enums, &enum)
+	}
+	return enums, nil
 }
 
 func fullTableName(owner string, tableName string) string {
