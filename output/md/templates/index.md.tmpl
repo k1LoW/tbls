@@ -33,6 +33,13 @@
 {{- end -}}
 {{- if .er }}
 
+## {{ "Enums" | lookup }}
+{{ range $t := .Enums }}
+|{{ range $d := $t }} {{ $d | nl2br }} |{{ end }}
+{{- end -}}
+{{- end -}}
+{{- if .er }}
+
 ## {{ "Relations" | lookup }}
 
 {{ .erDiagram }}
