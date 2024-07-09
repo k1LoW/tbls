@@ -6,7 +6,6 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/k1LoW/tbls/schema"
-	"github.com/stretchr/testify/assert"
 	"github.com/xo/dburl"
 	"os"
 	"testing"
@@ -33,9 +32,17 @@ func TestMain(m *testing.M) {
 func TestInfo(t *testing.T) {
 	driver := New(db)
 	d, err := driver.Info()
-	assert.NoError(t, err)
-	assert.Equal(t, "clickhouse", d.Name)
-	assert.NotEmpty(t, d.DatabaseVersion)
+	if err != nil {
+		t.Errorf("%v", err)
+	}
+
+	if d.Name != "clickhouse" {
+		t.Error("Driver name should be \"clickhouse\"")
+	}
+
+	if d.DatabaseVersion == "" {
+		t.Error("DatabaseVersion should not be empty")
+	}
 }
 
 func TestAnalyzeRegularTable(t *testing.T) {
@@ -44,17 +51,30 @@ func TestAnalyzeRegularTable(t *testing.T) {
 	}
 	driver := New(db)
 
-	err := driver.Analyze(s)
-	assert.NoError(t, err)
+	if err := driver.Analyze(s); err != nil {
+		t.Errorf("%v", err)
+	}
 
-	assert.NotEmpty(t, s.Tables)
-	assert.NotEmpty(t, s.Functions)
+	if len(s.Tables) == 0 {
+		t.Error("Tables shouldn't be empty")
+	}
+
+	if len(s.Functions) == 0 {
+		t.Error("Functions shouldn't be empty")
+	}
 
 	table, err := s.FindTableByName("table_name")
-	assert.NoError(t, err)
+	if err != nil {
+		t.Errorf("%v", err)
+	}
 
-	assert.Len(t, table.Columns, 8)
-	assert.Len(t, table.Indexes, 3)
+	if len(table.Columns) != 8 {
+		t.Error("There should be 8 columns")
+	}
+
+	if len(table.Indexes) != 3 {
+		t.Error("There should be 3 indexes")
+	}
 }
 
 func TestAnalyzeDictionary(t *testing.T) {
@@ -63,17 +83,30 @@ func TestAnalyzeDictionary(t *testing.T) {
 	}
 	driver := New(db)
 
-	err := driver.Analyze(s)
-	assert.NoError(t, err)
+	if err := driver.Analyze(s); err != nil {
+		t.Errorf("%v", err)
+	}
 
-	assert.NotEmpty(t, s.Tables)
-	assert.NotEmpty(t, s.Functions)
+	if len(s.Tables) == 0 {
+		t.Error("Tables shouldn't be empty")
+	}
+
+	if len(s.Functions) == 0 {
+		t.Error("Functions shouldn't be empty")
+	}
 
 	table, err := s.FindTableByName("id_value_dictionary")
-	assert.NoError(t, err)
+	if err != nil {
+		t.Errorf("%v", err)
+	}
 
-	assert.Len(t, table.Columns, 2)
-	assert.Empty(t, table.Indexes)
+	if len(table.Columns) != 2 {
+		t.Error("There should be 2 columns")
+	}
+
+	if len(table.Indexes) > 0 {
+		t.Error("Indexes should be empty")
+	}
 }
 
 func TestAnalyzeMaterializedView(t *testing.T) {
@@ -83,16 +116,30 @@ func TestAnalyzeMaterializedView(t *testing.T) {
 	driver := New(db)
 
 	err := driver.Analyze(s)
-	assert.NoError(t, err)
+	if err != nil {
+		t.Errorf("%v", err)
+	}
 
-	assert.NotEmpty(t, s.Tables)
-	assert.NotEmpty(t, s.Functions)
+	if len(s.Tables) == 0 {
+		t.Error("Tables shouldn't be empty")
+	}
+
+	if len(s.Functions) == 0 {
+		t.Error("Functions shouldn't be empty")
+	}
 
 	table, err := s.FindTableByName("materialized_view")
-	assert.NoError(t, err)
+	if err != nil {
+		t.Errorf("%v", err)
+	}
 
-	assert.Len(t, table.Columns, 2)
-	assert.Empty(t, table.Indexes)
+	if len(table.Columns) != 2 {
+		t.Error("There should be 2 columns")
+	}
+
+	if len(table.Indexes) > 0 {
+		t.Error("Indexes should be empty")
+	}
 }
 
 func TestAnalyzeView(t *testing.T) {
@@ -102,14 +149,28 @@ func TestAnalyzeView(t *testing.T) {
 	driver := New(db)
 
 	err := driver.Analyze(s)
-	assert.NoError(t, err)
+	if err != nil {
+		t.Errorf("%v", err)
+	}
 
-	assert.NotEmpty(t, s.Tables)
-	assert.NotEmpty(t, s.Functions)
+	if len(s.Tables) == 0 {
+		t.Error("Tables shouldn't be empty")
+	}
+
+	if len(s.Functions) == 0 {
+		t.Error("Functions shouldn't be empty")
+	}
 
 	table, err := s.FindTableByName("view")
-	assert.NoError(t, err)
+	if err != nil {
+		t.Errorf("%v", err)
+	}
 
-	assert.Len(t, table.Columns, 5)
-	assert.Empty(t, table.Indexes)
+	if len(table.Columns) != 5 {
+		t.Error("There should be 5 columns")
+	}
+
+	if len(table.Indexes) > 0 {
+		t.Error("Indexes should be empty")
+	}
 }

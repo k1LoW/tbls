@@ -3,7 +3,7 @@ package clickhouse
 import (
 	"database/sql"
 	"fmt"
-	_ "github.com/ClickHouse/clickhouse-go"
+	_ "github.com/ClickHouse/clickhouse-go/v2"
 	"github.com/k1LoW/tbls/dict"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/pkg/errors"
