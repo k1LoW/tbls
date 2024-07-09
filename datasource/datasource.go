@@ -14,6 +14,7 @@ import (
 	"github.com/k1LoW/go-github-client/v58/factory"
 	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/drivers"
+	"github.com/k1LoW/tbls/drivers/clickhouse"
 	"github.com/k1LoW/tbls/drivers/mariadb"
 	"github.com/k1LoW/tbls/drivers/mssql"
 	"github.com/k1LoW/tbls/drivers/mysql"
@@ -124,6 +125,9 @@ func Analyze(dsn config.DSN) (*schema.Schema, error) {
 	case "snowflake":
 		s.Name = splitted[2]
 		driver = snowflake.New(db)
+	case "clickhouse":
+		s.Name = splitted[1]
+		driver = clickhouse.New(db)
 	default:
 		return s, errors.Errorf("unsupported driver '%s'", u.Driver)
 	}

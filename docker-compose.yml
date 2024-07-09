@@ -70,3 +70,16 @@ services:
       - ./testdata/ddl/mongo:/docker-entrypoint-initdb.d
     ports:
       - "27017:27017"
+  clickhouse:
+    image: clickhouse/clickhouse-server:24.4
+    restart: always
+    environment:
+      - CLICKHOUSE_DB=testdb
+      - CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT=1
+    volumes:
+      - ./testdata/ddl/clickhouse:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:8123/?query=SELECT%201 || exit 1
+    ports:
+      - "8123:8123"
+      - "9000:9000"
