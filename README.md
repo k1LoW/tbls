@@ -598,6 +598,15 @@ If a field has multiple types, the `multipleFieldType` query can be used to list
 dsn: mongodb://mongoadmin:secret@localhost:27017/test?sampleSize=20&multipleFieldType=true
 ```
 
+**ClickHouse:**
+
+``` yaml
+# .tbls.yml
+dsn: clickhouse://dbuser:dbpass@hostname:9000/dbname
+```
+
+See also: https://pkg.go.dev/github.com/ClickHouse/clickhouse-go
+
 **JSON:**
 
 The JSON file output by the `tbls out -t json` command can be read as a datasource.
