@@ -1,8 +1,7 @@
-version: '3.4'
-
 services:
   postgres95:
     image: postgres:9.5
+    platform: linux/amd64    
     restart: always
     ports:
       - "55432:5432"
@@ -21,6 +20,7 @@ services:
       - POSTGRES_DB=testdb
   mysql56:
     image: mysql:5.6
+    platform: linux/amd64
     restart: always
     ports:
       - "33306:3306"
