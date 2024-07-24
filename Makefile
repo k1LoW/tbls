@@ -59,6 +59,7 @@ doc: build doc_sqlite
 	$(TBLS) doc ms://SA:MSSQLServer-Passw0rd@localhost:11433/testdb -c testdata/test_tbls_mssql.yml -f sample/mssql
 	$(TBLS) doc mongodb://mongoadmin:secret@localhost:27017/test?authSource=admin -f sample/mongo
 	env AWS_ENDPOINT_URL=http://localhost:18000 $(TBLS) doc dynamodb://ap-northeast-1 -c testdata/test_tbls_dynamodb.yml -f sample/dynamodb
+	$(TBLS) doc clickhouse://default@localhost:9000/testdb -f sample/clickhouse
 	$(TBLS) doc pg://postgres:pgpass@localhost:55413/testdb?sslmode=disable -c testdata/test_tbls_postgres.yml -j -f sample/adjust
 	$(TBLS) doc my://root:mypass@localhost:33308/testdb -c testdata/test_tbls.yml -t png -f sample/png
 	$(TBLS) doc my://root:mypass@localhost:33308/testdb -c testdata/test_tbls.yml -t mermaid -f sample/mermaid
@@ -84,6 +85,7 @@ testdoc: build testdoc_sqlite
 	$(TBLS) diff ms://SA:MSSQLServer-Passw0rd@localhost:11433/testdb -c testdata/test_tbls_mssql.yml sample/mssql
 	$(TBLS) diff mongodb://mongoadmin:secret@localhost:27017/test?authSource=admin sample/mongo
 	env AWS_ENDPOINT_URL=http://localhost:18000 $(TBLS) diff dynamodb://ap-northeast-1 -c testdata/test_tbls_dynamodb.yml sample/dynamodb
+	$(TBLS) diff clickhouse://default@localhost:9000/testdb sample/clickhouse
 	$(TBLS) diff pg://postgres:pgpass@localhost:55413/testdb?sslmode=disable -c testdata/test_tbls_postgres.yml -j sample/adjust
 	$(TBLS) diff my://root:mypass@localhost:33308/testdb -c testdata/test_tbls.yml -t png sample/png
 	$(TBLS) diff my://root:mypass@localhost:33308/testdb -c testdata/exclude_test_tbls.yml sample/exclude
