@@ -1,5 +1,20 @@
 # Changelog
 
+## [v1.77.0](https://github.com/k1LoW/tbls/compare/v1.76.1...v1.77.0) - 2024-07-24
+### Breaking Changes 🛠
+- Refactor when expression handling by @mjpieters in https://github.com/k1LoW/tbls/pull/600
+- Hide inner table (ClickHouse) by @k1LoW in https://github.com/k1LoW/tbls/pull/610
+### New Features 🎉
+- Add support for ClickHouse by @joschi in https://github.com/k1LoW/tbls/pull/605
+### Other Changes
+- Update .goreleaser.yml by @k1LoW in https://github.com/k1LoW/tbls/pull/597
+- chore(deps): bump golang.org/x/image from 0.16.0 to 0.18.0 by @dependabot in https://github.com/k1LoW/tbls/pull/602
+- chore(deps): bump docker/build-push-action from 5 to 6 in the dependencies group by @dependabot in https://github.com/k1LoW/tbls/pull/603
+- chore(deps): bump google.golang.org/grpc from 1.64.0 to 1.64.1 by @dependabot in https://github.com/k1LoW/tbls/pull/606
+- Add ClickHouse support to README by @joschi in https://github.com/k1LoW/tbls/pull/608
+- Add ClickHouse sample by @k1LoW in https://github.com/k1LoW/tbls/pull/609
+- chore(deps): bump the dependencies group across 1 directory with 11 updates by @dependabot in https://github.com/k1LoW/tbls/pull/611
+
 ## [v1.76.1](https://github.com/k1LoW/tbls/compare/v1.76.0...v1.76.1) - 2024-06-19
 ### New Features 🎉
 - Postgres: Support "$user" search path by @mjpieters in https://github.com/k1LoW/tbls/pull/594
