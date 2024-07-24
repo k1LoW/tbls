@@ -3,11 +3,16 @@ package clickhouse
 import (
 	"database/sql"
 	"fmt"
+	"regexp"
+
 	_ "github.com/ClickHouse/clickhouse-go/v2"
 	"github.com/k1LoW/tbls/dict"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/pkg/errors"
+	"github.com/samber/lo"
 )
+
+var shadowTableRe = regexp.MustCompile(`^\.inner_id\.`)
 
 // ClickHouse struct
 type ClickHouse struct {
@@ -35,6 +40,7 @@ func (ch *ClickHouse) Analyze(s *schema.Schema) error {
 	tableSortingKeys := make(map[string]*schema.Constraint)
 	tablePrimaryKeys := make(map[string]*schema.Constraint)
 	tableSamplingKeys := make(map[string]*schema.Constraint)
+	var filtered []string
 
 	tableRows, err := ch.db.Query(`
 SELECT
@@ -81,6 +87,11 @@ WHERE database = ?
 			Type:    tableType,
 			Def:     tableDef,
 			Comment: tableComment,
+		}
+
+		if shadowTableRe.MatchString(tableName) {
+			filtered = append(filtered, tableName)
+			continue
 		}
 
 		s.Tables = append(s.Tables, table)
@@ -191,6 +202,10 @@ ORDER BY table
 			Nullable: false,
 		}
 
+		if lo.Contains(filtered, colTable) {
+			continue
+		}
+
 		table, err := s.FindTableByName(colTable)
 		if err != nil {
 			return errors.WithStack(err)
@@ -274,6 +289,10 @@ ORDER BY table
 		err := indexRows.Scan(&idxTable, &idxName, &idxType, &idxExpression)
 		if err != nil {
 			return errors.WithStack(err)
+		}
+
+		if lo.Contains(filtered, idxTable) {
+			continue
 		}
 
 		table, err := s.FindTableByName(idxTable)

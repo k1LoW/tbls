@@ -4,7 +4,6 @@
 
 | Name | Columns | Comment | Type |
 | ---- | ------- | ------- | ---- |
-| [.inner_id.b9cd26f9-5548-4c71-b1f8-b62716652d67](.inner_id.b9cd26f9-5548-4c71-b1f8-b62716652d67.md) | 2 |  | Memory |
 | [id_value_dictionary](id_value_dictionary.md) | 2 |  | Dictionary |
 | [materialized_view](materialized_view.md) | 2 |  | MaterializedView |
 | [numbers_table](numbers_table.md) | 1 |  | SystemNumbers |
