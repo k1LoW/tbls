@@ -24,6 +24,7 @@ import (
 	"io"
 	"os"
 
+	"github.com/k1LoW/errors"
 	"github.com/k1LoW/tbls/cmdutil"
 	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/output"
@@ -36,7 +37,6 @@ import (
 	"github.com/k1LoW/tbls/output/plantuml"
 	"github.com/k1LoW/tbls/output/xlsx"
 	"github.com/k1LoW/tbls/output/yaml"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 

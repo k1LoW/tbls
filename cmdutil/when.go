@@ -6,7 +6,7 @@ import (
 
 	"github.com/expr-lang/expr"
 	"github.com/expr-lang/expr/ast"
-	"github.com/pkg/errors"
+	"github.com/k1LoW/errors"
 )
 
 // AST walker which replaces `$IDENTIFIER` with `Env.IDENTIFIER` member lookup expressions.

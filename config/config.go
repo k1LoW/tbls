@@ -9,12 +9,12 @@ import (
 
 	"github.com/aquasecurity/go-version/pkg/version"
 	"github.com/goccy/go-yaml"
+	"github.com/k1LoW/errors"
 	"github.com/k1LoW/expand"
 	"github.com/k1LoW/tbls/dict"
 	"github.com/k1LoW/tbls/schema"
 	ver "github.com/k1LoW/tbls/version"
 	"github.com/minio/pkg/wildcard"
-	"github.com/pkg/errors"
 	"github.com/samber/lo"
 )
 

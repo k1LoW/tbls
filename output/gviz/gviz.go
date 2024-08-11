@@ -10,11 +10,11 @@ import (
 
 	"github.com/beta/freetype/truetype"
 	"github.com/goccy/go-graphviz"
+	"github.com/k1LoW/errors"
 	"github.com/k1LoW/ffff"
 	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/output/dot"
 	"github.com/k1LoW/tbls/schema"
-	"github.com/pkg/errors"
 	"golang.org/x/image/font"
 	"golang.org/x/image/font/opentype"
 	"golang.org/x/image/font/sfnt"

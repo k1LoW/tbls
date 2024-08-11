@@ -5,10 +5,11 @@ package clickhouse
 import (
 	"database/sql"
 	"fmt"
-	"github.com/k1LoW/tbls/schema"
-	"github.com/xo/dburl"
 	"os"
 	"testing"
+
+	"github.com/k1LoW/tbls/schema"
+	"github.com/xo/dburl"
 )
 
 var db *sql.DB

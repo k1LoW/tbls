@@ -26,7 +26,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/pkg/errors"
+	"github.com/k1LoW/errors"
 	"github.com/spf13/cobra"
 )
 

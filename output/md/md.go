@@ -11,12 +11,12 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/k1LoW/errors"
 	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/output"
 	"github.com/k1LoW/tbls/output/mermaid"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/mattn/go-runewidth"
-	"github.com/pkg/errors"
 	"github.com/pmezard/go-difflib/difflib"
 	"github.com/samber/lo"
 	"gitlab.com/golang-commonmark/mdurl"

@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/k1LoW/errors"
 	"github.com/k1LoW/ghfs"
 	"github.com/k1LoW/go-github-client/v58/factory"
 	"github.com/k1LoW/tbls/config"
@@ -23,7 +24,6 @@ import (
 	"github.com/k1LoW/tbls/drivers/snowflake"
 	"github.com/k1LoW/tbls/drivers/sqlite"
 	"github.com/k1LoW/tbls/schema"
-	"github.com/pkg/errors"
 	"github.com/xo/dburl"
 )
 

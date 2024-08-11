@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/k1LoW/errors"
 	"github.com/minio/pkg/wildcard"
-	"github.com/pkg/errors"
 	"github.com/samber/lo"
 )
 
