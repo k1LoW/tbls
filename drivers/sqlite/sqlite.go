@@ -42,7 +42,10 @@ type fk struct {
 }
 
 // Analyze SQLite database schema
-func (l *Sqlite) Analyze(s *schema.Schema) error {
+func (l *Sqlite) Analyze(s *schema.Schema) (err error) {
+	defer func() {
+		err = errors.WithStack(err)
+	}()
 	d, err := l.Info()
 	if err != nil {
 		return errors.WithStack(err)
@@ -77,7 +80,7 @@ WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
 			tableType = "virtual table"
 			matches := reFTS.FindStringSubmatch(tableDef)
 			if len(matches) < 1 {
-				return errors.Errorf("can not parse table definition: %s", tableDef)
+				return fmt.Errorf("can not parse table definition: %s", tableDef)
 			}
 			shadowTables = append(shadowTables, fmt.Sprintf("%s_content", tableName))
 			shadowTables = append(shadowTables, fmt.Sprintf("%s_segdir", tableName))
@@ -491,10 +494,13 @@ func parseCheckConstraints(table *schema.Table, sql string) []*schema.Constraint
 	return constraints
 }
 
-func parseFK(def string) ([]string, string, []string, error) {
+func parseFK(def string) (_ []string, _ string, _ []string, err error) {
+	defer func() {
+		err = errors.WithStack(err)
+	}()
 	result := reFK.FindAllStringSubmatch(def, -1)
 	if len(result) < 1 || len(result[0]) < 4 {
-		return nil, "", nil, errors.Errorf("can not parse foreign key: %s", def)
+		return nil, "", nil, fmt.Errorf("can not parse foreign key: %s", def)
 	}
 	strColumns := strings.Split(result[0][1], ", ")
 	strParentTable := strings.Trim(result[0][2], `"`)

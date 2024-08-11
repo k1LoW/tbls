@@ -272,7 +272,7 @@ func printError(err error) {
 	env := os.Getenv("DEBUG")
 	debug, _ := strconv.ParseBool(env)
 	if env != "" && debug {
-		fmt.Println(errors.StackTraces(err))
+		fmt.Println(err, errors.StackTraces(err))
 	} else {
 		fmt.Println(err)
 	}

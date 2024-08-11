@@ -214,17 +214,23 @@ func (s *Schema) NormalizeTableNames(names []string) []string {
 }
 
 // FindTableByName find table by table name
-func (s *Schema) FindTableByName(name string) (*Table, error) {
+func (s *Schema) FindTableByName(name string) (_ *Table, err error) {
+	defer func() {
+		err = errors.WithStack(err)
+	}()
 	for _, t := range s.Tables {
 		if s.NormalizeTableName(t.Name) == s.NormalizeTableName(name) {
 			return t, nil
 		}
 	}
-	return nil, errors.Errorf("not found table '%s'", name)
+	return nil, fmt.Errorf("not found table '%s'", name)
 }
 
 // FindRelation find relation by columns and parent columns
-func (s *Schema) FindRelation(cs, pcs []*Column) (*Relation, error) {
+func (s *Schema) FindRelation(cs, pcs []*Column) (_ *Relation, err error) {
+	defer func() {
+		err = errors.WithStack(err)
+	}()
 L:
 	for _, r := range s.Relations {
 		if len(r.Columns) != len(cs) || len(r.ParentColumns) != len(pcs) {
@@ -254,7 +260,7 @@ L:
 		}
 		return r, nil
 	}
-	return nil, errors.Errorf("not found relation '%v, %v'", cs, pcs)
+	return nil, fmt.Errorf("not found relation '%v, %v'", cs, pcs)
 }
 
 func (s *Schema) HasTableWithLabels() bool {
@@ -309,7 +315,10 @@ func (s *Schema) Sort() error {
 }
 
 // Repair column relations
-func (s *Schema) Repair() error {
+func (s *Schema) Repair() (err error) {
+	defer func() {
+		err = errors.WithStack(err)
+	}()
 	if err := s.repairWithoutViewpoints(); err != nil {
 		return err
 	}
@@ -317,14 +326,14 @@ func (s *Schema) Repair() error {
 	for _, v := range s.Viewpoints {
 		cs, err := s.CloneWithoutViewpoints()
 		if err != nil {
-			return errors.Wrap(err, "failed to repair viewpoint")
+			return fmt.Errorf("failed to repair viewpoint: %w", err)
 		}
 		if err := cs.Filter(&FilterOption{
 			Include:       v.Tables,
 			IncludeLabels: v.Labels,
 			Distance:      v.Distance,
 		}); err != nil {
-			return errors.Wrap(err, "failed to repair viewpoint")
+			return fmt.Errorf("failed to repair viewpoint: %w", err)
 		}
 		v.Schema = cs
 	}
@@ -367,7 +376,10 @@ func (s *Schema) CloneWithoutViewpoints() (c *Schema, err error) {
 	return c, nil
 }
 
-func (s *Schema) repairWithoutViewpoints() error {
+func (s *Schema) repairWithoutViewpoints() (err error) {
+	defer func() {
+		err = errors.WithStack(err)
+	}()
 	for _, t := range s.Tables {
 		if len(t.Columns) == 0 {
 			t.Columns = nil
@@ -402,12 +414,12 @@ func (s *Schema) repairWithoutViewpoints() error {
 	for _, r := range s.Relations {
 		t, err := s.FindTableByName(r.Table.Name)
 		if err != nil {
-			return errors.Wrap(err, "failed to repair relation")
+			return fmt.Errorf("failed to repair relation: %w", err)
 		}
 		for i, rc := range r.Columns {
 			c, err := t.FindColumnByName(rc.Name)
 			if err != nil {
-				return errors.Wrap(err, "failed to repair relation")
+				return fmt.Errorf("failed to repair relation: %w", err)
 			}
 			c.ParentRelations = append(c.ParentRelations, r)
 			r.Columns[i] = c
@@ -415,12 +427,12 @@ func (s *Schema) repairWithoutViewpoints() error {
 		r.Table = t
 		pt, err := s.FindTableByName(r.ParentTable.Name)
 		if err != nil {
-			return errors.Wrap(err, "failed to repair relation")
+			return fmt.Errorf("failed to repair relation: %w", err)
 		}
 		for i, rc := range r.ParentColumns {
 			pc, err := pt.FindColumnByName(rc.Name)
 			if err != nil {
-				return errors.Wrap(err, "failed to repair relation")
+				return fmt.Errorf("failed to repair relation: %w", err)
 			}
 			pc.ChildRelations = append(pc.ChildRelations, r)
 			r.ParentColumns[i] = pc
@@ -435,43 +447,55 @@ func (s *Schema) repairWithoutViewpoints() error {
 }
 
 // FindColumnByName find column by column name
-func (t *Table) FindColumnByName(name string) (*Column, error) {
+func (t *Table) FindColumnByName(name string) (_ *Column, err error) {
+	defer func() {
+		err = errors.WithStack(err)
+	}()
 	for _, c := range t.Columns {
 		if c.Name == name {
 			return c, nil
 		}
 	}
-	return nil, errors.Errorf("not found column '%s' on table '%s'", name, t.Name)
+	return nil, errors.New(fmt.Sprintf("not found column '%s' on table '%s'", name, t.Name))
 }
 
 // FindIndexByName find index by index name
-func (t *Table) FindIndexByName(name string) (*Index, error) {
+func (t *Table) FindIndexByName(name string) (_ *Index, err error) {
+	defer func() {
+		err = errors.WithStack(err)
+	}()
 	for _, i := range t.Indexes {
 		if i.Name == name {
 			return i, nil
 		}
 	}
-	return nil, errors.Errorf("not found index '%s' on table '%s'", name, t.Name)
+	return nil, errors.New(fmt.Sprintf("not found index '%s' on table '%s'", name, t.Name))
 }
 
 // FindConstraintByName find constraint by constraint name
-func (t *Table) FindConstraintByName(name string) (*Constraint, error) {
+func (t *Table) FindConstraintByName(name string) (_ *Constraint, err error) {
+	defer func() {
+		err = errors.WithStack(err)
+	}()
 	for _, c := range t.Constraints {
 		if c.Name == name {
 			return c, nil
 		}
 	}
-	return nil, errors.Errorf("not found constraint '%s' on table '%s'", name, t.Name)
+	return nil, errors.New(fmt.Sprintf("not found constraint '%s' on table '%s'", name, t.Name))
 }
 
 // FindTriggerByName find trigger by trigger name
-func (t *Table) FindTriggerByName(name string) (*Trigger, error) {
+func (t *Table) FindTriggerByName(name string) (_ *Trigger, err error) {
+	defer func() {
+		err = errors.WithStack(err)
+	}()
 	for _, trig := range t.Triggers {
 		if trig.Name == name {
 			return trig, nil
 		}
 	}
-	return nil, errors.Errorf("not found trigger '%s' on table '%s'", name, t.Name)
+	return nil, errors.New(fmt.Sprintf("not found trigger '%s' on table '%s'", name, t.Name))
 }
 
 // FindConstrainsByColumnName find constraint by column name
