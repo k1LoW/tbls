@@ -38,7 +38,7 @@ jobs:
 
       - name: Start databases
         run: |
-          docker-compose up -d
+          docker compose up -d
           sleep 20s
 
       - name: Run lint
