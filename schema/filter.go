@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/k1LoW/errors"
 	"github.com/minio/pkg/wildcard"
-	"github.com/pkg/errors"
 	"github.com/samber/lo"
 )
 
@@ -16,7 +16,10 @@ type FilterOption struct {
 	Distance      int
 }
 
-func (s *Schema) Filter(opt *FilterOption) error {
+func (s *Schema) Filter(opt *FilterOption) (err error) {
+	defer func() {
+		err = errors.WithStack(err)
+	}()
 	_, excludes, err := s.SepareteTablesThatAreIncludedOrNot(opt)
 	if err != nil {
 		return err
@@ -24,14 +27,17 @@ func (s *Schema) Filter(opt *FilterOption) error {
 	for _, t := range excludes {
 		err := excludeTableFromSchema(t.Name, s)
 		if err != nil {
-			return errors.Wrap(errors.WithStack(err), fmt.Sprintf("failed to filter table '%s'", t.Name))
+			return fmt.Errorf("failed to filter table '%s': %w", t.Name, err)
 		}
 	}
 
 	return nil
 }
 
-func (s *Schema) SepareteTablesThatAreIncludedOrNot(opt *FilterOption) ([]*Table, []*Table, error) {
+func (s *Schema) SepareteTablesThatAreIncludedOrNot(opt *FilterOption) (_ []*Table, _ []*Table, err error) {
+	defer func() {
+		err = errors.WithStack(err)
+	}()
 	i := append(opt.Include, s.NormalizeTableNames(opt.Include)...)
 	e := append(opt.Exclude, s.NormalizeTableNames(opt.Exclude)...)
 
@@ -93,7 +99,7 @@ func (s *Schema) SepareteTablesThatAreIncludedOrNot(opt *FilterOption) ([]*Table
 
 	// assert
 	if len(s.Tables) != len(includes2)+len(excludes2) {
-		return nil, nil, errors.Errorf("failed to separate tables. expected: %d, actual: %d", len(s.Tables), len(includes2)+len(excludes2))
+		return nil, nil, fmt.Errorf("failed to separate tables. expected: %d, actual: %d", len(s.Tables), len(includes2)+len(excludes2))
 	}
 
 	return includes2, excludes2, nil

@@ -21,9 +21,11 @@
 package cmd
 
 import (
+	"fmt"
 	"io"
 	"os"
 
+	"github.com/k1LoW/errors"
 	"github.com/k1LoW/tbls/cmdutil"
 	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/output"
@@ -36,7 +38,6 @@ import (
 	"github.com/k1LoW/tbls/output/plantuml"
 	"github.com/k1LoW/tbls/output/xlsx"
 	"github.com/k1LoW/tbls/output/yaml"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -102,7 +103,7 @@ var outCmd = &cobra.Command{
 		case "config":
 			o = tbls_config.New(c)
 		default:
-			return errors.Errorf("unsupported format '%s'", format)
+			return fmt.Errorf("unsupported format '%s'", format)
 		}
 
 		var wr io.Writer

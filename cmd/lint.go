@@ -25,11 +25,11 @@ import (
 	"os"
 	"reflect"
 
+	"github.com/k1LoW/errors"
 	"github.com/k1LoW/tbls/cmdutil"
 	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/datasource"
 	"github.com/labstack/gommon/color"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 

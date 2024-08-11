@@ -26,6 +26,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/k1LoW/errors"
 	"github.com/k1LoW/tbls/cmdutil"
 	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/datasource"
@@ -33,7 +34,6 @@ import (
 	"github.com/k1LoW/tbls/output/json"
 	"github.com/k1LoW/tbls/output/md"
 	"github.com/k1LoW/tbls/schema"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 

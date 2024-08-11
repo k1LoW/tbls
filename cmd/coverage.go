@@ -26,12 +26,12 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/k1LoW/errors"
 	"github.com/k1LoW/tbls/cmdutil"
 	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/coverage"
 	"github.com/labstack/gommon/color"
 	"github.com/mattn/go-runewidth"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 

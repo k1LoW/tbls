@@ -9,12 +9,12 @@ import (
 
 	"github.com/aquasecurity/go-version/pkg/version"
 	"github.com/goccy/go-yaml"
+	"github.com/k1LoW/errors"
 	"github.com/k1LoW/expand"
 	"github.com/k1LoW/tbls/dict"
 	"github.com/k1LoW/tbls/schema"
 	ver "github.com/k1LoW/tbls/version"
 	"github.com/minio/pkg/wildcard"
-	"github.com/pkg/errors"
 	"github.com/samber/lo"
 )
 
@@ -356,12 +356,15 @@ func (c *Config) LoadEnviron() error {
 }
 
 // LoadConfigFile load config file
-func (c *Config) LoadConfigFile(path string) error {
+func (c *Config) LoadConfigFile(path string) (err error) {
+	defer func() {
+		err = errors.WithStack(err)
+	}()
 	if path == "" && os.Getenv("TBLS_DSN") == "" {
 		for _, p := range DefaultConfigFilePaths {
 			if f, err := os.Stat(filepath.Join(c.root, p)); err == nil && !f.IsDir() {
 				if path != "" {
-					return errors.Errorf("duplicate config file [%s, %s]", path, p)
+					return fmt.Errorf("duplicate config file [%s, %s]", path, p)
 				}
 				path = p
 			}
@@ -373,12 +376,12 @@ func (c *Config) LoadConfigFile(path string) error {
 
 	fullPath, err := filepath.Abs(path)
 	if err != nil {
-		return errors.Wrap(errors.WithStack(err), "failed to load config file")
+		return fmt.Errorf("failed to load config file: %w", err)
 	}
 
 	buf, err := os.ReadFile(filepath.Clean(fullPath))
 	if err != nil {
-		return errors.Wrap(errors.WithStack(err), "failed to load config file")
+		return fmt.Errorf("failed to load config file: %w", err)
 	}
 	c.Path = filepath.Clean(fullPath)
 
@@ -386,10 +389,12 @@ func (c *Config) LoadConfigFile(path string) error {
 }
 
 // LoadConfig load config from []byte
-func (c *Config) LoadConfig(in []byte) error {
-	err := yaml.Unmarshal(expand.ExpandenvYAMLBytes(in), c)
-	if err != nil {
-		return errors.Wrap(errors.WithStack(err), "failed to load config file")
+func (c *Config) LoadConfig(in []byte) (err error) {
+	defer func() {
+		err = errors.WithStack(err)
+	}()
+	if err := yaml.Unmarshal(expand.ExpandenvYAMLBytes(in), c); err != nil {
+		return fmt.Errorf("failed to load config file: %w", err)
 	}
 	c.MergedDict.Merge(c.Dict.Dump())
 	return nil
@@ -611,15 +616,18 @@ func (c *Config) detectShowColumnsForER(s *schema.Schema) error {
 	return nil
 }
 
-func mergeAdditionalRelations(s *schema.Schema, relations []AdditionalRelation) error {
+func mergeAdditionalRelations(s *schema.Schema, relations []AdditionalRelation) (err error) {
+	defer func() {
+		err = errors.WithStack(err)
+	}()
 	for _, r := range relations {
 		c, err := schema.ToCardinality(r.Cardinality)
 		if err != nil {
-			return errors.Wrap(err, "failed to add relation")
+			return fmt.Errorf("failed to add relation: %w", err)
 		}
 		pc, err := schema.ToCardinality(r.ParentCardinality)
 		if err != nil {
-			return errors.Wrap(err, "failed to add relation")
+			return fmt.Errorf("failed to add relation: %w", err)
 		}
 		relation := &schema.Relation{
 			Cardinality:       c,
@@ -633,24 +641,24 @@ func mergeAdditionalRelations(s *schema.Schema, relations []AdditionalRelation) 
 		}
 		relation.Table, err = s.FindTableByName(r.Table)
 		if err != nil {
-			return errors.Wrap(err, "failed to add relation")
+			return fmt.Errorf("failed to add relation: %w", err)
 		}
 		for _, c := range r.Columns {
 			column, err := relation.Table.FindColumnByName(c)
 			if err != nil {
-				return errors.Wrap(err, "failed to add relation")
+				return fmt.Errorf("failed to add relation: %w", err)
 			}
 			relation.Columns = append(relation.Columns, column)
 			column.ParentRelations = append(column.ParentRelations, relation)
 		}
 		relation.ParentTable, err = s.FindTableByName(r.ParentTable)
 		if err != nil {
-			return errors.Wrap(err, "failed to add relation")
+			return fmt.Errorf("failed to add relation: %w", err)
 		}
 		for _, c := range r.ParentColumns {
 			column, err := relation.ParentTable.FindColumnByName(c)
 			if err != nil {
-				return errors.Wrap(err, "failed to add relation")
+				return fmt.Errorf("failed to add relation: %w", err)
 			}
 			relation.ParentColumns = append(relation.ParentColumns, column)
 			column.ChildRelations = append(column.ChildRelations, relation)
@@ -665,11 +673,11 @@ func mergeAdditionalRelations(s *schema.Schema, relations []AdditionalRelation) 
 				cr.Def = r.Def
 				cr.Cardinality, err = schema.ToCardinality(r.Cardinality)
 				if err != nil {
-					return errors.Wrap(err, "failed to add relation")
+					return fmt.Errorf("failed to add relation: %w", err)
 				}
 				cr.ParentCardinality, err = schema.ToCardinality(r.ParentCardinality)
 				if err != nil {
-					return errors.Wrap(err, "failed to add relation")
+					return fmt.Errorf("failed to add relation: %w", err)
 				}
 			}
 		} else {
@@ -679,11 +687,14 @@ func mergeAdditionalRelations(s *schema.Schema, relations []AdditionalRelation) 
 	return nil
 }
 
-func mergeAdditionalComments(s *schema.Schema, comments []AdditionalComment) error {
+func mergeAdditionalComments(s *schema.Schema, comments []AdditionalComment) (err error) {
+	defer func() {
+		err = errors.WithStack(err)
+	}()
 	for _, c := range comments {
 		table, err := s.FindTableByName(c.Table)
 		if err != nil {
-			return errors.Wrap(err, "failed to add table comment")
+			return fmt.Errorf("failed to add table comment: %w", err)
 		}
 		if c.TableComment != "" {
 			table.Comment = c.TableComment
@@ -696,14 +707,14 @@ func mergeAdditionalComments(s *schema.Schema, comments []AdditionalComment) err
 		for c, comment := range c.ColumnComments {
 			column, err := table.FindColumnByName(c)
 			if err != nil {
-				return errors.Wrap(err, "failed to add column comment")
+				return fmt.Errorf("failed to add column comment: %w", err)
 			}
 			column.Comment = comment
 		}
 		for c, labels := range c.ColumnLabels {
 			column, err := table.FindColumnByName(c)
 			if err != nil {
-				return errors.Wrap(err, "failed to add column comment")
+				return fmt.Errorf("failed to add column comment: %w", err)
 			}
 			for _, l := range labels {
 				column.Labels = column.Labels.Merge(l)
@@ -712,21 +723,21 @@ func mergeAdditionalComments(s *schema.Schema, comments []AdditionalComment) err
 		for i, comment := range c.IndexComments {
 			index, err := table.FindIndexByName(i)
 			if err != nil {
-				return errors.Wrap(err, "failed to add index comment")
+				return fmt.Errorf("failed to add index comment: %w", err)
 			}
 			index.Comment = comment
 		}
 		for c, comment := range c.ConstraintComments {
 			constraint, err := table.FindConstraintByName(c)
 			if err != nil {
-				return errors.Wrap(err, "failed to add constraint comment")
+				return fmt.Errorf("failed to add constraint comment: %w", err)
 			}
 			constraint.Comment = comment
 		}
 		for t, comment := range c.TriggerComments {
 			trigger, err := table.FindTriggerByName(t)
 			if err != nil {
-				return errors.Wrap(err, "failed to add trigger comment")
+				return fmt.Errorf("failed to add trigger comment: %w", err)
 			}
 			trigger.Comment = comment
 		}

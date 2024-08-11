@@ -992,6 +992,8 @@ github.com/jung-kurt/gofpdf v1.0.0/go.mod h1:7Id9E/uU8ce6rXgefFLlgrJj/GYY22cpxn+
 github.com/jung-kurt/gofpdf v1.0.3-0.20190309125859-24315acbbda5/go.mod h1:7Id9E/uU8ce6rXgefFLlgrJj/GYY22cpxn+r32jIOes=
 github.com/k1LoW/duration v1.2.0 h1:qq1gWtPh7YROFyerBufVP+ATR11mOOHDInrcC/Xe/6A=
 github.com/k1LoW/duration v1.2.0/go.mod h1:qUa0NptIiUl5EUsCc8wIiSaHuNjS4wmpYNMHp0l6pos=
+github.com/k1LoW/errors v0.2.1 h1:HHdnTugYfmZL4QsbVhcYNlQxVC1ExsEp7q7Npdxvqoc=
+github.com/k1LoW/errors v0.2.1/go.mod h1:sNlL6+/dTai2f2R7/vcDMMRlrd/C7kXONQT81b2kZPY=
 github.com/k1LoW/expand v0.12.0 h1:EfkT/VoGVe/B6Jo8WYS5dliXOPJ0xkdkGfzOQPl+0Y8=
 github.com/k1LoW/expand v0.12.0/go.mod h1:jJkWgMSibfX88Q+4m4Jse6FQP62M4ia2YaQWQKmD4nA=
 github.com/k1LoW/ffff v0.2.0 h1:k5IYb2ggSKrkgVRkFnn1fs4xVUkJxanTH5gInmEKTDA=

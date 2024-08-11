@@ -7,11 +7,11 @@ import (
 	"strings"
 
 	"github.com/aquasecurity/go-version/pkg/version"
+	"github.com/k1LoW/errors"
 	"github.com/k1LoW/tbls/ddl"
 	"github.com/k1LoW/tbls/dict"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/lib/pq"
-	"github.com/pkg/errors"
 )
 
 var reFK = regexp.MustCompile(`FOREIGN KEY \((.+)\) REFERENCES ([^\s\)]+)\s?\(([^\)]+)\)`)
@@ -32,7 +32,10 @@ func New(db *sql.DB) *Postgres {
 }
 
 // Analyze PostgreSQL database schema
-func (p *Postgres) Analyze(s *schema.Schema) error {
+func (p *Postgres) Analyze(s *schema.Schema) (err error) {
+	defer func() {
+		err = errors.WithStack(err)
+	}()
 	d, err := p.Info()
 	if err != nil {
 		return errors.WithStack(err)
@@ -280,7 +283,7 @@ ORDER BY tgrelid
 			case "s":
 				column.ExtraDef = fmt.Sprintf("GENERATED ALWAYS AS %s STORED", columnDefaultOrGenerated.String)
 			default:
-				return errors.Errorf("unsupported pg_attribute.attrgenerated '%s'", attrgenerated.String)
+				return fmt.Errorf("unsupported pg_attribute.attrgenerated '%s'", attrgenerated.String)
 			}
 			columns = append(columns, column)
 		}
@@ -525,7 +528,10 @@ func (p *Postgres) EnableRsMode() {
 	p.rsMode = true
 }
 
-func (p *Postgres) queryForColumns(v string) (string, error) {
+func (p *Postgres) queryForColumns(v string) (_ string, err error) {
+	defer func() {
+		err = errors.WithStack(err)
+	}()
 	verGeneratedColumn, err := version.Parse("12")
 	if err != nil {
 		return "", err
@@ -533,7 +539,7 @@ func (p *Postgres) queryForColumns(v string) (string, error) {
 	// v => PostgreSQL 9.5.24 on x86_64-pc-linux-gnu (Debian 9.5.24-1.pgdg90+1), compiled by gcc (Debian 6.3.0-18+deb9u1) 6.3.0 20170516, 64-bit
 	matches := reVersion.FindStringSubmatch(v)
 	if matches == nil || len(matches) < 2 {
-		return "", errors.Errorf("malformed version: %s", v)
+		return "", fmt.Errorf("malformed version: %s", v)
 	}
 	vv, err := version.Parse(matches[1])
 	if err != nil {
@@ -661,7 +667,10 @@ GROUP BY cls.relname, idx.indexrelid, descr.description
 ORDER BY idx.indexrelid`
 }
 
-func detectFullTableName(name string, searchPaths, fullTableNames []string) (string, error) {
+func detectFullTableName(name string, searchPaths, fullTableNames []string) (_ string, err error) {
+	defer func() {
+		err = errors.WithStack(err)
+	}()
 	if strings.Contains(name, ".") {
 		return name, nil
 	}
@@ -676,7 +685,7 @@ func detectFullTableName(name string, searchPaths, fullTableNames []string) (str
 		}
 	}
 	if len(fns) != 1 {
-		return "", errors.Errorf("can not detect table name: %s", name)
+		return "", fmt.Errorf("can not detect table name: %s", name)
 	}
 	return fns[0], nil
 }
@@ -698,10 +707,13 @@ func convertConstraintType(t string) string {
 	}
 }
 
-func parseFK(def string) ([]string, string, []string, error) {
+func parseFK(def string) (_ []string, _ string, _ []string, err error) {
+	defer func() {
+		err = errors.WithStack(err)
+	}()
 	result := reFK.FindAllStringSubmatch(def, -1)
 	if len(result) < 1 || len(result[0]) < 4 {
-		return nil, "", nil, errors.Errorf("can not parse foreign key: %s", def)
+		return nil, "", nil, fmt.Errorf("can not parse foreign key: %s", def)
 	}
 	strColumns := []string{}
 	for _, c := range strings.Split(result[0][1], ", ") {

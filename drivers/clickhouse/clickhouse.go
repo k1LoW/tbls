@@ -6,9 +6,9 @@ import (
 	"regexp"
 
 	_ "github.com/ClickHouse/clickhouse-go/v2"
+	"github.com/k1LoW/errors"
 	"github.com/k1LoW/tbls/dict"
 	"github.com/k1LoW/tbls/schema"
-	"github.com/pkg/errors"
 	"github.com/samber/lo"
 )
 

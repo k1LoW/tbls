@@ -3,6 +3,7 @@ package datasource
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -10,6 +11,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/k1LoW/errors"
 	"github.com/k1LoW/ghfs"
 	"github.com/k1LoW/go-github-client/v58/factory"
 	"github.com/k1LoW/tbls/config"
@@ -23,12 +25,14 @@ import (
 	"github.com/k1LoW/tbls/drivers/snowflake"
 	"github.com/k1LoW/tbls/drivers/sqlite"
 	"github.com/k1LoW/tbls/schema"
-	"github.com/pkg/errors"
 	"github.com/xo/dburl"
 )
 
 // Analyze database
-func Analyze(dsn config.DSN) (*schema.Schema, error) {
+func Analyze(dsn config.DSN) (_ *schema.Schema, err error) {
+	defer func() {
+		err = errors.WithStack(err)
+	}()
 	urlstr := dsn.URL
 	if strings.HasPrefix(urlstr, "https://") || strings.HasPrefix(urlstr, "http://") {
 		return AnalyzeHTTPResource(dsn)
@@ -54,11 +58,11 @@ func Analyze(dsn config.DSN) (*schema.Schema, error) {
 	s := &schema.Schema{}
 	u, err := dburl.Parse(urlstr)
 	if err != nil {
-		return s, errors.WithStack(err)
+		return s, err
 	}
 	splitted := strings.Split(u.Short(), "/")
 	if len(splitted) < 2 {
-		return s, errors.Errorf("invalid DSN: parse %s -> %#v", urlstr, u)
+		return s, fmt.Errorf("invalid DSN: parse %s -> %#v", urlstr, u)
 	}
 
 	opts := []drivers.Option{}
@@ -129,7 +133,7 @@ func Analyze(dsn config.DSN) (*schema.Schema, error) {
 		s.Name = splitted[1]
 		driver = clickhouse.New(db)
 	default:
-		return s, errors.Errorf("unsupported driver '%s'", u.Driver)
+		return s, fmt.Errorf("unsupported driver '%s'", u.Driver)
 	}
 	err = driver.Analyze(s)
 	if err != nil {
@@ -139,11 +143,14 @@ func Analyze(dsn config.DSN) (*schema.Schema, error) {
 }
 
 // AnalyzeHTTPResource analyze `https://` or `http://`
-func AnalyzeHTTPResource(dsn config.DSN) (*schema.Schema, error) {
+func AnalyzeHTTPResource(dsn config.DSN) (_ *schema.Schema, err error) {
+	defer func() {
+		err = errors.WithStack(err)
+	}()
 	s := &schema.Schema{}
 	req, err := http.NewRequest("GET", dsn.URL, nil)
 	if err != nil {
-		return s, errors.WithStack(err)
+		return s, err
 	}
 	for k, v := range dsn.Headers {
 		req.Header.Add(k, v)
@@ -151,64 +158,70 @@ func AnalyzeHTTPResource(dsn config.DSN) (*schema.Schema, error) {
 	client := &http.Client{Timeout: time.Duration(10) * time.Second}
 	resp, err := client.Do(req)
 	if err != nil {
-		return s, errors.WithStack(err)
+		return s, err
 	}
 	defer resp.Body.Close()
 	dec := json.NewDecoder(resp.Body)
 	if err := dec.Decode(s); err != nil {
-		return s, errors.WithStack(err)
+		return s, err
 	}
 	if err := s.Repair(); err != nil {
-		return s, errors.WithStack(err)
+		return s, err
 	}
 	return s, nil
 }
 
 // AnalyzeGitHubContent analyze `github://`
-func AnalyzeGitHubContent(dsn config.DSN) (*schema.Schema, error) {
+func AnalyzeGitHubContent(dsn config.DSN) (_ *schema.Schema, err error) {
+	defer func() {
+		err = errors.WithStack(err)
+	}()
 	splitted := strings.SplitN(strings.TrimPrefix(dsn.URL, "github://"), "/", 3)
 	if len(splitted) != 3 {
-		return nil, errors.Errorf("invalid dsn: %s", dsn)
+		return nil, fmt.Errorf("invalid dsn: %s", dsn)
 	}
 	s := &schema.Schema{}
 	options := []factory.Option{factory.OwnerRepo(splitted[0] + "/" + splitted[1])}
 	c, err := factory.NewGithubClient(options...)
 	if err != nil {
-		return nil, errors.WithStack(err)
+		return nil, err
 	}
 	o := ghfs.Client(c)
 	fsys, err := ghfs.New(splitted[0], splitted[1], o)
 	if err != nil {
-		return nil, errors.WithStack(err)
+		return nil, err
 	}
 	b, err := fsys.ReadFile(splitted[2])
 	if err != nil {
-		return nil, errors.WithStack(err)
+		return nil, err
 	}
 	dec := json.NewDecoder(bytes.NewReader(b))
 	if err := dec.Decode(s); err != nil {
-		return s, errors.WithStack(err)
+		return s, err
 	}
 	if err := s.Repair(); err != nil {
-		return s, errors.WithStack(err)
+		return s, err
 	}
 	return s, nil
 }
 
 // AnalyzeJSON analyze `json://`
-func AnalyzeJSON(urlstr string) (*schema.Schema, error) {
+func AnalyzeJSON(urlstr string) (_ *schema.Schema, err error) {
+	defer func() {
+		err = errors.WithStack(err)
+	}()
 	s := &schema.Schema{}
 	splitted := strings.Split(urlstr, "json://")
 	file, err := os.Open(splitted[1])
 	if err != nil {
-		return s, errors.WithStack(err)
+		return s, err
 	}
 	dec := json.NewDecoder(file)
 	if err := dec.Decode(s); err != nil {
-		return s, errors.WithStack(err)
+		return s, err
 	}
 	if err := s.Repair(); err != nil {
-		return s, errors.WithStack(err)
+		return s, err
 	}
 	return s, nil
 }
@@ -220,6 +233,9 @@ func AnalyzeJSONString(str string) (*schema.Schema, error) {
 
 // AnalyzeJSONStringOrFile analyze JSON string or JSON file
 func AnalyzeJSONStringOrFile(strOrPath string) (s *schema.Schema, err error) {
+	defer func() {
+		err = errors.WithStack(err)
+	}()
 	s = &schema.Schema{}
 	var buf io.Reader
 	if strings.HasPrefix(strOrPath, "{") {
@@ -227,15 +243,15 @@ func AnalyzeJSONStringOrFile(strOrPath string) (s *schema.Schema, err error) {
 	} else {
 		buf, err = os.Open(filepath.Clean(strOrPath))
 		if err != nil {
-			return s, errors.WithStack(err)
+			return s, err
 		}
 	}
 	dec := json.NewDecoder(buf)
 	if err := dec.Decode(s); err != nil {
-		return s, errors.WithStack(err)
+		return s, err
 	}
 	if err := s.Repair(); err != nil {
-		return s, errors.WithStack(err)
+		return s, err
 	}
 	return s, nil
 }

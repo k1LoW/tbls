@@ -6,9 +6,9 @@ import (
 	"regexp"
 
 	"github.com/aws/aws-sdk-go/service/dynamodb"
+	"github.com/k1LoW/errors"
 	"github.com/k1LoW/tbls/dict"
 	"github.com/k1LoW/tbls/schema"
-	"github.com/pkg/errors"
 )
 
 var re = regexp.MustCompile(`(?s)\n\s*`)

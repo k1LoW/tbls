@@ -8,11 +8,11 @@ import (
 	"strings"
 
 	"github.com/aquasecurity/go-version/pkg/version"
+	"github.com/k1LoW/errors"
 	"github.com/k1LoW/tbls/ddl"
 	"github.com/k1LoW/tbls/dict"
 	"github.com/k1LoW/tbls/drivers"
 	"github.com/k1LoW/tbls/schema"
-	"github.com/pkg/errors"
 )
 
 var reFK = regexp.MustCompile(`FOREIGN KEY \((.+)\) REFERENCES ([^\s\)]+)\s?\(([^\)]+)\)`)
@@ -637,10 +637,13 @@ func convertColumnNullable(str string) bool {
 	return str != "NO"
 }
 
-func parseFK(def string) ([]string, string, []string, error) {
+func parseFK(def string) (_ []string, _ string, _ []string, err error) {
+	defer func() {
+		err = errors.WithStack(err)
+	}()
 	result := reFK.FindAllStringSubmatch(def, -1)
 	if len(result) < 1 || len(result[0]) < 4 {
-		return nil, "", nil, errors.Errorf("can not parse foreign key: %s", def)
+		return nil, "", nil, fmt.Errorf("can not parse foreign key: %s", def)
 	}
 	strColumns := strings.Split(result[0][1], ", ")
 	strParentTable := strings.Trim(result[0][2], `"`)

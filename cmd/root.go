@@ -29,6 +29,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/k1LoW/errors"
 	"github.com/k1LoW/tbls/cmdutil"
 	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/output/json"
@@ -271,7 +272,7 @@ func printError(err error) {
 	env := os.Getenv("DEBUG")
 	debug, _ := strconv.ParseBool(env)
 	if env != "" && debug {
-		fmt.Printf("%+v\n", err)
+		fmt.Println(err, errors.StackTraces(err))
 	} else {
 		fmt.Println(err)
 	}
