@@ -28,9 +28,9 @@ jobs:
           android: true
           dotnet: true
           haskell: true
-          large-packages: true
-          docker-images: true
-          swap-storage: true
+          large-packages: false
+          docker-images: false
+          swap-storage: false
 
       - name: Install aws-cli
         uses: isbang/setup-awscli@v0.1.0
@@ -53,6 +53,7 @@ jobs:
         run: |
           docker compose up -d
           sleep 20s
+          docker compose ps
 
       - name: Run lint
         uses: reviewdog/action-golangci-lint@v2
@@ -60,7 +61,7 @@ jobs:
           go_version_file: go.mod
           reporter: github-pr-check
 
-      - name: Run tests
+      - name: Run test
         run: make ci
         env:
           DEBUG: "true"
