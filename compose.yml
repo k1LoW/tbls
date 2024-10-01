@@ -47,7 +47,7 @@ services:
       - MYSQL_DATABASE=testdb
       - MYSQL_ROOT_PASSWORD=mypass
   mssql:
-    image: mcr.microsoft.com/mssql/server:2017-latest
+    image: mcr.microsoft.com/mssql/server:2019-latest
     restart: always
     ports:
       - "11433:1433"
