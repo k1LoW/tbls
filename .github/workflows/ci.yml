@@ -54,7 +54,6 @@ jobs:
           docker compose up -d
           sleep 20s
           docker compose ps
-          docker compose logs mssql
 
       - name: Run lint
         uses: reviewdog/action-golangci-lint@v2
