@@ -18,6 +18,19 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install sqlite3
+          sudo apt-get clean
+          sudo rm -rf /var/lib/apt/lists/*
+
+      - name: Free disk space
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: false
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: false
+          docker-images: false
+          swap-storage: false
 
       - name: Install aws-cli
         uses: isbang/setup-awscli@v0.1.0
@@ -40,6 +53,8 @@ jobs:
         run: |
           docker compose up -d
           sleep 20s
+          docker compose ps
+          docker compose logs mssql
 
       - name: Run lint
         uses: reviewdog/action-golangci-lint@v2
@@ -47,7 +62,7 @@ jobs:
           go_version_file: go.mod
           reporter: github-pr-check
 
-      - name: Run tests
+      - name: Run test
         run: make ci
         env:
           DEBUG: "true"
