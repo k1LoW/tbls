@@ -18,6 +18,19 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install sqlite3
+          sudo apt-get clean
+          sudo rm -rf /var/lib/apt/lists/*
+
+      - name: Free disk space
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: false
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: true
+          docker-images: true
+          swap-storage: true
 
       - name: Install aws-cli
         uses: isbang/setup-awscli@v0.1.0
