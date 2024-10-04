@@ -41,6 +41,12 @@ Sample PostgreSQL database document.
 | public.uuid_generate_v5 | uuid | namespace uuid, name text | FUNCTION |
 | public.update_updated | trigger |  | FUNCTION |
 
+## Enums
+
+| Name | Values |
+| ---- | ------- |
+| public.post_types | draft, private, public |
+
 ## Relations
 
 ![er](schema.svg)
