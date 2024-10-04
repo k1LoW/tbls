@@ -500,11 +500,12 @@ func (p *Postgres) getFunctionsByQuery(query string) ([]*schema.Function, error)
 func (p *Postgres) getEnums() ([]*schema.Enum, error) {
 	enums := []*schema.Enum{}
 
-	enumsResult, err := p.db.Query(`SELECT t.typname AS enum_name, ARRAY_AGG(e.enumlabel) AS enum_values
-										  FROM pg_type t, pg_enum e
-										  WHERE t.typcategory = 'E'
-										  AND t.oid = e.enumtypid
-										  GROUP BY t.typname `)
+	enumsResult, err := p.db.Query(`SELECT n.nspname, t.typname AS enum_name, ARRAY_AGG(e.enumlabel) AS enum_values
+											FROM pg_type t, pg_enum e, pg_catalog.pg_namespace n
+											WHERE t.typcategory = 'E'
+											  AND t.oid = e.enumtypid
+											  AND n.oid = t.typnamespace
+											GROUP BY n.nspname, t.typname `)
 
 	if err != nil {
 		return nil, errors.WithStack(err)
@@ -512,12 +513,21 @@ func (p *Postgres) getEnums() ([]*schema.Enum, error) {
 	defer enumsResult.Close()
 
 	for enumsResult.Next() {
-		var enum schema.Enum
-		err := enumsResult.Scan(&enum.Name, pq.Array(&enum.Values))
+		var (
+			schemaName string
+			enumName   string
+			enumValues []string
+		)
+		err := enumsResult.Scan(&schemaName, &enumName, pq.Array(&enumValues))
 		if err != nil {
 			return enums, errors.WithStack(err)
 		}
-		enums = append(enums, &enum)
+
+		enum := &schema.Enum{
+			Name:   fmt.Sprintf("%s.%s", schemaName, enumName),
+			Values: enumValues,
+		}
+		enums = append(enums, enum)
 	}
 	return enums, nil
 }
