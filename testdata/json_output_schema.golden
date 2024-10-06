@@ -139,6 +139,16 @@
     }
   ],
   "functions": null,
+  "enums": [
+    {
+      "name": "enum",
+      "values": [
+        "one",
+        "two",
+        "three"
+      ]
+    }
+  ],
   "driver": {
     "name": "testdriver",
     "database_version": "1.0.0",

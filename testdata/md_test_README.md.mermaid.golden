@@ -17,6 +17,12 @@
 | [b](b.md) | 2 | table b |  | `red` `green` |
 | [view](view.md) | 1 | view | VIEW |  |
 
+## Enums
+
+| Name | Values |
+| ---- | ------- |
+| enum | one, three, two |
+
 ## Relations
 
 ```mermaid

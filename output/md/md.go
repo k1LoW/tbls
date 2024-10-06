@@ -7,6 +7,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"sort"
 	"strconv"
 	"strings"
 	"text/template"
@@ -521,11 +522,15 @@ func (m *Md) makeSchemaTemplateData(s *schema.Schema) map[string]interface{} {
 	// Viewpoints
 	viewpointsData := m.viewpointsData(s.Viewpoints, number, adjust, showOnlyFirstParagraph)
 
+	// Enums
+	enumData := m.enumData(s.Enums)
+
 	return map[string]interface{}{
 		"Schema":     s,
 		"Tables":     tablesData,
 		"Functions":  functionsData,
 		"Viewpoints": viewpointsData,
+		"Enums":      enumData,
 	}
 }
 
@@ -868,6 +873,35 @@ func (m *Md) functionsData(functions []*schema.Function, number, adjust, showOnl
 
 	if adjust {
 		data = adjustTable(data)
+	}
+
+	return data
+}
+
+func (m *Md) enumData(enums []*schema.Enum) [][]string {
+	data := [][]string{}
+
+	if len(enums) == 0 {
+		return data
+	}
+
+	header := []string{
+		m.config.MergedDict.Lookup("Name"),
+		m.config.MergedDict.Lookup("Values"),
+	}
+	headerLine := []string{"----", "-------"}
+	data = append(data,
+		header,
+		headerLine,
+	)
+
+	for _, e := range enums {
+		sort.Strings(e.Values)
+		d := []string{
+			e.Name,
+			strings.Join(e.Values, ", "),
+		}
+		data = append(data, d)
 	}
 
 	return data

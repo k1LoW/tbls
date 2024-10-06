@@ -329,6 +329,13 @@ ORDER BY tgrelid
 	}
 	s.Functions = functions
 
+	// Enums
+	enums, err := p.getEnums()
+	if err != nil {
+		return err
+	}
+	s.Enums = enums
+
 	s.Tables = tables
 
 	// Relations
@@ -488,6 +495,41 @@ func (p *Postgres) getFunctionsByQuery(query string) ([]*schema.Function, error)
 		functions = append(functions, function)
 	}
 	return functions, nil
+}
+
+func (p *Postgres) getEnums() ([]*schema.Enum, error) {
+	enums := []*schema.Enum{}
+
+	enumsResult, err := p.db.Query(`SELECT n.nspname, t.typname AS enum_name, ARRAY_AGG(e.enumlabel) AS enum_values
+											FROM pg_type t, pg_enum e, pg_catalog.pg_namespace n
+											WHERE t.typcategory = 'E'
+											  AND t.oid = e.enumtypid
+											  AND n.oid = t.typnamespace
+											GROUP BY n.nspname, t.typname `)
+
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+	defer enumsResult.Close()
+
+	for enumsResult.Next() {
+		var (
+			schemaName string
+			enumName   string
+			enumValues []string
+		)
+		err := enumsResult.Scan(&schemaName, &enumName, pq.Array(&enumValues))
+		if err != nil {
+			return enums, errors.WithStack(err)
+		}
+
+		enum := &schema.Enum{
+			Name:   fmt.Sprintf("%s.%s", schemaName, enumName),
+			Values: enumValues,
+		}
+		enums = append(enums, enum)
+	}
+	return enums, nil
 }
 
 func fullTableName(owner string, tableName string) string {

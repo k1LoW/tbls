@@ -180,6 +180,11 @@ type Function struct {
 	Type       string `json:"type"`
 }
 
+type Enum struct {
+	Name   string   `json:"name"`
+	Values []string `json:"values"`
+}
+
 // Driver is the struct for tbls driver information
 type Driver struct {
 	Name            string      `json:"name"`
@@ -194,6 +199,7 @@ type Schema struct {
 	Tables     []*Table    `json:"tables"`
 	Relations  []*Relation `json:"relations"`
 	Functions  []*Function `json:"functions"`
+	Enums      []*Enum     `json:"enums,omitempty"`
 	Driver     *Driver     `json:"driver"`
 	Labels     Labels      `json:"labels,omitempty"`
 	Viewpoints Viewpoints  `json:"viewpoints,omitempty"`

@@ -42,6 +42,12 @@ Sample PostgreSQL database document.
 | public.update_updated | trigger |  | FUNCTION |
 | public.reset_comment | void | IN comment_id integer | PROCEDURE |
 
+## Enums
+
+| Name | Values |
+| ---- | ------- |
+| public.post_types | draft, private, public |
+
 ## Relations
 
 ![er](schema.svg)
