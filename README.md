@@ -977,27 +977,15 @@ detectVirtualRelations:
   strategy: default
 ```
 
-**`default` strategy:**
+##### Supported strategies
 
-``` yaml
-detectVirtualRelations:
-  enabled: true
-  strategy: default
-```
+| strategy name                | relation from        | relation to     |
+| :--                          | :--                  | :--             |
+| `default`                    | `some_table.user_id` | `users.id`      |
+| `singularTableName`          | `some_table.user_id` | `user.id`       |
+| `identical`                  | `some_table.user_id` | `users.user_id` |
+| `identicalSingularTableName` | `some_table.user_id` | `user.user_id`  |
 
-- some_table.user_id -> users.id
-- some_table.post_id -> posts.id
-
-**`singularTableName` strategy:**
-
-``` yaml
-detectVirtualRelations:
-  enabled: true
-  strategy: singularTableName
-```
-
-- some_table.user_id -> user.id
-- some_table.post_id -> post.id
 
 ### Dictionary
 
