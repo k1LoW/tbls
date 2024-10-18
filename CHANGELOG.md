@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.78.1](https://github.com/k1LoW/tbls/compare/v1.78.0...v1.78.1) - 2024-10-18
+### Other Changes
+- feat(postgres): Ensure ordering of index columns is always stable by @95ulisse in https://github.com/k1LoW/tbls/pull/623
+
 ## [v1.78.0](https://github.com/k1LoW/tbls/compare/v1.77.0...v1.78.0) - 2024-10-08
 ### Breaking Changes 🛠
 - Use github.com/k1LoW/errors by @k1LoW in https://github.com/k1LoW/tbls/pull/613
