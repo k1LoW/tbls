@@ -698,7 +698,7 @@ ORDER BY idx.indexrelid`
 SELECT
   cls.relname AS indexname,
   pg_get_indexdef(idx.indexrelid) AS indexdef,
-  ARRAY_AGG(attr.attname),
+  ARRAY_AGG(attr.attname ORDER BY attr.attnum ASC),
   descr.description AS comment
 FROM pg_index AS idx
 INNER JOIN pg_class AS cls ON idx.indexrelid = cls.oid
