@@ -12,7 +12,7 @@ require (
 	github.com/expr-lang/expr v1.16.9
 	github.com/gertd/go-pluralize v0.2.1
 	github.com/go-sql-driver/mysql v1.8.1
-	github.com/goccy/go-graphviz v0.2.0
+	github.com/goccy/go-graphviz v0.2.4
 	github.com/goccy/go-yaml v1.12.0
 	github.com/google/go-cmp v0.6.0
 	github.com/k1LoW/duration v1.2.0
@@ -83,11 +83,13 @@ require (
 	github.com/cli/safeexec v1.0.1 // indirect
 	github.com/cncf/xds/go v0.0.0-20240822171458-6449f94b4d59 // indirect
 	github.com/danieljoos/wincred v1.2.1 // indirect
+	github.com/disintegration/imaging v1.6.2 // indirect
 	github.com/dvsekhvalnov/jose2go v1.6.0 // indirect
 	github.com/envoyproxy/go-control-plane v0.13.0 // indirect
 	github.com/envoyproxy/protoc-gen-validate v1.1.0 // indirect
 	github.com/fatih/color v1.16.0 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
+	github.com/flopp/go-findfont v0.1.0 // indirect
 	github.com/fogleman/gg v1.3.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.3 // indirect
 	github.com/go-faster/city v1.0.1 // indirect
