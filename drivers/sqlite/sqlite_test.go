@@ -11,7 +11,7 @@ import (
 	"testing"
 
 	"github.com/k1LoW/tbls/schema"
-	_ "github.com/mattn/go-sqlite3"
+	_ "modernc.org/sqlite"
 	"github.com/xo/dburl"
 )
 

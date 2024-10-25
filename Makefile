@@ -13,6 +13,7 @@ export GO111MODULE=on
 export AWS_ACCESS_KEY_ID=dummy
 export AWS_SECRET_ACCESS_KEY=dummy
 export AWS_DEFAULT_REGION=ap-northeast-1
+export CGO_ENABLED=0
 
 BUILD_LDFLAGS = -X $(PKG).commit=$(COMMIT) -X $(PKG).date=$(DATE)
 
@@ -164,22 +165,23 @@ build:
 	go build -tags timetzdata -ldflags="$(BUILD_LDFLAGS)"
 
 depsdev:
-	go install github.com/linyows/git-semv/cmd/git-semv@v1.2.0
-	go install github.com/Songmu/ghch/cmd/ghch@v0.10.2
-	go install github.com/xo/usql@v0.9.5
+	go install github.com/Songmu/ghch/cmd/ghch@latest
+	go install github.com/xo/usql@latest
 	go install github.com/Songmu/gocredits/cmd/gocredits@latest
 	go install github.com/securego/gosec/v2/cmd/gosec@latest
 
 prerelease:
 	git pull origin --tag
 	ghch -w -N ${VER}
-	gocredits -w .
+	gocredits -skip-missing -w .
+	cat _EXTRA_CREDITS >> CREDITS
 	git add CHANGELOG.md CREDITS
 	git commit -m'Bump up version number'
 	git tag ${VER}
 
 prerelease_for_tagpr: depsdev
-	gocredits -w .
+	gocredits -skip-missing -w .
+	cat _EXTRA_CREDITS >> CREDITS
 	git add CHANGELOG.md CREDITS go.mod go.sum
 
 .PHONY: default test

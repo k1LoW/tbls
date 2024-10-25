@@ -2,6 +2,7 @@ package datasource
 
 import (
 	"bytes"
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -26,7 +27,10 @@ import (
 	"github.com/k1LoW/tbls/drivers/sqlite"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/xo/dburl"
+	moderncsqlite "modernc.org/sqlite"
 )
+
+var dsnRep = strings.NewReplacer("sqlite://", "moderncsqlite://", "sqlite3://", "moderncsqlite://", "sq://", "moderncsqlite://")
 
 // Analyze database
 func Analyze(dsn config.DSN) (_ *schema.Schema, err error) {
@@ -55,6 +59,8 @@ func Analyze(dsn config.DSN) (_ *schema.Schema, err error) {
 	if strings.HasPrefix(urlstr, "mongodb://") || strings.HasPrefix(urlstr, "mongo://") {
 		return AnalyzeMongodb(urlstr)
 	}
+	urlstr = dsnRep.Replace(urlstr) // for modernc/sqlite
+
 	s := &schema.Schema{}
 	u, err := dburl.Parse(urlstr)
 	if err != nil {
@@ -120,7 +126,7 @@ func Analyze(dsn config.DSN) (_ *schema.Schema, err error) {
 		if err != nil {
 			return s, err
 		}
-	case "sqlite3":
+	case "moderncsqlite":
 		s.Name = splitted[len(splitted)-1]
 		driver = sqlite.New(db)
 	case "sqlserver":
@@ -254,4 +260,8 @@ func AnalyzeJSONStringOrFile(strOrPath string) (s *schema.Schema, err error) {
 		return s, err
 	}
 	return s, nil
+}
+
+func init() {
+	sql.Register("moderncsqlite", &moderncsqlite.Driver{})
 }

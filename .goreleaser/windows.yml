@@ -6,17 +6,8 @@ before:
 builds:
 -
   id: tbls-windows
-  flags:
-    - -a
-    - -tags
-    - netgo,timetzdata
-    - -installsuffix
-    - netgo
-  ldflags:
-    - -s -w -X github.com/k1LoW/tbls.version={{.Version}} -X github.com/k1LoW/tbls.commit={{.FullCommit}} -X github.com/k1LoW/tbls.date={{.Date}} -X github.com/k1LoW/tbls/version.Version={{.Version}}
-    - -extldflags '-static'
   env:
-    - CGO_ENABLED=1
+    - CGO_ENABLED=0
   goos:
     - windows
   goarch:

@@ -114,3 +114,4 @@ CREATE TABLE check_constraints (
 
 CREATE VIRTUAL TABLE syslog USING fts3(logs);
 CREATE VIRTUAL TABLE access_log USING fts4(logs);
+CREATE VIRTUAL TABLE wal_log USING fts5(logs);
