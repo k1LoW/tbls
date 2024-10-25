@@ -12,7 +12,7 @@ require (
 	github.com/expr-lang/expr v1.16.9
 	github.com/gertd/go-pluralize v0.2.1
 	github.com/go-sql-driver/mysql v1.8.1
-	github.com/goccy/go-graphviz v0.1.3
+	github.com/goccy/go-graphviz v0.2.0
 	github.com/goccy/go-yaml v1.12.0
 	github.com/google/go-cmp v0.6.0
 	github.com/k1LoW/duration v1.2.0
@@ -37,7 +37,7 @@ require (
 	github.com/xo/dburl v0.23.2
 	gitlab.com/golang-commonmark/mdurl v0.0.0-20191124015652-932350d1cb84
 	go.mongodb.org/mongo-driver v1.17.0
-	golang.org/x/image v0.20.0
+	golang.org/x/image v0.21.0
 	golang.org/x/oauth2 v0.23.0
 	google.golang.org/api v0.197.0
 )
@@ -135,6 +135,7 @@ require (
 	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/stretchr/objx v0.5.2 // indirect
+	github.com/tetratelabs/wazero v1.8.1 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
 	github.com/xdg-go/scram v1.1.2 // indirect
 	github.com/xdg-go/stringprep v1.0.4 // indirect
@@ -156,7 +157,7 @@ require (
 	golang.org/x/sync v0.8.0 // indirect
 	golang.org/x/sys v0.25.0 // indirect
 	golang.org/x/term v0.24.0 // indirect
-	golang.org/x/text v0.18.0 // indirect
+	golang.org/x/text v0.19.0 // indirect
 	golang.org/x/time v0.6.0 // indirect
 	golang.org/x/tools v0.24.0 // indirect
 	golang.org/x/xerrors v0.0.0-20240903120638-7835f813f4da // indirect

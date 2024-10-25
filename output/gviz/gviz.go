@@ -2,6 +2,7 @@ package gviz
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"io"
 	"os"
@@ -62,7 +63,11 @@ func (g *Gviz) OutputViewpoint(wr io.Writer, v *schema.Viewpoint) error {
 }
 
 func (g *Gviz) render(wr io.Writer, b []byte) (e error) {
-	gviz := graphviz.New()
+	ctx := context.Background()
+	gviz, err := graphviz.New(ctx)
+	if err != nil {
+		return err
+	}
 	if g.config.ER.Font != "" {
 		faceFunc, err := getFaceFunc(g.config.ER.Font)
 		if err != nil {
@@ -82,7 +87,7 @@ func (g *Gviz) render(wr io.Writer, b []byte) (e error) {
 			e = errors.WithStack(err)
 		}
 	}()
-	if err := gviz.Render(graph, graphviz.Format(g.config.ER.Format), wr); err != nil {
+	if err := gviz.Render(ctx, graph, graphviz.Format(g.config.ER.Format), wr); err != nil {
 		return errors.WithStack(err)
 	}
 	return nil
