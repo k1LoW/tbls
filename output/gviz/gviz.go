@@ -11,7 +11,6 @@ import (
 
 	"github.com/beta/freetype/truetype"
 	"github.com/goccy/go-graphviz"
-	"github.com/goccy/go-graphviz/gvc"
 	"github.com/k1LoW/errors"
 	"github.com/k1LoW/ffff"
 	"github.com/k1LoW/tbls/config"
@@ -75,7 +74,7 @@ func (g *Gviz) render(wr io.Writer, b []byte) (e error) {
 			return errors.WithStack(err)
 		}
 		// FIXME: more better way
-		graphviz.SetFontLoader(func(ctx context.Context, job *gvc.Job, font *gvc.TextFont) (font.Face, error) {
+		graphviz.SetFontLoader(func(ctx context.Context, job *graphviz.Job, font *graphviz.TextFont) (font.Face, error) {
 			return faceFunc(font.Size())
 		})
 	}
