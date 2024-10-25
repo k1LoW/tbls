@@ -40,11 +40,11 @@
 <text text-anchor="start" x="208.63" y="-118.2" font-family="Arial" font-size="14.00">    </text>
 <text text-anchor="start" x="239.75" y="-118.2" font-family="Arial" font-size="14.00" fill="#666666">[BASE TABLE]</text>
 <polygon fill="none" stroke="black" points="43.2,-74 43.2,-104.8 340.12,-104.8 340.12,-74 43.2,-74"/>
-<text text-anchor="start" x="50.2" y="-86.2" font-family="Arial" font-size="14.00">id    </text>
-<text text-anchor="start" x="92.21" y="-86.2" font-family="Arial" font-size="14.00" fill="#666666">[uuid]</text>
+<text text-anchor="start" x="50.2" y="-86.2" font-family="Arial" font-size="14.00">id </text>
+<text text-anchor="start" x="64.99" y="-86.2" font-family="Arial" font-size="14.00" fill="#666666">[uuid]</text>
 <polygon fill="none" stroke="black" points="43.2,-43.2 43.2,-74 340.12,-74 340.12,-43.2 43.2,-43.2"/>
-<text text-anchor="start" x="50.2" y="-55.4" font-family="Arial" font-size="14.00">created    </text>
-<text text-anchor="start" x="128.01" y="-55.4" font-family="Arial" font-size="14.00" fill="#666666">[timestamp without time zone]</text>
+<text text-anchor="start" x="50.2" y="-55.4" font-family="Arial" font-size="14.00">created </text>
+<text text-anchor="start" x="100.79" y="-55.4" font-family="Arial" font-size="14.00" fill="#666666">[timestamp without time zone]</text>
 </g>
 <!-- public.hyphen&#45;table&#45;&gt;public.CamelizeTable -->
 <g id="edge1" class="edge">

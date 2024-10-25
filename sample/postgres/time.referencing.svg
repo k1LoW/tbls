@@ -37,8 +37,8 @@
 <text text-anchor="start" x="172.1" y="-87.4" font-family="Arial" font-size="14.00">    </text>
 <text text-anchor="start" x="203.22" y="-87.4" font-family="Arial" font-size="14.00" fill="#666666">[BASE TABLE]</text>
 <polygon fill="none" stroke="black" points="105.63,-43.2 105.63,-74 303.59,-74 303.59,-43.2 105.63,-43.2"/>
-<text text-anchor="start" x="112.63" y="-55.4" font-family="Arial" font-size="14.00">id    </text>
-<text text-anchor="start" x="154.64" y="-55.4" font-family="Arial" font-size="14.00" fill="#666666">[integer]</text>
+<text text-anchor="start" x="112.63" y="-55.4" font-family="Arial" font-size="14.00">id </text>
+<text text-anchor="start" x="127.41" y="-55.4" font-family="Arial" font-size="14.00" fill="#666666">[integer]</text>
 </g>
 <!-- time.referencing&#45;&gt;time.bar -->
 <g id="edge1" class="edge">
@@ -56,8 +56,8 @@
 <text text-anchor="start" x="575.58" y="-87.4" font-family="Arial" font-size="14.00">    </text>
 <text text-anchor="start" x="606.7" y="-87.4" font-family="Arial" font-size="14.00" fill="#666666">[BASE TABLE]</text>
 <polygon fill="none" stroke="black" points="408.15,-43.2 408.15,-74 707.07,-74 707.07,-43.2 408.15,-43.2"/>
-<text text-anchor="start" x="415.15" y="-55.4" font-family="Arial" font-size="14.00">id    </text>
-<text text-anchor="start" x="457.16" y="-55.4" font-family="Arial" font-size="14.00" fill="#666666">[integer]</text>
+<text text-anchor="start" x="415.15" y="-55.4" font-family="Arial" font-size="14.00">id </text>
+<text text-anchor="start" x="429.93" y="-55.4" font-family="Arial" font-size="14.00" fill="#666666">[integer]</text>
 </g>
 <!-- time.referencing&#45;&gt;time.hyphenated&#45;table -->
 <g id="edge2" class="edge">

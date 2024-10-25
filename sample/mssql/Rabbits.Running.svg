@@ -37,11 +37,11 @@
 <text text-anchor="start" x="163.2" y="-122.95" font-family="Arial" font-size="14.00">    </text>
 <text text-anchor="start" x="194.32" y="-122.95" font-family="Arial" font-size="14.00" fill="#666666">[BASIC TABLE]</text>
 <polygon fill="none" stroke="black" points="57.71,-78.75 57.71,-109.55 299.35,-109.55 299.35,-78.75 57.71,-78.75"/>
-<text text-anchor="start" x="64.71" y="-90.95" font-family="Arial" font-size="14.00">ProductID    </text>
-<text text-anchor="start" x="158.07" y="-90.95" font-family="Arial" font-size="14.00" fill="#666666">[int]</text>
+<text text-anchor="start" x="64.71" y="-90.95" font-family="Arial" font-size="14.00">ProductID </text>
+<text text-anchor="start" x="130.85" y="-90.95" font-family="Arial" font-size="14.00" fill="#666666">[int]</text>
 <polygon fill="none" stroke="black" points="57.71,-47.95 57.71,-78.75 299.35,-78.75 299.35,-47.95 57.71,-47.95"/>
-<text text-anchor="start" x="64.71" y="-60.15" font-family="Arial" font-size="14.00">SalesPersonID    </text>
-<text text-anchor="start" x="189.21" y="-60.15" font-family="Arial" font-size="14.00" fill="#666666">[int]</text>
+<text text-anchor="start" x="64.71" y="-60.15" font-family="Arial" font-size="14.00">SalesPersonID </text>
+<text text-anchor="start" x="161.98" y="-60.15" font-family="Arial" font-size="14.00" fill="#666666">[int]</text>
 </g>
 <!-- Rabbits.Running&#45;&gt;Sales.Product -->
 <g id="edge1" class="edge">

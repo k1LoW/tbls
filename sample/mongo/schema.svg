@@ -17,26 +17,26 @@
 <text text-anchor="start" x="157.66" y="-272.2" font-family="Arial" font-size="14.00">    </text>
 <text text-anchor="start" x="188.78" y="-272.2" font-family="Arial" font-size="14.00" fill="#666666">[collection]</text>
 <polygon fill="none" stroke="black" points="43.2,-228 43.2,-258.8 261.93,-258.8 261.93,-228 43.2,-228"/>
-<text text-anchor="start" x="50.2" y="-240.2" font-family="Arial" font-size="14.00">_id    </text>
-<text text-anchor="start" x="100" y="-240.2" font-family="Arial" font-size="14.00" fill="#666666">[objectId]</text>
+<text text-anchor="start" x="50.2" y="-240.2" font-family="Arial" font-size="14.00">_id </text>
+<text text-anchor="start" x="72.77" y="-240.2" font-family="Arial" font-size="14.00" fill="#666666">[objectId]</text>
 <polygon fill="none" stroke="black" points="43.2,-197.2 43.2,-228 261.93,-228 261.93,-197.2 43.2,-197.2"/>
-<text text-anchor="start" x="50.2" y="-209.4" font-family="Arial" font-size="14.00">address    </text>
-<text text-anchor="start" x="131.12" y="-209.4" font-family="Arial" font-size="14.00" fill="#666666">[document]</text>
+<text text-anchor="start" x="50.2" y="-209.4" font-family="Arial" font-size="14.00">address </text>
+<text text-anchor="start" x="103.9" y="-209.4" font-family="Arial" font-size="14.00" fill="#666666">[document]</text>
 <polygon fill="none" stroke="black" points="43.2,-166.4 43.2,-197.2 261.93,-197.2 261.93,-166.4 43.2,-166.4"/>
-<text text-anchor="start" x="50.2" y="-178.6" font-family="Arial" font-size="14.00">borough    </text>
-<text text-anchor="start" x="132.7" y="-178.6" font-family="Arial" font-size="14.00" fill="#666666">[string]</text>
+<text text-anchor="start" x="50.2" y="-178.6" font-family="Arial" font-size="14.00">borough </text>
+<text text-anchor="start" x="105.47" y="-178.6" font-family="Arial" font-size="14.00" fill="#666666">[string]</text>
 <polygon fill="none" stroke="black" points="43.2,-135.6 43.2,-166.4 261.93,-166.4 261.93,-135.6 43.2,-135.6"/>
-<text text-anchor="start" x="50.2" y="-147.8" font-family="Arial" font-size="14.00">cuisine    </text>
-<text text-anchor="start" x="124.9" y="-147.8" font-family="Arial" font-size="14.00" fill="#666666">[string]</text>
+<text text-anchor="start" x="50.2" y="-147.8" font-family="Arial" font-size="14.00">cuisine </text>
+<text text-anchor="start" x="97.67" y="-147.8" font-family="Arial" font-size="14.00" fill="#666666">[string]</text>
 <polygon fill="none" stroke="black" points="43.2,-104.8 43.2,-135.6 261.93,-135.6 261.93,-104.8 43.2,-104.8"/>
-<text text-anchor="start" x="50.2" y="-117" font-family="Arial" font-size="14.00">grades    </text>
-<text text-anchor="start" x="124.12" y="-117" font-family="Arial" font-size="14.00" fill="#666666">[array]</text>
+<text text-anchor="start" x="50.2" y="-117" font-family="Arial" font-size="14.00">grades </text>
+<text text-anchor="start" x="96.9" y="-117" font-family="Arial" font-size="14.00" fill="#666666">[array]</text>
 <polygon fill="none" stroke="black" points="43.2,-74 43.2,-104.8 261.93,-104.8 261.93,-74 43.2,-74"/>
-<text text-anchor="start" x="50.2" y="-86.2" font-family="Arial" font-size="14.00">name    </text>
-<text text-anchor="start" x="116.34" y="-86.2" font-family="Arial" font-size="14.00" fill="#666666">[string]</text>
+<text text-anchor="start" x="50.2" y="-86.2" font-family="Arial" font-size="14.00">name </text>
+<text text-anchor="start" x="89.11" y="-86.2" font-family="Arial" font-size="14.00" fill="#666666">[string]</text>
 <polygon fill="none" stroke="black" points="43.2,-43.2 43.2,-74 261.93,-74 261.93,-43.2 43.2,-43.2"/>
-<text text-anchor="start" x="50.2" y="-55.4" font-family="Arial" font-size="14.00">restaurant_id    </text>
-<text text-anchor="start" x="163.03" y="-55.4" font-family="Arial" font-size="14.00" fill="#666666">[string]</text>
+<text text-anchor="start" x="50.2" y="-55.4" font-family="Arial" font-size="14.00">restaurant_id </text>
+<text text-anchor="start" x="135.81" y="-55.4" font-family="Arial" font-size="14.00" fill="#666666">[string]</text>
 </g>
 </g>
 </svg>

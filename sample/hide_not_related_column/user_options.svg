@@ -31,8 +31,8 @@
 <text text-anchor="start" x="196.41" y="-87.4" font-family="Arial" font-size="14.00">    </text>
 <text text-anchor="start" x="227.53" y="-87.4" font-family="Arial" font-size="14.00" fill="#666666">[BASE TABLE]</text>
 <polygon fill="none" stroke="black" points="152.42,-43.2 152.42,-74 327.9,-74 327.9,-43.2 152.42,-43.2"/>
-<text text-anchor="start" x="159.42" y="-55.4" font-family="Arial" font-size="14.00">id    </text>
-<text text-anchor="start" x="201.43" y="-55.4" font-family="Arial" font-size="14.00" fill="#666666">[int]</text>
+<text text-anchor="start" x="159.42" y="-55.4" font-family="Arial" font-size="14.00">id </text>
+<text text-anchor="start" x="174.2" y="-55.4" font-family="Arial" font-size="14.00" fill="#666666">[int]</text>
 </g>
 <!-- user_options&#45;&gt;users -->
 <g id="edge1" class="edge">

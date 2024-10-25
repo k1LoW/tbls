@@ -37,14 +37,14 @@
 <text text-anchor="start" x="406.3" y="-149" font-family="Arial" font-size="14.00">    </text>
 <text text-anchor="start" x="437.41" y="-149" font-family="Arial" font-size="14.00" fill="#666666">[BASE TABLE]</text>
 <polygon fill="none" stroke="black" points="325.31,-104.8 325.31,-135.6 537.79,-135.6 537.79,-104.8 325.31,-104.8"/>
-<text text-anchor="start" x="332.31" y="-117" font-family="Arial" font-size="14.00">id    </text>
-<text text-anchor="start" x="374.32" y="-117" font-family="Arial" font-size="14.00" fill="#666666">[bigint]</text>
+<text text-anchor="start" x="332.31" y="-117" font-family="Arial" font-size="14.00">id </text>
+<text text-anchor="start" x="347.1" y="-117" font-family="Arial" font-size="14.00" fill="#666666">[bigint]</text>
 <polygon fill="none" stroke="black" points="325.31,-74 325.31,-104.8 537.79,-104.8 537.79,-74 325.31,-74"/>
-<text text-anchor="start" x="332.31" y="-86.2" font-family="Arial" font-size="14.00">post_id    </text>
-<text text-anchor="start" x="408.57" y="-86.2" font-family="Arial" font-size="14.00" fill="#666666">[bigint]</text>
+<text text-anchor="start" x="332.31" y="-86.2" font-family="Arial" font-size="14.00">post_id </text>
+<text text-anchor="start" x="381.35" y="-86.2" font-family="Arial" font-size="14.00" fill="#666666">[bigint]</text>
 <polygon fill="none" stroke="black" points="325.31,-43.2 325.31,-74 537.79,-74 537.79,-43.2 325.31,-43.2"/>
-<text text-anchor="start" x="332.31" y="-55.4" font-family="Arial" font-size="14.00">user_id    </text>
-<text text-anchor="start" x="409.35" y="-55.4" font-family="Arial" font-size="14.00" fill="#666666">[int]</text>
+<text text-anchor="start" x="332.31" y="-55.4" font-family="Arial" font-size="14.00">user_id </text>
+<text text-anchor="start" x="382.12" y="-55.4" font-family="Arial" font-size="14.00" fill="#666666">[int]</text>
 </g>
 <!-- comment_stars&#45;&gt;comments -->
 <g id="edge2" class="edge">
@@ -62,8 +62,8 @@
 <text text-anchor="start" x="685.8" y="-118.2" font-family="Arial" font-size="14.00">    </text>
 <text text-anchor="start" x="716.92" y="-118.2" font-family="Arial" font-size="14.00" fill="#666666">[BASE TABLE]</text>
 <polygon fill="none" stroke="black" points="641.81,-74 641.81,-104.8 817.29,-104.8 817.29,-74 641.81,-74"/>
-<text text-anchor="start" x="648.81" y="-86.2" font-family="Arial" font-size="14.00">id    </text>
-<text text-anchor="start" x="690.82" y="-86.2" font-family="Arial" font-size="14.00" fill="#666666">[int]</text>
+<text text-anchor="start" x="648.81" y="-86.2" font-family="Arial" font-size="14.00">id </text>
+<text text-anchor="start" x="663.59" y="-86.2" font-family="Arial" font-size="14.00" fill="#666666">[int]</text>
 </g>
 <!-- comment_stars&#45;&gt;users -->
 <g id="edge3" class="edge">
@@ -75,23 +75,23 @@
 <!-- logs -->
 <g id="node2" class="node">
 <title>logs</title>
-<polygon fill="#efefef" stroke="none" points="483.68,-673.2 483.68,-708.8 677.42,-708.8 677.42,-673.2 483.68,-673.2"/>
-<polygon fill="none" stroke="black" points="483.68,-673.2 483.68,-708.8 677.42,-708.8 677.42,-673.2 483.68,-673.2"/>
+<polygon fill="#efefef" stroke="none" points="496.3,-673.2 496.3,-708.8 664.8,-708.8 664.8,-673.2 496.3,-673.2"/>
+<polygon fill="none" stroke="black" points="496.3,-673.2 496.3,-708.8 664.8,-708.8 664.8,-673.2 496.3,-673.2"/>
 <text text-anchor="start" x="503.3" y="-686.6" font-family="Arial Bold" font-size="18.00">logs</text>
 <text text-anchor="start" x="533.31" y="-686.6" font-family="Arial" font-size="14.00">    </text>
 <text text-anchor="start" x="564.42" y="-686.6" font-family="Arial" font-size="14.00" fill="#666666">[BASE TABLE]</text>
-<polygon fill="none" stroke="black" points="483.68,-642.4 483.68,-673.2 677.42,-673.2 677.42,-642.4 483.68,-642.4"/>
-<text text-anchor="start" x="490.68" y="-654.6" font-family="Arial" font-size="14.00">user_id    </text>
-<text text-anchor="start" x="567.71" y="-654.6" font-family="Arial" font-size="14.00" fill="#666666">[int]</text>
-<polygon fill="none" stroke="black" points="483.68,-611.6 483.68,-642.4 677.42,-642.4 677.42,-611.6 483.68,-611.6"/>
-<text text-anchor="start" x="490.68" y="-623.8" font-family="Arial" font-size="14.00">post_id    </text>
-<text text-anchor="start" x="566.94" y="-623.8" font-family="Arial" font-size="14.00" fill="#666666">[bigint]</text>
-<polygon fill="none" stroke="black" points="483.68,-580.8 483.68,-611.6 677.42,-611.6 677.42,-580.8 483.68,-580.8"/>
-<text text-anchor="start" x="490.68" y="-593" font-family="Arial" font-size="14.00">comment_id    </text>
-<text text-anchor="start" x="598.05" y="-593" font-family="Arial" font-size="14.00" fill="#666666">[bigint]</text>
-<polygon fill="none" stroke="black" points="483.68,-550 483.68,-580.8 677.42,-580.8 677.42,-550 483.68,-550"/>
-<text text-anchor="start" x="490.68" y="-562.2" font-family="Arial" font-size="14.00">comment_star_id    </text>
-<text text-anchor="start" x="629.17" y="-562.2" font-family="Arial" font-size="14.00" fill="#666666">[bigint]</text>
+<polygon fill="none" stroke="black" points="496.3,-642.4 496.3,-673.2 664.8,-673.2 664.8,-642.4 496.3,-642.4"/>
+<text text-anchor="start" x="503.3" y="-654.6" font-family="Arial" font-size="14.00">user_id </text>
+<text text-anchor="start" x="553.11" y="-654.6" font-family="Arial" font-size="14.00" fill="#666666">[int]</text>
+<polygon fill="none" stroke="black" points="496.3,-611.6 496.3,-642.4 664.8,-642.4 664.8,-611.6 496.3,-611.6"/>
+<text text-anchor="start" x="503.3" y="-623.8" font-family="Arial" font-size="14.00">post_id </text>
+<text text-anchor="start" x="552.34" y="-623.8" font-family="Arial" font-size="14.00" fill="#666666">[bigint]</text>
+<polygon fill="none" stroke="black" points="496.3,-580.8 496.3,-611.6 664.8,-611.6 664.8,-580.8 496.3,-580.8"/>
+<text text-anchor="start" x="503.3" y="-593" font-family="Arial" font-size="14.00">comment_id </text>
+<text text-anchor="start" x="583.45" y="-593" font-family="Arial" font-size="14.00" fill="#666666">[bigint]</text>
+<polygon fill="none" stroke="black" points="496.3,-550 496.3,-580.8 664.8,-580.8 664.8,-550 496.3,-550"/>
+<text text-anchor="start" x="503.3" y="-562.2" font-family="Arial" font-size="14.00">comment_star_id </text>
+<text text-anchor="start" x="614.57" y="-562.2" font-family="Arial" font-size="14.00" fill="#666666">[bigint]</text>
 </g>
 <!-- logs&#45;&gt;comment_stars -->
 <g id="edge1" class="edge">

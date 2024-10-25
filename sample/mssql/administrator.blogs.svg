@@ -40,34 +40,34 @@
 <!-- users -->
 <g id="node2" class="node">
 <title>users</title>
-<polygon fill="#efefef" stroke="none" points="94.15,-228 94.15,-263.6 280.88,-263.6 280.88,-228 94.15,-228"/>
-<polygon fill="none" stroke="black" points="94.15,-228 94.15,-263.6 280.88,-263.6 280.88,-228 94.15,-228"/>
+<polygon fill="#efefef" stroke="none" points="97.44,-228 97.44,-263.6 277.59,-263.6 277.59,-228 97.44,-228"/>
+<polygon fill="none" stroke="black" points="97.44,-228 97.44,-263.6 277.59,-263.6 277.59,-228 97.44,-228"/>
 <text text-anchor="start" x="104.44" y="-241.4" font-family="Arial Bold" font-size="18.00">users</text>
 <text text-anchor="start" x="141.44" y="-241.4" font-family="Arial" font-size="14.00">    </text>
 <text text-anchor="start" x="172.55" y="-241.4" font-family="Arial" font-size="14.00" fill="#666666">[BASIC TABLE]</text>
-<polygon fill="none" stroke="black" points="94.15,-197.2 94.15,-228 280.88,-228 280.88,-197.2 94.15,-197.2"/>
-<text text-anchor="start" x="101.15" y="-209.4" font-family="Arial" font-size="14.00">id    </text>
-<text text-anchor="start" x="143.17" y="-209.4" font-family="Arial" font-size="14.00" fill="#666666">[int]</text>
-<polygon fill="none" stroke="black" points="94.15,-166.4 94.15,-197.2 280.88,-197.2 280.88,-166.4 94.15,-166.4"/>
-<text text-anchor="start" x="101.15" y="-178.6" font-family="Arial" font-size="14.00">username    </text>
-<text text-anchor="start" x="194.52" y="-178.6" font-family="Arial" font-size="14.00" fill="#666666">[varchar(50)]</text>
-<polygon fill="none" stroke="black" points="94.15,-135.6 94.15,-166.4 280.88,-166.4 280.88,-135.6 94.15,-135.6"/>
-<text text-anchor="start" x="101.15" y="-147.8" font-family="Arial" font-size="14.00">password    </text>
-<text text-anchor="start" x="192.19" y="-147.8" font-family="Arial" font-size="14.00" fill="#666666">[varchar(50)]</text>
-<polygon fill="none" stroke="black" points="94.15,-104.8 94.15,-135.6 280.88,-135.6 280.88,-104.8 94.15,-104.8"/>
-<text text-anchor="start" x="101.15" y="-117" font-family="Arial" font-size="14.00">email    </text>
-<text text-anchor="start" x="165.72" y="-117" font-family="Arial" font-size="14.00" fill="#666666">[varchar(355)]</text>
-<polygon fill="none" stroke="black" points="94.15,-74 94.15,-104.8 280.88,-104.8 280.88,-74 94.15,-74"/>
-<text text-anchor="start" x="101.15" y="-86.2" font-family="Arial" font-size="14.00">created    </text>
-<text text-anchor="start" x="178.97" y="-86.2" font-family="Arial" font-size="14.00" fill="#666666">[date]</text>
-<polygon fill="none" stroke="black" points="94.15,-43.2 94.15,-74 280.88,-74 280.88,-43.2 94.15,-43.2"/>
-<text text-anchor="start" x="101.15" y="-55.4" font-family="Arial" font-size="14.00">updated    </text>
-<text text-anchor="start" x="182.88" y="-55.4" font-family="Arial" font-size="14.00" fill="#666666">[date]</text>
+<polygon fill="none" stroke="black" points="97.44,-197.2 97.44,-228 277.59,-228 277.59,-197.2 97.44,-197.2"/>
+<text text-anchor="start" x="104.44" y="-209.4" font-family="Arial" font-size="14.00">id </text>
+<text text-anchor="start" x="119.23" y="-209.4" font-family="Arial" font-size="14.00" fill="#666666">[int]</text>
+<polygon fill="none" stroke="black" points="97.44,-166.4 97.44,-197.2 277.59,-197.2 277.59,-166.4 97.44,-166.4"/>
+<text text-anchor="start" x="104.44" y="-178.6" font-family="Arial" font-size="14.00">username </text>
+<text text-anchor="start" x="170.59" y="-178.6" font-family="Arial" font-size="14.00" fill="#666666">[varchar(50)]</text>
+<polygon fill="none" stroke="black" points="97.44,-135.6 97.44,-166.4 277.59,-166.4 277.59,-135.6 97.44,-135.6"/>
+<text text-anchor="start" x="104.44" y="-147.8" font-family="Arial" font-size="14.00">password </text>
+<text text-anchor="start" x="168.25" y="-147.8" font-family="Arial" font-size="14.00" fill="#666666">[varchar(50)]</text>
+<polygon fill="none" stroke="black" points="97.44,-104.8 97.44,-135.6 277.59,-135.6 277.59,-104.8 97.44,-104.8"/>
+<text text-anchor="start" x="104.44" y="-117" font-family="Arial" font-size="14.00">email </text>
+<text text-anchor="start" x="141.79" y="-117" font-family="Arial" font-size="14.00" fill="#666666">[varchar(355)]</text>
+<polygon fill="none" stroke="black" points="97.44,-74 97.44,-104.8 277.59,-104.8 277.59,-74 97.44,-74"/>
+<text text-anchor="start" x="104.44" y="-86.2" font-family="Arial" font-size="14.00">created </text>
+<text text-anchor="start" x="155.03" y="-86.2" font-family="Arial" font-size="14.00" fill="#666666">[date]</text>
+<polygon fill="none" stroke="black" points="97.44,-43.2 97.44,-74 277.59,-74 277.59,-43.2 97.44,-43.2"/>
+<text text-anchor="start" x="104.44" y="-55.4" font-family="Arial" font-size="14.00">updated </text>
+<text text-anchor="start" x="158.94" y="-55.4" font-family="Arial" font-size="14.00" fill="#666666">[date]</text>
 </g>
 <!-- administrator.blogs&#45;&gt;users -->
 <g id="edge1" class="edge">
 <title>administrator.blogs:user_id&#45;&gt;users:id</title>
-<path fill="none" stroke="black" d="M339.71,-525.25C395.71,-496.42 349.09,-212.6 281.88,-212.6"/>
+<path fill="none" stroke="black" d="M339.71,-525.25C395.5,-496.42 345.91,-212.6 278.59,-212.6"/>
 <polygon fill="black" stroke="black" points="339.89,-525.2 329.12,-523.15 334.7,-526.44 330.48,-527.44 330.48,-527.44 330.48,-527.44 334.7,-526.44 331.2,-531.9 339.89,-525.2"/>
 </g>
 </g>

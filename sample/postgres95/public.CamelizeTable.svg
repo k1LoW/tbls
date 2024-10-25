@@ -34,17 +34,17 @@
 <text text-anchor="start" x="204.14" y="-405.4" font-family="Arial" font-size="14.00">    </text>
 <text text-anchor="start" x="235.26" y="-405.4" font-family="Arial" font-size="14.00" fill="#666666">[BASE TABLE]</text>
 <polygon fill="none" stroke="black" points="53.69,-361.2 53.69,-392 335.63,-392 335.63,-361.2 53.69,-361.2"/>
-<text text-anchor="start" x="60.69" y="-373.4" font-family="Arial" font-size="14.00">id    </text>
-<text text-anchor="start" x="102.7" y="-373.4" font-family="Arial" font-size="14.00" fill="#666666">[uuid]</text>
+<text text-anchor="start" x="60.69" y="-373.4" font-family="Arial" font-size="14.00">id </text>
+<text text-anchor="start" x="75.47" y="-373.4" font-family="Arial" font-size="14.00" fill="#666666">[uuid]</text>
 <polygon fill="none" stroke="black" points="53.69,-330.4 53.69,-361.2 335.63,-361.2 335.63,-330.4 53.69,-330.4"/>
-<text text-anchor="start" x="60.69" y="-342.6" font-family="Arial" font-size="14.00">hyphen&#45;column    </text>
-<text text-anchor="start" x="187.53" y="-342.6" font-family="Arial" font-size="14.00" fill="#666666">[text]</text>
+<text text-anchor="start" x="60.69" y="-342.6" font-family="Arial" font-size="14.00">hyphen&#45;column </text>
+<text text-anchor="start" x="160.3" y="-342.6" font-family="Arial" font-size="14.00" fill="#666666">[text]</text>
 <polygon fill="none" stroke="black" points="53.69,-299.6 53.69,-330.4 335.63,-330.4 335.63,-299.6 53.69,-299.6"/>
-<text text-anchor="start" x="60.69" y="-311.8" font-family="Arial" font-size="14.00">CamelizeTableId    </text>
-<text text-anchor="start" x="196.85" y="-311.8" font-family="Arial" font-size="14.00" fill="#666666">[uuid]</text>
+<text text-anchor="start" x="60.69" y="-311.8" font-family="Arial" font-size="14.00">CamelizeTableId </text>
+<text text-anchor="start" x="169.63" y="-311.8" font-family="Arial" font-size="14.00" fill="#666666">[uuid]</text>
 <polygon fill="none" stroke="black" points="53.69,-268.8 53.69,-299.6 335.63,-299.6 335.63,-268.8 53.69,-268.8"/>
-<text text-anchor="start" x="60.69" y="-281" font-family="Arial" font-size="14.00">created    </text>
-<text text-anchor="start" x="138.5" y="-281" font-family="Arial" font-size="14.00" fill="#666666">[timestamp without time zone]</text>
+<text text-anchor="start" x="60.69" y="-281" font-family="Arial" font-size="14.00">created </text>
+<text text-anchor="start" x="111.27" y="-281" font-family="Arial" font-size="14.00" fill="#666666">[timestamp without time zone]</text>
 </g>
 <!-- public.hyphen&#45;table&#45;&gt;public.CamelizeTable -->
 <g id="edge1" class="edge">

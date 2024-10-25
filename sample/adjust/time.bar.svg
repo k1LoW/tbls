@@ -31,14 +31,14 @@
 <text text-anchor="start" x="168.63" y="-343.8" font-family="Arial" font-size="14.00">    </text>
 <text text-anchor="start" x="199.75" y="-343.8" font-family="Arial" font-size="14.00" fill="#666666">[BASE TABLE]</text>
 <polygon fill="none" stroke="black" points="43.2,-299.6 43.2,-330.4 300.12,-330.4 300.12,-299.6 43.2,-299.6"/>
-<text text-anchor="start" x="50.2" y="-311.8" font-family="Arial" font-size="14.00">id    </text>
-<text text-anchor="start" x="92.21" y="-311.8" font-family="Arial" font-size="14.00" fill="#666666">[integer]</text>
+<text text-anchor="start" x="50.2" y="-311.8" font-family="Arial" font-size="14.00">id </text>
+<text text-anchor="start" x="64.99" y="-311.8" font-family="Arial" font-size="14.00" fill="#666666">[integer]</text>
 <polygon fill="none" stroke="black" points="43.2,-268.8 43.2,-299.6 300.12,-299.6 300.12,-268.8 43.2,-268.8"/>
-<text text-anchor="start" x="50.2" y="-281" font-family="Arial" font-size="14.00">bar_id    </text>
-<text text-anchor="start" x="120.23" y="-281" font-family="Arial" font-size="14.00" fill="#666666">[integer]</text>
+<text text-anchor="start" x="50.2" y="-281" font-family="Arial" font-size="14.00">bar_id </text>
+<text text-anchor="start" x="93.01" y="-281" font-family="Arial" font-size="14.00" fill="#666666">[integer]</text>
 <polygon fill="none" stroke="black" points="43.2,-238 43.2,-268.8 300.12,-268.8 300.12,-238 43.2,-238"/>
-<text text-anchor="start" x="50.2" y="-250.2" font-family="Arial" font-size="14.00">ht_id    </text>
-<text text-anchor="start" x="111.68" y="-250.2" font-family="Arial" font-size="14.00" fill="#666666">[integer]</text>
+<text text-anchor="start" x="50.2" y="-250.2" font-family="Arial" font-size="14.00">ht_id </text>
+<text text-anchor="start" x="84.45" y="-250.2" font-family="Arial" font-size="14.00" fill="#666666">[integer]</text>
 </g>
 <!-- time.referencing&#45;&gt;time.bar -->
 <g id="edge1" class="edge">

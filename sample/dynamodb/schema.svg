@@ -18,8 +18,8 @@
 <text text-anchor="start" x="99.69" y="-87.4" font-family="Arial" font-size="14.00">    </text>
 <text text-anchor="start" x="130.8" y="-87.4" font-family="Arial" font-size="14.00" fill="#666666">[BASIC TABLE]</text>
 <polygon fill="none" stroke="black" points="44.68,-43.2 44.68,-74 235.84,-74 235.84,-43.2 44.68,-43.2"/>
-<text text-anchor="start" x="51.68" y="-55.4" font-family="Arial" font-size="14.00">Name    </text>
-<text text-anchor="start" x="120.14" y="-55.4" font-family="Arial" font-size="14.00" fill="#666666">[S]</text>
+<text text-anchor="start" x="51.68" y="-55.4" font-family="Arial" font-size="14.00">Name </text>
+<text text-anchor="start" x="92.92" y="-55.4" font-family="Arial" font-size="14.00" fill="#666666">[S]</text>
 </g>
 <!-- ProductCatalog -->
 <g id="node2" class="node">
@@ -30,8 +30,8 @@
 <text text-anchor="start" x="460.67" y="-307" font-family="Arial" font-size="14.00">    </text>
 <text text-anchor="start" x="491.79" y="-307" font-family="Arial" font-size="14.00" fill="#666666">[BASIC TABLE]</text>
 <polygon fill="none" stroke="black" points="341.69,-262.8 341.69,-293.6 596.83,-293.6 596.83,-262.8 341.69,-262.8"/>
-<text text-anchor="start" x="348.69" y="-275" font-family="Arial" font-size="14.00">Id    </text>
-<text text-anchor="start" x="391.49" y="-275" font-family="Arial" font-size="14.00" fill="#666666">[N]</text>
+<text text-anchor="start" x="348.69" y="-275" font-family="Arial" font-size="14.00">Id </text>
+<text text-anchor="start" x="364.26" y="-275" font-family="Arial" font-size="14.00" fill="#666666">[N]</text>
 </g>
 <!-- Reply -->
 <g id="node3" class="node">
@@ -42,14 +42,14 @@
 <text text-anchor="start" x="751.18" y="-337.8" font-family="Arial" font-size="14.00">    </text>
 <text text-anchor="start" x="782.3" y="-337.8" font-family="Arial" font-size="14.00" fill="#666666">[BASIC TABLE]</text>
 <polygon fill="none" stroke="black" points="701.19,-293.6 701.19,-324.4 887.33,-324.4 887.33,-293.6 701.19,-293.6"/>
-<text text-anchor="start" x="708.19" y="-305.8" font-family="Arial" font-size="14.00">Id    </text>
-<text text-anchor="start" x="750.98" y="-305.8" font-family="Arial" font-size="14.00" fill="#666666">[S]</text>
+<text text-anchor="start" x="708.19" y="-305.8" font-family="Arial" font-size="14.00">Id </text>
+<text text-anchor="start" x="723.75" y="-305.8" font-family="Arial" font-size="14.00" fill="#666666">[S]</text>
 <polygon fill="none" stroke="black" points="701.19,-262.8 701.19,-293.6 887.33,-293.6 887.33,-262.8 701.19,-262.8"/>
-<text text-anchor="start" x="708.19" y="-275" font-family="Arial" font-size="14.00">ReplyDateTime    </text>
-<text text-anchor="start" x="835.78" y="-275" font-family="Arial" font-size="14.00" fill="#666666">[S]</text>
+<text text-anchor="start" x="708.19" y="-275" font-family="Arial" font-size="14.00">ReplyDateTime </text>
+<text text-anchor="start" x="808.55" y="-275" font-family="Arial" font-size="14.00" fill="#666666">[S]</text>
 <polygon fill="none" stroke="black" points="701.19,-232 701.19,-262.8 887.33,-262.8 887.33,-232 701.19,-232"/>
-<text text-anchor="start" x="708.19" y="-244.2" font-family="Arial" font-size="14.00">PostedBy    </text>
-<text text-anchor="start" x="799.23" y="-244.2" font-family="Arial" font-size="14.00" fill="#666666">[S]</text>
+<text text-anchor="start" x="708.19" y="-244.2" font-family="Arial" font-size="14.00">PostedBy </text>
+<text text-anchor="start" x="772" y="-244.2" font-family="Arial" font-size="14.00" fill="#666666">[S]</text>
 </g>
 <!-- Thread -->
 <g id="node4" class="node">
@@ -60,11 +60,11 @@
 <text text-anchor="start" x="101.17" y="-322.4" font-family="Arial" font-size="14.00">    </text>
 <text text-anchor="start" x="132.28" y="-322.4" font-family="Arial" font-size="14.00" fill="#666666">[BASIC TABLE]</text>
 <polygon fill="none" stroke="black" points="43.2,-278.2 43.2,-309 237.32,-309 237.32,-278.2 43.2,-278.2"/>
-<text text-anchor="start" x="50.2" y="-290.4" font-family="Arial" font-size="14.00">ForumName    </text>
-<text text-anchor="start" x="159.11" y="-290.4" font-family="Arial" font-size="14.00" fill="#666666">[S]</text>
+<text text-anchor="start" x="50.2" y="-290.4" font-family="Arial" font-size="14.00">ForumName </text>
+<text text-anchor="start" x="131.88" y="-290.4" font-family="Arial" font-size="14.00" fill="#666666">[S]</text>
 <polygon fill="none" stroke="black" points="43.2,-247.4 43.2,-278.2 237.32,-278.2 237.32,-247.4 43.2,-247.4"/>
-<text text-anchor="start" x="50.2" y="-259.6" font-family="Arial" font-size="14.00">Subject    </text>
-<text text-anchor="start" x="128.01" y="-259.6" font-family="Arial" font-size="14.00" fill="#666666">[S]</text>
+<text text-anchor="start" x="50.2" y="-259.6" font-family="Arial" font-size="14.00">Subject </text>
+<text text-anchor="start" x="100.79" y="-259.6" font-family="Arial" font-size="14.00" fill="#666666">[S]</text>
 </g>
 <!-- Thread&#45;&gt;Forum -->
 <g id="edge1" class="edge">

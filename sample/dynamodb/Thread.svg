@@ -34,8 +34,8 @@
 <text text-anchor="start" x="102.69" y="-87.4" font-family="Arial" font-size="14.00">    </text>
 <text text-anchor="start" x="133.8" y="-87.4" font-family="Arial" font-size="14.00" fill="#666666">[BASIC TABLE]</text>
 <polygon fill="none" stroke="black" points="47.68,-43.2 47.68,-74 238.84,-74 238.84,-43.2 47.68,-43.2"/>
-<text text-anchor="start" x="54.68" y="-55.4" font-family="Arial" font-size="14.00">Name    </text>
-<text text-anchor="start" x="123.14" y="-55.4" font-family="Arial" font-size="14.00" fill="#666666">[S]</text>
+<text text-anchor="start" x="54.68" y="-55.4" font-family="Arial" font-size="14.00">Name </text>
+<text text-anchor="start" x="95.92" y="-55.4" font-family="Arial" font-size="14.00" fill="#666666">[S]</text>
 </g>
 <!-- Thread&#45;&gt;Forum -->
 <g id="edge1" class="edge">

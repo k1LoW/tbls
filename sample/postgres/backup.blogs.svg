@@ -43,17 +43,17 @@
 <text text-anchor="start" x="200.69" y="-497.8" font-family="Arial" font-size="14.00">    </text>
 <text text-anchor="start" x="231.8" y="-497.8" font-family="Arial" font-size="14.00" fill="#666666">[BASE TABLE]</text>
 <polygon fill="none" stroke="black" points="43.2,-453.6 43.2,-484.4 332.18,-484.4 332.18,-453.6 43.2,-453.6"/>
-<text text-anchor="start" x="50.2" y="-465.8" font-family="Arial" font-size="14.00">id    </text>
-<text text-anchor="start" x="92.21" y="-465.8" font-family="Arial" font-size="14.00" fill="#666666">[integer]</text>
+<text text-anchor="start" x="50.2" y="-465.8" font-family="Arial" font-size="14.00">id </text>
+<text text-anchor="start" x="64.99" y="-465.8" font-family="Arial" font-size="14.00" fill="#666666">[integer]</text>
 <polygon fill="none" stroke="black" points="43.2,-422.8 43.2,-453.6 332.18,-453.6 332.18,-422.8 43.2,-422.8"/>
-<text text-anchor="start" x="50.2" y="-435" font-family="Arial" font-size="14.00">blog_id    </text>
-<text text-anchor="start" x="126.47" y="-435" font-family="Arial" font-size="14.00" fill="#666666">[integer]</text>
+<text text-anchor="start" x="50.2" y="-435" font-family="Arial" font-size="14.00">blog_id </text>
+<text text-anchor="start" x="99.24" y="-435" font-family="Arial" font-size="14.00" fill="#666666">[integer]</text>
 <polygon fill="none" stroke="black" points="43.2,-392 43.2,-422.8 332.18,-422.8 332.18,-392 43.2,-392"/>
-<text text-anchor="start" x="50.2" y="-404.2" font-family="Arial" font-size="14.00">label    </text>
-<text text-anchor="start" x="110.9" y="-404.2" font-family="Arial" font-size="14.00" fill="#666666">[text]</text>
+<text text-anchor="start" x="50.2" y="-404.2" font-family="Arial" font-size="14.00">label </text>
+<text text-anchor="start" x="83.67" y="-404.2" font-family="Arial" font-size="14.00" fill="#666666">[text]</text>
 <polygon fill="none" stroke="black" points="43.2,-361.2 43.2,-392 332.18,-392 332.18,-361.2 43.2,-361.2"/>
-<text text-anchor="start" x="50.2" y="-373.4" font-family="Arial" font-size="14.00">updated    </text>
-<text text-anchor="start" x="131.92" y="-373.4" font-family="Arial" font-size="14.00" fill="#666666">[timestamp without time zone]</text>
+<text text-anchor="start" x="50.2" y="-373.4" font-family="Arial" font-size="14.00">updated </text>
+<text text-anchor="start" x="104.7" y="-373.4" font-family="Arial" font-size="14.00" fill="#666666">[timestamp without time zone]</text>
 </g>
 <!-- backup.blog_options&#45;&gt;backup.blogs -->
 <g id="edge1" class="edge">

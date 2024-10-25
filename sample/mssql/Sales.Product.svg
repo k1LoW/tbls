@@ -34,14 +34,14 @@
 <text text-anchor="start" x="171.71" y="-377.22" font-family="Arial" font-size="14.00">    </text>
 <text text-anchor="start" x="202.83" y="-377.22" font-family="Arial" font-size="14.00" fill="#666666">[BASIC TABLE]</text>
 <polygon fill="none" stroke="black" points="43.2,-333.02 43.2,-363.82 307.86,-363.82 307.86,-333.02 43.2,-333.02"/>
-<text text-anchor="start" x="50.2" y="-345.22" font-family="Arial" font-size="14.00">LocationID    </text>
-<text text-anchor="start" x="148.25" y="-345.22" font-family="Arial" font-size="14.00" fill="#666666">[int]</text>
+<text text-anchor="start" x="50.2" y="-345.22" font-family="Arial" font-size="14.00">LocationID </text>
+<text text-anchor="start" x="121.02" y="-345.22" font-family="Arial" font-size="14.00" fill="#666666">[int]</text>
 <polygon fill="none" stroke="black" points="43.2,-302.22 43.2,-333.02 307.86,-333.02 307.86,-302.22 43.2,-302.22"/>
-<text text-anchor="start" x="50.2" y="-314.42" font-family="Arial" font-size="14.00">ProductID    </text>
-<text text-anchor="start" x="143.57" y="-314.42" font-family="Arial" font-size="14.00" fill="#666666">[int]</text>
+<text text-anchor="start" x="50.2" y="-314.42" font-family="Arial" font-size="14.00">ProductID </text>
+<text text-anchor="start" x="116.34" y="-314.42" font-family="Arial" font-size="14.00" fill="#666666">[int]</text>
 <polygon fill="none" stroke="black" points="43.2,-271.42 43.2,-302.22 307.86,-302.22 307.86,-271.42 43.2,-271.42"/>
-<text text-anchor="start" x="50.2" y="-283.62" font-family="Arial" font-size="14.00">EmployeeID    </text>
-<text text-anchor="start" x="157.57" y="-283.62" font-family="Arial" font-size="14.00" fill="#666666">[int]</text>
+<text text-anchor="start" x="50.2" y="-283.62" font-family="Arial" font-size="14.00">EmployeeID </text>
+<text text-anchor="start" x="130.34" y="-283.62" font-family="Arial" font-size="14.00" fill="#666666">[int]</text>
 </g>
 <!-- Rabbits.Running&#45;&gt;Sales.Product -->
 <g id="edge1" class="edge">

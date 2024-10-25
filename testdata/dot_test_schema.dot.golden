@@ -7,17 +7,17 @@ digraph "testschema" {
   // Tables
   "a" [shape=none, label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="6">
                  <tr><td bgcolor="#EFEFEF"><font face="Arial Bold" point-size="18">a</font>&nbsp;&nbsp;&nbsp;&nbsp;<font color="#666666">[]</font></td></tr>
-                 <tr><td port="a" align="left">a&nbsp;&nbsp;&nbsp;&nbsp;<font color="#666666">[INTEGER]</font></td></tr>
-                 <tr><td port="a2" align="left">a2&nbsp;&nbsp;&nbsp;&nbsp;<font color="#666666">[TEXT]</font></td></tr>
+                 <tr><td port="a" align="left">a <font color="#666666">[INTEGER]</font></td></tr>
+                 <tr><td port="a2" align="left">a2 <font color="#666666">[TEXT]</font></td></tr>
               </table>>];
   "b" [shape=none, label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="6">
                  <tr><td bgcolor="#EFEFEF"><font face="Arial Bold" point-size="18">b</font>&nbsp;&nbsp;&nbsp;&nbsp;<font color="#666666">[]</font></td></tr>
-                 <tr><td port="b" align="left">b&nbsp;&nbsp;&nbsp;&nbsp;<font color="#666666">[INTEGER]</font></td></tr>
-                 <tr><td port="b2" align="left">b2&nbsp;&nbsp;&nbsp;&nbsp;<font color="#666666">[TEXT]</font></td></tr>
+                 <tr><td port="b" align="left">b <font color="#666666">[INTEGER]</font></td></tr>
+                 <tr><td port="b2" align="left">b2 <font color="#666666">[TEXT]</font></td></tr>
               </table>>];
   "view" [shape=none, label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="6">
                  <tr><td bgcolor="#EFEFEF"><font face="Arial Bold" point-size="18">view</font>&nbsp;&nbsp;&nbsp;&nbsp;<font color="#666666">[VIEW]</font></td></tr>
-                 <tr><td port="view_column" align="left">view_column&nbsp;&nbsp;&nbsp;&nbsp;<font color="#666666">[INTEGER]</font></td></tr>
+                 <tr><td port="view_column" align="left">view_column <font color="#666666">[INTEGER]</font></td></tr>
               </table>>];
 
   // Relations

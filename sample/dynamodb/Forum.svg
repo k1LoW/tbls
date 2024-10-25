@@ -31,11 +31,11 @@
 <text text-anchor="start" x="102.69" y="-313" font-family="Arial" font-size="14.00">    </text>
 <text text-anchor="start" x="133.8" y="-313" font-family="Arial" font-size="14.00" fill="#666666">[BASIC TABLE]</text>
 <polygon fill="none" stroke="black" points="44.72,-268.8 44.72,-299.6 238.84,-299.6 238.84,-268.8 44.72,-268.8"/>
-<text text-anchor="start" x="51.72" y="-281" font-family="Arial" font-size="14.00">ForumName    </text>
-<text text-anchor="start" x="160.63" y="-281" font-family="Arial" font-size="14.00" fill="#666666">[S]</text>
+<text text-anchor="start" x="51.72" y="-281" font-family="Arial" font-size="14.00">ForumName </text>
+<text text-anchor="start" x="133.4" y="-281" font-family="Arial" font-size="14.00" fill="#666666">[S]</text>
 <polygon fill="none" stroke="black" points="44.72,-238 44.72,-268.8 238.84,-268.8 238.84,-238 44.72,-238"/>
-<text text-anchor="start" x="51.72" y="-250.2" font-family="Arial" font-size="14.00">Subject    </text>
-<text text-anchor="start" x="129.53" y="-250.2" font-family="Arial" font-size="14.00" fill="#666666">[S]</text>
+<text text-anchor="start" x="51.72" y="-250.2" font-family="Arial" font-size="14.00">Subject </text>
+<text text-anchor="start" x="102.3" y="-250.2" font-family="Arial" font-size="14.00" fill="#666666">[S]</text>
 </g>
 <!-- Thread&#45;&gt;Forum -->
 <g id="edge1" class="edge">
