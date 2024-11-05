@@ -1,5 +1,10 @@
 # Changelog
 
+## [v1.79.1](https://github.com/k1LoW/tbls/compare/v1.79.0...v1.79.1) - 2024-11-05
+### Other Changes
+- chore(deps): bump github.com/golang-jwt/jwt/v4 from 4.5.0 to 4.5.1 by @dependabot in https://github.com/k1LoW/tbls/pull/630
+- chore(deps): bump the dependencies group with 9 updates by @dependabot in https://github.com/k1LoW/tbls/pull/628
+
 ## [v1.79.0](https://github.com/k1LoW/tbls/compare/v1.78.1...v1.79.0) - 2024-10-25
 ### Breaking Changes 🛠
 - Update goccy/go-graphviz to v0.2.4 by @k1LoW in https://github.com/k1LoW/tbls/pull/625
