@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.79.2](https://github.com/k1LoW/tbls/compare/v1.79.1...v1.79.2) - 2024-11-09
+### Fix bug 🐛
+- Fix linux build pipeline by @k1LoW in https://github.com/k1LoW/tbls/pull/633
+
 ## [v1.79.1](https://github.com/k1LoW/tbls/compare/v1.79.0...v1.79.1) - 2024-11-05
 ### Other Changes
 - chore(deps): bump github.com/golang-jwt/jwt/v4 from 4.5.0 to 4.5.1 by @dependabot in https://github.com/k1LoW/tbls/pull/630
