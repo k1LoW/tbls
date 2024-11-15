@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.79.3](https://github.com/k1LoW/tbls/compare/v1.79.2...v1.79.3) - 2024-11-15
+### Fix bug 🐛
+- Fix schema filter logic to prevent duplicated counts of tables by @kromiii in https://github.com/k1LoW/tbls/pull/634
+
 ## [v1.79.2](https://github.com/k1LoW/tbls/compare/v1.79.1...v1.79.2) - 2024-11-09
 ### Fix bug 🐛
 - Fix linux build pipeline by @k1LoW in https://github.com/k1LoW/tbls/pull/633
