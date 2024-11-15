@@ -81,6 +81,8 @@ func (s *Schema) SepareteTablesThatAreIncludedOrNot(opt *FilterOption) (_ []*Tab
 		for _, tt := range ts {
 			if !lo.ContainsBy(includes, func(t *Table) bool {
 				return tt.Name == t.Name
+			}) && !lo.ContainsBy(includes2, func(t *Table) bool {
+				return tt.Name == t.Name
 			}) {
 				includes2 = append(includes2, tt)
 			}
