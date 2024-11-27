@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.79.4](https://github.com/k1LoW/tbls/compare/v1.79.3...v1.79.4) - 2024-11-27
+### Other Changes
+- chore(deps): bump github.com/cli/go-gh/v2 from 2.6.0 to 2.11.1 by @dependabot in https://github.com/k1LoW/tbls/pull/636
+
 ## [v1.79.3](https://github.com/k1LoW/tbls/compare/v1.79.2...v1.79.3) - 2024-11-15
 ### Fix bug 🐛
 - Fix schema filter logic to prevent duplicated counts of tables by @kromiii in https://github.com/k1LoW/tbls/pull/634
