@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.79.5](https://github.com/k1LoW/tbls/compare/v1.79.4...v1.79.5) - 2024-12-12
+### Other Changes
+- chore(deps): bump golang.org/x/crypto from 0.28.0 to 0.31.0 by @dependabot in https://github.com/k1LoW/tbls/pull/639
+
 ## [v1.79.4](https://github.com/k1LoW/tbls/compare/v1.79.3...v1.79.4) - 2024-11-27
 ### Other Changes
 - chore(deps): bump github.com/cli/go-gh/v2 from 2.6.0 to 2.11.1 by @dependabot in https://github.com/k1LoW/tbls/pull/636
