@@ -1,13 +1,7 @@
 PKG = github.com/k1LoW/tbls
 COMMIT = $$(git describe --tags --always)
 OSNAME=${shell uname -s}
-ifeq ($(OSNAME),Darwin)
-	SED = gsed
-	DATE = $$(gdate --utc '+%Y-%m-%d_%H:%M:%S')
-else
-	SED = sed
-	DATE = $$(date --utc '+%Y-%m-%d_%H:%M:%S')
-endif
+DATE = $$(date '+%Y-%m-%d_%H:%M:%S%z')
 
 export GO111MODULE=on
 export AWS_ACCESS_KEY_ID=dummy
