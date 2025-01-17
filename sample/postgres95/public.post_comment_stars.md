@@ -39,6 +39,12 @@ CREATE MATERIALIZED VIEW post_comment_stars AS (
 | [public.comment_stars](public.comment_stars.md) | 6 |  | BASE TABLE |
 | [public.users](public.users.md) | 6 | Users table | BASE TABLE |
 
+## Viewpoints
+
+| Name | Definition |
+| ---- | ---------- |
+| [post](viewpoint-0.md) | for post |
+
 ## Relations
 
 ![er](public.post_comment_stars.svg)

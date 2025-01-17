@@ -45,6 +45,12 @@ CREATE VIEW post_comments AS (
 | [public.comments](public.comments.md) | 7       | Comments<br>Multi-line<br>table<br>comment | BASE TABLE |
 | [public.users](public.users.md)       | 6       | Users table                                | BASE TABLE |
 
+## Viewpoints
+
+| Name                   | Definition |
+| ---------------------- | ---------- |
+| [post](viewpoint-0.md) | for post   |
+
 ## Relations
 
 ![er](public.post_comments.svg)

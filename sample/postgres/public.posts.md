@@ -17,6 +17,12 @@ Posts table
 | created | timestamp without time zone |  | false |  |  |  |
 | updated | timestamp without time zone |  | true |  |  |  |
 
+## Viewpoints
+
+| Name | Definition |
+| ---- | ---------- |
+| [post](viewpoint-0.md) | for post |
+
 ## Constraints
 
 | Name | Type | Definition | Comment |

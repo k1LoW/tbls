@@ -4,6 +4,13 @@
 
 Sample PostgreSQL database document.
 
+## Viewpoints
+
+| Name | Description |
+| ---- | ----------- |
+| [post](viewpoint-0.md) | for post |
+| [administrator](viewpoint-1.md) | administrator schema only |
+
 ## Tables
 
 | Name | Columns | Comment | Type |

@@ -9,6 +9,7 @@ import (
 
 	"github.com/k1LoW/errors"
 	"github.com/k1LoW/tbls/dict"
+	"github.com/minio/pkg/wildcard"
 	"github.com/samber/lo"
 )
 
@@ -230,6 +231,23 @@ func (s *Schema) FindTableByName(name string) (_ *Table, err error) {
 		}
 	}
 	return nil, fmt.Errorf("not found table '%s'", name)
+}
+
+// MatchTablesByName find table by table name
+func (s *Schema) MatchTablesByName(name string) (_ []*Table, err error) {
+	defer func() {
+		err = errors.WithStack(err)
+	}()
+	var tables []*Table
+	for _, t := range s.Tables {
+		if wildcard.MatchSimple(s.NormalizeTableName(name), s.NormalizeTableName(t.Name)) {
+			tables = append(tables, t)
+		}
+	}
+	if len(tables) == 0 {
+		return nil, fmt.Errorf("not found table '%s'", name)
+	}
+	return tables, nil
 }
 
 // FindRelation find relation by columns and parent columns

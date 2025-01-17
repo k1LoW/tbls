@@ -15,6 +15,12 @@ admin blogs
 | created     | timestamp without time zone |                                                 | false    |          |                                 |         |
 | updated     | timestamp without time zone |                                                 | true     |          |                                 |         |
 
+## Viewpoints
+
+| Name                            | Definition                |
+| ------------------------------- | ------------------------- |
+| [administrator](viewpoint-1.md) | administrator schema only |
+
 ## Constraints
 
 | Name             | Type        | Definition                                                   |

@@ -404,7 +404,8 @@ const queryFunctions95 = `SELECT
 FROM pg_proc AS p
 LEFT JOIN pg_namespace AS n ON p.pronamespace = n.oid
 LEFT JOIN pg_type AS t ON t.oid = p.prorettype
-WHERE n.nspname NOT IN ('pg_catalog', 'information_schema')`
+WHERE n.nspname NOT IN ('pg_catalog', 'information_schema')
+ORDER BY p.oid;`
 
 const queryFunctions = `SELECT
   n.nspname AS schema_name,
@@ -415,7 +416,8 @@ const queryFunctions = `SELECT
 FROM pg_proc AS p
 LEFT JOIN pg_namespace AS n ON p.pronamespace = n.oid
 LEFT JOIN pg_type AS t ON t.oid = p.prorettype
-WHERE n.nspname NOT IN ('pg_catalog', 'information_schema')`
+WHERE n.nspname NOT IN ('pg_catalog', 'information_schema')
+ORDER BY p.oid;`
 
 const queryStoredProcedureSupported = `SELECT column_name
 FROM information_schema.columns
