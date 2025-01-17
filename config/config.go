@@ -517,7 +517,6 @@ func (c *Config) ModifySchema(s *schema.Schema) error {
 				return err
 			}
 			for _, tt := range ts {
-				println(v.Name, tt.Name)
 				tt.Viewpoints = append(tt.Viewpoints, &schema.TableViewpoint{
 					Index: vi,
 					Name:  v.Name,
