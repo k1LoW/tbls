@@ -12,6 +12,17 @@ lint:
   columnCount:
     enabled: true
     max: 5
+viewpoints:
+  -
+    name: post
+    desc: for post
+    tables:
+      - 'post*'
+  -
+    name: administrator
+    desc: administrator schema only
+    tables:
+      - 'administrator.*'
 relations:
   -
     table: logs

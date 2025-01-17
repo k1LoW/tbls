@@ -512,16 +512,18 @@ func (c *Config) ModifySchema(s *schema.Schema) error {
 		// Add viewpoints to table
 
 		for _, t := range v.Tables {
-			println(v.Name, t)
-			table, err := s.FindTableByName(t)
+			ts, err := s.MatchTablesByName(t)
 			if err != nil {
 				return err
 			}
-			table.Viewpoints = append(table.Viewpoints, &schema.TableViewpoint{
-				Index: vi,
-				Name:  v.Name,
-				Desc:  v.Desc,
-			})
+			for _, tt := range ts {
+				println(v.Name, tt.Name)
+				tt.Viewpoints = append(tt.Viewpoints, &schema.TableViewpoint{
+					Index: vi,
+					Name:  v.Name,
+					Desc:  v.Desc,
+				})
+			}
 		}
 	}
 
