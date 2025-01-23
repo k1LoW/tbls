@@ -1,25 +1,19 @@
 {
   "name": "not_override",
-  "desc": "",
   "tables": [
     {
       "name": "users",
       "type": "table",
-      "comment": "",
       "columns": [
         {
           "name": "id",
           "type": "INTEGER",
-          "nullable": false,
-          "default": null,
-          "comment": ""
+          "nullable": false
         },
         {
           "name": "username",
           "type": "TEXT",
-          "nullable": false,
-          "default": null,
-          "comment": ""
+          "nullable": false
         }
       ],
       "indexes": [
@@ -38,36 +32,29 @@
           "type": "PRIMARY KEY",
           "def": "PRIMARY KEY (id)",
           "table": "users",
-          "referenced_table": null,
           "columns": [
             "id"
-          ],
-          "referenced_columns": null
+          ]
         },
         {
           "name": "sqlite_autoindex_users_1",
           "type": "UNIQUE",
           "def": "UNIQUE (username)",
           "table": "users",
-          "referenced_table": null,
           "columns": [
             "username"
-          ],
-          "referenced_columns": null
+          ]
         },
         {
           "name": "-",
           "type": "CHECK",
           "def": "CHECK(length(username) \u003e 4)",
           "table": "users",
-          "referenced_table": null,
           "columns": [
             "username"
-          ],
-          "referenced_columns": null
+          ]
         }
       ],
-      "triggers": [],
       "def": "CREATE TABLE users (\n  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n  username TEXT UNIQUE NOT NULL CHECK(length(username) \u003e 4)\n)",
       "labels": [
         {
@@ -79,21 +66,16 @@
     {
       "name": "categories",
       "type": "table",
-      "comment": "",
       "columns": [
         {
           "name": "id",
           "type": "INTEGER",
-          "nullable": false,
-          "default": null,
-          "comment": ""
+          "nullable": false
         },
         {
           "name": "name",
           "type": "TEXT",
-          "nullable": false,
-          "default": null,
-          "comment": ""
+          "nullable": false
         }
       ],
       "indexes": [
@@ -112,25 +94,20 @@
           "type": "PRIMARY KEY",
           "def": "PRIMARY KEY (id)",
           "table": "categories",
-          "referenced_table": null,
           "columns": [
             "id"
-          ],
-          "referenced_columns": null
+          ]
         },
         {
           "name": "sqlite_autoindex_categories_1",
           "type": "UNIQUE",
           "def": "UNIQUE (name)",
           "table": "categories",
-          "referenced_table": null,
           "columns": [
             "name"
-          ],
-          "referenced_columns": null
+          ]
         }
       ],
-      "triggers": [],
       "def": "CREATE TABLE categories (\n  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n  name TEXT UNIQUE NOT NULL\n)",
       "labels": [
         {
@@ -146,35 +123,26 @@
     {
       "name": "posts",
       "type": "table",
-      "comment": "",
       "columns": [
         {
           "name": "id",
           "type": "INTEGER",
-          "nullable": false,
-          "default": null,
-          "comment": ""
+          "nullable": false
         },
         {
           "name": "user_id",
           "type": "INTEGER",
-          "nullable": false,
-          "default": null,
-          "comment": ""
+          "nullable": false
         },
         {
           "name": "category_id",
           "type": "INTEGER",
-          "nullable": false,
-          "default": null,
-          "comment": ""
+          "nullable": false
         },
         {
           "name": "title",
           "type": "TEXT",
-          "nullable": false,
-          "default": null,
-          "comment": ""
+          "nullable": false
         }
       ],
       "indexes": [
@@ -193,11 +161,9 @@
           "type": "PRIMARY KEY",
           "def": "PRIMARY KEY (id)",
           "table": "posts",
-          "referenced_table": null,
           "columns": [
             "id"
-          ],
-          "referenced_columns": null
+          ]
         },
         {
           "name": "- (Foreign key ID: 0)",
@@ -243,42 +209,32 @@
     {
       "name": "user_options",
       "type": "table",
-      "comment": "",
       "columns": [
         {
           "name": "id",
           "type": "INTEGER",
-          "nullable": false,
-          "default": null,
-          "comment": ""
+          "nullable": false
         },
         {
           "name": "user_id",
           "type": "INTEGER",
-          "nullable": false,
-          "default": null,
-          "comment": ""
+          "nullable": false
         },
         {
           "name": "email",
           "type": "TEXT",
-          "nullable": false,
-          "default": null,
-          "comment": ""
+          "nullable": false
         }
       ],
-      "indexes": [],
       "constraints": [
         {
           "name": "id",
           "type": "PRIMARY KEY",
           "def": "PRIMARY KEY (id)",
           "table": "user_options",
-          "referenced_table": null,
           "columns": [
             "id"
-          ],
-          "referenced_columns": null
+          ]
         },
         {
           "name": "- (Foreign key ID: 0)",
@@ -294,7 +250,6 @@
           ]
         }
       ],
-      "triggers": [],
       "def": "CREATE TABLE user_options (\n  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n  user_id INTEGER NOT NULL,\n  email TEXT NOT NULL,\n  CONSTRAINT user_options_user_id_fk FOREIGN KEY(user_id) REFERENCES users(id) MATCH NONE ON UPDATE NO ACTION ON DELETE CASCADE\n)",
       "labels": [
         {
@@ -310,38 +265,29 @@
     {
       "name": "schema_migrations",
       "type": "table",
-      "comment": "",
       "columns": [
         {
           "name": "id",
           "type": "INTEGER",
-          "nullable": false,
-          "default": null,
-          "comment": ""
+          "nullable": false
         },
         {
           "name": "name",
           "type": "TEXT",
-          "nullable": false,
-          "default": null,
-          "comment": ""
+          "nullable": false
         }
       ],
-      "indexes": [],
       "constraints": [
         {
           "name": "id",
           "type": "PRIMARY KEY",
           "def": "PRIMARY KEY (id)",
           "table": "schema_migrations",
-          "referenced_table": null,
           "columns": [
             "id"
-          ],
-          "referenced_columns": null
+          ]
         }
       ],
-      "triggers": [],
       "def": "CREATE TABLE schema_migrations (\n  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n  name TEXT NOT NULL\n)"
     }
   ],
@@ -403,7 +349,6 @@
       "virtual": true
     }
   ],
-  "functions": null,
   "driver": {
     "name": "sqlite",
     "database_version": "3.39.4",

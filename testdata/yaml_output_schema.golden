@@ -7,12 +7,10 @@ tables:
   - name: a
     type: INTEGER
     nullable: false
-    default: null
     comment: column a
   - name: a2
     type: TEXT
     nullable: false
-    default: null
     comment: column a2
   indexes:
   - name: PRIMARY KEY
@@ -25,13 +23,10 @@ tables:
     type: ""
     def: PRIMARY KEY (a)
     table: a
-    referencedTable: null
     columns: []
-    referencedColumns: []
   triggers:
   - name: update_a_a2
     def: CREATE CONSTRAINT TRIGGER update_a_a2 AFTER INSERT OR UPDATE ON a
-  def: ""
   labels:
   - name: blue
     virtual: false
@@ -44,17 +39,11 @@ tables:
   - name: b
     type: INTEGER
     nullable: false
-    default: null
     comment: column b
   - name: b2
     type: TEXT
     nullable: false
-    default: null
     comment: column b2
-  indexes: []
-  constraints: []
-  triggers: []
-  def: ""
   labels:
   - name: red
     virtual: false
@@ -67,11 +56,7 @@ tables:
   - name: view_column
     type: INTEGER
     nullable: false
-    default: null
     comment: column of view
-  indexes: []
-  constraints: []
-  triggers: []
   def: CREATE VIEW view AS SELECT a, b FROM a JOIN b ON a.a = b.b
   referencedTables:
   - a

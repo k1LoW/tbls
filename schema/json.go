@@ -9,9 +9,6 @@ func (s Schema) MarshalJSON() ([]byte, error) {
 	if len(s.Tables) == 0 {
 		s.Tables = []*Table{}
 	}
-	if len(s.Relations) == 0 {
-		s.Relations = []*Relation{}
-	}
 
 	return json.Marshal(&struct {
 		Name       string       `json:"name,omitempty"`
@@ -37,60 +34,9 @@ func (s Schema) MarshalJSON() ([]byte, error) {
 }
 
 // MarshalJSON return custom JSON byte
-func (d Function) MarshalJSON() ([]byte, error) {
-	return json.Marshal(&struct {
-		Name       string `json:"name"`
-		ReturnType string `json:"return_type"`
-		Arguments  string `json:"arguments"`
-		Type       string `json:"type"`
-	}{
-		Name:       d.Name,
-		ReturnType: d.ReturnType,
-		Arguments:  d.Arguments,
-		Type:       d.Type,
-	})
-}
-
-// MarshalJSON return custom JSON byte
-func (e Enum) MarshalJSON() ([]byte, error) {
-	return json.Marshal(&struct {
-		Name   string   `json:"name"`
-		Values []string `json:"values"`
-	}{
-		Name:   e.Name,
-		Values: e.Values,
-	})
-}
-
-// MarshalJSON return custom JSON byte
-func (d Driver) MarshalJSON() ([]byte, error) {
-	if d.Meta == nil {
-		d.Meta = &DriverMeta{}
-	}
-	return json.Marshal(&struct {
-		Name            string      `json:"name"`
-		DatabaseVersion string      `json:"database_version,omitempty"`
-		Meta            *DriverMeta `json:"meta,omitempty"`
-	}{
-		Name:            d.Name,
-		DatabaseVersion: d.DatabaseVersion,
-		Meta:            d.Meta,
-	})
-}
-
-// MarshalJSON return custom JSON byte
 func (t Table) MarshalJSON() ([]byte, error) {
 	if len(t.Columns) == 0 {
 		t.Columns = []*Column{}
-	}
-	if len(t.Indexes) == 0 {
-		t.Indexes = []*Index{}
-	}
-	if len(t.Constraints) == 0 {
-		t.Constraints = []*Constraint{}
-	}
-	if len(t.Triggers) == 0 {
-		t.Triggers = []*Trigger{}
 	}
 
 	referencedTables := []string{}
@@ -106,7 +52,7 @@ func (t Table) MarshalJSON() ([]byte, error) {
 		Indexes          []*Index      `json:"indexes,omitempty"`
 		Constraints      []*Constraint `json:"constraints,omitempty"`
 		Triggers         []*Trigger    `json:"triggers,omitempty"`
-		Def              string        `json:"def"`
+		Def              string        `json:"def,omitempty"`
 		Labels           Labels        `json:"labels,omitempty"`
 		ReferencedTables []string      `json:"referenced_tables,omitempty"`
 	}{
@@ -130,7 +76,7 @@ func (c Column) MarshalJSON() ([]byte, error) {
 			Name            string      `json:"name"`
 			Type            string      `json:"type"`
 			Nullable        bool        `json:"nullable"`
-			Default         string      `json:"default"`
+			Default         *string     `json:"default,omitempty"`
 			ExtraDef        string      `json:"extra_def,omitempty"`
 			Labels          Labels      `json:"labels,omitempty"`
 			Comment         string      `json:"comment"`
@@ -140,7 +86,7 @@ func (c Column) MarshalJSON() ([]byte, error) {
 			Name:            c.Name,
 			Type:            c.Type,
 			Nullable:        c.Nullable,
-			Default:         c.Default.String,
+			Default:         &c.Default.String,
 			Comment:         c.Comment,
 			ExtraDef:        c.ExtraDef,
 			Labels:          c.Labels,
@@ -152,8 +98,8 @@ func (c Column) MarshalJSON() ([]byte, error) {
 		Name            string      `json:"name"`
 		Type            string      `json:"type"`
 		Nullable        bool        `json:"nullable"`
-		Default         *string     `json:"default"`
-		Comment         string      `json:"comment"`
+		Default         *string     `json:"default,omitempty"`
+		Comment         string      `json:"comment,omitempty"`
 		ExtraDef        string      `json:"extra_def,omitempty"`
 		Labels          Labels      `json:"labels,omitempty"`
 		ParentRelations []*Relation `json:"-"`
@@ -185,10 +131,10 @@ func (r Relation) MarshalJSON() ([]byte, error) {
 	return json.Marshal(&struct {
 		Table             string   `json:"table"`
 		Columns           []string `json:"columns"`
-		Cardinality       string   `json:"cardinality"`
+		Cardinality       string   `json:"cardinality,omitempty"`
 		ParentTable       string   `json:"parent_table"`
 		ParentColumns     []string `json:"parent_columns"`
-		ParentCardinality string   `json:"parent_cardinality"`
+		ParentCardinality string   `json:"parent_cardinality,omitempty"`
 		Def               string   `json:"def"`
 		Virtual           bool     `json:"virtual"`
 	}{

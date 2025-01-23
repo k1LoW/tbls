@@ -101,9 +101,9 @@ type Constraint struct {
 	Type              string   `json:"type"`
 	Def               string   `json:"def"`
 	Table             *string  `json:"table"`
-	ReferencedTable   *string  `json:"referenced_table" yaml:"referencedTable"`
+	ReferencedTable   *string  `json:"referenced_table,omitempty" yaml:"referencedTable,omitempty"`
 	Columns           []string `json:"columns"`
-	ReferencedColumns []string `json:"referenced_columns" yaml:"referencedColumns"`
+	ReferencedColumns []string `json:"referenced_columns,omitempty" yaml:"referencedColumns,omitempty"`
 	Comment           string   `json:"comment,omitempty"`
 }
 
