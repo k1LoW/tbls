@@ -52,8 +52,8 @@ func (labels Labels) Contains(name string) bool {
 
 // Viewpoint is the struct for viewpoint information
 type Viewpoint struct {
-	Name     string            `json:"name,omitempty"`
-	Desc     string            `json:"desc,omitempty"`
+	Name     string            `json:"name"`
+	Desc     string            `json:"desc"`
 	Labels   []string          `json:"labels,omitempty"`
 	Tables   []string          `json:"tables,omitempty"`
 	Distance int               `json:"distance,omitempty"`
@@ -63,8 +63,8 @@ type Viewpoint struct {
 }
 
 type ViewpointGroup struct {
-	Name   string   `json:"name,omitempty"`
-	Desc   string   `json:"desc,omitempty"`
+	Name   string   `json:"name"`
+	Desc   string   `json:"desc"`
 	Labels []string `json:"labels,omitempty"`
 	Tables []string `json:"tables,omitempty"`
 	Color  string   `json:"color,omitempty"`
@@ -92,7 +92,7 @@ type Index struct {
 	Def     string   `json:"def"`
 	Table   *string  `json:"table"`
 	Columns []string `json:"columns"`
-	Comment string   `json:"comment"`
+	Comment string   `json:"comment,omitempty"`
 }
 
 // Constraint is the struct for database constraint
@@ -104,14 +104,14 @@ type Constraint struct {
 	ReferencedTable   *string  `json:"referenced_table" yaml:"referencedTable"`
 	Columns           []string `json:"columns"`
 	ReferencedColumns []string `json:"referenced_columns" yaml:"referencedColumns"`
-	Comment           string   `json:"comment"`
+	Comment           string   `json:"comment,omitempty"`
 }
 
 // Trigger is the struct for database trigger
 type Trigger struct {
 	Name    string `json:"name"`
 	Def     string `json:"def"`
-	Comment string `json:"comment"`
+	Comment string `json:"comment,omitempty"`
 }
 
 // Column is the struct for table column
@@ -119,8 +119,8 @@ type Column struct {
 	Name            string          `json:"name"`
 	Type            string          `json:"type"`
 	Nullable        bool            `json:"nullable"`
-	Default         sql.NullString  `json:"default"`
-	Comment         string          `json:"comment"`
+	Default         sql.NullString  `json:"default,omitempty"`
+	Comment         string          `json:"comment,omitempty"`
 	ExtraDef        string          `json:"extra_def,omitempty" yaml:"extraDef,omitempty"`
 	Occurrences     sql.NullInt32   `json:"occurrences,omitempty" yaml:"occurrences,omitempty"`
 	Percents        sql.NullFloat64 `json:"percents,omitempty" yaml:"percents,omitempty"`
@@ -142,13 +142,13 @@ type TableViewpoint struct {
 type Table struct {
 	Name             string            `json:"name"`
 	Type             string            `json:"type"`
-	Comment          string            `json:"comment"`
+	Comment          string            `json:"comment,omitempty"`
 	Columns          []*Column         `json:"columns"`
-	Viewpoints       []*TableViewpoint `json:"viewpoints"`
-	Indexes          []*Index          `json:"indexes"`
-	Constraints      []*Constraint     `json:"constraints"`
-	Triggers         []*Trigger        `json:"triggers"`
-	Def              string            `json:"def"`
+	Viewpoints       []*TableViewpoint `json:"viewpoints,omitempty"`
+	Indexes          []*Index          `json:"indexes,omitempty"`
+	Constraints      []*Constraint     `json:"constraints,omitempty"`
+	Triggers         []*Trigger        `json:"triggers,omitempty"`
+	Def              string            `json:"def,omitempty"`
 	Labels           Labels            `json:"labels,omitempty"`
 	ReferencedTables []*Table          `json:"referenced_tables,omitempty" yaml:"referencedTables,omitempty"`
 	External         bool              `json:"-"` // Table external to the schema
@@ -160,10 +160,10 @@ type Relation struct {
 	Columns           []*Column   `json:"columns"`
 	ParentTable       *Table      `json:"parent_table" yaml:"parentTable"`
 	ParentColumns     []*Column   `json:"parent_columns" yaml:"parentColumns"`
-	Cardinality       Cardinality `json:"cardinality"`
-	ParentCardinality Cardinality `json:"parent_cardinality" yaml:"parentCardinality"`
+	Cardinality       Cardinality `json:"cardinality,omitempty"`
+	ParentCardinality Cardinality `json:"parent_cardinality,omitempty" yaml:"parentCardinality"`
 	Def               string      `json:"def"`
-	Virtual           bool        `json:"virtual"`
+	Virtual           bool        `json:"virtual,omitempty"`
 	HideForER         bool        `json:"-"`
 }
 
@@ -189,19 +189,19 @@ type Enum struct {
 // Driver is the struct for tbls driver information
 type Driver struct {
 	Name            string      `json:"name"`
-	DatabaseVersion string      `json:"database_version" yaml:"databaseVersion"`
-	Meta            *DriverMeta `json:"meta"`
+	DatabaseVersion string      `json:"database_version,omitempty" yaml:"databaseVersion,omitempty"`
+	Meta            *DriverMeta `json:"meta,omitempty"`
 }
 
 // Schema is the struct for database schema
 type Schema struct {
-	Name       string      `json:"name"`
-	Desc       string      `json:"desc"`
+	Name       string      `json:"name,omitempty"`
+	Desc       string      `json:"desc,omitempty"`
 	Tables     []*Table    `json:"tables"`
-	Relations  []*Relation `json:"relations"`
-	Functions  []*Function `json:"functions"`
+	Relations  []*Relation `json:"relations,omitempty"`
+	Functions  []*Function `json:"functions,omitempty"`
 	Enums      []*Enum     `json:"enums,omitempty"`
-	Driver     *Driver     `json:"driver"`
+	Driver     *Driver     `json:"driver,omitempty"`
 	Labels     Labels      `json:"labels,omitempty"`
 	Viewpoints Viewpoints  `json:"viewpoints,omitempty"`
 }
