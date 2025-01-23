@@ -29,8 +29,7 @@
           "table": "users",
           "columns": [
             "username"
-          ],
-          "comment": ""
+          ]
         }
       ],
       "constraints": [
@@ -43,8 +42,7 @@
           "columns": [
             "id"
           ],
-          "referenced_columns": null,
-          "comment": ""
+          "referenced_columns": null
         },
         {
           "name": "sqlite_autoindex_users_1",
@@ -55,8 +53,7 @@
           "columns": [
             "username"
           ],
-          "referenced_columns": null,
-          "comment": ""
+          "referenced_columns": null
         },
         {
           "name": "-",
@@ -67,8 +64,7 @@
           "columns": [
             "username"
           ],
-          "referenced_columns": null,
-          "comment": ""
+          "referenced_columns": null
         }
       ],
       "triggers": [],
@@ -107,8 +103,7 @@
           "table": "categories",
           "columns": [
             "name"
-          ],
-          "comment": ""
+          ]
         }
       ],
       "constraints": [
@@ -121,8 +116,7 @@
           "columns": [
             "id"
           ],
-          "referenced_columns": null,
-          "comment": ""
+          "referenced_columns": null
         },
         {
           "name": "sqlite_autoindex_categories_1",
@@ -133,8 +127,7 @@
           "columns": [
             "name"
           ],
-          "referenced_columns": null,
-          "comment": ""
+          "referenced_columns": null
         }
       ],
       "triggers": [],
@@ -191,8 +184,7 @@
           "table": "posts",
           "columns": [
             "user_id"
-          ],
-          "comment": ""
+          ]
         }
       ],
       "constraints": [
@@ -205,8 +197,7 @@
           "columns": [
             "id"
           ],
-          "referenced_columns": null,
-          "comment": ""
+          "referenced_columns": null
         },
         {
           "name": "- (Foreign key ID: 0)",
@@ -219,8 +210,7 @@
           ],
           "referenced_columns": [
             "id"
-          ],
-          "comment": ""
+          ]
         },
         {
           "name": "- (Foreign key ID: 1)",
@@ -233,15 +223,13 @@
           ],
           "referenced_columns": [
             "id"
-          ],
-          "comment": ""
+          ]
         }
       ],
       "triggers": [
         {
           "name": "update_posts_updated",
-          "def": "CREATE TRIGGER update_posts_updated AFTER UPDATE ON posts FOR EACH ROW\nBEGIN\n  UPDATE posts SET updated = current_timestamp WHERE id = OLD.id;\nEND",
-          "comment": ""
+          "def": "CREATE TRIGGER update_posts_updated AFTER UPDATE ON posts FOR EACH ROW\nBEGIN\n  UPDATE posts SET updated = current_timestamp WHERE id = OLD.id;\nEND"
         }
       ],
       "def": "CREATE TABLE posts (\n  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n  user_id INTEGER NOT NULL,\n  category_id INTEGER NOT NULL,\n  title TEXT NOT NULL,\n  CONSTRAINT posts_user_id_fk FOREIGN KEY(user_id) REFERENCES users(id) MATCH NONE ON UPDATE NO ACTION ON DELETE CASCADE,\n  CONSTRAINT posts_category_id_fk FOREIGN KEY(category_id) REFERENCES categories(id) MATCH NONE ON UPDATE NO ACTION ON DELETE CASCADE\n)",
@@ -290,8 +278,7 @@
           "columns": [
             "id"
           ],
-          "referenced_columns": null,
-          "comment": ""
+          "referenced_columns": null
         },
         {
           "name": "- (Foreign key ID: 0)",
@@ -304,8 +291,7 @@
           ],
           "referenced_columns": [
             "id"
-          ],
-          "comment": ""
+          ]
         }
       ],
       "triggers": [],
@@ -352,8 +338,7 @@
           "columns": [
             "id"
           ],
-          "referenced_columns": null,
-          "comment": ""
+          "referenced_columns": null
         }
       ],
       "triggers": [],

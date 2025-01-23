@@ -29,8 +29,7 @@
           "table": "a",
           "columns": [
             "a"
-          ],
-          "comment": ""
+          ]
         }
       ],
       "constraints": [
@@ -41,15 +40,13 @@
           "table": "a",
           "referenced_table": null,
           "columns": null,
-          "referenced_columns": null,
-          "comment": ""
+          "referenced_columns": null
         }
       ],
       "triggers": [
         {
           "name": "update_a_a2",
-          "def": "CREATE CONSTRAINT TRIGGER update_a_a2 AFTER INSERT OR UPDATE ON a",
-          "comment": ""
+          "def": "CREATE CONSTRAINT TRIGGER update_a_a2 AFTER INSERT OR UPDATE ON a"
         }
       ],
       "def": "",

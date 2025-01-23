@@ -1,5 +1,4 @@
 name: testschema
-desc: ""
 tables:
 - name: a
   type: ""
@@ -21,7 +20,6 @@ tables:
     table: a
     columns:
     - a
-    comment: ""
   constraints:
   - name: PRIMARY
     type: ""
@@ -30,11 +28,9 @@ tables:
     referencedTable: null
     columns: []
     referencedColumns: []
-    comment: ""
   triggers:
   - name: update_a_a2
     def: CREATE CONSTRAINT TRIGGER update_a_a2 AFTER INSERT OR UPDATE ON a
-    comment: ""
   def: ""
   labels:
   - name: blue
@@ -91,7 +87,6 @@ relations:
   parentCardinality: Exactly one
   def: FOREIGN KEY (b) REFERENCES a(a)
   virtual: false
-functions: []
 enums:
 - name: enum
   values:
