@@ -158,9 +158,9 @@ build:
 	go build -tags timetzdata -ldflags="$(BUILD_LDFLAGS)"
 
 depsdev:
-	go install github.com/linyows/git-semv/cmd/git-semv@v1.2.0
-	go install github.com/Songmu/ghch/cmd/ghch@v0.10.2
-	go install github.com/xo/usql@v0.9.5
+	go install github.com/linyows/git-semv/cmd/git-semv@latest
+	go install github.com/Songmu/ghch/cmd/ghch@latest
+	go install github.com/xo/usql@latest
 	go install github.com/Songmu/gocredits/cmd/gocredits@latest
 	go install github.com/securego/gosec/v2/cmd/gosec@latest
 
