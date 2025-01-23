@@ -31,8 +31,8 @@ var DefaultHideColumns = []string{ColumnExtraDef, ColumnOccurrences, ColumnPerce
 var HideableColumns = []string{ColumnExtraDef, ColumnOccurrences, ColumnPercents, ColumnChildren, ColumnParents, ColumnComment, ColumnLabels}
 
 type Label struct {
-	Name    string
-	Virtual bool
+	Name    string `json:"name"`
+	Virtual bool   `json:"virtual,omitempty"`
 }
 
 type Labels []*Label

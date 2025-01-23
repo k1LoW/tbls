@@ -59,8 +59,8 @@
       "def": "CREATE TABLE users (\n  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n  username TEXT UNIQUE NOT NULL CHECK(length(username) \u003e 4)\n)",
       "labels": [
         {
-          "Name": "private",
-          "Virtual": true
+          "name": "private",
+          "virtual": true
         }
       ]
     },
@@ -112,12 +112,12 @@
       "def": "CREATE TABLE categories (\n  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n  name TEXT UNIQUE NOT NULL\n)",
       "labels": [
         {
-          "Name": "public",
-          "Virtual": true
+          "name": "public",
+          "virtual": true
         },
         {
-          "Name": "option",
-          "Virtual": true
+          "name": "option",
+          "virtual": true
         }
       ]
     },
@@ -202,8 +202,8 @@
       "def": "CREATE TABLE posts (\n  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n  user_id INTEGER NOT NULL,\n  category_id INTEGER NOT NULL,\n  title TEXT NOT NULL,\n  CONSTRAINT posts_user_id_fk FOREIGN KEY(user_id) REFERENCES users(id) MATCH NONE ON UPDATE NO ACTION ON DELETE CASCADE,\n  CONSTRAINT posts_category_id_fk FOREIGN KEY(category_id) REFERENCES categories(id) MATCH NONE ON UPDATE NO ACTION ON DELETE CASCADE\n)",
       "labels": [
         {
-          "Name": "public",
-          "Virtual": true
+          "name": "public",
+          "virtual": true
         }
       ]
     },
@@ -254,12 +254,12 @@
       "def": "CREATE TABLE user_options (\n  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n  user_id INTEGER NOT NULL,\n  email TEXT NOT NULL,\n  CONSTRAINT user_options_user_id_fk FOREIGN KEY(user_id) REFERENCES users(id) MATCH NONE ON UPDATE NO ACTION ON DELETE CASCADE\n)",
       "labels": [
         {
-          "Name": "private",
-          "Virtual": true
+          "name": "private",
+          "virtual": true
         },
         {
-          "Name": "option",
-          "Virtual": true
+          "name": "option",
+          "virtual": true
         }
       ]
     },

@@ -29,7 +29,6 @@ tables:
     def: CREATE CONSTRAINT TRIGGER update_a_a2 AFTER INSERT OR UPDATE ON a
   labels:
   - name: blue
-    virtual: false
   - name: green
     virtual: true
 - name: b
@@ -46,7 +45,6 @@ tables:
     comment: column b2
   labels:
   - name: red
-    virtual: false
   - name: green
     virtual: true
 - name: view
