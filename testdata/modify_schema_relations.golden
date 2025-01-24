@@ -297,12 +297,12 @@
       "columns": [
         "category_id"
       ],
-      "cardinality": "Zero or more",
+      "cardinality": "zero_or_more",
       "parent_table": "categories",
       "parent_columns": [
         "id"
       ],
-      "parent_cardinality": "Exactly one",
+      "parent_cardinality": "exactly_one",
       "def": "FOREIGN KEY (category_id) REFERENCES categories (id) ON UPDATE NO ACTION ON DELETE CASCADE MATCH NONE"
     },
     {
@@ -310,12 +310,12 @@
       "columns": [
         "user_id"
       ],
-      "cardinality": "Zero or more",
+      "cardinality": "zero_or_more",
       "parent_table": "users",
       "parent_columns": [
         "id"
       ],
-      "parent_cardinality": "Exactly one",
+      "parent_cardinality": "exactly_one",
       "def": "FOREIGN KEY (user_id) REFERENCES users (id) ON UPDATE NO ACTION ON DELETE CASCADE MATCH NONE"
     },
     {
@@ -323,12 +323,12 @@
       "columns": [
         "user_id"
       ],
-      "cardinality": "Zero or more",
+      "cardinality": "zero_or_more",
       "parent_table": "users",
       "parent_columns": [
         "id"
       ],
-      "parent_cardinality": "Exactly one",
+      "parent_cardinality": "exactly_one",
       "def": "FOREIGN KEY (user_id) REFERENCES users (id) ON UPDATE NO ACTION ON DELETE CASCADE MATCH NONE"
     },
     {
@@ -336,12 +336,12 @@
       "columns": [
         "id"
       ],
-      "cardinality": "Zero or one",
+      "cardinality": "zero_or_one",
       "parent_table": "categories",
       "parent_columns": [
         "id"
       ],
-      "parent_cardinality": "Exactly one",
+      "parent_cardinality": "exactly_one",
       "def": "Additional Relation",
       "virtual": true
     }

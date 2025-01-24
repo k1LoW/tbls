@@ -63,11 +63,11 @@ relations:
 - table: b
   columns:
   - b
-  cardinality: One or more
+  cardinality: one_or_more
   parentTable: a
   parentColumns:
   - a
-  parentCardinality: Exactly one
+  parentCardinality: exactly_one
   def: FOREIGN KEY (b) REFERENCES a(a)
   virtual: false
 enums:

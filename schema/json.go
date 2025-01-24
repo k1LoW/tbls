@@ -36,7 +36,7 @@ type ColumnJSON struct {
 	Name     string  `json:"name"`
 	Type     string  `json:"type"`
 	Nullable bool    `json:"nullable"`
-	Default  *string `json:"default,omitempty"`
+	Default  *string `json:"default,omitempty" jsonschema:"anyof_type=string;null"`
 	ExtraDef string  `json:"extra_def,omitempty"`
 	Labels   Labels  `json:"labels,omitempty"`
 	Comment  string  `json:"comment,omitempty"`
@@ -46,10 +46,10 @@ type ColumnJSON struct {
 type RelationJSON struct {
 	Table             string   `json:"table"`
 	Columns           []string `json:"columns"`
-	Cardinality       string   `json:"cardinality,omitempty"`
+	Cardinality       string   `json:"cardinality,omitempty" jsonschema:"enum=zero_or_one,enum=exactly_one,enum=zero_or_more,enum=one_or_more,enum="`
 	ParentTable       string   `json:"parent_table"`
 	ParentColumns     []string `json:"parent_columns"`
-	ParentCardinality string   `json:"parent_cardinality,omitempty"`
+	ParentCardinality string   `json:"parent_cardinality,omitempty" jsonschema:"enum=zero_or_one,enum=exactly_one,enum=zero_or_more,enum=one_or_more,enum="`
 	Def               string   `json:"def"`
 	Virtual           bool     `json:"virtual,omitempty"`
 }

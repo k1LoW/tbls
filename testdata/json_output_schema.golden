@@ -107,12 +107,12 @@
       "columns": [
         "b"
       ],
-      "cardinality": "One or more",
+      "cardinality": "one_or_more",
       "parent_table": "a",
       "parent_columns": [
         "a"
       ],
-      "parent_cardinality": "Exactly one",
+      "parent_cardinality": "exactly_one",
       "def": "FOREIGN KEY (b) REFERENCES a(a)"
     }
   ],

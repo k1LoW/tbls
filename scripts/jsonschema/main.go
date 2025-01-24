@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"reflect"
+	"strings"
 
 	"github.com/iancoleman/strcase"
 	"github.com/invopop/jsonschema"
@@ -19,6 +21,9 @@ func main() {
 
 func _main() error {
 	r := new(jsonschema.Reflector)
+	r.Namer = func(t reflect.Type) string {
+		return strings.TrimSuffix(t.Name(), "JSON")
+	}
 	r.KeyNamer = strcase.ToSnake
 	s := r.Reflect(&schema.SchemaJSON{})
 	b, err := json.MarshalIndent(s, "", "  ")
