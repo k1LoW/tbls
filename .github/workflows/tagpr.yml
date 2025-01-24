@@ -63,7 +63,7 @@ jobs:
   linux-assets:
     needs: tagpr
     if: needs.tagpr.outputs.tagpr-tag != ''
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - name: Install packages
         run: |
