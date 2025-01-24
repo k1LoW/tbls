@@ -27,7 +27,11 @@ builds:
     - goos: linux
       goarch: arm64
       goamd64: ""
+      goarm: v8.0
       gomips: ""
+      env:
+        - CC=aarch64-linux-gnu-gcc
+        - CXX=aarch64-linux-gnu-g++
 archives:
 -
   id: tbls-archive
