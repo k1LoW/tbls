@@ -2,8 +2,8 @@ name: release test
 
 on:
   push:
-    # branches:
-    #   - main
+    branches:
+      - main
   pull_request:
     paths:
       - .github/workflows/release-test.yml
