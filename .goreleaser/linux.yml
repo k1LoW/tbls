@@ -28,8 +28,6 @@ builds:
       goarch: arm64
       goamd64: ""
       gomips: ""
-      env:
-        - CC=aarch64-linux-gnu-gcc
 archives:
 -
   id: tbls-archive
