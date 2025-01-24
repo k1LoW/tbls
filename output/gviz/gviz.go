@@ -35,7 +35,7 @@ func New(c *config.Config) *Gviz {
 	}
 }
 
-// OutputSchema generage image for full relation.
+// OutputSchema generate image for full relation.
 func (g *Gviz) OutputSchema(wr io.Writer, s *schema.Schema) error {
 	buf := &bytes.Buffer{}
 	if err := g.dot.OutputSchema(buf, s); err != nil {
@@ -44,7 +44,7 @@ func (g *Gviz) OutputSchema(wr io.Writer, s *schema.Schema) error {
 	return g.render(wr, buf.Bytes())
 }
 
-// OutputTable generage image for table.
+// OutputTable generate image for table.
 func (g *Gviz) OutputTable(wr io.Writer, t *schema.Table) error {
 	buf := &bytes.Buffer{}
 	if err := g.dot.OutputTable(buf, t); err != nil {
@@ -53,7 +53,7 @@ func (g *Gviz) OutputTable(wr io.Writer, t *schema.Table) error {
 	return g.render(wr, buf.Bytes())
 }
 
-// OutputViewpoint generage image for viewpoint.
+// OutputViewpoint generate image for viewpoint.
 func (g *Gviz) OutputViewpoint(wr io.Writer, v *schema.Viewpoint) error {
 	buf := &bytes.Buffer{}
 	if err := g.dot.OutputViewpoint(buf, v); err != nil {
