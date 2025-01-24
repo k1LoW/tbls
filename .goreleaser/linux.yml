@@ -6,8 +6,16 @@ before:
 builds:
 -
   id: tbls-linux
+  flags:
+    - -a
+    - -tags
+    - netgo,timetzdata
+    - -installsuffix
+    - netgo
   ldflags:
     - -s -w -X github.com/k1LoW/tbls.version={{.Version}} -X github.com/k1LoW/tbls.commit={{.FullCommit}} -X github.com/k1LoW/tbls.date={{.Date}} -X github.com/k1LoW/tbls/version.Version={{.Version}}
+    - -linkmode external
+    - -extldflags '-static'
   env:
     - CGO_ENABLED=1
   goos:
@@ -18,7 +26,9 @@ builds:
   overrides:
     - goos: linux
       goarch: arm64
+      goamd64: ""
       goarm: v8.0
+      gomips: ""
       env:
         - CC=aarch64-linux-gnu-gcc
         - CXX=aarch64-linux-gnu-g++
