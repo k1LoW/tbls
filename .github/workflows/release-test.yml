@@ -77,8 +77,6 @@ jobs:
           args: --config .goreleaser/linux.yml --clean --snapshot --skip=publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CC: aarch64-linux-gnu-gcc
-          CXX: aarch64-linux-gnu-g++
 
   windows-release-test:
     strategy:
