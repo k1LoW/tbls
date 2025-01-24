@@ -116,20 +116,20 @@ type Trigger struct {
 
 // Column is the struct for table column
 type Column struct {
-	Name            string          `json:"name"`
-	Type            string          `json:"type"`
-	Nullable        bool            `json:"nullable"`
-	Default         sql.NullString  `json:"default,omitempty"`
-	Comment         string          `json:"comment,omitempty"`
-	ExtraDef        string          `json:"extra_def,omitempty" yaml:"extraDef,omitempty"`
-	Occurrences     sql.NullInt32   `json:"occurrences,omitempty" yaml:"occurrences,omitempty"`
-	Percents        sql.NullFloat64 `json:"percents,omitempty" yaml:"percents,omitempty"`
-	Labels          Labels          `json:"labels,omitempty"`
-	ParentRelations []*Relation     `json:"-"`
-	ChildRelations  []*Relation     `json:"-"`
-	PK              bool            `json:"-"`
-	FK              bool            `json:"-"`
-	HideForER       bool            `json:"-"`
+	Name            string
+	Type            string
+	Nullable        bool
+	Default         sql.NullString
+	Comment         string
+	ExtraDef        string
+	Occurrences     sql.NullInt32
+	Percents        sql.NullFloat64
+	Labels          Labels
+	ParentRelations []*Relation
+	ChildRelations  []*Relation
+	PK              bool
+	FK              bool
+	HideForER       bool
 }
 
 type TableViewpoint struct {
@@ -140,31 +140,31 @@ type TableViewpoint struct {
 
 // Table is the struct for database table
 type Table struct {
-	Name             string            `json:"name"`
-	Type             string            `json:"type"`
-	Comment          string            `json:"comment,omitempty"`
-	Columns          []*Column         `json:"columns"`
-	Viewpoints       []*TableViewpoint `json:"viewpoints,omitempty"`
-	Indexes          []*Index          `json:"indexes,omitempty"`
-	Constraints      []*Constraint     `json:"constraints,omitempty"`
-	Triggers         []*Trigger        `json:"triggers,omitempty"`
-	Def              string            `json:"def,omitempty"`
-	Labels           Labels            `json:"labels,omitempty"`
-	ReferencedTables []*Table          `json:"referenced_tables,omitempty" yaml:"referencedTables,omitempty"`
-	External         bool              `json:"-"` // Table external to the schema
+	Name             string
+	Type             string
+	Comment          string
+	Columns          []*Column
+	Viewpoints       []*TableViewpoint
+	Indexes          []*Index
+	Constraints      []*Constraint
+	Triggers         []*Trigger
+	Def              string
+	Labels           Labels
+	ReferencedTables []*Table
+	External         bool
 }
 
 // Relation is the struct for table relation
 type Relation struct {
-	Table             *Table      `json:"table"`
-	Columns           []*Column   `json:"columns"`
-	ParentTable       *Table      `json:"parent_table" yaml:"parentTable"`
-	ParentColumns     []*Column   `json:"parent_columns" yaml:"parentColumns"`
-	Cardinality       Cardinality `json:"cardinality,omitempty"`
-	ParentCardinality Cardinality `json:"parent_cardinality,omitempty" yaml:"parentCardinality"`
-	Def               string      `json:"def"`
-	Virtual           bool        `json:"virtual,omitempty"`
-	HideForER         bool        `json:"-"`
+	Table             *Table
+	Columns           []*Column
+	ParentTable       *Table
+	ParentColumns     []*Column
+	Cardinality       Cardinality
+	ParentCardinality Cardinality
+	Def               string
+	Virtual           bool
+	HideForER         bool
 }
 
 type DriverMeta struct {

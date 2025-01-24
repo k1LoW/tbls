@@ -4,107 +4,131 @@ import (
 	"encoding/json"
 )
 
-// MarshalJSON return custom JSON byte
-func (t Table) MarshalJSON() ([]byte, error) {
-	referencedTables := []string{}
+// SchemaJSON is a JSON representation of schema.Schema
+type SchemaJSON struct {
+	Name       string          `json:"name,omitempty"`
+	Desc       string          `json:"desc,omitempty"`
+	Tables     []*TableJSON    `json:"tables"`
+	Relations  []*RelationJSON `json:"relations,omitempty"`
+	Functions  []*Function     `json:"functions,omitempty"`
+	Enums      []*Enum         `json:"enums,omitempty"`
+	Driver     *Driver         `json:"driver,omitempty"`
+	Labels     Labels          `json:"labels,omitempty"`
+	Viewpoints Viewpoints      `json:"viewpoints,omitempty"`
+}
+
+// TableJSON is a JSON representation of schema.Table
+type TableJSON struct {
+	Name             string        `json:"name"`
+	Type             string        `json:"type"`
+	Comment          string        `json:"comment,omitempty"`
+	Columns          []*ColumnJSON `json:"columns"`
+	Indexes          []*Index      `json:"indexes,omitempty"`
+	Constraints      []*Constraint `json:"constraints,omitempty"`
+	Triggers         []*Trigger    `json:"triggers,omitempty"`
+	Def              string        `json:"def,omitempty"`
+	Labels           Labels        `json:"labels,omitempty"`
+	ReferencedTables []string      `json:"referenced_tables,omitempty"`
+}
+
+// ColumnJSON is a JSON representation of schema.Column
+type ColumnJSON struct {
+	Name     string  `json:"name"`
+	Type     string  `json:"type"`
+	Nullable bool    `json:"nullable"`
+	Default  *string `json:"default,omitempty"`
+	ExtraDef string  `json:"extra_def,omitempty"`
+	Labels   Labels  `json:"labels,omitempty"`
+	Comment  string  `json:"comment,omitempty"`
+}
+
+// RelationJSON is a JSON representation of schema.Relation
+type RelationJSON struct {
+	Table             string   `json:"table"`
+	Columns           []string `json:"columns"`
+	Cardinality       string   `json:"cardinality,omitempty"`
+	ParentTable       string   `json:"parent_table"`
+	ParentColumns     []string `json:"parent_columns"`
+	ParentCardinality string   `json:"parent_cardinality,omitempty"`
+	Def               string   `json:"def"`
+	Virtual           bool     `json:"virtual,omitempty"`
+}
+
+// ToJSONObjct convert schema.Schema to JSON object
+func (s Schema) ToJSONObject() SchemaJSON {
+	var tables []*TableJSON
+	for _, t := range s.Tables {
+		tt := t.ToJSONObject()
+		tables = append(tables, &tt)
+	}
+	var relations []*RelationJSON
+	for _, r := range s.Relations {
+		rr := r.ToJSONObject()
+		relations = append(relations, &rr)
+	}
+	return SchemaJSON{
+		Name:       s.Name,
+		Desc:       s.Desc,
+		Tables:     tables,
+		Relations:  relations,
+		Functions:  s.Functions,
+		Enums:      s.Enums,
+		Driver:     s.Driver,
+		Labels:     s.Labels,
+		Viewpoints: s.Viewpoints,
+	}
+}
+
+func (t Table) ToJSONObject() TableJSON {
+	var referencedTables []string
 	for _, rt := range t.ReferencedTables {
 		referencedTables = append(referencedTables, rt.Name)
 	}
-
-	return json.Marshal(&struct {
-		Name             string        `json:"name"`
-		Type             string        `json:"type"`
-		Comment          string        `json:"comment,omitempty"`
-		Columns          []*Column     `json:"columns"`
-		Indexes          []*Index      `json:"indexes,omitempty"`
-		Constraints      []*Constraint `json:"constraints,omitempty"`
-		Triggers         []*Trigger    `json:"triggers,omitempty"`
-		Def              string        `json:"def,omitempty"`
-		Labels           Labels        `json:"labels,omitempty"`
-		ReferencedTables []string      `json:"referenced_tables,omitempty"`
-	}{
+	var columns []*ColumnJSON
+	for _, c := range t.Columns {
+		cc := c.ToJSONObject()
+		columns = append(columns, &cc)
+	}
+	return TableJSON{
 		Name:             t.Name,
 		Type:             t.Type,
 		Comment:          t.Comment,
-		Columns:          t.Columns,
+		Columns:          columns,
 		Indexes:          t.Indexes,
 		Constraints:      t.Constraints,
 		Triggers:         t.Triggers,
 		Def:              t.Def,
 		Labels:           t.Labels,
 		ReferencedTables: referencedTables,
-	})
-}
-
-// MarshalJSON return custom JSON byte
-func (c Column) MarshalJSON() ([]byte, error) {
-	if c.Default.Valid {
-		return json.Marshal(&struct {
-			Name            string      `json:"name"`
-			Type            string      `json:"type"`
-			Nullable        bool        `json:"nullable"`
-			Default         *string     `json:"default,omitempty"`
-			ExtraDef        string      `json:"extra_def,omitempty"`
-			Labels          Labels      `json:"labels,omitempty"`
-			Comment         string      `json:"comment"`
-			ParentRelations []*Relation `json:"-"`
-			ChildRelations  []*Relation `json:"-"`
-		}{
-			Name:            c.Name,
-			Type:            c.Type,
-			Nullable:        c.Nullable,
-			Default:         &c.Default.String,
-			Comment:         c.Comment,
-			ExtraDef:        c.ExtraDef,
-			Labels:          c.Labels,
-			ParentRelations: c.ParentRelations,
-			ChildRelations:  c.ChildRelations,
-		})
 	}
-	return json.Marshal(&struct {
-		Name            string      `json:"name"`
-		Type            string      `json:"type"`
-		Nullable        bool        `json:"nullable"`
-		Default         *string     `json:"default,omitempty"`
-		Comment         string      `json:"comment,omitempty"`
-		ExtraDef        string      `json:"extra_def,omitempty"`
-		Labels          Labels      `json:"labels,omitempty"`
-		ParentRelations []*Relation `json:"-"`
-		ChildRelations  []*Relation `json:"-"`
-	}{
-		Name:            c.Name,
-		Type:            c.Type,
-		Nullable:        c.Nullable,
-		Default:         nil,
-		Comment:         c.Comment,
-		ExtraDef:        c.ExtraDef,
-		Labels:          c.Labels,
-		ParentRelations: c.ParentRelations,
-		ChildRelations:  c.ChildRelations,
-	})
 }
 
-// MarshalJSON return custom JSON byte
-func (r Relation) MarshalJSON() ([]byte, error) {
-	columns := []string{}
-	parentColumns := []string{}
+func (c Column) ToJSONObject() ColumnJSON {
+	var defaultVal *string
+	if c.Default.Valid {
+		defaultVal = &c.Default.String
+	}
+	return ColumnJSON{
+		Name:     c.Name,
+		Type:     c.Type,
+		Nullable: c.Nullable,
+		Default:  defaultVal,
+		Comment:  c.Comment,
+		ExtraDef: c.ExtraDef,
+		Labels:   c.Labels,
+	}
+}
+
+func (r Relation) ToJSONObject() RelationJSON {
+	var columns []string
+	var parentColumns []string
 	for _, c := range r.Columns {
 		columns = append(columns, c.Name)
 	}
 	for _, c := range r.ParentColumns {
 		parentColumns = append(parentColumns, c.Name)
 	}
-
-	return json.Marshal(&struct {
-		Table             string   `json:"table"`
-		Columns           []string `json:"columns"`
-		Cardinality       string   `json:"cardinality,omitempty"`
-		ParentTable       string   `json:"parent_table"`
-		ParentColumns     []string `json:"parent_columns"`
-		ParentCardinality string   `json:"parent_cardinality,omitempty"`
-		Def               string   `json:"def"`
-		Virtual           bool     `json:"virtual,omitempty"`
-	}{
+	return RelationJSON{
 		Table:             r.Table.Name,
 		Columns:           columns,
 		Cardinality:       r.Cardinality.String(),
@@ -113,7 +137,31 @@ func (r Relation) MarshalJSON() ([]byte, error) {
 		ParentCardinality: r.ParentCardinality.String(),
 		Def:               r.Def,
 		Virtual:           r.Virtual,
-	})
+	}
+}
+
+// MarshalJSON return custom JSON byte
+func (s Schema) MarshalJSON() ([]byte, error) {
+	ss := s.ToJSONObject()
+	return json.Marshal(&ss)
+}
+
+// MarshalJSON return custom JSON byte
+func (t Table) MarshalJSON() ([]byte, error) {
+	tt := t.ToJSONObject()
+	return json.Marshal(&tt)
+}
+
+// MarshalJSON return custom JSON byte
+func (c Column) MarshalJSON() ([]byte, error) {
+	cc := c.ToJSONObject()
+	return json.Marshal(&cc)
+}
+
+// MarshalJSON return custom JSON byte
+func (r Relation) MarshalJSON() ([]byte, error) {
+	rr := r.ToJSONObject()
+	return json.Marshal(&rr)
 }
 
 // UnmarshalJSON unmarshal JSON to schema.Table
@@ -154,15 +202,13 @@ func (t *Table) UnmarshalJSON(data []byte) error {
 // UnmarshalJSON unmarshal JSON to schema.Column
 func (c *Column) UnmarshalJSON(data []byte) error {
 	s := struct {
-		Name            string      `json:"name"`
-		Type            string      `json:"type"`
-		Nullable        bool        `json:"nullable"`
-		Default         *string     `json:"default,omitempty"`
-		Comment         string      `json:"comment,omitempty"`
-		ExtraDef        string      `json:"extra_def,omitempty"`
-		Labels          Labels      `json:"labels,omitempty"`
-		ParentRelations []*Relation `json:"-"`
-		ChildRelations  []*Relation `json:"-"`
+		Name     string  `json:"name"`
+		Type     string  `json:"type"`
+		Nullable bool    `json:"nullable"`
+		Default  *string `json:"default,omitempty"`
+		Comment  string  `json:"comment,omitempty"`
+		ExtraDef string  `json:"extra_def,omitempty"`
+		Labels   Labels  `json:"labels,omitempty"`
 	}{}
 	err := json.Unmarshal(data, &s)
 	if err != nil {
