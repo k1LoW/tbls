@@ -113,8 +113,7 @@
         "a"
       ],
       "parent_cardinality": "Exactly one",
-      "def": "FOREIGN KEY (b) REFERENCES a(a)",
-      "virtual": false
+      "def": "FOREIGN KEY (b) REFERENCES a(a)"
     }
   ],
   "enums": [

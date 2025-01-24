@@ -303,8 +303,7 @@
         "id"
       ],
       "parent_cardinality": "Exactly one",
-      "def": "FOREIGN KEY (category_id) REFERENCES categories (id) ON UPDATE NO ACTION ON DELETE CASCADE MATCH NONE",
-      "virtual": false
+      "def": "FOREIGN KEY (category_id) REFERENCES categories (id) ON UPDATE NO ACTION ON DELETE CASCADE MATCH NONE"
     },
     {
       "table": "posts",
@@ -317,8 +316,7 @@
         "id"
       ],
       "parent_cardinality": "Exactly one",
-      "def": "FOREIGN KEY (user_id) REFERENCES users (id) ON UPDATE NO ACTION ON DELETE CASCADE MATCH NONE",
-      "virtual": false
+      "def": "FOREIGN KEY (user_id) REFERENCES users (id) ON UPDATE NO ACTION ON DELETE CASCADE MATCH NONE"
     },
     {
       "table": "user_options",
@@ -331,8 +329,7 @@
         "id"
       ],
       "parent_cardinality": "Exactly one",
-      "def": "FOREIGN KEY (user_id) REFERENCES users (id) ON UPDATE NO ACTION ON DELETE CASCADE MATCH NONE",
-      "virtual": false
+      "def": "FOREIGN KEY (user_id) REFERENCES users (id) ON UPDATE NO ACTION ON DELETE CASCADE MATCH NONE"
     }
   ],
   "driver": {

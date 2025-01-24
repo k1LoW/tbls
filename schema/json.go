@@ -5,40 +5,7 @@ import (
 )
 
 // MarshalJSON return custom JSON byte
-func (s Schema) MarshalJSON() ([]byte, error) {
-	if len(s.Tables) == 0 {
-		s.Tables = []*Table{}
-	}
-
-	return json.Marshal(&struct {
-		Name       string       `json:"name,omitempty"`
-		Desc       string       `json:"desc,omitempty"`
-		Tables     []*Table     `json:"tables"`
-		Relations  []*Relation  `json:"relations,omitempty"`
-		Functions  []*Function  `json:"functions,omitempty"`
-		Enums      []*Enum      `json:"enums,omitempty"`
-		Driver     *Driver      `json:"driver,omitempty"`
-		Labels     Labels       `json:"labels,omitempty"`
-		Viewpoints []*Viewpoint `json:"viewpoints,omitempty"`
-	}{
-		Name:       s.Name,
-		Desc:       s.Desc,
-		Tables:     s.Tables,
-		Relations:  s.Relations,
-		Driver:     s.Driver,
-		Functions:  s.Functions,
-		Enums:      s.Enums,
-		Labels:     s.Labels,
-		Viewpoints: s.Viewpoints,
-	})
-}
-
-// MarshalJSON return custom JSON byte
 func (t Table) MarshalJSON() ([]byte, error) {
-	if len(t.Columns) == 0 {
-		t.Columns = []*Column{}
-	}
-
 	referencedTables := []string{}
 	for _, rt := range t.ReferencedTables {
 		referencedTables = append(referencedTables, rt.Name)
@@ -136,7 +103,7 @@ func (r Relation) MarshalJSON() ([]byte, error) {
 		ParentColumns     []string `json:"parent_columns"`
 		ParentCardinality string   `json:"parent_cardinality,omitempty"`
 		Def               string   `json:"def"`
-		Virtual           bool     `json:"virtual"`
+		Virtual           bool     `json:"virtual,omitempty"`
 	}{
 		Table:             r.Table.Name,
 		Columns:           columns,

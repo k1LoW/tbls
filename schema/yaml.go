@@ -6,19 +6,6 @@ import (
 
 // MarshalYAML return custom JSON byte
 func (t Table) MarshalYAML() ([]byte, error) {
-	if len(t.Columns) == 0 {
-		t.Columns = []*Column{}
-	}
-	if len(t.Indexes) == 0 {
-		t.Indexes = []*Index{}
-	}
-	if len(t.Constraints) == 0 {
-		t.Constraints = []*Constraint{}
-	}
-	if len(t.Triggers) == 0 {
-		t.Triggers = []*Trigger{}
-	}
-
 	referencedTables := []string{}
 	for _, rt := range t.ReferencedTables {
 		referencedTables = append(referencedTables, rt.Name)
