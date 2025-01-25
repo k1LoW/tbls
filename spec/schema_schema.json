@@ -1,0 +1,479 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/k1LoW/tbls/schema/schema",
+  "$ref": "#/$defs/Schema",
+  "$defs": {
+    "Column": {
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "nullable": {
+          "type": "boolean"
+        },
+        "default": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "extra_def": {
+          "type": "string"
+        },
+        "labels": {
+          "$ref": "#/$defs/Labels"
+        },
+        "comment": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "name",
+        "type",
+        "nullable"
+      ]
+    },
+    "Constraint": {
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "def": {
+          "type": "string"
+        },
+        "table": {
+          "type": "string"
+        },
+        "referenced_table": {
+          "type": "string"
+        },
+        "columns": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "referenced_columns": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "comment": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "name",
+        "type",
+        "def",
+        "table",
+        "columns"
+      ]
+    },
+    "Dict": {
+      "properties": {},
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "Driver": {
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "database_version": {
+          "type": "string"
+        },
+        "meta": {
+          "$ref": "#/$defs/DriverMeta"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "name"
+      ]
+    },
+    "DriverMeta": {
+      "properties": {
+        "current_schema": {
+          "type": "string"
+        },
+        "search_paths": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "dict": {
+          "$ref": "#/$defs/Dict"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "Enum": {
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "values": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "name",
+        "values"
+      ]
+    },
+    "Function": {
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "return_type": {
+          "type": "string"
+        },
+        "arguments": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "name",
+        "return_type",
+        "arguments",
+        "type"
+      ]
+    },
+    "Index": {
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "def": {
+          "type": "string"
+        },
+        "table": {
+          "type": "string"
+        },
+        "columns": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "comment": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "name",
+        "def",
+        "table",
+        "columns"
+      ]
+    },
+    "Label": {
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "virtual": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "name"
+      ]
+    },
+    "Labels": {
+      "items": {
+        "$ref": "#/$defs/Label"
+      },
+      "type": "array"
+    },
+    "Relation": {
+      "properties": {
+        "table": {
+          "type": "string"
+        },
+        "columns": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "cardinality": {
+          "type": "string",
+          "enum": [
+            "zero_or_one",
+            "exactly_one",
+            "zero_or_more",
+            "one_or_more",
+            ""
+          ]
+        },
+        "parent_table": {
+          "type": "string"
+        },
+        "parent_columns": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "parent_cardinality": {
+          "type": "string",
+          "enum": [
+            "zero_or_one",
+            "exactly_one",
+            "zero_or_more",
+            "one_or_more",
+            ""
+          ]
+        },
+        "def": {
+          "type": "string"
+        },
+        "virtual": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "table",
+        "columns",
+        "parent_table",
+        "parent_columns",
+        "def"
+      ]
+    },
+    "Schema": {
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "desc": {
+          "type": "string"
+        },
+        "tables": {
+          "items": {
+            "$ref": "#/$defs/Table"
+          },
+          "type": "array"
+        },
+        "relations": {
+          "items": {
+            "$ref": "#/$defs/Relation"
+          },
+          "type": "array"
+        },
+        "functions": {
+          "items": {
+            "$ref": "#/$defs/Function"
+          },
+          "type": "array"
+        },
+        "enums": {
+          "items": {
+            "$ref": "#/$defs/Enum"
+          },
+          "type": "array"
+        },
+        "driver": {
+          "$ref": "#/$defs/Driver"
+        },
+        "labels": {
+          "$ref": "#/$defs/Labels"
+        },
+        "viewpoints": {
+          "$ref": "#/$defs/Viewpoints"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "tables"
+      ]
+    },
+    "Table": {
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        },
+        "columns": {
+          "items": {
+            "$ref": "#/$defs/Column"
+          },
+          "type": "array"
+        },
+        "indexes": {
+          "items": {
+            "$ref": "#/$defs/Index"
+          },
+          "type": "array"
+        },
+        "constraints": {
+          "items": {
+            "$ref": "#/$defs/Constraint"
+          },
+          "type": "array"
+        },
+        "triggers": {
+          "items": {
+            "$ref": "#/$defs/Trigger"
+          },
+          "type": "array"
+        },
+        "def": {
+          "type": "string"
+        },
+        "labels": {
+          "$ref": "#/$defs/Labels"
+        },
+        "referenced_tables": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "name",
+        "type",
+        "columns"
+      ]
+    },
+    "Trigger": {
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "def": {
+          "type": "string"
+        },
+        "comment": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "name",
+        "def"
+      ]
+    },
+    "Viewpoint": {
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "desc": {
+          "type": "string"
+        },
+        "labels": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "tables": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "distance": {
+          "type": "integer"
+        },
+        "groups": {
+          "items": {
+            "$ref": "#/$defs/ViewpointGroup"
+          },
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "name",
+        "desc"
+      ]
+    },
+    "ViewpointGroup": {
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "desc": {
+          "type": "string"
+        },
+        "labels": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "tables": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "color": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "name",
+        "desc"
+      ]
+    },
+    "Viewpoints": {
+      "items": {
+        "$ref": "#/$defs/Viewpoint"
+      },
+      "type": "array"
+    }
+  }
+}
+

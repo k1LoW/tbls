@@ -12,6 +12,7 @@ import (
 	"github.com/k1LoW/tbls/schema"
 )
 
+// Generate JSON Schema of schema.json.
 func main() {
 	if err := _main(); err != nil {
 		fmt.Println(err)
@@ -31,5 +32,6 @@ func _main() error {
 		return err
 	}
 	fmt.Println(string(b))
+	fmt.Println()
 	return nil
 }
