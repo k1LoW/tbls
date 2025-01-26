@@ -16,7 +16,7 @@ TBLS ?= ./tbls
 
 default: test
 
-ci: depsdev build db test testdoc testdoc_hide_auto_increment test_too_many_tables test_json test_ext_subcommand doc
+ci: depsdev build db test testdoc testdoc_hide_auto_increment test_too_many_tables test_json test_ext_subcommand test_jsonschema doc
 
 ci_windows: depsdev build db_sqlite testdoc_sqlite
 
@@ -147,6 +147,12 @@ test_ext_subcommand: build
 	env PATH="${PWD}/testdata/bin:${PATH}" TBLS_DSN=pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable $(TBLS) echo | grep 'TBLS_DSN=pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable' > /dev/null
 	echo hello | env PATH="${PWD}/testdata/bin:${PATH}" $(TBLS) echo -c ./testdata/ext_subcommand_tbls.yml | grep 'STDIN=hello' > /dev/null
 
+test_jsonschema:
+	cd scripts/jsonschema && go run main.go | diff -u ../../spec/tbls.schema.json_schema.json -
+
+generate_jsonschema:
+	cd scripts/jsonschema && go run main.go > ../../spec/tbls.schema.json_schema.json
+
 generate_test_json: build
 	sqlite3 $(PWD)/filter_tables.sqlite3 < testdata/ddl/filter_tables.sql
 	$(TBLS) out sq://$(PWD)/filter_tables.sqlite3 -t json > testdata/filter_tables.json
@@ -158,9 +164,9 @@ build:
 	go build -tags timetzdata -ldflags="$(BUILD_LDFLAGS)"
 
 depsdev:
-	go install github.com/linyows/git-semv/cmd/git-semv@v1.2.0
-	go install github.com/Songmu/ghch/cmd/ghch@v0.10.2
-	go install github.com/xo/usql@v0.9.5
+	go install github.com/linyows/git-semv/cmd/git-semv@latest
+	go install github.com/Songmu/ghch/cmd/ghch@latest
+	go install github.com/xo/usql@latest
 	go install github.com/Songmu/gocredits/cmd/gocredits@latest
 	go install github.com/securego/gosec/v2/cmd/gosec@latest
 

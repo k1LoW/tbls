@@ -1,5 +1,4 @@
 name: testschema
-desc: ""
 tables:
 - name: a
   type: ""
@@ -8,12 +7,10 @@ tables:
   - name: a
     type: INTEGER
     nullable: false
-    default: null
     comment: column a
   - name: a2
     type: TEXT
     nullable: false
-    default: null
     comment: column a2
   indexes:
   - name: PRIMARY KEY
@@ -21,24 +18,17 @@ tables:
     table: a
     columns:
     - a
-    comment: ""
   constraints:
   - name: PRIMARY
     type: ""
     def: PRIMARY KEY (a)
     table: a
-    referencedTable: null
     columns: []
-    referencedColumns: []
-    comment: ""
   triggers:
   - name: update_a_a2
     def: CREATE CONSTRAINT TRIGGER update_a_a2 AFTER INSERT OR UPDATE ON a
-    comment: ""
-  def: ""
   labels:
   - name: blue
-    virtual: false
   - name: green
     virtual: true
 - name: b
@@ -48,20 +38,13 @@ tables:
   - name: b
     type: INTEGER
     nullable: false
-    default: null
     comment: column b
   - name: b2
     type: TEXT
     nullable: false
-    default: null
     comment: column b2
-  indexes: []
-  constraints: []
-  triggers: []
-  def: ""
   labels:
   - name: red
-    virtual: false
   - name: green
     virtual: true
 - name: view
@@ -71,11 +54,7 @@ tables:
   - name: view_column
     type: INTEGER
     nullable: false
-    default: null
     comment: column of view
-  indexes: []
-  constraints: []
-  triggers: []
   def: CREATE VIEW view AS SELECT a, b FROM a JOIN b ON a.a = b.b
   referencedTables:
   - a
@@ -84,14 +63,13 @@ relations:
 - table: b
   columns:
   - b
-  cardinality: One or more
+  cardinality: one_or_more
   parentTable: a
   parentColumns:
   - a
-  parentCardinality: Exactly one
+  parentCardinality: exactly_one
   def: FOREIGN KEY (b) REFERENCES a(a)
   virtual: false
-functions: []
 enums:
 - name: enum
   values:
