@@ -29,6 +29,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/cli/safeexec"
 	"github.com/k1LoW/errors"
 	"github.com/k1LoW/tbls/cmdutil"
 	"github.com/k1LoW/tbls/config"
@@ -127,7 +128,7 @@ var rootCmd = &cobra.Command{
 
 		envs := os.Environ()
 		subCmd := args[0]
-		path, err := exec.LookPath(version.Name + "-" + subCmd)
+		bin, err := safeexec.LookPath(version.Name + "-" + subCmd)
 		if err != nil {
 			if strings.HasPrefix(subCmd, "-") {
 				cmd.PrintErrf("Error: unknown flag: '%s'\n", subCmd)
@@ -168,7 +169,7 @@ var rootCmd = &cobra.Command{
 			envs = append(envs, fmt.Sprintf("TBLS_SCHEMA=%s", tmpfile.Name()))
 		}
 
-		c := exec.Command(path, args...) // #nosec
+		c := exec.Command(bin, args...) // #nosec
 		c.Env = envs
 		c.Stdout = os.Stdout
 		c.Stdin = os.Stdin
@@ -251,6 +252,10 @@ func getExtSubCmds(prefix string) ([]string, error) {
 				continue
 			}
 			if !strings.HasPrefix(e.Name(), fmt.Sprintf("%s-", prefix)) {
+				continue
+			}
+			// Exclude external driver
+			if strings.HasPrefix(e.Name(), fmt.Sprintf("%s-driver-", prefix)) {
 				continue
 			}
 			fi, err := e.Info()
