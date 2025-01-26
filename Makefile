@@ -16,7 +16,7 @@ TBLS ?= ./tbls
 
 default: test
 
-ci: depsdev build db test testdoc testdoc_hide_auto_increment test_too_many_tables test_json test_ext_subcommand test_jsonschema doc
+ci: depsdev build db test testdoc testdoc_hide_auto_increment test_too_many_tables test_json test_ext_subcommand test_ext_driver test_jsonschema doc
 
 ci_windows: depsdev build db_sqlite testdoc_sqlite
 
@@ -146,6 +146,9 @@ test_ext_subcommand: build
 	env PATH="${PWD}/testdata/bin:${PATH}" $(TBLS) echo -c ./testdata/ext_subcommand_tbls.yml | grep 'TBLS_CONFIG_PATH=' | grep 'testdata/ext_subcommand_tbls.yml' > /dev/null
 	env PATH="${PWD}/testdata/bin:${PATH}" TBLS_DSN=pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable $(TBLS) echo | grep 'TBLS_DSN=pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable' > /dev/null
 	echo hello | env PATH="${PWD}/testdata/bin:${PATH}" $(TBLS) echo -c ./testdata/ext_subcommand_tbls.yml | grep 'STDIN=hello' > /dev/null
+
+test_ext_driver: build
+	env PATH="${PWD}/testdata/bin:${PATH}" $(TBLS) ls --dsn foodb://bar | grep 'users' > /dev/null
 
 test_jsonschema:
 	cd scripts/jsonschema && go run main.go | diff -u ../../spec/tbls.schema.json_schema.json -
