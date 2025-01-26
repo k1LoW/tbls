@@ -12,7 +12,7 @@ type SchemaJSON struct {
 	Relations  []*RelationJSON `json:"relations,omitempty"`
 	Functions  []*Function     `json:"functions,omitempty"`
 	Enums      []*Enum         `json:"enums,omitempty"`
-	Driver     *Driver         `json:"driver,omitempty"`
+	Driver     *DriverJSON     `json:"driver,omitempty"`
 	Labels     Labels          `json:"labels,omitempty"`
 	Viewpoints Viewpoints      `json:"viewpoints,omitempty"`
 }
@@ -54,6 +54,18 @@ type RelationJSON struct {
 	Virtual           bool     `json:"virtual,omitempty"`
 }
 
+type DriverJSON struct {
+	Name            string          `json:"name"`
+	DatabaseVersion string          `json:"database_version,omitempty" yaml:"databaseVersion,omitempty"`
+	Meta            *DriverMetaJSON `json:"meta,omitempty"`
+}
+
+type DriverMetaJSON struct {
+	CurrentSchema string            `json:"current_schema,omitempty" yaml:"currentSchema,omitempty"`
+	SearchPaths   []string          `json:"search_paths,omitempty" yaml:"searchPaths,omitempty"`
+	Dict          map[string]string `json:"dict,omitempty"`
+}
+
 // ToJSONObjct convert schema.Schema to JSON object
 func (s Schema) ToJSONObject() SchemaJSON {
 	var tables []*TableJSON
@@ -73,7 +85,7 @@ func (s Schema) ToJSONObject() SchemaJSON {
 		Relations:  relations,
 		Functions:  s.Functions,
 		Enums:      s.Enums,
-		Driver:     s.Driver,
+		Driver:     s.Driver.ToJSONObject(),
 		Labels:     s.Labels,
 		Viewpoints: s.Viewpoints,
 	}
@@ -138,6 +150,31 @@ func (r Relation) ToJSONObject() RelationJSON {
 		Def:               r.Def,
 		Virtual:           r.Virtual,
 	}
+}
+
+func (d *Driver) ToJSONObject() *DriverJSON {
+	if d == nil {
+		return nil
+	}
+	return &DriverJSON{
+		Name:            d.Name,
+		DatabaseVersion: d.DatabaseVersion,
+		Meta:            d.Meta.ToJSONObject(),
+	}
+}
+
+func (d *DriverMeta) ToJSONObject() *DriverMetaJSON {
+	if d == nil {
+		return nil
+	}
+	m := &DriverMetaJSON{
+		CurrentSchema: d.CurrentSchema,
+		SearchPaths:   d.SearchPaths,
+	}
+	if d.Dict != nil {
+		m.Dict = d.Dict.Dump()
+	}
+	return m
 }
 
 // MarshalJSON return custom JSON byte

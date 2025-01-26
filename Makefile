@@ -152,6 +152,8 @@ test_ext_driver: build
 
 test_jsonschema:
 	cd scripts/jsonschema && go run main.go | diff -u ../../spec/tbls.schema.json_schema.json -
+	jv spec/tbls.schema.json_schema.json --assert-content sample/mysql/schema.json
+	jv spec/tbls.schema.json_schema.json --assert-content sample/postgres/schema.json
 
 generate_jsonschema:
 	cd scripts/jsonschema && go run main.go > ../../spec/tbls.schema.json_schema.json
@@ -172,6 +174,7 @@ depsdev:
 	go install github.com/xo/usql@latest
 	go install github.com/Songmu/gocredits/cmd/gocredits@latest
 	go install github.com/securego/gosec/v2/cmd/gosec@latest
+	go install github.com/santhosh-tekuri/jsonschema/cmd/jv@latest
 
 prerelease:
 	git pull origin --tag

@@ -34,8 +34,7 @@
           "name": "PRIMARY",
           "type": "",
           "def": "PRIMARY KEY (a)",
-          "table": "a",
-          "columns": null
+          "table": "a"
         }
       ],
       "triggers": [

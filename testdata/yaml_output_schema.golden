@@ -23,7 +23,6 @@ tables:
     type: ""
     def: PRIMARY KEY (a)
     table: a
-    columns: []
   triggers:
   - name: update_a_a2
     def: CREATE CONSTRAINT TRIGGER update_a_a2 AFTER INSERT OR UPDATE ON a

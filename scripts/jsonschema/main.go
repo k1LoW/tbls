@@ -31,7 +31,6 @@ func _main() error {
 	if err != nil {
 		return err
 	}
-	fmt.Println(string(b))
-	fmt.Println()
+	fmt.Print(string(b))
 	return nil
 }

@@ -81,14 +81,8 @@
         "name",
         "type",
         "def",
-        "table",
-        "columns"
+        "table"
       ]
-    },
-    "Dict": {
-      "properties": {},
-      "additionalProperties": false,
-      "type": "object"
     },
     "Driver": {
       "properties": {
@@ -120,7 +114,10 @@
           "type": "array"
         },
         "dict": {
-          "$ref": "#/$defs/Dict"
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object"
         }
       },
       "additionalProperties": false,
@@ -476,4 +473,3 @@
     }
   }
 }
-
