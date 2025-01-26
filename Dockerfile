@@ -1,4 +1,4 @@
-FROM golang:1-bullseye AS builder
+FROM golang:1-bookworm AS builder
 
 WORKDIR /workdir/
 COPY . /workdir/
@@ -9,7 +9,7 @@ RUN update-ca-certificates
 
 RUN make build
 
-FROM debian:bullseye-slim
+FROM debian:bookworm-slim
 
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /workdir/tbls ./usr/bin

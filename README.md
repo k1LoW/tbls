@@ -609,7 +609,7 @@ See also: https://pkg.go.dev/github.com/ClickHouse/clickhouse-go
 
 **JSON:**
 
-The JSON file output by the `tbls out -t json` command can be read as a datasource.
+The JSON file output by the `tbls out -t json` command can be read as a datasource (JSON Schema is [here](spec/tbls.schema.json_schema.json)).
 
 ```yaml
 ---
