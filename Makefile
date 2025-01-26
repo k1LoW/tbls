@@ -148,10 +148,10 @@ test_ext_subcommand: build
 	echo hello | env PATH="${PWD}/testdata/bin:${PATH}" $(TBLS) echo -c ./testdata/ext_subcommand_tbls.yml | grep 'STDIN=hello' > /dev/null
 
 test_jsonschema:
-	cd scripts/jsonschema && go run main.go | diff -u ../../spec/schema_schema.json -
+	cd scripts/jsonschema && go run main.go | diff -u ../../spec/tbls.schema.json_schema.json -
 
 generate_jsonschema:
-	cd scripts/jsonschema && go run main.go > ../../spec/schema_schema.json
+	cd scripts/jsonschema && go run main.go > ../../spec/tbls.schema.json_schema.json
 
 generate_test_json: build
 	sqlite3 $(PWD)/filter_tables.sqlite3 < testdata/ddl/filter_tables.sql
