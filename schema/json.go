@@ -167,11 +167,14 @@ func (d *DriverMeta) ToJSONObject() *DriverMetaJSON {
 	if d == nil {
 		return nil
 	}
-	return &DriverMetaJSON{
+	m := &DriverMetaJSON{
 		CurrentSchema: d.CurrentSchema,
 		SearchPaths:   d.SearchPaths,
-		Dict:          d.Dict.Dump(),
 	}
+	if d.Dict != nil {
+		m.Dict = d.Dict.Dump()
+	}
+	return m
 }
 
 // MarshalJSON return custom JSON byte
