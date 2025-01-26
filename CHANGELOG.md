@@ -1,5 +1,17 @@
 # Changelog
 
+## [v1.81.0](https://github.com/k1LoW/tbls/compare/v1.80.0...v1.81.0) - 2025-01-26
+### Breaking Changes 🛠
+- Fix schema.json for generating JSON Schema of schema.json by @k1LoW in https://github.com/k1LoW/tbls/pull/646
+### New Features 🎉
+- Support external database driver by @k1LoW in https://github.com/k1LoW/tbls/pull/649
+### Fix bug 🐛
+- Fix JSON Schema by @k1LoW in https://github.com/k1LoW/tbls/pull/650
+### Other Changes
+- touch up grammar, punctuation, and Markdown by @brandondrew in https://github.com/k1LoW/tbls/pull/644
+- Fix typo  by @fkmy in https://github.com/k1LoW/tbls/pull/647
+- Fix linux release by @k1LoW in https://github.com/k1LoW/tbls/pull/648
+
 ## [v1.80.0](https://github.com/k1LoW/tbls/compare/v1.79.4...v1.80.0) - 2025-01-17
 ### New Features 🎉
 - Support wildcard in `viewpoints[].tables:` by @k1LoW in https://github.com/k1LoW/tbls/pull/643
