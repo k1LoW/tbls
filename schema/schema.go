@@ -102,7 +102,7 @@ type Constraint struct {
 	Def               string   `json:"def"`
 	Table             *string  `json:"table"`
 	ReferencedTable   *string  `json:"referenced_table,omitempty" yaml:"referencedTable,omitempty"`
-	Columns           []string `json:"columns"`
+	Columns           []string `json:"columns,omitempty"`
 	ReferencedColumns []string `json:"referenced_columns,omitempty" yaml:"referencedColumns,omitempty"`
 	Comment           string   `json:"comment,omitempty"`
 }

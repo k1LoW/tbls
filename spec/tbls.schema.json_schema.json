@@ -81,8 +81,7 @@
         "name",
         "type",
         "def",
-        "table",
-        "columns"
+        "table"
       ]
     },
     "Dict": {
