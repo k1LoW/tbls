@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.81.1](https://github.com/k1LoW/tbls/compare/v1.81.0...v1.81.1) - 2025-01-27
+### Other Changes
+- Use bookworm by @k1LoW in https://github.com/k1LoW/tbls/pull/651
+
 ## [v1.81.0](https://github.com/k1LoW/tbls/compare/v1.80.0...v1.81.0) - 2025-01-26
 ### Breaking Changes 🛠
 - Fix schema.json for generating JSON Schema of schema.json by @k1LoW in https://github.com/k1LoW/tbls/pull/646
