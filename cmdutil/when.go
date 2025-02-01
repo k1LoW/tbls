@@ -1,6 +1,7 @@
 package cmdutil
 
 import (
+	"fmt"
 	"os"
 	"strings"
 
@@ -46,8 +47,10 @@ func IsAllowedToExecute(when string) (bool, error) {
 	}
 	if got, err := expr.Run(program, whenEnv); err != nil {
 		return false, errors.WithStack(err)
+	} else if got, ok := got.(bool); !ok {
+		return false, fmt.Errorf("expected bool, but got %T", got)
 	} else {
-		return got.(bool), nil
+		return got, nil
 	}
 }
 
