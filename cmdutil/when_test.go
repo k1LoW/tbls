@@ -125,7 +125,6 @@ func TestIsAllowedToExecute(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			NewWhenEnv = func() *WhenEnv { return &WhenEnv{Env: tt.envset} }
 			got, err := IsAllowedToExecute(tt.when)
-
 			if err != nil {
 				if tt.errorContains != nil {
 					if errStr, ok := tt.errorContains.(string); ok {
@@ -141,11 +140,9 @@ func TestIsAllowedToExecute(t *testing.T) {
 			} else if tt.errorContains != nil {
 				t.Errorf("Expected an error containing %v", tt.errorContains)
 			}
-
 			if got != tt.want {
 				t.Errorf("got %v\nwant %v", got, tt.want)
 			}
 		})
 	}
-
 }
