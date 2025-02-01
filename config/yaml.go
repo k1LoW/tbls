@@ -72,7 +72,9 @@ func (f *Format) UnmarshalYAML(data []byte) error {
 	case []interface{}:
 		values := []string{}
 		for _, vv := range v {
-			values = append(values, vv.(string))
+			if str, ok := vv.(string); ok {
+				values = append(values, str)
+			}
 		}
 		f.HideColumnsWithoutValues = values
 	}
