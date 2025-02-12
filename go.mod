@@ -1,6 +1,6 @@
 module github.com/k1LoW/tbls
 
-go 1.22.10
+go 1.23.6
 
 require (
 	cloud.google.com/go/bigquery v1.65.0
@@ -9,6 +9,7 @@ require (
 	github.com/aquasecurity/go-version v0.0.0-20210121072130-637058cfe492
 	github.com/aws/aws-sdk-go v1.55.5
 	github.com/beta/freetype v0.0.1
+	github.com/cli/safeexec v1.0.1
 	github.com/expr-lang/expr v1.16.9
 	github.com/gertd/go-pluralize v0.2.1
 	github.com/go-sql-driver/mysql v1.8.1
@@ -82,7 +83,6 @@ require (
 	github.com/census-instrumentation/opencensus-proto v0.4.1 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/cli/go-gh/v2 v2.11.1 // indirect
-	github.com/cli/safeexec v1.0.1 // indirect
 	github.com/cncf/xds/go v0.0.0-20240905190251-b4127c9b8d78 // indirect
 	github.com/danieljoos/wincred v1.2.2 // indirect
 	github.com/disintegration/imaging v1.6.2 // indirect
@@ -108,7 +108,6 @@ require (
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/flatbuffers v24.12.23+incompatible // indirect
 	github.com/google/go-github/v58 v58.0.0 // indirect
-	github.com/google/go-github/v60 v60.0.0 // indirect
 	github.com/google/go-github/v66 v66.0.0 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/google/s2a-go v0.1.8 // indirect
@@ -138,7 +137,6 @@ require (
 	github.com/shopspring/decimal v1.4.0 // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
-	github.com/stretchr/objx v0.5.2 // indirect
 	github.com/tetratelabs/wazero v1.8.1 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
 	github.com/xdg-go/scram v1.1.2 // indirect
