@@ -660,14 +660,6 @@ For example, if you have an executable named `tbls-driver-foodb`, tbls will reco
 docPath: doc/schema
 ```
 
-### External database driver
-
-tbls can integrate with external database drivers. If an executable with the pattern `tbls-driver-*` is on the PATH, tbls will recognize the corresponding scheme.
-
-For example, if you have an executable named `tbls-driver-foodb`, tbls will recognize the `foodb://` scheme.
-
-`tbls-driver-foodb` receives the DSN at runtime via the environment variable `TBLS_DSN`. By outputting [schema.json](spec/tbls.schema.json_schema.json) via STDOUT, tbls will work with it.
-
 ### Document format
 
 `format:` is used to change the document format.
