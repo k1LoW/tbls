@@ -1,6 +1,6 @@
 module github.com/k1LoW/tbls/scripts/jsonschema
 
-go 1.23.4
+go 1.23.6
 
 require (
 	github.com/iancoleman/strcase v0.3.0
