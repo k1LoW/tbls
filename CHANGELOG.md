@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.82.0](https://github.com/k1LoW/tbls/compare/v1.81.0...v1.82.0) - 2025-02-12
+### Other Changes
+- Use bookworm by @k1LoW in https://github.com/k1LoW/tbls/pull/651
+- Fix errcheck related to type assertion by @bmf-san in https://github.com/k1LoW/tbls/pull/654
+- chore(deps): update go version and dependencies in go.mod and go.sum by @k1LoW in https://github.com/k1LoW/tbls/pull/655
+
 ## [v1.81.0](https://github.com/k1LoW/tbls/compare/v1.80.0...v1.81.0) - 2025-01-26
 ### Breaking Changes 🛠
 - Fix schema.json for generating JSON Schema of schema.json by @k1LoW in https://github.com/k1LoW/tbls/pull/646
