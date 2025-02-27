@@ -21,7 +21,7 @@ Key features of `tbls` are:
   - [Install](#install)
   - [Getting Started](#getting-started)
     - [Document a database](#document-a-database)
-    - [Diff database and (document or database)](#diff-database-and--document-or-database-)
+    - [Diff database and (document or database)](#diff-database-and-document-or-database)
     - [Lint a database](#lint-a-database)
     - [Measure document coverage](#measure-document-coverage)
     - [Continuous Integration](#continuous-integration)
