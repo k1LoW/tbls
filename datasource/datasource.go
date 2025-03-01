@@ -17,7 +17,7 @@ import (
 	"github.com/cli/safeexec"
 	"github.com/k1LoW/errors"
 	"github.com/k1LoW/ghfs"
-	"github.com/k1LoW/go-github-client/v58/factory"
+	"github.com/k1LoW/go-github-client/v67/factory"
 	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/drivers"
 	"github.com/k1LoW/tbls/drivers/clickhouse"
