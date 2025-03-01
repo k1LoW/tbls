@@ -1,5 +1,16 @@
 # Changelog
 
+## [v1.82.0](https://github.com/k1LoW/tbls/compare/v1.81.0...v1.82.0) - 2025-03-01
+### Breaking Changes 🛠
+- chore(deps): update dependencies (go-yaml) by @k1LoW in https://github.com/k1LoW/tbls/pull/663
+### Other Changes
+- Use bookworm by @k1LoW in https://github.com/k1LoW/tbls/pull/651
+- Fix errcheck related to type assertion by @bmf-san in https://github.com/k1LoW/tbls/pull/654
+- chore(deps): update go version and dependencies in go.mod and go.sum by @k1LoW in https://github.com/k1LoW/tbls/pull/655
+- docs: fix internal link by @suzuki in https://github.com/k1LoW/tbls/pull/658
+- chore(deps): update go-github-client and ghfs to latest versions by @k1LoW in https://github.com/k1LoW/tbls/pull/661
+- chore(deps): bump the dependencies group across 1 directory with 14 updates by @dependabot in https://github.com/k1LoW/tbls/pull/665
+
 ## [v1.81.0](https://github.com/k1LoW/tbls/compare/v1.80.0...v1.81.0) - 2025-01-26
 ### Breaking Changes 🛠
 - Fix schema.json for generating JSON Schema of schema.json by @k1LoW in https://github.com/k1LoW/tbls/pull/646
