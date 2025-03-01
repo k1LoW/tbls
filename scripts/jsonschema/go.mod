@@ -15,7 +15,7 @@ require (
 	github.com/k1LoW/errors v1.0.0 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/minio/pkg v1.7.5 // indirect
-	github.com/samber/lo v1.47.0 // indirect
+	github.com/samber/lo v1.49.1 // indirect
 	github.com/wk8/go-ordered-map/v2 v2.1.8 // indirect
 	golang.org/x/text v0.21.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
