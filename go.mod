@@ -20,8 +20,8 @@ require (
 	github.com/k1LoW/errors v1.0.0
 	github.com/k1LoW/expand v0.15.2
 	github.com/k1LoW/ffff v0.2.0
-	github.com/k1LoW/ghfs v1.3.2
-	github.com/k1LoW/go-github-client/v58 v58.0.13
+	github.com/k1LoW/ghfs v1.4.0
+	github.com/k1LoW/go-github-client/v67 v67.0.13
 	github.com/labstack/gommon v0.4.2
 	github.com/lib/pq v1.10.9
 	github.com/loadoff/excl v0.0.0-20171207172601-c6a9e4c4b4c4
@@ -107,8 +107,8 @@ require (
 	github.com/golang/groupcache v0.0.0-20241129210726-2c02b8208cf8 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/flatbuffers v24.12.23+incompatible // indirect
-	github.com/google/go-github/v58 v58.0.0 // indirect
 	github.com/google/go-github/v66 v66.0.0 // indirect
+	github.com/google/go-github/v67 v67.0.0 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/google/s2a-go v0.1.8 // indirect
 	github.com/google/uuid v1.6.0 // indirect
