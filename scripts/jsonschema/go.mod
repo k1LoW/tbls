@@ -11,7 +11,7 @@ require (
 require (
 	github.com/bahlo/generic-list-go v0.2.0 // indirect
 	github.com/buger/jsonparser v1.1.1 // indirect
-	github.com/goccy/go-yaml v1.15.13 // indirect
+	github.com/goccy/go-yaml v1.15.23 // indirect
 	github.com/k1LoW/errors v1.0.0 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/minio/pkg v1.7.5 // indirect
