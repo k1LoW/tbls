@@ -99,11 +99,7 @@ viewpoints:
     labels:
     - red
 - name: table a label red
-  desc: |-
-    select table a and label red
-    
-    - table a
-    - label red
+  desc: "select table a and label red\n\n- table a\n- label red"
   labels:
   - red
   tables:

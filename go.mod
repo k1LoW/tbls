@@ -14,11 +14,11 @@ require (
 	github.com/gertd/go-pluralize v0.2.1
 	github.com/go-sql-driver/mysql v1.8.1
 	github.com/goccy/go-graphviz v0.2.9
-	github.com/goccy/go-yaml v1.15.13
+	github.com/goccy/go-yaml v1.15.23
 	github.com/google/go-cmp v0.6.0
 	github.com/k1LoW/duration v1.2.0
 	github.com/k1LoW/errors v1.0.0
-	github.com/k1LoW/expand v0.15.2
+	github.com/k1LoW/expand v0.15.5
 	github.com/k1LoW/ffff v0.2.0
 	github.com/k1LoW/ghfs v1.4.0
 	github.com/k1LoW/go-github-client/v67 v67.0.13
