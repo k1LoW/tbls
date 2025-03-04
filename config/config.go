@@ -367,14 +367,13 @@ func (c *Config) LoadConfigFile(path string) (err error) {
 				paths = append(paths, p)
 			}
 		}
-		if len(paths) != 1 {
+		if len(paths) == 0 {
+			return nil
+		} else if len(paths) > 1 {
 			return fmt.Errorf("duplicate config file [%s]", strings.Join(paths, ", "))
 		} else {
 			path = paths[0]
 		}
-	}
-	if path == "" {
-		return nil
 	}
 
 	fullPath, err := filepath.Abs(path)
