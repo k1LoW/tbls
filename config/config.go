@@ -20,7 +20,7 @@ import (
 
 const DefaultDocPath = "dbdoc"
 
-var DefaultConfigFilePaths = []string{".tbls.yml", "tbls.yml"}
+var DefaultConfigFilePaths = []string{".tbls.yml", "tbls.yml", ".tbls.yaml", "tbls.yaml"}
 
 // DefaultERFormat is the default ER diagram format
 const DefaultERFormat = "svg"
@@ -361,15 +361,21 @@ func (c *Config) LoadConfigFile(path string) (err error) {
 		err = errors.WithStack(err)
 	}()
 	if path == "" && os.Getenv("TBLS_DSN") == "" {
+		var paths []string
 		for _, p := range DefaultConfigFilePaths {
 			if f, err := os.Stat(filepath.Join(c.root, p)); err == nil && !f.IsDir() {
-				if path != "" {
-					return fmt.Errorf("duplicate config file [%s, %s]", path, p)
-				}
-				path = p
+				paths = append(paths, p)
 			}
 		}
+		if len(paths) == 0 {
+			return nil
+		} else if len(paths) > 1 {
+			return fmt.Errorf("duplicate config file [%s]", strings.Join(paths, ", "))
+		} else {
+			path = paths[0]
+		}
 	}
+
 	if path == "" {
 		return nil
 	}

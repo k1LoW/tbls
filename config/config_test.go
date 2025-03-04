@@ -69,7 +69,7 @@ func TestDuplicateConfigFile(t *testing.T) {
 		root: filepath.Join(testdataDir(), "config"),
 	}
 	got := config.LoadConfigFile("")
-	want := "duplicate config file [.tbls.yml, tbls.yml]"
+	want := "duplicate config file [.tbls.yml, tbls.yml, .tbls.yaml, tbls.yaml]"
 	if fmt.Sprintf("%v", got) != want {
 		t.Errorf("got %v\nwant %v", got, want)
 	}
