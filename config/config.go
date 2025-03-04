@@ -376,6 +376,10 @@ func (c *Config) LoadConfigFile(path string) (err error) {
 		}
 	}
 
+	if path == "" {
+		return nil
+	}
+
 	fullPath, err := filepath.Abs(path)
 	if err != nil {
 		return fmt.Errorf("failed to load config file: %w", err)
