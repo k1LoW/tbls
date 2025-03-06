@@ -93,7 +93,7 @@ func (d *Dot) OutputViewpoint(wr io.Writer, v *schema.Viewpoint) error {
 	groups := []map[string]interface{}{}
 	nogroup := v.Schema.Tables
 	for i, g := range v.Groups {
-		tables, _, err := v.Schema.SepareteTablesThatAreIncludedOrNot(&schema.FilterOption{
+		tables, _, err := v.Schema.SeparateTablesThatAreIncludedOrNot(&schema.FilterOption{
 			Include:       g.Tables,
 			IncludeLabels: g.Labels,
 		})

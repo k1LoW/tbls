@@ -466,7 +466,7 @@ func (c *Config) ModifySchema(s *schema.Schema) error {
 			return t.Name
 		})
 		for _, g := range v.Groups {
-			gt, _, err := cs.SepareteTablesThatAreIncludedOrNot(&schema.FilterOption{
+			gt, _, err := cs.SeparateTablesThatAreIncludedOrNot(&schema.FilterOption{
 				Include:       g.Tables,
 				IncludeLabels: g.Labels,
 			})

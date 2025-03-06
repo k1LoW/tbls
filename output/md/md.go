@@ -760,7 +760,7 @@ func (m *Md) makeViewpointTemplateData(v *schema.Viewpoint) (map[string]interfac
 	groups := []map[string]interface{}{}
 	nogroup := v.Schema.Tables
 	for _, g := range v.Groups {
-		tables, _, err := v.Schema.SepareteTablesThatAreIncludedOrNot(&schema.FilterOption{
+		tables, _, err := v.Schema.SeparateTablesThatAreIncludedOrNot(&schema.FilterOption{
 			Include:       g.Tables,
 			IncludeLabels: g.Labels,
 		})
