@@ -20,7 +20,7 @@ func (s *Schema) Filter(opt *FilterOption) (err error) {
 	defer func() {
 		err = errors.WithStack(err)
 	}()
-	_, excludes, err := s.SepareteTablesThatAreIncludedOrNot(opt)
+	_, excludes, err := s.SeparateTablesThatAreIncludedOrNot(opt)
 	if err != nil {
 		return err
 	}
@@ -34,7 +34,7 @@ func (s *Schema) Filter(opt *FilterOption) (err error) {
 	return nil
 }
 
-func (s *Schema) SepareteTablesThatAreIncludedOrNot(opt *FilterOption) (_ []*Table, _ []*Table, err error) {
+func (s *Schema) SeparateTablesThatAreIncludedOrNot(opt *FilterOption) (_ []*Table, _ []*Table, err error) {
 	defer func() {
 		err = errors.WithStack(err)
 	}()
