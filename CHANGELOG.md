@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.82.1](https://github.com/k1LoW/tbls/compare/v1.82.0...v1.82.1) - 2025-03-06
+### New Features 🎉
+- Add support for '.yaml' extension to default configuration by @yoRyuuuuu in https://github.com/k1LoW/tbls/pull/666
+### Fix bug 🐛
+- nit: Fix typo by @JoonKHan in https://github.com/k1LoW/tbls/pull/668
+
 ## [v1.82.0](https://github.com/k1LoW/tbls/compare/v1.81.0...v1.82.0) - 2025-03-01
 ### Breaking Changes 🛠
 - chore(deps): update dependencies (go-yaml) by @k1LoW in https://github.com/k1LoW/tbls/pull/663
