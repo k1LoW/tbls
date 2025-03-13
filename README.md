@@ -875,6 +875,8 @@ lintExclude:
 
 For example, you can add comment about VIEW TABLE or SQLite tables/columns.
 
+> **Notice:** Comments defined in `.tbls.yml` will override existing comments in the schema.
+
 ```yaml
 # .tbls.yml
 comments:

@@ -18,6 +18,7 @@ relations:
 comments:
   -
     table: users
+    tableComment: users comment by tbls
     indexComments:
       user_index: user index
     constraintComments:

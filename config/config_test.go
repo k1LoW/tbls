@@ -145,6 +145,10 @@ func TestMergeAditionalData(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	if want := "users comment by tbls"; users.Comment != want {
+		t.Errorf("got %v\nwant %v", users.Comment, want)
+	}
+
 	posts, err := s.FindTableByName("posts")
 	if err != nil {
 		t.Fatal(err)
