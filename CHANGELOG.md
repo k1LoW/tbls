@@ -1,5 +1,14 @@
 # Changelog
 
+## [v1.83.0](https://github.com/k1LoW/tbls/compare/v1.82.0...v1.83.0) - 2025-03-13
+### New Features 🎉
+- Add support for '.yaml' extension to default configuration by @yoRyuuuuu in https://github.com/k1LoW/tbls/pull/666
+### Fix bug 🐛
+- nit: Fix typo by @JoonKHan in https://github.com/k1LoW/tbls/pull/668
+### Other Changes
+- chore(deps): bump golang.org/x/net from 0.35.0 to 0.36.0 by @dependabot in https://github.com/k1LoW/tbls/pull/669
+- Express tbls.yml comments override schema comments by @tnagatomi in https://github.com/k1LoW/tbls/pull/671
+
 ## [v1.82.0](https://github.com/k1LoW/tbls/compare/v1.81.0...v1.82.0) - 2025-03-01
 ### Breaking Changes 🛠
 - chore(deps): update dependencies (go-yaml) by @k1LoW in https://github.com/k1LoW/tbls/pull/663
