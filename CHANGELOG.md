@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.84.0](https://github.com/k1LoW/tbls/compare/v1.83.0...v1.84.0) - 2025-03-18
+### Other Changes
+- chore(deps): bump github.com/expr-lang/expr from 1.16.9 to 1.17.0 by @dependabot in https://github.com/k1LoW/tbls/pull/673
+
 ## [v1.83.0](https://github.com/k1LoW/tbls/compare/v1.82.0...v1.83.0) - 2025-03-13
 ### New Features 🎉
 - Add support for '.yaml' extension to default configuration by @yoRyuuuuu in https://github.com/k1LoW/tbls/pull/666
