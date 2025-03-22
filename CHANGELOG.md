@@ -1,5 +1,10 @@
 # Changelog
 
+## [v1.84.1](https://github.com/k1LoW/tbls/compare/v1.84.0...v1.84.1) - 2025-03-22
+### Other Changes
+- chore(deps): bump github.com/golang-jwt/jwt/v4 from 4.5.1 to 4.5.2 by @dependabot in https://github.com/k1LoW/tbls/pull/676
+- chore(deps): bump github.com/golang-jwt/jwt/v5 from 5.2.1 to 5.2.2 by @dependabot in https://github.com/k1LoW/tbls/pull/675
+
 ## [v1.84.0](https://github.com/k1LoW/tbls/compare/v1.83.0...v1.84.0) - 2025-03-18
 ### Other Changes
 - chore(deps): bump github.com/expr-lang/expr from 1.16.9 to 1.17.0 by @dependabot in https://github.com/k1LoW/tbls/pull/673
