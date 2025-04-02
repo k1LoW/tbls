@@ -5,6 +5,8 @@ import (
 
 	"github.com/k1LoW/errors"
 	"github.com/k1LoW/tbls/schema"
+
+	// Import the Snowflake driver for side effects (database/sql driver registration).
 	_ "github.com/snowflakedb/gosnowflake"
 )
 
@@ -49,9 +51,10 @@ func (sf *Snowflake) Analyze(s *schema.Schema) error {
 		}
 
 		var getDDLObjectType string
-		if tableType == "BASE TABLE" {
+		switch tableType {
+		case "BASE TABLE":
 			getDDLObjectType = "table"
-		} else if tableType == "VIEW" {
+		case "VIEW":
 			getDDLObjectType = "view"
 		}
 		if getDDLObjectType != "" {
@@ -115,9 +118,9 @@ where table_schema = ? and table_name = ? order by ordinal_position`, s.Name, ta
 	return nil
 }
 
-func (s *Snowflake) Info() (*schema.Driver, error) {
+func (sf *Snowflake) Info() (*schema.Driver, error) {
 	var v string
-	row := s.db.QueryRow(`SELECT CURRENT_VERSION();`)
+	row := sf.db.QueryRow(`SELECT CURRENT_VERSION();`)
 	if err := row.Scan(&v); err != nil {
 		return nil, err
 	}

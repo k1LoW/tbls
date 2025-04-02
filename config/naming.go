@@ -11,16 +11,16 @@ var (
 	pluralizeClient = pluralize.NewClient()
 )
 
-// Namer is a function type which is given a string and return a string
+// Namer is a function type which is given a string and return a string.
 type Namer func(string) string
 
-// NamingStrategy represents naming strategies
+// NamingStrategy represents naming strategies.
 type NamingStrategy struct {
 	ParentTable  Namer
 	ParentColumn Namer
 }
 
-// SelectNamingStrategy sets the naming strategy
+// SelectNamingStrategy sets the naming strategy.
 func SelectNamingStrategy(name string) (*NamingStrategy, error) {
 	switch name {
 	case "", "default":
@@ -49,16 +49,16 @@ func SelectNamingStrategy(name string) (*NamingStrategy, error) {
 		}, nil
 
 	default:
-		return nil, fmt.Errorf("Naming strategy does not exist. strategy: %s\n", name)
+		return nil, fmt.Errorf("naming strategy does not exist. strategy: %s", name)
 	}
 }
 
-// ParentTableName alters the given name by Table
+// ParentTableName alters the given name by Table.
 func (ns *NamingStrategy) ParentTableName(name string) string {
 	return ns.ParentTable(name)
 }
 
-// ParentColumnName alters the given name by Column
+// ParentColumnName alters the given name by Column.
 func (ns *NamingStrategy) ParentColumnName(name string) string {
 	return ns.ParentColumn(name)
 }
@@ -72,7 +72,7 @@ func defaultParentTableNamer(name string) string {
 	return pluralizeClient.Plural(name[:index])
 }
 
-func defaultParentColumnNamer(name string) string {
+func defaultParentColumnNamer(_ string) string {
 	return "id"
 }
 
@@ -85,7 +85,7 @@ func singularTableParentTableNamer(name string) string {
 	return pluralizeClient.Singular(name[:index])
 }
 
-func singularTableParentColumnNamer(name string) string {
+func singularTableParentColumnNamer(_ string) string {
 	return "id"
 }
 

@@ -16,7 +16,7 @@ type Spanner struct {
 	client *spanner.Client
 }
 
-// New return new Spanner
+// New return new Spanner.
 func New(ctx context.Context, client *spanner.Client) (*Spanner, error) {
 	return &Spanner{
 		ctx:    ctx,
@@ -54,7 +54,7 @@ WHERE
 	tableType := "BASIC TABLE"
 	for {
 		tableRaw, err := tableIter.Next()
-		if err == iterator.Done {
+		if errors.Is(err, iterator.Done) {
 			break
 		}
 		if err != nil {
@@ -98,7 +98,7 @@ ORDER BY ORDINAL_POSITION ASC;
 		columns := []*schema.Column{}
 		for {
 			columnRow, err := columnIter.Next()
-			if err == iterator.Done {
+			if errors.Is(err, iterator.Done) {
 				columnIter.Stop()
 				break
 			}
@@ -137,7 +137,7 @@ WHERE
 			optionIter := sp.client.Single().Query(sp.ctx, optionStmt)
 			for {
 				optionRow, err := optionIter.Next()
-				if err == iterator.Done {
+				if errors.Is(err, iterator.Done) {
 					optionIter.Stop()
 					break
 				}
@@ -194,7 +194,7 @@ GROUP BY c.TABLE_CATALOG, c.TABLE_SCHEMA, c.TABLE_NAME, c.INDEX_NAME, c.INDEX_TY
 
 		for {
 			indexRow, err := indexIter.Next()
-			if err == iterator.Done {
+			if errors.Is(err, iterator.Done) {
 				indexIter.Stop()
 				break
 			}

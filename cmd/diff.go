@@ -33,13 +33,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// diffCmd represents the diff command
+// diffCmd represents the diff command.
 var diffCmd = &cobra.Command{
 	Use:   "diff [DSN] [DSN_OR_DOC_PATH]",
 	Short: "diff database and ( document or database )",
 	Long:  `'tbls diff' shows the difference between database schema and ( generated document or other database schema ).`,
 	Args:  cobra.MaximumNArgs(2),
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(_ *cobra.Command, args []string) error {
 		if allow, err := cmdutil.IsAllowedToExecute(when); !allow || err != nil {
 			if err != nil {
 				return err

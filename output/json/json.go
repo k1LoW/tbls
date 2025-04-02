@@ -7,12 +7,12 @@ import (
 	"github.com/k1LoW/tbls/schema"
 )
 
-// JSON struct
+// JSON struct.
 type JSON struct {
 	inline bool
 }
 
-// New returns JSON
+// New returns JSON.
 func New(inline bool) *JSON {
 	return &JSON{
 		inline: inline,

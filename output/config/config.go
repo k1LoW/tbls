@@ -13,12 +13,12 @@ import (
 const NoTableComment = "table comment required."
 const NoColumnComment = "column comment required."
 
-// Config struct for `tbls out`
+// Config struct for `tbls out`.
 type Config struct {
 	config *config.Config
 }
 
-// New return Config
+// New return Config.
 func New(c *config.Config) *Config {
 	return &Config{
 		config: c,
@@ -95,6 +95,6 @@ func (c *Config) OutputSchema(wr io.Writer, s *schema.Schema) error {
 	return nil
 }
 
-func (c *Config) OutputTable(wr io.Writer, t *schema.Table) error {
+func (c *Config) OutputTable(_ io.Writer, _ *schema.Table) error {
 	return errors.New("not supported")
 }

@@ -14,12 +14,12 @@ import (
 	"github.com/loadoff/excl"
 )
 
-// Xlsx struct
+// Xlsx struct.
 type Xlsx struct {
 	config *config.Config
 }
 
-// New return Xlsx
+// New return Xlsx.
 func New(c *config.Config) *Xlsx {
 	return &Xlsx{
 		config: c,

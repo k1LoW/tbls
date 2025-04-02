@@ -37,7 +37,7 @@ func TestRound(t *testing.T) {
 	}
 }
 
-func newTestSchema(t *testing.T) *schema.Schema {
+func newTestSchema(_ *testing.T) *schema.Schema {
 	ca := &schema.Column{
 		Name:     "column_a1",
 		Type:     "bigint(20)",

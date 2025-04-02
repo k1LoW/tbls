@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"regexp"
 
+	// Import the ClickHouse driver for side effects (database/sql driver registration).
 	_ "github.com/ClickHouse/clickhouse-go/v2"
 	"github.com/k1LoW/errors"
 	"github.com/k1LoW/tbls/dict"
@@ -14,19 +15,19 @@ import (
 
 var shadowTableRe = regexp.MustCompile(`^\.inner_id\.`)
 
-// ClickHouse struct
+// ClickHouse struct.
 type ClickHouse struct {
 	db *sql.DB
 }
 
-// New return new Postgres
+// New return new Postgres.
 func New(db *sql.DB) *ClickHouse {
 	return &ClickHouse{
 		db: db,
 	}
 }
 
-// Analyze PostgreSQL database schema
+// Analyze PostgreSQL database schema.
 func (ch *ClickHouse) Analyze(s *schema.Schema) error {
 	d, err := ch.Info()
 	if err != nil {
@@ -65,7 +66,7 @@ WHERE database = ?
 
 	for tableRows.Next() {
 		var (
-			tableUuid                 string
+			tableUUID                 string
 			tableName                 string
 			tableType                 string
 			tablePartitionKey         string
@@ -77,7 +78,7 @@ WHERE database = ?
 			tableDependenciesDatabase []string
 			tableDependenciesTable    []string
 		)
-		err := tableRows.Scan(&tableUuid, &tableName, &tableType, &tablePartitionKey, &tableSortingKey, &tableSamplingKey, &tablePrimaryKey, &tableDef, &tableComment, &tableDependenciesDatabase, &tableDependenciesTable)
+		err := tableRows.Scan(&tableUUID, &tableName, &tableType, &tablePartitionKey, &tableSortingKey, &tableSamplingKey, &tablePrimaryKey, &tableDef, &tableComment, &tableDependenciesDatabase, &tableDependenciesTable)
 		if err != nil {
 			return errors.WithStack(err)
 		}
@@ -350,7 +351,7 @@ WHERE origin = 'SQLUserDefined'
 	return nil
 }
 
-// Info return schema.Driver
+// Info return schema.Driver.
 func (ch *ClickHouse) Info() (*schema.Driver, error) {
 	var v string
 	row := ch.db.QueryRow(`SELECT version();`)

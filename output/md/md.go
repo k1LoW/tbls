@@ -30,13 +30,13 @@ var _ output.Output = &Md{}
 //go:embed templates/*
 var tmpl embed.FS
 
-// Md struct
+// Md struct.
 type Md struct {
 	config *config.Config
 	tmpl   embed.FS
 }
 
-// New return Md
+// New return Md.
 func New(c *config.Config) *Md {
 	return &Md{
 		config: c,
@@ -63,7 +63,7 @@ func (m *Md) OutputSchema(wr io.Writer, s *schema.Schema) error {
 		}
 		templateData["erDiagram"] = fmt.Sprintf("```mermaid\n%s```", buf.String())
 	default:
-		templateData["erDiagram"] = fmt.Sprintf("![er](%sschema.%s)", m.config.BaseUrl, m.config.ER.Format)
+		templateData["erDiagram"] = fmt.Sprintf("![er](%sschema.%s)", m.config.BaseURL, m.config.ER.Format)
 	}
 	if err := tmpl.Execute(wr, templateData); err != nil {
 		return errors.WithStack(err)
@@ -89,7 +89,7 @@ func (m *Md) OutputTable(wr io.Writer, t *schema.Table) error {
 		}
 		templateData["erDiagram"] = fmt.Sprintf("```mermaid\n%s```", buf.String())
 	default:
-		templateData["erDiagram"] = fmt.Sprintf("![er](%s%s.%s)", m.config.BaseUrl, mdurl.Encode(t.Name), m.config.ER.Format)
+		templateData["erDiagram"] = fmt.Sprintf("![er](%s%s.%s)", m.config.BaseURL, mdurl.Encode(t.Name), m.config.ER.Format)
 	}
 
 	if err := tmpl.Execute(wr, templateData); err != nil {
@@ -120,7 +120,7 @@ func (m *Md) OutputViewpoint(wr io.Writer, i int, v *schema.Viewpoint) error {
 		}
 		templateData["erDiagram"] = fmt.Sprintf("```mermaid\n%s```", buf.String())
 	default:
-		templateData["erDiagram"] = fmt.Sprintf("![er](%sviewpoint-%d.%s)", m.config.BaseUrl, i, m.config.ER.Format)
+		templateData["erDiagram"] = fmt.Sprintf("![er](%sviewpoint-%d.%s)", m.config.BaseURL, i, m.config.ER.Format)
 	}
 	if err := tmpl.Execute(wr, templateData); err != nil {
 		return errors.WithStack(err)
@@ -205,6 +205,7 @@ func Output(s *schema.Schema, c *config.Config, force bool) (e error) {
 func DiffSchemas(s, s2 *schema.Schema, c, c2 *config.Config) (string, error) {
 	var diff string
 	md := New(c)
+	md2 := New(c2)
 
 	// README.md
 	a := new(bytes.Buffer)
@@ -213,7 +214,7 @@ func DiffSchemas(s, s2 *schema.Schema, c, c2 *config.Config) (string, error) {
 	}
 
 	b := new(bytes.Buffer)
-	if err := md.OutputSchema(b, s2); err != nil {
+	if err := md2.OutputSchema(b, s2); err != nil {
 		return "", errors.WithStack(err)
 	}
 
@@ -223,7 +224,7 @@ func DiffSchemas(s, s2 *schema.Schema, c, c2 *config.Config) (string, error) {
 	}
 	from := fmt.Sprintf("tbls doc %s", mdsnA)
 
-	mdsnB, err := c.MaskedDSN()
+	mdsnB, err := c2.MaskedDSN()
 	if err != nil {
 		return "", errors.WithStack(err)
 	}
@@ -259,7 +260,7 @@ func DiffSchemas(s, s2 *schema.Schema, c, c2 *config.Config) (string, error) {
 		b := new(bytes.Buffer)
 		t2, err := s2.FindTableByName(tName)
 		if err == nil {
-			if err := md.OutputTable(b, t2); err != nil {
+			if err := md2.OutputTable(b, t2); err != nil {
 				return "", errors.WithStack(err)
 			}
 		}
@@ -288,7 +289,7 @@ func DiffSchemas(s, s2 *schema.Schema, c, c2 *config.Config) (string, error) {
 		from := fmt.Sprintf("%s %s", mdsnA, tName)
 
 		b := new(bytes.Buffer)
-		if err := md.OutputTable(b, t); err != nil {
+		if err := md2.OutputTable(b, t); err != nil {
 			return "", errors.WithStack(err)
 		}
 		to := fmt.Sprintf("%s %s", mdsnB, tName)
@@ -466,13 +467,12 @@ func (m *Md) indexTemplate() (string, error) {
 			return "", errors.WithStack(err)
 		}
 		return string(tb), nil
-	} else {
-		tb, err := m.tmpl.ReadFile("templates/index.md.tmpl")
-		if err != nil {
-			return "", errors.WithStack(err)
-		}
-		return string(tb), nil
 	}
+	tb, err := m.tmpl.ReadFile("templates/index.md.tmpl")
+	if err != nil {
+		return "", errors.WithStack(err)
+	}
+	return string(tb), nil
 }
 
 func (m *Md) tableTemplate() (string, error) {
@@ -482,13 +482,12 @@ func (m *Md) tableTemplate() (string, error) {
 			return "", errors.WithStack(err)
 		}
 		return string(tb), nil
-	} else {
-		tb, err := m.tmpl.ReadFile("templates/table.md.tmpl")
-		if err != nil {
-			return "", errors.WithStack(err)
-		}
-		return string(tb), nil
 	}
+	tb, err := m.tmpl.ReadFile("templates/table.md.tmpl")
+	if err != nil {
+		return "", errors.WithStack(err)
+	}
+	return string(tb), nil
 }
 
 func (m *Md) viewpointTemplate() (string, error) {
@@ -498,13 +497,12 @@ func (m *Md) viewpointTemplate() (string, error) {
 			return "", errors.WithStack(err)
 		}
 		return string(tb), nil
-	} else {
-		tb, err := m.tmpl.ReadFile("templates/viewpoint.md.tmpl")
-		if err != nil {
-			return "", errors.WithStack(err)
-		}
-		return string(tb), nil
 	}
+	tb, err := m.tmpl.ReadFile("templates/viewpoint.md.tmpl")
+	if err != nil {
+		return "", errors.WithStack(err)
+	}
+	return string(tb), nil
 }
 
 func (m *Md) makeSchemaTemplateData(s *schema.Schema) map[string]interface{} {
@@ -517,7 +515,7 @@ func (m *Md) makeSchemaTemplateData(s *schema.Schema) map[string]interface{} {
 	tablesData := m.tablesData(s.Tables, number, adjust, showOnlyFirstParagraph, hasTableWithLabels)
 
 	// Functions
-	functionsData := m.functionsData(s.Functions, number, adjust, showOnlyFirstParagraph)
+	functionsData := m.functionsData(s.Functions, number, adjust)
 
 	// Viewpoints
 	viewpointsData := m.viewpointsData(s.Viewpoints, number, adjust, showOnlyFirstParagraph)
@@ -565,7 +563,7 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 			if _, ok := cEncountered[r.Table.Name]; ok {
 				continue
 			}
-			childRelations = append(childRelations, fmt.Sprintf("[%s](%s%s.md)", r.Table.Name, m.config.BaseUrl, mdurl.Encode(r.Table.Name)))
+			childRelations = append(childRelations, fmt.Sprintf("[%s](%s%s.md)", r.Table.Name, m.config.BaseURL, mdurl.Encode(r.Table.Name)))
 			cEncountered[r.Table.Name] = true
 		}
 		parentRelations := []string{}
@@ -574,7 +572,7 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 			if _, ok := pEncountered[r.ParentTable.Name]; ok {
 				continue
 			}
-			parentRelations = append(parentRelations, fmt.Sprintf("[%s](%s%s.md)", r.ParentTable.Name, m.config.BaseUrl, mdurl.Encode(r.ParentTable.Name)))
+			parentRelations = append(parentRelations, fmt.Sprintf("[%s](%s%s.md)", r.ParentTable.Name, m.config.BaseURL, mdurl.Encode(r.ParentTable.Name)))
 			pEncountered[r.ParentTable.Name] = true
 		}
 
@@ -821,7 +819,7 @@ func (m *Md) tablesData(tables []*schema.Table, number, adjust, showOnlyFirstPar
 			comment = output.ShowOnlyFirstParagraph(comment)
 		}
 		d := []string{
-			fmt.Sprintf("[%s](%s%s.md)", t.Name, m.config.BaseUrl, mdurl.Encode(t.Name)),
+			fmt.Sprintf("[%s](%s%s.md)", t.Name, m.config.BaseURL, mdurl.Encode(t.Name)),
 			fmt.Sprintf("%d", len(t.Columns)),
 			comment,
 			t.Type,
@@ -843,7 +841,7 @@ func (m *Md) tablesData(tables []*schema.Table, number, adjust, showOnlyFirstPar
 	return data
 }
 
-func (m *Md) functionsData(functions []*schema.Function, number, adjust, showOnlyFirstParagraph bool) [][]string {
+func (m *Md) functionsData(functions []*schema.Function, number, adjust bool) [][]string {
 	data := [][]string{}
 	header := []string{
 		m.config.MergedDict.Lookup("Name"),
@@ -925,7 +923,7 @@ func (m *Md) viewpointsData(viewpoints []*schema.Viewpoint, number, adjust, show
 			desc = output.ShowOnlyFirstParagraph(desc)
 		}
 		d := []string{
-			fmt.Sprintf("[%s](%sviewpoint-%d.md)", v.Name, m.config.BaseUrl, i),
+			fmt.Sprintf("[%s](%sviewpoint-%d.md)", v.Name, m.config.BaseURL, i),
 			desc,
 		}
 		data = append(data, d)
@@ -976,10 +974,10 @@ func (m *Md) addNumberToTable(data [][]string) [][]string {
 	w := len(data[0])/10 + 1
 
 	for i, r := range data {
-		switch {
-		case i == 0:
+		switch i {
+		case 0:
 			r = append([]string{m.config.MergedDict.Lookup("#")}, r...)
-		case i == 1:
+		case 1:
 			r = append([]string{strings.Repeat("-", w)}, r...)
 		default:
 			r = append([]string{strconv.Itoa(i - 1)}, r...)

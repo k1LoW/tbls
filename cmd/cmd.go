@@ -18,14 +18,13 @@ func getSchemaFromJSONorDSN(c *config.Config) (*schema.Schema, error) {
 			return nil, err
 		}
 		return s, nil
-	} else {
-		s, err := datasource.Analyze(c.DSN)
-		if err != nil {
-			return nil, err
-		}
-		if err := c.ModifySchema(s); err != nil {
-			return nil, err
-		}
-		return s, nil
 	}
+	s, err := datasource.Analyze(c.DSN)
+	if err != nil {
+		return nil, err
+	}
+	if err := c.ModifySchema(s); err != nil {
+		return nil, err
+	}
+	return s, nil
 }

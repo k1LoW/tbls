@@ -25,7 +25,7 @@ func (EnvPatcher) Visit(node *ast.Node) {
 	}
 }
 
-// The predefined variables of a when expression
+// The predefined variables of a when expression.
 type WhenEnv struct {
 	Env map[string]string
 }
@@ -45,13 +45,15 @@ func IsAllowedToExecute(when string) (bool, error) {
 	if err != nil {
 		return false, errors.WithStack(err)
 	}
-	if got, err := expr.Run(program, whenEnv); err != nil {
+	result, err := expr.Run(program, whenEnv)
+	if err != nil {
 		return false, errors.WithStack(err)
-	} else if got, ok := got.(bool); !ok {
-		return false, fmt.Errorf("expected bool, but got %T", got)
-	} else {
-		return got, nil
 	}
+	boolResult, ok := result.(bool)
+	if !ok {
+		return false, fmt.Errorf("expected bool, but got %T", result)
+	}
+	return boolResult, nil
 }
 
 func envMap() map[string]string {

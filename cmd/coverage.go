@@ -37,12 +37,12 @@ import (
 
 var cformat string
 
-// coverageCmd represents the coverage command
+// coverageCmd represents the coverage command.
 var coverageCmd = &cobra.Command{
 	Use:   "coverage [DSN]",
 	Short: "measure document coverage",
 	Long:  `'tbls coverage' measure document coverage.`,
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(_ *cobra.Command, args []string) error {
 		if allow, err := cmdutil.IsAllowedToExecute(when); !allow || err != nil {
 			if err != nil {
 				return err
@@ -75,11 +75,11 @@ var coverageCmd = &cobra.Command{
 
 		cover := coverage.Measure(s)
 
-		max := runewidth.StringWidth("All tables")
+		maxWidth := runewidth.StringWidth("All tables")
 		for _, t := range cover.Tables {
 			l := runewidth.StringWidth(t.Name)
-			if l+1 > max {
-				max = l + 1
+			if l+1 > maxWidth {
+				maxWidth = l + 1
 			}
 		}
 
@@ -92,7 +92,7 @@ var coverageCmd = &cobra.Command{
 				return errors.WithStack(err)
 			}
 		default:
-			fmtName := fmt.Sprintf("%%-%ds", max)
+			fmtName := fmt.Sprintf("%%-%ds", maxWidth)
 			fmt.Printf("%s  %s\n", color.White(fmt.Sprintf(fmtName, "Table"), color.B), color.White("Coverage", color.B))
 			fmt.Printf("%s  %g%%\n", fmt.Sprintf(fmtName, "All tables"), cover.Coverage)
 			for _, t := range cover.Tables {

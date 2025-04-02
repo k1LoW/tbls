@@ -13,14 +13,14 @@ import (
 	"github.com/k1LoW/tbls/schema"
 )
 
-// Bigquery struct
+// Bigquery struct.
 type Bigquery struct {
 	ctx       context.Context
 	client    *bigquery.Client
 	datasetID string
 }
 
-// New return new Bigquery
+// New return new Bigquery.
 func New(ctx context.Context, client *bigquery.Client, datasetID string) (*Bigquery, error) {
 	return &Bigquery{
 		ctx:       ctx,

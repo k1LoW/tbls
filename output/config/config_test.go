@@ -39,6 +39,7 @@ func testdataDir() string {
 }
 
 func newTestSchema(t *testing.T) *schema.Schema {
+	t.Helper()
 	ca := &schema.Column{
 		Name:    "a",
 		Comment: "column a",

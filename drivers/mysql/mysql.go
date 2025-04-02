@@ -20,7 +20,7 @@ var reAI = regexp.MustCompile(` AUTO_INCREMENT=[\d]+`)
 var supportGeneratedColumn = true
 var supportCheckConstraint = true
 
-// Mysql struct
+// Mysql struct.
 type Mysql struct {
 	db        *sql.DB
 	mariaMode bool
@@ -52,7 +52,7 @@ func HideAutoIcrrement() drivers.Option {
 	}
 }
 
-// New return new Mysql
+// New return new Mysql.
 func New(db *sql.DB, opts ...drivers.Option) (*Mysql, error) {
 	m := &Mysql{
 		db: db,
@@ -66,7 +66,7 @@ func New(db *sql.DB, opts ...drivers.Option) (*Mysql, error) {
 	return m, nil
 }
 
-// Analyze MySQL database schema
+// Analyze MySQL database schema.
 func (m *Mysql) Analyze(s *schema.Schema) error {
 	d, err := m.Info()
 	if err != nil {
@@ -590,7 +590,7 @@ func (m *Mysql) getFunctions() ([]*schema.Function, error) {
 	return functions, nil
 }
 
-// Info return schema.Driver
+// Info return schema.Driver.
 func (m *Mysql) Info() (*schema.Driver, error) {
 	var v string
 	row := m.db.QueryRow(`SELECT version();`)
@@ -619,7 +619,7 @@ func (m *Mysql) Info() (*schema.Driver, error) {
 	return d, nil
 }
 
-// EnableMariaMode enable mariaMode
+// EnableMariaMode enable mariaMode.
 func (m *Mysql) EnableMariaMode() {
 	m.mariaMode = true
 }

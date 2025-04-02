@@ -15,13 +15,13 @@ import (
 //go:embed templates/*
 var tmpl embed.FS
 
-// PlantUML struct
+// PlantUML struct.
 type PlantUML struct {
 	config *config.Config
 	tmpl   embed.FS
 }
 
-// New return PlantUML
+// New return PlantUML.
 func New(c *config.Config) *PlantUML {
 	return &PlantUML{
 		config: c,
@@ -36,13 +36,12 @@ func (p *PlantUML) schemaTemplate() (string, error) {
 			return "", errors.WithStack(err)
 		}
 		return string(tb), nil
-	} else {
-		tb, err := p.tmpl.ReadFile("templates/schema.puml.tmpl")
-		if err != nil {
-			return "", errors.WithStack(err)
-		}
-		return string(tb), nil
 	}
+	tb, err := p.tmpl.ReadFile("templates/schema.puml.tmpl")
+	if err != nil {
+		return "", errors.WithStack(err)
+	}
+	return string(tb), nil
 }
 
 func (p *PlantUML) tableTemplate() (string, error) {
@@ -52,13 +51,12 @@ func (p *PlantUML) tableTemplate() (string, error) {
 			return "", errors.WithStack(err)
 		}
 		return string(tb), nil
-	} else {
-		tb, err := p.tmpl.ReadFile("templates/table.puml.tmpl")
-		if err != nil {
-			return "", errors.WithStack(err)
-		}
-		return string(tb), nil
 	}
+	tb, err := p.tmpl.ReadFile("templates/table.puml.tmpl")
+	if err != nil {
+		return "", errors.WithStack(err)
+	}
+	return string(tb), nil
 }
 
 // OutputSchema output dot format for full relation.
@@ -68,13 +66,12 @@ func (p *PlantUML) OutputSchema(wr io.Writer, s *schema.Schema) error {
 		return errors.WithStack(err)
 	}
 	tmpl := template.Must(template.New(s.Name).Funcs(output.Funcs(&p.config.MergedDict)).Parse(ts))
-	err = tmpl.Execute(wr, map[string]interface{}{
+	if err := tmpl.Execute(wr, map[string]interface{}{
 		"Schema":          s,
 		"showComment":     p.config.ER.Comment,
 		"showDef":         !p.config.ER.HideDef,
 		"showColumnTypes": p.config.ER.ShowColumnTypes,
-	})
-	if err != nil {
+	}); err != nil {
 		return errors.WithStack(err)
 	}
 
@@ -92,15 +89,14 @@ func (p *PlantUML) OutputTable(wr io.Writer, t *schema.Table) error {
 		return errors.WithStack(err)
 	}
 	tmpl := template.Must(template.New(t.Name).Funcs(output.Funcs(&p.config.MergedDict)).Parse(ts))
-	err = tmpl.Execute(wr, map[string]interface{}{
+	if err := tmpl.Execute(wr, map[string]interface{}{
 		"Table":           tables[0],
 		"Tables":          tables[1:],
 		"Relations":       relations,
 		"showComment":     p.config.ER.Comment,
 		"showDef":         !p.config.ER.HideDef,
 		"showColumnTypes": p.config.ER.ShowColumnTypes,
-	})
-	if err != nil {
+	}); err != nil {
 		return errors.WithStack(err)
 	}
 

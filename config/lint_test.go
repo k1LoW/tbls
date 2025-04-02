@@ -395,9 +395,9 @@ func TestDuplicateRelations(t *testing.T) {
 			Enabled: tt.enabled,
 		}
 		s := newTestSchema(t)
-		copy := *s.Relations[0]
-		copy.Def = "copy"
-		s.Relations = append(s.Relations, &copy)
+		relationCopy := *s.Relations[0]
+		relationCopy.Def = "copy"
+		s.Relations = append(s.Relations, &relationCopy)
 		copy2 := *s.Relations[0]
 		copy2.Def = "copy2"
 		copy2Table := *copy2.Table
@@ -492,7 +492,7 @@ func TestCheckLabelStyleBigQuery(t *testing.T) {
 	}
 }
 
-func newTestSchema(t *testing.T) *schema.Schema {
+func newTestSchema(_ *testing.T) *schema.Schema {
 	ca := &schema.Column{
 		Name:     "column_a1",
 		Type:     "bigint(20)",

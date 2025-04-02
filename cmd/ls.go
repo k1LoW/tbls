@@ -35,12 +35,12 @@ import (
 
 var long bool
 
-// lsCmd represents the ls command
+// lsCmd represents the ls command.
 var lsCmd = &cobra.Command{
 	Use:   "ls",
 	Short: "list schema resources",
 	Long:  `list schema resources.`,
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(_ *cobra.Command, args []string) error {
 		c, err := config.New()
 		if err != nil {
 			return err

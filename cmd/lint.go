@@ -33,12 +33,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// lintCmd represents the lint command
+// lintCmd represents the lint command.
 var lintCmd = &cobra.Command{
 	Use:   "lint [DSN] [DOC_PATH]",
 	Short: "check database document",
 	Long:  `'tbls lint' check database document.`,
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(_ *cobra.Command, args []string) error {
 		if allow, err := cmdutil.IsAllowedToExecute(when); !allow || err != nil {
 			if err != nil {
 				return err

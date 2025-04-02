@@ -295,6 +295,7 @@ func testdataDir() string {
 }
 
 func newTestSchema(t *testing.T) *Schema {
+	t.Helper()
 	ca := &Column{
 		Name:     "a",
 		Type:     "bigint(20)",

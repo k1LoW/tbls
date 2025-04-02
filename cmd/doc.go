@@ -42,12 +42,12 @@ var (
 	rmDist    bool
 )
 
-// docCmd represents the doc command
+// docCmd represents the doc command.
 var docCmd = &cobra.Command{
 	Use:   "doc [DSN] [DOC_PATH]",
 	Short: "document a database",
 	Long:  `'tbls doc' analyzes a database and generate document in GitHub Friendly Markdown format.`,
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(_ *cobra.Command, args []string) error {
 		if allow, err := cmdutil.IsAllowedToExecute(when); !allow || err != nil {
 			if err != nil {
 				return err
@@ -144,7 +144,7 @@ func loadDocArgs(args []string) ([]config.Option, error) {
 	if withoutER {
 		options = append(options, config.ERSkip(withoutER))
 	}
-	options = append(options, config.BaseUrl(baseUrl))
+	options = append(options, config.BaseURL(baseURL))
 	options = append(options, config.Include(append(tables, includes...)))
 	options = append(options, config.Exclude(excludes))
 	options = append(options, config.IncludeLabels(labels))
@@ -171,7 +171,7 @@ func init() {
 	docCmd.Flags().BoolVarP(&withoutER, "without-er", "", false, "no generate ER diagrams")
 	docCmd.Flags().BoolVarP(&adjust, "adjust-table", "j", false, "adjust column width of table")
 	docCmd.Flags().StringVarP(&when, "when", "", "", "command execute condition")
-	docCmd.Flags().StringVarP(&baseUrl, "base-url", "b", "", "base url for links")
+	docCmd.Flags().StringVarP(&baseURL, "base-url", "b", "", "base url for links")
 	docCmd.Flags().BoolVarP(&rmDist, "rm-dist", "", false, "remove files in docPath before generating documents")
 	docCmd.Flags().StringSliceVarP(&tables, "table", "", []string{}, "target table (tables to include)")
 	docCmd.Flags().StringSliceVarP(&includes, "include", "", []string{}, "tables to include")
