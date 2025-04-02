@@ -45,9 +45,9 @@ FROM `bigquery-public-data.crypto_bitcoin.transactions` as transactions,
 
 ## Referenced Tables
 
-| Name | Columns | Description | Type |
-| ---- | ------- | ------- | ---- |
-| [transactions](transactions.md) | 34 | All transactions.<br>Data is exported using https://github.com/blockchain-etl/bitcoin-etl<br> | TABLE |
+| Name | Columns | Description | Type | Labels |
+| ---- | ------- | ------- | ---- | ------ |
+| [transactions](transactions.md) | 34 | All transactions.<br>Data is exported using https://github.com/blockchain-etl/bitcoin-etl<br> | TABLE | `dataplex-data-documentation-published-location:us-central1` `dataplex-data-documentation-published-project:vini-gcp-project` `dataplex-data-documentation-published-scan:ab8352e1e-6be2-4e7e-9083-c1412cbada9f` |
 
 ## Relations
 

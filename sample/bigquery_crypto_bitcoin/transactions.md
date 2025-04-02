@@ -6,6 +6,10 @@ All transactions.
 Data is exported using https://github.com/blockchain-etl/bitcoin-etl  
 
 
+## Labels
+
+`dataplex-data-documentation-published-location:us-central1` `dataplex-data-documentation-published-project:vini-gcp-project` `dataplex-data-documentation-published-scan:ab8352e1e-6be2-4e7e-9083-c1412cbada9f`
+
 ## Columns
 
 | Name | Type | Default | Nullable | Children | Parents | Description |

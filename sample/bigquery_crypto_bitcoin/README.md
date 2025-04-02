@@ -2,12 +2,12 @@
 
 ## Tables
 
-| Name | Columns | Description | Type |
-| ---- | ------- | ------- | ---- |
-| [blocks](blocks.md) | 13 | All blocks.<br>Data is exported using https://github.com/blockchain-etl/bitcoin-etl | TABLE |
-| [inputs](inputs.md) | 14 | Inputs from all transactions.<br>Data is exported using https://github.com/blockchain-etl/bitcoin-etl | VIEW |
-| [outputs](outputs.md) | 11 | Outputs from all transactions.<br>Data is exported using https://github.com/blockchain-etl/bitcoin-etl | VIEW |
-| [transactions](transactions.md) | 34 | All transactions.<br>Data is exported using https://github.com/blockchain-etl/bitcoin-etl<br> | TABLE |
+| Name | Columns | Description | Type | Labels |
+| ---- | ------- | ------- | ---- | ------ |
+| [blocks](blocks.md) | 13 | All blocks.<br>Data is exported using https://github.com/blockchain-etl/bitcoin-etl | TABLE |  |
+| [inputs](inputs.md) | 14 | Inputs from all transactions.<br>Data is exported using https://github.com/blockchain-etl/bitcoin-etl | VIEW |  |
+| [outputs](outputs.md) | 11 | Outputs from all transactions.<br>Data is exported using https://github.com/blockchain-etl/bitcoin-etl | VIEW |  |
+| [transactions](transactions.md) | 34 | All transactions.<br>Data is exported using https://github.com/blockchain-etl/bitcoin-etl<br> | TABLE | `dataplex-data-documentation-published-location:us-central1` `dataplex-data-documentation-published-project:vini-gcp-project` `dataplex-data-documentation-published-scan:ab8352e1e-6be2-4e7e-9083-c1412cbada9f` |
 
 ## Relations
 
