@@ -5,7 +5,7 @@ import (
 )
 
 // SchemaJSON is a JSON representation of schema.Schema.
-type SchemaJSON struct {
+type SchemaJSON struct { // nolint: revive
 	Name       string          `json:"name,omitempty"`
 	Desc       string          `json:"desc,omitempty"`
 	Tables     []*TableJSON    `json:"tables"`

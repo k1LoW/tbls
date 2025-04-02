@@ -588,24 +588,24 @@ func convertTableType(t string) string {
 func convertColumnType(t string, maxLength int) string {
 	switch t {
 	case "varchar":
-		var len = strconv.Itoa(maxLength)
+		var length = strconv.Itoa(maxLength)
 		if maxLength == -1 {
-			len = "MAX"
+			length = "MAX"
 		}
-		return fmt.Sprintf("varchar(%s)", len)
+		return fmt.Sprintf("varchar(%s)", length)
 	case "nvarchar":
 		//nvarchar length is 2 byte, return character length
-		var len = strconv.Itoa(maxLength / 2)
+		var length = strconv.Itoa(maxLength / 2)
 		if maxLength == -1 {
-			len = "MAX"
+			length = "MAX"
 		}
-		return fmt.Sprintf("nvarchar(%s)", len)
+		return fmt.Sprintf("nvarchar(%s)", length)
 	case "varbinary":
-		var len = strconv.Itoa(maxLength)
+		var mlen = strconv.Itoa(maxLength)
 		if maxLength == -1 {
-			len = "MAX"
+			mlen = "MAX"
 		}
-		return fmt.Sprintf("varbinary(%s)", len)
+		return fmt.Sprintf("varbinary(%s)", mlen)
 	default:
 		return t
 	}

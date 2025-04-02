@@ -58,7 +58,7 @@ var erFormat string
 var when string
 
 // base url for links.
-var baseUrl string
+var baseURL string
 
 // tables to include.
 var includes []string
@@ -204,7 +204,7 @@ func init() {
 
 // genValidArgsFunc.
 func genValidArgsFunc(prefix string) func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-	return func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+	return func(_ *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		toC := toComplete
 		if len(args) > 0 {
 			toC = args[0]

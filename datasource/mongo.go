@@ -29,7 +29,7 @@ func AnalyzeMongodb(urlstr string) (*schema.Schema, error) {
 	values := u.Query()
 	parsedPath := strings.Split(u.Path, "/")
 	if len(parsedPath) != 2 {
-		return nil, errors.New("No database name in the connection string")
+		return nil, errors.New("no database name in the connection string")
 	}
 	dbName := parsedPath[1]
 

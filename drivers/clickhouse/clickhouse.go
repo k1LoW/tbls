@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"regexp"
 
+	// Import the ClickHouse driver for side effects (database/sql driver registration).
 	_ "github.com/ClickHouse/clickhouse-go/v2"
 	"github.com/k1LoW/errors"
 	"github.com/k1LoW/tbls/dict"
@@ -65,7 +66,7 @@ WHERE database = ?
 
 	for tableRows.Next() {
 		var (
-			tableUuid                 string
+			tableUUID                 string
 			tableName                 string
 			tableType                 string
 			tablePartitionKey         string
@@ -77,7 +78,7 @@ WHERE database = ?
 			tableDependenciesDatabase []string
 			tableDependenciesTable    []string
 		)
-		err := tableRows.Scan(&tableUuid, &tableName, &tableType, &tablePartitionKey, &tableSortingKey, &tableSamplingKey, &tablePrimaryKey, &tableDef, &tableComment, &tableDependenciesDatabase, &tableDependenciesTable)
+		err := tableRows.Scan(&tableUUID, &tableName, &tableType, &tablePartitionKey, &tableSortingKey, &tableSamplingKey, &tablePrimaryKey, &tableDef, &tableComment, &tableDependenciesDatabase, &tableDependenciesTable)
 		if err != nil {
 			return errors.WithStack(err)
 		}

@@ -139,13 +139,12 @@ func (d *Dot) schemaTemplate() (string, error) {
 			return "", errors.WithStack(err)
 		}
 		return string(tb), nil
-	} else {
-		tb, err := d.tmpl.ReadFile("templates/schema.dot.tmpl")
-		if err != nil {
-			return "", errors.WithStack(err)
-		}
-		return string(tb), nil
 	}
+	tb, err := d.tmpl.ReadFile("templates/schema.dot.tmpl")
+	if err != nil {
+		return "", errors.WithStack(err)
+	}
+	return string(tb), nil
 }
 
 func (d *Dot) tableTemplate() (string, error) {
@@ -155,11 +154,10 @@ func (d *Dot) tableTemplate() (string, error) {
 			return "", errors.WithStack(err)
 		}
 		return string(tb), nil
-	} else {
-		tb, err := d.tmpl.ReadFile("templates/table.dot.tmpl")
-		if err != nil {
-			return "", errors.WithStack(err)
-		}
-		return string(tb), nil
 	}
+	tb, err := d.tmpl.ReadFile("templates/table.dot.tmpl")
+	if err != nil {
+		return "", errors.WithStack(err)
+	}
+	return string(tb), nil
 }

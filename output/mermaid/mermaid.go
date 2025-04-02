@@ -36,13 +36,12 @@ func (m *Mermaid) schemaTemplate() (string, error) {
 			return "", errors.WithStack(err)
 		}
 		return string(tb), nil
-	} else {
-		tb, err := m.tmpl.ReadFile("templates/schema.mermaid.tmpl")
-		if err != nil {
-			return "", errors.WithStack(err)
-		}
-		return string(tb), nil
 	}
+	tb, err := m.tmpl.ReadFile("templates/schema.mermaid.tmpl")
+	if err != nil {
+		return "", errors.WithStack(err)
+	}
+	return string(tb), nil
 }
 
 func (m *Mermaid) tableTemplate() (string, error) {
@@ -52,13 +51,12 @@ func (m *Mermaid) tableTemplate() (string, error) {
 			return "", errors.WithStack(err)
 		}
 		return string(tb), nil
-	} else {
-		tb, err := m.tmpl.ReadFile("templates/table.mermaid.tmpl")
-		if err != nil {
-			return "", errors.WithStack(err)
-		}
-		return string(tb), nil
 	}
+	tb, err := m.tmpl.ReadFile("templates/table.mermaid.tmpl")
+	if err != nil {
+		return "", errors.WithStack(err)
+	}
+	return string(tb), nil
 }
 
 // OutputSchema output dot format for full relation.
@@ -68,13 +66,12 @@ func (m *Mermaid) OutputSchema(wr io.Writer, s *schema.Schema) error {
 		return errors.WithStack(err)
 	}
 	tmpl := template.Must(template.New(s.Name).Funcs(output.Funcs(&m.config.MergedDict)).Parse(ts))
-	err = tmpl.Execute(wr, map[string]interface{}{
+	if err := tmpl.Execute(wr, map[string]any{
 		"Schema":          s,
 		"showComment":     m.config.ER.Comment,
 		"showDef":         !m.config.ER.HideDef,
 		"showColumnTypes": m.config.ER.ShowColumnTypes,
-	})
-	if err != nil {
+	}); err != nil {
 		return errors.WithStack(err)
 	}
 
@@ -92,15 +89,14 @@ func (m *Mermaid) OutputTable(wr io.Writer, t *schema.Table) error {
 		return errors.WithStack(err)
 	}
 	tmpl := template.Must(template.New(t.Name).Funcs(output.Funcs(&m.config.MergedDict)).Parse(ts))
-	err = tmpl.Execute(wr, map[string]interface{}{
+	if err := tmpl.Execute(wr, map[string]interface{}{
 		"Table":           tables[0],
 		"Tables":          tables[1:],
 		"Relations":       relations,
 		"showComment":     m.config.ER.Comment,
 		"showDef":         !m.config.ER.HideDef,
 		"showColumnTypes": m.config.ER.ShowColumnTypes,
-	})
-	if err != nil {
+	}); err != nil {
 		return errors.WithStack(err)
 	}
 

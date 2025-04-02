@@ -52,7 +52,7 @@ var outCmd = &cobra.Command{
 	Use:   "out [DSN]",
 	Short: "analyzes a database and output",
 	Long:  `'tbls out' analyzes a database and output.`,
-	RunE: func(cmd *cobra.Command, args []string) error {
+	RunE: func(_ *cobra.Command, args []string) error {
 		if allow, err := cmdutil.IsAllowedToExecute(when); !allow || err != nil {
 			if err != nil {
 				return err

@@ -28,9 +28,9 @@ func Measure(s *schema.Schema) *Coverage {
 		Name: s.Name,
 	}
 	// schema
-	cover.Total += 1
+	cover.Total++
 	if s.Desc != "" {
-		cover.Covered += 1
+		cover.Covered++
 	}
 
 	// tables
@@ -40,46 +40,46 @@ func Measure(s *schema.Schema) *Coverage {
 		}
 		cover.Tables = append(cover.Tables, tcover)
 
-		cover.Total += 1
-		tcover.Total += 1
+		cover.Total++
+		tcover.Total++
 		if t.Comment != "" && t.Comment != config.NoTableComment {
-			cover.Covered += 1
-			tcover.Covered += 1
+			cover.Covered++
+			tcover.Covered++
 		}
 
 		for _, c := range t.Columns {
-			cover.Total += 1
-			tcover.Total += 1
+			cover.Total++
+			tcover.Total++
 			if c.Comment != "" && c.Comment != config.NoColumnComment {
-				cover.Covered += 1
-				tcover.Covered += 1
+				cover.Covered++
+				tcover.Covered++
 			}
 		}
 
 		for _, i := range t.Indexes {
-			cover.Total += 1
-			tcover.Total += 1
+			cover.Total++
+			tcover.Total++
 			if i.Comment != "" {
-				cover.Covered += 1
-				tcover.Covered += 1
+				cover.Covered++
+				tcover.Covered++
 			}
 		}
 
 		for _, c := range t.Constraints {
-			cover.Total += 1
-			tcover.Total += 1
+			cover.Total++
+			tcover.Total++
 			if c.Comment != "" {
-				cover.Covered += 1
-				tcover.Covered += 1
+				cover.Covered++
+				tcover.Covered++
 			}
 		}
 
 		for _, trig := range t.Triggers {
-			cover.Total += 1
-			tcover.Total += 1
+			cover.Total++
+			tcover.Total++
 			if trig.Comment != "" {
-				cover.Covered += 1
-				tcover.Covered += 1
+				cover.Covered++
+				tcover.Covered++
 			}
 		}
 

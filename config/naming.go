@@ -49,7 +49,7 @@ func SelectNamingStrategy(name string) (*NamingStrategy, error) {
 		}, nil
 
 	default:
-		return nil, fmt.Errorf("Naming strategy does not exist. strategy: %s\n", name)
+		return nil, fmt.Errorf("naming strategy does not exist. strategy: %s", name)
 	}
 }
 
@@ -72,7 +72,7 @@ func defaultParentTableNamer(name string) string {
 	return pluralizeClient.Plural(name[:index])
 }
 
-func defaultParentColumnNamer(name string) string {
+func defaultParentColumnNamer(_ string) string {
 	return "id"
 }
 
@@ -85,7 +85,7 @@ func singularTableParentTableNamer(name string) string {
 	return pluralizeClient.Singular(name[:index])
 }
 
-func singularTableParentColumnNamer(name string) string {
+func singularTableParentColumnNamer(_ string) string {
 	return "id"
 }
 

@@ -480,7 +480,7 @@ func (t *Table) FindColumnByName(name string) (_ *Column, err error) {
 			return c, nil
 		}
 	}
-	return nil, errors.New(fmt.Sprintf("not found column '%s' on table '%s'", name, t.Name))
+	return nil, fmt.Errorf("not found column '%s' on table '%s'", name, t.Name)
 }
 
 // FindIndexByName find index by index name.
@@ -493,7 +493,7 @@ func (t *Table) FindIndexByName(name string) (_ *Index, err error) {
 			return i, nil
 		}
 	}
-	return nil, errors.New(fmt.Sprintf("not found index '%s' on table '%s'", name, t.Name))
+	return nil, fmt.Errorf("not found index '%s' on table '%s'", name, t.Name)
 }
 
 // FindConstraintByName find constraint by constraint name.
@@ -506,7 +506,7 @@ func (t *Table) FindConstraintByName(name string) (_ *Constraint, err error) {
 			return c, nil
 		}
 	}
-	return nil, errors.New(fmt.Sprintf("not found constraint '%s' on table '%s'", name, t.Name))
+	return nil, fmt.Errorf("not found constraint '%s' on table '%s'", name, t.Name)
 }
 
 // FindTriggerByName find trigger by trigger name.
@@ -519,7 +519,7 @@ func (t *Table) FindTriggerByName(name string) (_ *Trigger, err error) {
 			return trig, nil
 		}
 	}
-	return nil, errors.New(fmt.Sprintf("not found trigger '%s' on table '%s'", name, t.Name))
+	return nil, fmt.Errorf("not found trigger '%s' on table '%s'", name, t.Name)
 }
 
 // FindConstrainsByColumnName find constraint by column name.

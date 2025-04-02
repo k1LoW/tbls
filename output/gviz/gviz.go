@@ -74,7 +74,7 @@ func (g *Gviz) render(wr io.Writer, b []byte) (e error) {
 			return errors.WithStack(err)
 		}
 		// FIXME: more better way
-		graphviz.SetFontLoader(func(ctx context.Context, job *graphviz.Job, font *graphviz.TextFont) (font.Face, error) {
+		graphviz.SetFontLoader(func(_ context.Context, _ *graphviz.Job, font *graphviz.TextFont) (font.Face, error) {
 			return faceFunc(font.Size())
 		})
 	}

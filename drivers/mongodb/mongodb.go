@@ -80,21 +80,21 @@ func (m *Mongodb) Analyze(s *schema.Schema) error {
 	return nil
 }
 
-func (d *Mongodb) listFields(collection *mongo.Collection) ([]*schema.Column, error) {
-	pipeline := []bson.D{{{Key: "$sample", Value: bson.D{{Key: "size", Value: d.sampleSize}}}}}
-	cursor, err := collection.Aggregate(d.ctx, pipeline)
+func (m *Mongodb) listFields(collection *mongo.Collection) ([]*schema.Column, error) {
+	pipeline := []bson.D{{{Key: "$sample", Value: bson.D{{Key: "size", Value: m.sampleSize}}}}}
+	cursor, err := collection.Aggregate(m.ctx, pipeline)
 	if err != nil {
 		return nil, err
 	}
 	columns := []*schema.Column{}
 	total := 0.0
 	occurrences := map[string]float64{}
-	for cursor.Next(d.ctx) {
+	for cursor.Next(m.ctx) {
 		var result bson.D
 		if err := cursor.Decode(&result); err != nil {
 			return columns, err
 		}
-		total += 1
+		total++
 		for _, entry := range result {
 			key, value := entry.Key, entry.Value
 			var valueType string
@@ -128,7 +128,7 @@ func (d *Mongodb) listFields(collection *mongo.Collection) ([]*schema.Column, er
 				columns = append(columns, column)
 			}
 
-			if d.multipleFieldType {
+			if m.multipleFieldType {
 				columns = addColumnType(columns, key, valueType)
 			}
 		}
@@ -138,7 +138,7 @@ func (d *Mongodb) listFields(collection *mongo.Collection) ([]*schema.Column, er
 			col.Occurrences = sql.NullInt32{Int32: int32(stat), Valid: true}
 			col.Percents = sql.NullFloat64{Float64: stat / total * 100, Valid: true}
 		} else {
-			return columns, errors.New(fmt.Sprintf("Not able find %s in occurancies", col.Name))
+			return columns, fmt.Errorf("not able find %s in occurancies", col.Name)
 		}
 	}
 	if err := cursor.Err(); err != nil {
@@ -175,9 +175,9 @@ func addColumnType(list []*schema.Column, columnName, valueType string) []*schem
 	return columns
 }
 
-func (d *Mongodb) listIndexes(collection *mongo.Collection) ([]*schema.Index, error) {
+func (m *Mongodb) listIndexes(collection *mongo.Collection) ([]*schema.Index, error) {
 	indexes := []*schema.Index{}
-	indexSpec, err := collection.Indexes().ListSpecifications(d.ctx)
+	indexSpec, err := collection.Indexes().ListSpecifications(m.ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -199,7 +199,7 @@ func (d *Mongodb) listIndexes(collection *mongo.Collection) ([]*schema.Index, er
 	return indexes, nil
 }
 
-func (d *Mongodb) Info() (*schema.Driver, error) {
+func (m *Mongodb) Info() (*schema.Driver, error) {
 	dct := dict.New()
 	dct.Merge(map[string]string{
 		"Column":  "Attribute",

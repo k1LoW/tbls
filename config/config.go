@@ -53,7 +53,7 @@ type Config struct {
 	Dict                   dict.Dict              `yaml:"dict,omitempty"`
 	Templates              Templates              `yaml:"templates,omitempty"`
 	DetectVirtualRelations DetectVirtualRelations `yaml:"detectVirtualRelations,omitempty"`
-	BaseUrl                string                 `yaml:"baseUrl,omitempty"`
+	BaseURL                string                 `yaml:"baseUrl,omitempty"`
 	RequiredVersion        string                 `yaml:"requiredVersion,omitempty"`
 	DisableOutputSchema    bool                   `yaml:"disableOutputSchema,omitempty"`
 	MergedDict             dict.Dict              `yaml:"-"`
@@ -191,11 +191,11 @@ func Distance(distance int) Option {
 	}
 }
 
-// BaseUrl return Option set Config.BaseUrl.
-func BaseUrl(baseUrl string) Option {
+// BaseURL return Option set Config.BaseURL.
+func BaseURL(baseURL string) Option {
 	return func(c *Config) error {
-		if baseUrl != "" {
-			c.BaseUrl = baseUrl
+		if baseURL != "" {
+			c.BaseURL = baseURL
 		}
 		return nil
 	}
@@ -369,11 +369,11 @@ func (c *Config) LoadConfigFile(path string) (err error) {
 		}
 		if len(paths) == 0 {
 			return nil
-		} else if len(paths) > 1 {
-			return fmt.Errorf("duplicate config file [%s]", strings.Join(paths, ", "))
-		} else {
-			path = paths[0]
 		}
+		if len(paths) > 1 {
+			return fmt.Errorf("duplicate config file [%s]", strings.Join(paths, ", "))
+		}
+		path = paths[0]
 	}
 
 	if path == "" {

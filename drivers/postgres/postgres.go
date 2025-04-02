@@ -582,7 +582,7 @@ func (p *Postgres) queryForColumns(v string) (_ string, err error) {
 	}
 	// v => PostgreSQL 9.5.24 on x86_64-pc-linux-gnu (Debian 9.5.24-1.pgdg90+1), compiled by gcc (Debian 6.3.0-18+deb9u1) 6.3.0 20170516, 64-bit
 	matches := reVersion.FindStringSubmatch(v)
-	if matches == nil || len(matches) < 2 {
+	if len(matches) < 2 {
 		return "", fmt.Errorf("malformed version: %s", v)
 	}
 	vv, err := version.Parse(matches[1])
@@ -612,8 +612,8 @@ AND NOT attr.attisdropped
 AND attr.attrelid = $1::oid
 ORDER BY attr.attnum;
 `, nil
-	} else {
-		return `
+	}
+	return `
 SELECT
     attr.attname AS column_name,
     pg_get_expr(def.adbin, def.adrelid) AS column_default,
@@ -635,7 +635,6 @@ AND NOT attr.attisdropped
 AND attr.attrelid = $1::oid
 ORDER BY attr.attnum;
 `, nil
-	}
 }
 
 func (p *Postgres) queryForConstraints() string {
