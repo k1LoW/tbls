@@ -15,13 +15,13 @@ import (
 //go:embed templates/*
 var tmpl embed.FS
 
-// Mermaid struct
+// Mermaid struct.
 type Mermaid struct {
 	config *config.Config
 	tmpl   embed.FS
 }
 
-// New return Mermaid
+// New return Mermaid.
 func New(c *config.Config) *Mermaid {
 	return &Mermaid{
 		config: c,

@@ -15,13 +15,13 @@ import (
 //go:embed templates/*
 var tmpl embed.FS
 
-// PlantUML struct
+// PlantUML struct.
 type PlantUML struct {
 	config *config.Config
 	tmpl   embed.FS
 }
 
-// New return PlantUML
+// New return PlantUML.
 func New(c *config.Config) *PlantUML {
 	return &PlantUML{
 		config: c,

@@ -14,19 +14,19 @@ import (
 
 var shadowTableRe = regexp.MustCompile(`^\.inner_id\.`)
 
-// ClickHouse struct
+// ClickHouse struct.
 type ClickHouse struct {
 	db *sql.DB
 }
 
-// New return new Postgres
+// New return new Postgres.
 func New(db *sql.DB) *ClickHouse {
 	return &ClickHouse{
 		db: db,
 	}
 }
 
-// Analyze PostgreSQL database schema
+// Analyze PostgreSQL database schema.
 func (ch *ClickHouse) Analyze(s *schema.Schema) error {
 	d, err := ch.Info()
 	if err != nil {
@@ -350,7 +350,7 @@ WHERE origin = 'SQLUserDefined'
 	return nil
 }
 
-// Info return schema.Driver
+// Info return schema.Driver.
 func (ch *ClickHouse) Info() (*schema.Driver, error) {
 	var v string
 	row := ch.db.QueryRow(`SELECT version();`)

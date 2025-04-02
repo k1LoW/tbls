@@ -17,13 +17,13 @@ import (
 var reFK = regexp.MustCompile(`FOREIGN KEY \((.+)\) REFERENCES ([^\s\)]+)\s?\(([^\)]+)\)`)
 var reVersion = regexp.MustCompile(`([0-9]+(\.[0-9]+)*)`)
 
-// Postgres struct
+// Postgres struct.
 type Postgres struct {
 	db     *sql.DB
 	rsMode bool
 }
 
-// New return new Postgres
+// New return new Postgres.
 func New(db *sql.DB) *Postgres {
 	return &Postgres{
 		db:     db,
@@ -31,7 +31,7 @@ func New(db *sql.DB) *Postgres {
 	}
 }
 
-// Analyze PostgreSQL database schema
+// Analyze PostgreSQL database schema.
 func (p *Postgres) Analyze(s *schema.Schema) (err error) {
 	defer func() {
 		err = errors.WithStack(err)
@@ -538,7 +538,7 @@ func fullTableName(owner string, tableName string) string {
 	return fmt.Sprintf("%s.%s", owner, tableName)
 }
 
-// Info return schema.Driver
+// Info return schema.Driver.
 func (p *Postgres) Info() (*schema.Driver, error) {
 	var v string
 	row := p.db.QueryRow(`SELECT version();`)
@@ -567,7 +567,7 @@ func (p *Postgres) Info() (*schema.Driver, error) {
 	return d, nil
 }
 
-// EnableRsMode enable rsMode
+// EnableRsMode enable rsMode.
 func (p *Postgres) EnableRsMode() {
 	p.rsMode = true
 }
@@ -672,7 +672,7 @@ GROUP BY cons.conindid, cons.conname, cons.contype, cons.oid, trig.oid, fcls.rel
 ORDER BY cons.conindid, cons.conname`
 }
 
-// arrayRemoveNull
+// arrayRemoveNull.
 func arrayRemoveNull(in []sql.NullString) []string {
 	out := []string{}
 	for _, i := range in {

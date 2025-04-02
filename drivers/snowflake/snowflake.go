@@ -49,9 +49,10 @@ func (sf *Snowflake) Analyze(s *schema.Schema) error {
 		}
 
 		var getDDLObjectType string
-		if tableType == "BASE TABLE" {
+		switch tableType {
+		case "BASE TABLE":
 			getDDLObjectType = "table"
-		} else if tableType == "VIEW" {
+		case "VIEW":
 			getDDLObjectType = "view"
 		}
 		if getDDLObjectType != "" {

@@ -11,16 +11,16 @@ var (
 	pluralizeClient = pluralize.NewClient()
 )
 
-// Namer is a function type which is given a string and return a string
+// Namer is a function type which is given a string and return a string.
 type Namer func(string) string
 
-// NamingStrategy represents naming strategies
+// NamingStrategy represents naming strategies.
 type NamingStrategy struct {
 	ParentTable  Namer
 	ParentColumn Namer
 }
 
-// SelectNamingStrategy sets the naming strategy
+// SelectNamingStrategy sets the naming strategy.
 func SelectNamingStrategy(name string) (*NamingStrategy, error) {
 	switch name {
 	case "", "default":
@@ -53,12 +53,12 @@ func SelectNamingStrategy(name string) (*NamingStrategy, error) {
 	}
 }
 
-// ParentTableName alters the given name by Table
+// ParentTableName alters the given name by Table.
 func (ns *NamingStrategy) ParentTableName(name string) string {
 	return ns.ParentTable(name)
 }
 
-// ParentColumnName alters the given name by Column
+// ParentColumnName alters the given name by Column.
 func (ns *NamingStrategy) ParentColumnName(name string) string {
 	return ns.ParentColumn(name)
 }

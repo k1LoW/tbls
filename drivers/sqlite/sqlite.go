@@ -19,12 +19,12 @@ var reFTS = regexp.MustCompile(`(?i)USING\s+fts([34])`)
 
 var shadowTables []string
 
-// Sqlite struct
+// Sqlite struct.
 type Sqlite struct {
 	db *sql.DB
 }
 
-// New return new Sqlite
+// New return new Sqlite.
 func New(db *sql.DB) *Sqlite {
 	return &Sqlite{
 		db: db,
@@ -41,7 +41,7 @@ type fk struct {
 	Match              string
 }
 
-// Analyze SQLite database schema
+// Analyze SQLite database schema.
 func (l *Sqlite) Analyze(s *schema.Schema) (err error) {
 	defer func() {
 		err = errors.WithStack(err)
@@ -417,7 +417,7 @@ SELECT name, sql FROM sqlite_master WHERE type = 'trigger' AND tbl_name = ?;
 	return nil
 }
 
-// Info return schema.Driver
+// Info return schema.Driver.
 func (l *Sqlite) Info() (*schema.Driver, error) {
 	var v string
 	row := l.db.QueryRow(`SELECT sqlite_version();`)

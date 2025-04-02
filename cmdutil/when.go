@@ -25,7 +25,7 @@ func (EnvPatcher) Visit(node *ast.Node) {
 	}
 }
 
-// The predefined variables of a when expression
+// The predefined variables of a when expression.
 type WhenEnv struct {
 	Env map[string]string
 }

@@ -1,7 +1,7 @@
 package version
 
-// Name for this
+// Name for this.
 const Name string = "tbls"
 
-// Version for this
+// Version for this.
 var Version = "1.84.1"

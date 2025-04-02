@@ -41,7 +41,7 @@ var supportDriversWithDburl = []string{
 	"clickhouse",
 }
 
-// Analyze database
+// Analyze database.
 func Analyze(dsn config.DSN) (_ *schema.Schema, err error) {
 	defer func() {
 		err = errors.WithStack(err)
@@ -243,12 +243,12 @@ func AnalyzeJSON(urlstr string) (_ *schema.Schema, err error) {
 	return s, nil
 }
 
-// Deprecated
+// Deprecated.
 func AnalyzeJSONString(str string) (*schema.Schema, error) {
 	return AnalyzeJSONStringOrFile(str)
 }
 
-// AnalyzeJSONStringOrFile analyze JSON string or JSON file
+// AnalyzeJSONStringOrFile analyze JSON string or JSON file.
 func AnalyzeJSONStringOrFile(strOrPath string) (s *schema.Schema, err error) {
 	defer func() {
 		err = errors.WithStack(err)

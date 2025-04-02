@@ -4,7 +4,7 @@ import (
 	"github.com/goccy/go-yaml"
 )
 
-// MarshalYAML return custom JSON byte
+// MarshalYAML return custom JSON byte.
 func (t Table) MarshalYAML() ([]byte, error) {
 	referencedTables := []string{}
 	for _, rt := range t.ReferencedTables {
@@ -36,7 +36,7 @@ func (t Table) MarshalYAML() ([]byte, error) {
 	})
 }
 
-// MarshalYAML return custom YAML byte
+// MarshalYAML return custom YAML byte.
 func (c Column) MarshalYAML() ([]byte, error) {
 	if c.Default.Valid {
 		return yaml.Marshal(&struct {
@@ -84,7 +84,7 @@ func (c Column) MarshalYAML() ([]byte, error) {
 	})
 }
 
-// MarshalYAML return custom YAML byte
+// MarshalYAML return custom YAML byte.
 func (r Relation) MarshalYAML() ([]byte, error) {
 	columns := []string{}
 	parentColumns := []string{}
@@ -116,7 +116,7 @@ func (r Relation) MarshalYAML() ([]byte, error) {
 	})
 }
 
-// UnmarshalYAML unmarshal YAML to schema.Table
+// UnmarshalYAML unmarshal YAML to schema.Table.
 func (t *Table) UnmarshalYAML(data []byte) error {
 	s := struct {
 		Name             string        `yaml:"name"`
@@ -151,7 +151,7 @@ func (t *Table) UnmarshalYAML(data []byte) error {
 	return nil
 }
 
-// UnmarshalYAML unmarshal YAML to schema.Column
+// UnmarshalYAML unmarshal YAML to schema.Column.
 func (c *Column) UnmarshalYAML(data []byte) error {
 	s := struct {
 		Name            string      `yaml:"name"`
@@ -185,7 +185,7 @@ func (c *Column) UnmarshalYAML(data []byte) error {
 	return nil
 }
 
-// UnmarshalYAML unmarshal YAML to schema.Column
+// UnmarshalYAML unmarshal YAML to schema.Column.
 func (r *Relation) UnmarshalYAML(data []byte) error {
 	s := struct {
 		Table             string   `yaml:"table"`

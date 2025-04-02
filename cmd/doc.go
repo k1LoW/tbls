@@ -42,7 +42,7 @@ var (
 	rmDist    bool
 )
 
-// docCmd represents the doc command
+// docCmd represents the doc command.
 var docCmd = &cobra.Command{
 	Use:   "doc [DSN] [DOC_PATH]",
 	Short: "document a database",

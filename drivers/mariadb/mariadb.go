@@ -11,7 +11,7 @@ type Mariadb struct {
 	mysql.Mysql
 }
 
-// New return new Mariadb
+// New return new Mariadb.
 func New(db *sql.DB, opts ...drivers.Option) (*Mariadb, error) {
 	m, err := mysql.New(db, opts...)
 	if err != nil {

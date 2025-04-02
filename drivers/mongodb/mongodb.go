@@ -156,7 +156,7 @@ func columnInColumns(a *schema.Column, list []*schema.Column) bool {
 	return false
 }
 
-// addColumnType adds a new type to the specified column
+// addColumnType adds a new type to the specified column.
 func addColumnType(list []*schema.Column, columnName, valueType string) []*schema.Column {
 	columns := make([]*schema.Column, len(list))
 

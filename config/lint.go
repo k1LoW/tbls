@@ -9,7 +9,7 @@ import (
 	"github.com/k1LoW/tbls/schema"
 )
 
-// Lint is the struct for lint config
+// Lint is the struct for lint config.
 type Lint struct {
 	RequireTableComment      RequireTableComment      `yaml:"requireTableComment"`
 	RequireColumnComment     RequireColumnComment     `yaml:"requireColumnComment"`
@@ -26,31 +26,31 @@ type Lint struct {
 	RequireViewpoints        RequireViewpoints        `yaml:"requireViewpoints"`
 }
 
-// RuleWarn is struct of Rule error
+// RuleWarn is struct of Rule error.
 type RuleWarn struct {
 	Target  string
 	Message string
 }
 
-// Rule is interfece of `tbls lint` cop
+// Rule is interfece of `tbls lint` cop.
 type Rule interface {
 	IsEnabled() bool
 	Check(schema *schema.Schema, exclude []string) []RuleWarn
 }
 
-// RequireTableComment checks table comment
+// RequireTableComment checks table comment.
 type RequireTableComment struct {
 	Enabled      bool     `yaml:"enabled"`
 	AllOrNothing bool     `yaml:"allOrNothing"`
 	Exclude      []string `yaml:"exclude"`
 }
 
-// IsEnabled return Rule is enabled or not
+// IsEnabled return Rule is enabled or not.
 func (r RequireTableComment) IsEnabled() bool {
 	return r.Enabled
 }
 
-// Check table comment
+// Check table comment.
 func (r RequireTableComment) Check(s *schema.Schema, exclude []string) []RuleWarn {
 	warns := []RuleWarn{}
 	if !r.IsEnabled() {
@@ -83,7 +83,7 @@ func (r RequireTableComment) Check(s *schema.Schema, exclude []string) []RuleWar
 	return warns
 }
 
-// RequireColumnComment checks column comment
+// RequireColumnComment checks column comment.
 type RequireColumnComment struct {
 	Enabled       bool     `yaml:"enabled"`
 	AllOrNothing  bool     `yaml:"allOrNothing"`
@@ -91,12 +91,12 @@ type RequireColumnComment struct {
 	ExcludeTables []string `yaml:"excludeTables"`
 }
 
-// IsEnabled return Rule is enabled or not
+// IsEnabled return Rule is enabled or not.
 func (r RequireColumnComment) IsEnabled() bool {
 	return r.Enabled
 }
 
-// Check column comment
+// Check column comment.
 func (r RequireColumnComment) Check(s *schema.Schema, exclude []string) []RuleWarn {
 	warns := []RuleWarn{}
 	if !r.IsEnabled() {
@@ -135,7 +135,7 @@ func (r RequireColumnComment) Check(s *schema.Schema, exclude []string) []RuleWa
 	return warns
 }
 
-// RequireIndexComment checks index comment
+// RequireIndexComment checks index comment.
 type RequireIndexComment struct {
 	Enabled       bool     `yaml:"enabled"`
 	AllOrNothing  bool     `yaml:"allOrNothing"`
@@ -143,12 +143,12 @@ type RequireIndexComment struct {
 	ExcludeTables []string `yaml:"excludeTables"`
 }
 
-// IsEnabled return Rule is enabled or not
+// IsEnabled return Rule is enabled or not.
 func (r RequireIndexComment) IsEnabled() bool {
 	return r.Enabled
 }
 
-// Check index comment
+// Check index comment.
 func (r RequireIndexComment) Check(s *schema.Schema, exclude []string) []RuleWarn {
 	warns := []RuleWarn{}
 	if !r.IsEnabled() {
@@ -187,7 +187,7 @@ func (r RequireIndexComment) Check(s *schema.Schema, exclude []string) []RuleWar
 	return warns
 }
 
-// RequireConstraintComment checks constraint comment
+// RequireConstraintComment checks constraint comment.
 type RequireConstraintComment struct {
 	Enabled       bool     `yaml:"enabled"`
 	AllOrNothing  bool     `yaml:"allOrNothing"`
@@ -195,12 +195,12 @@ type RequireConstraintComment struct {
 	ExcludeTables []string `yaml:"excludeTables"`
 }
 
-// IsEnabled return Rule is enabled or not
+// IsEnabled return Rule is enabled or not.
 func (r RequireConstraintComment) IsEnabled() bool {
 	return r.Enabled
 }
 
-// Check constraint comment
+// Check constraint comment.
 func (r RequireConstraintComment) Check(s *schema.Schema, exclude []string) []RuleWarn {
 	warns := []RuleWarn{}
 	if !r.IsEnabled() {
@@ -239,7 +239,7 @@ func (r RequireConstraintComment) Check(s *schema.Schema, exclude []string) []Ru
 	return warns
 }
 
-// RequireTriggerComment checks trigger comment
+// RequireTriggerComment checks trigger comment.
 type RequireTriggerComment struct {
 	Enabled       bool     `yaml:"enabled"`
 	AllOrNothing  bool     `yaml:"allOrNothing"`
@@ -247,12 +247,12 @@ type RequireTriggerComment struct {
 	ExcludeTables []string `yaml:"excludeTables"`
 }
 
-// IsEnabled return Rule is enabled or not
+// IsEnabled return Rule is enabled or not.
 func (r RequireTriggerComment) IsEnabled() bool {
 	return r.Enabled
 }
 
-// Check trigger comment
+// Check trigger comment.
 func (r RequireTriggerComment) Check(s *schema.Schema, exclude []string) []RuleWarn {
 	warns := []RuleWarn{}
 	if !r.IsEnabled() {
@@ -291,19 +291,19 @@ func (r RequireTriggerComment) Check(s *schema.Schema, exclude []string) []RuleW
 	return warns
 }
 
-// RequireTableLabels checks table labels
+// RequireTableLabels checks table labels.
 type RequireTableLabels struct {
 	Enabled      bool     `yaml:"enabled"`
 	AllOrNothing bool     `yaml:"allOrNothing"`
 	Exclude      []string `yaml:"exclude"`
 }
 
-// IsEnabled return Rule is enabled or not
+// IsEnabled return Rule is enabled or not.
 func (r RequireTableLabels) IsEnabled() bool {
 	return r.Enabled
 }
 
-// Check table labels
+// Check table labels.
 func (r RequireTableLabels) Check(s *schema.Schema, exclude []string) []RuleWarn {
 	warns := []RuleWarn{}
 	if !r.IsEnabled() {
@@ -338,19 +338,19 @@ func (r RequireTableLabels) Check(s *schema.Schema, exclude []string) []RuleWarn
 	return warns
 }
 
-// UnrelatedTable checks isolated table
+// UnrelatedTable checks isolated table.
 type UnrelatedTable struct {
 	Enabled      bool     `yaml:"enabled"`
 	AllOrNothing bool     `yaml:"allOrNothing"`
 	Exclude      []string `yaml:"exclude"`
 }
 
-// IsEnabled return Rule is enabled or not
+// IsEnabled return Rule is enabled or not.
 func (r UnrelatedTable) IsEnabled() bool {
 	return r.Enabled
 }
 
-// Check table relation
+// Check table relation.
 func (r UnrelatedTable) Check(s *schema.Schema, exclude []string) []RuleWarn {
 	warns := []RuleWarn{}
 	if !r.IsEnabled() {
@@ -395,19 +395,19 @@ func (r UnrelatedTable) Check(s *schema.Schema, exclude []string) []RuleWarn {
 	return warns
 }
 
-// ColumnCount checks table column count
+// ColumnCount checks table column count.
 type ColumnCount struct {
 	Enabled bool     `yaml:"enabled"`
 	Max     int      `yaml:"max"`
 	Exclude []string `yaml:"exclude"`
 }
 
-// IsEnabled return Rule is enabled or not
+// IsEnabled return Rule is enabled or not.
 func (r ColumnCount) IsEnabled() bool {
 	return r.Enabled
 }
 
-// Check table column count
+// Check table column count.
 func (r ColumnCount) Check(s *schema.Schema, exclude []string) []RuleWarn {
 	warns := []RuleWarn{}
 	if !r.IsEnabled() {
@@ -433,24 +433,24 @@ func (r ColumnCount) Check(s *schema.Schema, exclude []string) []RuleWarn {
 	return warns
 }
 
-// RequireColumns checks if the table has specified columns
+// RequireColumns checks if the table has specified columns.
 type RequireColumns struct {
 	Enabled bool                   `yaml:"enabled"`
 	Columns []RequireColumnsColumn `yaml:"columns"`
 }
 
-// RequireColumnsColumn is required column
+// RequireColumnsColumn is required column.
 type RequireColumnsColumn struct {
 	Name    string   `yaml:"name"`
 	Exclude []string `yaml:"exclude"`
 }
 
-// IsEnabled return Rule is enabled or not
+// IsEnabled return Rule is enabled or not.
 func (r RequireColumns) IsEnabled() bool {
 	return r.Enabled
 }
 
-// Check the existence of a table columns
+// Check the existence of a table columns.
 func (r RequireColumns) Check(s *schema.Schema, exclude []string) []RuleWarn {
 	warns := []RuleWarn{}
 	if !r.IsEnabled() {
@@ -486,17 +486,17 @@ func (r RequireColumns) Check(s *schema.Schema, exclude []string) []RuleWarn {
 	return warns
 }
 
-// DuplicateRelations checks duplicate table relations
+// DuplicateRelations checks duplicate table relations.
 type DuplicateRelations struct {
 	Enabled bool `yaml:"enabled"`
 }
 
-// IsEnabled return Rule is enabled or not
+// IsEnabled return Rule is enabled or not.
 func (r DuplicateRelations) IsEnabled() bool {
 	return r.Enabled
 }
 
-// Check duplicate table relations
+// Check duplicate table relations.
 func (r DuplicateRelations) Check(s *schema.Schema, exclude []string) []RuleWarn {
 	warns := []RuleWarn{}
 	if !r.IsEnabled() {
@@ -536,18 +536,18 @@ func (r DuplicateRelations) Check(s *schema.Schema, exclude []string) []RuleWarn
 	return warns
 }
 
-// RequireForeignKeyIndex checks if the foreign key columns have an index
+// RequireForeignKeyIndex checks if the foreign key columns have an index.
 type RequireForeignKeyIndex struct {
 	Enabled bool     `yaml:"enabled"`
 	Exclude []string `yaml:"exclude"`
 }
 
-// IsEnabled return Rule is enabled or not
+// IsEnabled return Rule is enabled or not.
 func (r RequireForeignKeyIndex) IsEnabled() bool {
 	return r.Enabled
 }
 
-// Check if the foreign key columns have an index
+// Check if the foreign key columns have an index.
 func (r RequireForeignKeyIndex) Check(s *schema.Schema, exclude []string) []RuleWarn {
 	warns := []RuleWarn{}
 	if !r.IsEnabled() {
@@ -589,18 +589,18 @@ func (r RequireForeignKeyIndex) Check(s *schema.Schema, exclude []string) []Rule
 	return warns
 }
 
-// LabelStyleBigQuery checks if labels are in BigQuery style ( https://cloud.google.com/resource-manager/docs/creating-managing-labels#requirements )
+// LabelStyleBigQuery checks if labels are in BigQuery style ( https://cloud.google.com/resource-manager/docs/creating-managing-labels#requirements ).
 type LabelStyleBigQuery struct {
 	Enabled bool     `yaml:"enabled"`
 	Exclude []string `yaml:"exclude"`
 }
 
-// IsEnabled return Rule is enabled or not
+// IsEnabled return Rule is enabled or not.
 func (r LabelStyleBigQuery) IsEnabled() bool {
 	return r.Enabled
 }
 
-// Check if labels are in BigQuery style
+// Check if labels are in BigQuery style.
 func (r LabelStyleBigQuery) Check(s *schema.Schema, exclude []string) []RuleWarn {
 	warns := []RuleWarn{}
 	if !r.IsEnabled() {
@@ -672,7 +672,7 @@ type RequireViewpoints struct {
 	Exclude []string `yaml:"exclude"`
 }
 
-// IsEnabled return Rule is enabled or not
+// IsEnabled return Rule is enabled or not.
 func (r RequireViewpoints) IsEnabled() bool {
 	return r.Enabled
 }

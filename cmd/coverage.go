@@ -37,7 +37,7 @@ import (
 
 var cformat string
 
-// coverageCmd represents the coverage command
+// coverageCmd represents the coverage command.
 var coverageCmd = &cobra.Command{
 	Use:   "coverage [DSN]",
 	Short: "measure document coverage",

@@ -30,13 +30,13 @@ var _ output.Output = &Md{}
 //go:embed templates/*
 var tmpl embed.FS
 
-// Md struct
+// Md struct.
 type Md struct {
 	config *config.Config
 	tmpl   embed.FS
 }
 
-// New return Md
+// New return Md.
 func New(c *config.Config) *Md {
 	return &Md{
 		config: c,
@@ -976,10 +976,10 @@ func (m *Md) addNumberToTable(data [][]string) [][]string {
 	w := len(data[0])/10 + 1
 
 	for i, r := range data {
-		switch {
-		case i == 0:
+		switch i {
+		case 0:
 			r = append([]string{m.config.MergedDict.Lookup("#")}, r...)
-		case i == 1:
+		case 1:
 			r = append([]string{strings.Repeat("-", w)}, r...)
 		default:
 			r = append([]string{strconv.Itoa(i - 1)}, r...)

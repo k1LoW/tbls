@@ -18,7 +18,7 @@ var typeFk = schema.TypeFK
 var typeCheck = "CHECK"
 var reSystemNamed = regexp.MustCompile(`_[^_]+$`)
 
-// Mssql struct
+// Mssql struct.
 type Mssql struct {
 	db *sql.DB
 }
@@ -588,20 +588,20 @@ func convertTableType(t string) string {
 func convertColumnType(t string, maxLength int) string {
 	switch t {
 	case "varchar":
-		var len string = strconv.Itoa(maxLength)
+		var len = strconv.Itoa(maxLength)
 		if maxLength == -1 {
 			len = "MAX"
 		}
 		return fmt.Sprintf("varchar(%s)", len)
 	case "nvarchar":
 		//nvarchar length is 2 byte, return character length
-		var len string = strconv.Itoa(maxLength / 2)
+		var len = strconv.Itoa(maxLength / 2)
 		if maxLength == -1 {
 			len = "MAX"
 		}
 		return fmt.Sprintf("nvarchar(%s)", len)
 	case "varbinary":
-		var len string = strconv.Itoa(maxLength)
+		var len = strconv.Itoa(maxLength)
 		if maxLength == -1 {
 			len = "MAX"
 		}

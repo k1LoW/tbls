@@ -7,7 +7,7 @@ import (
 	"github.com/k1LoW/tbls/schema"
 )
 
-// YAML struct
+// YAML struct.
 type YAML struct{}
 
 // OutputSchema output YAML format for full relation.

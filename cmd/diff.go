@@ -33,7 +33,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// diffCmd represents the diff command
+// diffCmd represents the diff command.
 var diffCmd = &cobra.Command{
 	Use:   "diff [DSN] [DSN_OR_DOC_PATH]",
 	Short: "diff database and ( document or database )",

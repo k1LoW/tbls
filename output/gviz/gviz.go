@@ -21,13 +21,13 @@ import (
 	"golang.org/x/image/font/sfnt"
 )
 
-// Gviz struct
+// Gviz struct.
 type Gviz struct {
 	config *config.Config
 	dot    *dot.Dot
 }
 
-// New return Gviz
+// New return Gviz.
 func New(c *config.Config) *Gviz {
 	return &Gviz{
 		config: c,
@@ -156,7 +156,7 @@ func Output(s *schema.Schema, c *config.Config, force bool) (e error) {
 	return nil
 }
 
-// getFaceFunc
+// getFaceFunc.
 func getFaceFunc(keyword string) (func(size float64) (font.Face, error), error) {
 	var (
 		faceFunc func(size float64) (font.Face, error)

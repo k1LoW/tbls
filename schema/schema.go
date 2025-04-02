@@ -50,7 +50,7 @@ func (labels Labels) Contains(name string) bool {
 	})
 }
 
-// Viewpoint is the struct for viewpoint information
+// Viewpoint is the struct for viewpoint information.
 type Viewpoint struct {
 	Name     string            `json:"name"`
 	Desc     string            `json:"desc"`
@@ -86,7 +86,7 @@ func (vs Viewpoints) Merge(in *Viewpoint) Viewpoints {
 	return append(vs, in)
 }
 
-// Index is the struct for database index
+// Index is the struct for database index.
 type Index struct {
 	Name    string   `json:"name"`
 	Def     string   `json:"def"`
@@ -95,7 +95,7 @@ type Index struct {
 	Comment string   `json:"comment,omitempty"`
 }
 
-// Constraint is the struct for database constraint
+// Constraint is the struct for database constraint.
 type Constraint struct {
 	Name              string   `json:"name"`
 	Type              string   `json:"type"`
@@ -107,14 +107,14 @@ type Constraint struct {
 	Comment           string   `json:"comment,omitempty"`
 }
 
-// Trigger is the struct for database trigger
+// Trigger is the struct for database trigger.
 type Trigger struct {
 	Name    string `json:"name"`
 	Def     string `json:"def"`
 	Comment string `json:"comment,omitempty"`
 }
 
-// Column is the struct for table column
+// Column is the struct for table column.
 type Column struct {
 	Name            string
 	Type            string
@@ -138,7 +138,7 @@ type TableViewpoint struct {
 	Desc  string `json:"desc"`
 }
 
-// Table is the struct for database table
+// Table is the struct for database table.
 type Table struct {
 	Name             string
 	Type             string
@@ -154,7 +154,7 @@ type Table struct {
 	External         bool
 }
 
-// Relation is the struct for table relation
+// Relation is the struct for table relation.
 type Relation struct {
 	Table             *Table
 	Columns           []*Column
@@ -173,7 +173,7 @@ type DriverMeta struct {
 	Dict          *dict.Dict `json:"dict,omitempty"`
 }
 
-// Function is the struct for tbls stored procedure/function information
+// Function is the struct for tbls stored procedure/function information.
 type Function struct {
 	Name       string `json:"name"`
 	ReturnType string `json:"return_type" yaml:"returnType"`
@@ -186,14 +186,14 @@ type Enum struct {
 	Values []string `json:"values"`
 }
 
-// Driver is the struct for tbls driver information
+// Driver is the struct for tbls driver information.
 type Driver struct {
 	Name            string      `json:"name"`
 	DatabaseVersion string      `json:"database_version,omitempty" yaml:"databaseVersion,omitempty"`
 	Meta            *DriverMeta `json:"meta,omitempty"`
 }
 
-// Schema is the struct for database schema
+// Schema is the struct for database schema.
 type Schema struct {
 	Name       string      `json:"name,omitempty"`
 	Desc       string      `json:"desc,omitempty"`
@@ -220,7 +220,7 @@ func (s *Schema) NormalizeTableNames(names []string) []string {
 	return names
 }
 
-// FindTableByName find table by table name
+// FindTableByName find table by table name.
 func (s *Schema) FindTableByName(name string) (_ *Table, err error) {
 	defer func() {
 		err = errors.WithStack(err)
@@ -233,7 +233,7 @@ func (s *Schema) FindTableByName(name string) (_ *Table, err error) {
 	return nil, fmt.Errorf("not found table '%s'", name)
 }
 
-// MatchTablesByName find table by table name
+// MatchTablesByName find table by table name.
 func (s *Schema) MatchTablesByName(name string) (_ []*Table, err error) {
 	defer func() {
 		err = errors.WithStack(err)
@@ -250,7 +250,7 @@ func (s *Schema) MatchTablesByName(name string) (_ []*Table, err error) {
 	return tables, nil
 }
 
-// FindRelation find relation by columns and parent columns
+// FindRelation find relation by columns and parent columns.
 func (s *Schema) FindRelation(cs, pcs []*Column) (_ *Relation, err error) {
 	defer func() {
 		err = errors.WithStack(err)
@@ -296,7 +296,7 @@ func (s *Schema) HasTableWithLabels() bool {
 	return false
 }
 
-// Sort schema tables, columns, relations, constrains, and viewpoints
+// Sort schema tables, columns, relations, constrains, and viewpoints.
 func (s *Schema) Sort() error {
 	for _, t := range s.Tables {
 		for _, c := range t.Columns {
@@ -338,7 +338,7 @@ func (s *Schema) Sort() error {
 	return nil
 }
 
-// Repair column relations
+// Repair column relations.
 func (s *Schema) Repair() (err error) {
 	defer func() {
 		err = errors.WithStack(err)
@@ -470,7 +470,7 @@ func (s *Schema) repairWithoutViewpoints() (err error) {
 	return nil
 }
 
-// FindColumnByName find column by column name
+// FindColumnByName find column by column name.
 func (t *Table) FindColumnByName(name string) (_ *Column, err error) {
 	defer func() {
 		err = errors.WithStack(err)
@@ -483,7 +483,7 @@ func (t *Table) FindColumnByName(name string) (_ *Column, err error) {
 	return nil, errors.New(fmt.Sprintf("not found column '%s' on table '%s'", name, t.Name))
 }
 
-// FindIndexByName find index by index name
+// FindIndexByName find index by index name.
 func (t *Table) FindIndexByName(name string) (_ *Index, err error) {
 	defer func() {
 		err = errors.WithStack(err)
@@ -496,7 +496,7 @@ func (t *Table) FindIndexByName(name string) (_ *Index, err error) {
 	return nil, errors.New(fmt.Sprintf("not found index '%s' on table '%s'", name, t.Name))
 }
 
-// FindConstraintByName find constraint by constraint name
+// FindConstraintByName find constraint by constraint name.
 func (t *Table) FindConstraintByName(name string) (_ *Constraint, err error) {
 	defer func() {
 		err = errors.WithStack(err)
@@ -509,7 +509,7 @@ func (t *Table) FindConstraintByName(name string) (_ *Constraint, err error) {
 	return nil, errors.New(fmt.Sprintf("not found constraint '%s' on table '%s'", name, t.Name))
 }
 
-// FindTriggerByName find trigger by trigger name
+// FindTriggerByName find trigger by trigger name.
 func (t *Table) FindTriggerByName(name string) (_ *Trigger, err error) {
 	defer func() {
 		err = errors.WithStack(err)
@@ -522,7 +522,7 @@ func (t *Table) FindTriggerByName(name string) (_ *Trigger, err error) {
 	return nil, errors.New(fmt.Sprintf("not found trigger '%s' on table '%s'", name, t.Name))
 }
 
-// FindConstrainsByColumnName find constraint by column name
+// FindConstrainsByColumnName find constraint by column name.
 func (t *Table) FindConstrainsByColumnName(name string) []*Constraint {
 	cts := []*Constraint{}
 	for _, ct := range t.Constraints {

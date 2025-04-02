@@ -47,7 +47,7 @@ var (
 	distance int
 )
 
-// outCmd represents the doc command
+// outCmd represents the doc command.
 var outCmd = &cobra.Command{
 	Use:   "out [DSN]",
 	Short: "analyzes a database and output",

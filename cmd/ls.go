@@ -35,7 +35,7 @@ import (
 
 var long bool
 
-// lsCmd represents the ls command
+// lsCmd represents the ls command.
 var lsCmd = &cobra.Command{
 	Use:   "ls",
 	Short: "list schema resources",

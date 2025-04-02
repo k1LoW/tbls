@@ -33,7 +33,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// lintCmd represents the lint command
+// lintCmd represents the lint command.
 var lintCmd = &cobra.Command{
 	Use:   "lint [DSN] [DOC_PATH]",
 	Short: "check database document",

@@ -43,7 +43,7 @@ func AnalyzeBigquery(urlstr string) (*schema.Schema, error) {
 	return s, nil
 }
 
-// NewBigqueryClient returns new bigquery.Client
+// NewBigqueryClient returns new bigquery.Client.
 func NewBigqueryClient(ctx context.Context, urlstr string) (*bigquery.Client, string, string, error) {
 	u, err := url.Parse(urlstr)
 	if err != nil {
@@ -109,7 +109,7 @@ func AnalyzeSpanner(urlstr string) (*schema.Schema, error) {
 	return s, nil
 }
 
-// NewSpannerClient returns new cloudspanner.Client
+// NewSpannerClient returns new cloudspanner.Client.
 func NewSpannerClient(ctx context.Context, urlstr string) (*cloudspanner.Client, string, error) {
 	u, err := url.Parse(urlstr)
 	if err != nil {

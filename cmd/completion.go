@@ -32,7 +32,7 @@ import (
 
 var out string
 
-// completionCmd represents the completion command
+// completionCmd represents the completion command.
 var completionCmd = &cobra.Command{
 	Use:   "completion",
 	Short: "output shell completion code",

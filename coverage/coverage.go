@@ -22,7 +22,7 @@ type TableCoverage struct {
 	Total    int     `json:"-"`
 }
 
-// Measure coverage
+// Measure coverage.
 func Measure(s *schema.Schema) *Coverage {
 	cover := &Coverage{
 		Name: s.Name,

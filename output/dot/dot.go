@@ -23,13 +23,13 @@ var defaultColors = []string{
 	"#8858AA",
 }
 
-// Dot struct
+// Dot struct.
 type Dot struct {
 	config *config.Config
 	tmpl   embed.FS
 }
 
-// New return Dot
+// New return Dot.
 func New(c *config.Config) *Dot {
 	return &Dot{
 		config: c,

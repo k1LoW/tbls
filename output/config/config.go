@@ -13,12 +13,12 @@ import (
 const NoTableComment = "table comment required."
 const NoColumnComment = "column comment required."
 
-// Config struct for `tbls out`
+// Config struct for `tbls out`.
 type Config struct {
 	config *config.Config
 }
 
-// New return Config
+// New return Config.
 func New(c *config.Config) *Config {
 	return &Config{
 		config: c,

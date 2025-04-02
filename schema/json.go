@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 )
 
-// SchemaJSON is a JSON representation of schema.Schema
+// SchemaJSON is a JSON representation of schema.Schema.
 type SchemaJSON struct {
 	Name       string          `json:"name,omitempty"`
 	Desc       string          `json:"desc,omitempty"`
@@ -17,7 +17,7 @@ type SchemaJSON struct {
 	Viewpoints Viewpoints      `json:"viewpoints,omitempty"`
 }
 
-// TableJSON is a JSON representation of schema.Table
+// TableJSON is a JSON representation of schema.Table.
 type TableJSON struct {
 	Name             string        `json:"name"`
 	Type             string        `json:"type"`
@@ -31,7 +31,7 @@ type TableJSON struct {
 	ReferencedTables []string      `json:"referenced_tables,omitempty"`
 }
 
-// ColumnJSON is a JSON representation of schema.Column
+// ColumnJSON is a JSON representation of schema.Column.
 type ColumnJSON struct {
 	Name     string  `json:"name"`
 	Type     string  `json:"type"`
@@ -42,7 +42,7 @@ type ColumnJSON struct {
 	Comment  string  `json:"comment,omitempty"`
 }
 
-// RelationJSON is a JSON representation of schema.Relation
+// RelationJSON is a JSON representation of schema.Relation.
 type RelationJSON struct {
 	Table             string   `json:"table"`
 	Columns           []string `json:"columns"`
@@ -66,7 +66,7 @@ type DriverMetaJSON struct {
 	Dict          map[string]string `json:"dict,omitempty"`
 }
 
-// ToJSONObjct convert schema.Schema to JSON object
+// ToJSONObjct convert schema.Schema to JSON object.
 func (s Schema) ToJSONObject() SchemaJSON {
 	var tables []*TableJSON
 	for _, t := range s.Tables {
@@ -177,31 +177,31 @@ func (d *DriverMeta) ToJSONObject() *DriverMetaJSON {
 	return m
 }
 
-// MarshalJSON return custom JSON byte
+// MarshalJSON return custom JSON byte.
 func (s Schema) MarshalJSON() ([]byte, error) {
 	ss := s.ToJSONObject()
 	return json.Marshal(&ss)
 }
 
-// MarshalJSON return custom JSON byte
+// MarshalJSON return custom JSON byte.
 func (t Table) MarshalJSON() ([]byte, error) {
 	tt := t.ToJSONObject()
 	return json.Marshal(&tt)
 }
 
-// MarshalJSON return custom JSON byte
+// MarshalJSON return custom JSON byte.
 func (c Column) MarshalJSON() ([]byte, error) {
 	cc := c.ToJSONObject()
 	return json.Marshal(&cc)
 }
 
-// MarshalJSON return custom JSON byte
+// MarshalJSON return custom JSON byte.
 func (r Relation) MarshalJSON() ([]byte, error) {
 	rr := r.ToJSONObject()
 	return json.Marshal(&rr)
 }
 
-// UnmarshalJSON unmarshal JSON to schema.Table
+// UnmarshalJSON unmarshal JSON to schema.Table.
 func (t *Table) UnmarshalJSON(data []byte) error {
 	s := struct {
 		Name             string        `json:"name"`
@@ -236,7 +236,7 @@ func (t *Table) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// UnmarshalJSON unmarshal JSON to schema.Column
+// UnmarshalJSON unmarshal JSON to schema.Column.
 func (c *Column) UnmarshalJSON(data []byte) error {
 	s := struct {
 		Name     string  `json:"name"`
@@ -267,7 +267,7 @@ func (c *Column) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// UnmarshalJSON unmarshal JSON to schema.Relation
+// UnmarshalJSON unmarshal JSON to schema.Relation.
 func (r *Relation) UnmarshalJSON(data []byte) error {
 	s := struct {
 		Table             string   `json:"table"`

@@ -16,7 +16,7 @@ type Spanner struct {
 	client *spanner.Client
 }
 
-// New return new Spanner
+// New return new Spanner.
 func New(ctx context.Context, client *spanner.Client) (*Spanner, error) {
 	return &Spanner{
 		ctx:    ctx,

@@ -39,38 +39,38 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// adjust is a flag on whether to adjust the notation width of the table
+// adjust is a flag on whether to adjust the notation width of the table.
 var adjust bool
 
-// force is a flag on whether to force generate
+// force is a flag on whether to force generate.
 var force bool
 
-// sort is a flag on whether to sort tables, columns, and more
+// sort is a flag on whether to sort tables, columns, and more.
 var sort bool
 
-// configPath is a config file path
+// configPath is a config file path.
 var configPath string
 
-// erFormat is a option that ER diagram file format
+// erFormat is a option that ER diagram file format.
 var erFormat string
 
-// when is a option that command execute condition
+// when is a option that command execute condition.
 var when string
 
-// base url for links
+// base url for links.
 var baseUrl string
 
-// tables to include
+// tables to include.
 var includes []string
 var tables []string
 
-// tables to excludes
+// tables to excludes.
 var excludes []string
 
-// table labels to be included
+// table labels to be included.
 var labels []string
 
-// dsn
+// dsn.
 var dsn string
 
 const rootUsageTemplate = `Usage:{{if .Runnable}}{{if ne .UseLine "tbls [flags]" }}
@@ -100,7 +100,7 @@ Use "{{.CommandPath}} [command] --help" for more information about a command.{{e
 
 var subCmds = []string{}
 
-// rootCmd represents the base command when called without any subcommands
+// rootCmd represents the base command when called without any subcommands.
 var rootCmd = &cobra.Command{
 	Use:                "tbls",
 	Short:              "tbls is a CI-Friendly tool for document a database, written in Go.",
@@ -202,7 +202,7 @@ func init() {
 	rootCmd.Flags().StringVarP(&dsn, "dsn", "", "", "data source name")
 }
 
-// genValidArgsFunc
+// genValidArgsFunc.
 func genValidArgsFunc(prefix string) func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 	return func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		toC := toComplete
@@ -235,7 +235,7 @@ func genValidArgsFunc(prefix string) func(cmd *cobra.Command, args []string, toC
 	}
 }
 
-// getExtSubCmds
+// getExtSubCmds.
 func getExtSubCmds(prefix string) ([]string, error) {
 	subCmds := []string{}
 	paths := lo.Uniq(filepath.SplitList(os.Getenv("PATH")))
