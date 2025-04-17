@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.85.0](https://github.com/k1LoW/tbls/compare/v1.84.1...v1.85.0) - 2025-04-17
+### Other Changes
+- Fix lint warn by @k1LoW in https://github.com/k1LoW/tbls/pull/680
+- chore(deps): bump golang.org/x/net from 0.36.0 to 0.38.0 by @dependabot in https://github.com/k1LoW/tbls/pull/683
+- chore(deps): bump the dependencies group across 1 directory with 15 updates by @dependabot in https://github.com/k1LoW/tbls/pull/682
+
 ## [v1.84.1](https://github.com/k1LoW/tbls/compare/v1.84.0...v1.84.1) - 2025-03-22
 ### Other Changes
 - chore(deps): bump github.com/golang-jwt/jwt/v4 from 4.5.1 to 4.5.2 by @dependabot in https://github.com/k1LoW/tbls/pull/676
