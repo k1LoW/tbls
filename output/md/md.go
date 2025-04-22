@@ -23,7 +23,9 @@ import (
 	"gitlab.com/golang-commonmark/mdurl"
 )
 
-var mdEscRep = strings.NewReplacer("`", "\\`")
+// mdEscRep is a replacer for markdown escape.
+// Add when a case of actual display collapse appears.
+var mdEscRep = strings.NewReplacer("`", "\\`", `|`, `\|`, "<", `\<`, ">", `\>`)
 
 var _ output.Output = &Md{}
 
@@ -587,7 +589,7 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 		adjustData(&data, t.ShowColumn(schema.ColumnPercents, hideColumns), fmt.Sprintf("%.1f", c.Percents.Float64))
 		adjustData(&data, t.ShowColumn(schema.ColumnChildren, hideColumns), strings.Join(childRelations, " "))
 		adjustData(&data, t.ShowColumn(schema.ColumnParents, hideColumns), strings.Join(parentRelations, " "))
-		adjustData(&data, t.ShowColumn(schema.ColumnComment, hideColumns), c.Comment)
+		adjustData(&data, t.ShowColumn(schema.ColumnComment, hideColumns), mdEscRep.Replace(c.Comment))
 		adjustData(&data, t.ShowColumn(schema.ColumnLabels, hideColumns), output.LabelJoin(c.Labels))
 		columnsData = append(columnsData, data)
 	}
