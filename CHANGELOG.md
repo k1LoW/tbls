@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.85.1](https://github.com/k1LoW/tbls/compare/v1.85.0...v1.85.1) - 2025-04-22
+### Fix bug 🐛
+- fix(md): escape additional markdown special characters by @k1LoW in https://github.com/k1LoW/tbls/pull/687
+### Other Changes
+- refactor(postgres): optimize query for constraint and attribute aggregation by @k1LoW in https://github.com/k1LoW/tbls/pull/689
+
 ## [v1.85.0](https://github.com/k1LoW/tbls/compare/v1.84.1...v1.85.0) - 2025-04-17
 ### Other Changes
 - Fix lint warn by @k1LoW in https://github.com/k1LoW/tbls/pull/680
