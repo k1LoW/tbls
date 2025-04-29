@@ -32,7 +32,7 @@ require (
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2
 	github.com/samber/lo v1.49.1
-	github.com/snowflakedb/gosnowflake v1.13.2
+	github.com/snowflakedb/gosnowflake v1.13.3
 	github.com/spf13/cobra v1.9.1
 	github.com/tenntenn/golden v0.5.4
 	github.com/xo/dburl v0.23.6
