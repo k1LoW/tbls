@@ -1,6 +1,6 @@
 module github.com/k1LoW/tbls
 
-go 1.23.6
+go 1.23.8
 
 require (
 	cloud.google.com/go/bigquery v1.67.0
