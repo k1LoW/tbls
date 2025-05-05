@@ -1,5 +1,7 @@
 # Changelog
 
+## [v1.85.3](https://github.com/k1LoW/tbls/compare/v1.85.2...v1.85.3) - 2025-05-05
+
 ## [v1.85.2](https://github.com/k1LoW/tbls/compare/v1.85.1...v1.85.2) - 2025-04-29
 ### Other Changes
 - chore(deps): bump github.com/snowflakedb/gosnowflake from 1.13.2 to 1.13.3 by @dependabot in https://github.com/k1LoW/tbls/pull/691
