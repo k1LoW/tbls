@@ -1,5 +1,12 @@
 # Changelog
 
+## [v1.85.3](https://github.com/k1LoW/tbls/compare/v1.85.2...v1.85.3) - 2025-05-18
+### Fix bug 🐛
+- fix: use len() for relation check in detectShowColumnsForER to support include filter by @k1LoW in https://github.com/k1LoW/tbls/pull/699
+### Other Changes
+- chore(deps): bump google.golang.org/api from 0.229.0 to 0.231.0 in the dependencies group across 1 directory by @dependabot in https://github.com/k1LoW/tbls/pull/697
+- chore(deps): bump github.com/go-jose/go-jose/v4 from 4.0.4 to 4.0.5 by @dependabot in https://github.com/k1LoW/tbls/pull/700
+
 ## [v1.85.2](https://github.com/k1LoW/tbls/compare/v1.85.1...v1.85.2) - 2025-04-29
 ### Other Changes
 - chore(deps): bump github.com/snowflakedb/gosnowflake from 1.13.2 to 1.13.3 by @dependabot in https://github.com/k1LoW/tbls/pull/691
