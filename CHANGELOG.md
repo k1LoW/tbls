@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.85.4](https://github.com/k1LoW/tbls/compare/v1.85.3...v1.85.4) - 2025-05-19
+### Fix bug 🐛
+- Fix: apply showColumnTypes to ER diagram in Viewpoint pages (mermaid) by @k1LoW in https://github.com/k1LoW/tbls/pull/701
+
 ## [v1.85.3](https://github.com/k1LoW/tbls/compare/v1.85.2...v1.85.3) - 2025-05-18
 ### Fix bug 🐛
 - fix: use len() for relation check in detectShowColumnsForER to support include filter by @k1LoW in https://github.com/k1LoW/tbls/pull/699
