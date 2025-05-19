@@ -461,6 +461,9 @@ func (c *Config) ModifySchema(s *schema.Schema) error {
 		}); err != nil {
 			return err
 		}
+		if err := c.detectShowColumnsForER(cs); err != nil {
+			return err
+		}
 		groups := []*schema.ViewpointGroup{}
 		tables := lo.Map(cs.Tables, func(t *schema.Table, _ int) string {
 			return t.Name
