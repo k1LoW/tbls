@@ -120,7 +120,9 @@ type Column struct {
 	Type            string
 	Nullable        bool
 	Default         sql.NullString
-	Comment         string
+	Comment         string `json:"comment,omitempty"`
+	// ドキュメント用マスキング種別（lint で必須）
+	MaskingType     string `json:"maskingType,omitempty" yaml:"maskingType,omitempty"`
 	ExtraDef        string
 	Occurrences     sql.NullInt32
 	Percents        sql.NullFloat64
