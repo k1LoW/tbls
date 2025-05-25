@@ -715,9 +715,10 @@ T:
 
 // ◆ マスキング種別必須ルール ----------------------------------------------
 type RequireMaskingTypes struct {
-	Enabled      bool     `yaml:"enabled"`
-	AllOrNothing bool     `yaml:"allOrNothing"`
-	Exclude      []string `yaml:"exclude"`
+	Enabled       bool     `yaml:"enabled"`
+	AllOrNothing  bool     `yaml:"allOrNothing"`
+	Exclude       []string `yaml:"exclude"`
+	ExcludeTables []string `yaml:"excludeTables"`
 }
 
 func (r RequireMaskingTypes) IsEnabled() bool { return r.Enabled }
@@ -736,7 +737,7 @@ func (r RequireMaskingTypes) Check(s *schema.Schema, exclude []string) []RuleWar
 	msgMissing := "maskingTypes required."
 	msgInvalid := "invalid maskingType '%s'. (allowed: salon_id, random, none)"
 
-	nt := s.NormalizeTableNames(r.Exclude)
+	nt := s.NormalizeTableNames(r.ExcludeTables)
 	exists := false
 
 	for _, t := range s.Tables {
@@ -745,6 +746,9 @@ func (r RequireMaskingTypes) Check(s *schema.Schema, exclude []string) []RuleWar
 		}
 		for _, c := range t.Columns {
 			target := fmt.Sprintf("%s.%s", t.Name, c.Name)
+			if match(r.Exclude, c.Name) || match(r.Exclude, target) {
+				continue
+			}
 			if c.MaskingType == "" {
 				warns = append(warns, RuleWarn{Target: target, Message: msgMissing})
 				continue
