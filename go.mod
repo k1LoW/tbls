@@ -1,4 +1,4 @@
-module github.com/k1LoW/tbls
+module github.com/SouhlInc/tbls
 
 go 1.23.8
 
