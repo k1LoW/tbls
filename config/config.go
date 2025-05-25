@@ -118,6 +118,8 @@ type AdditionalComment struct {
 	IndexComments      map[string]string   `yaml:"indexComments,omitempty"`
 	ConstraintComments map[string]string   `yaml:"constraintComments,omitempty"`
 	TriggerComments    map[string]string   `yaml:"triggerComments,omitempty"`
+	// ◆ <column名: maskingType>
+	MaskingTypes       map[string]string   `yaml:"maskingTypes,omitempty"`
 	Labels             []string            `yaml:"labels,omitempty"`
 }
 
@@ -750,6 +752,19 @@ func mergeAdditionalComments(s *schema.Schema, comments []AdditionalComment) (er
 				return fmt.Errorf("failed to add trigger comment: %w", err)
 			}
 			trigger.Comment = comment
+		}
+
+		// ◆ maskingTypes の取り込みと値検証
+		allowed := map[string]struct{}{"salon_id": {}, "random": {}, "none": {}}
+		for col, mt := range c.MaskingTypes {
+			if _, ok := allowed[mt]; !ok {
+				return fmt.Errorf("invalid maskingType '%s' (allowed: salon_id, random, none)", mt)
+			}
+			column, err := table.FindColumnByName(col)
+			if err != nil {
+				return fmt.Errorf("failed to add maskingType: %w", err)
+			}
+			column.MaskingType = mt
 		}
 	}
 	return nil
