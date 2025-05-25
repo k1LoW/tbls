@@ -24,6 +24,8 @@ type Lint struct {
 	RequireForeignKeyIndex   RequireForeignKeyIndex   `yaml:"requireForeignKeyIndex"`
 	LabelStyleBigQuery       LabelStyleBigQuery       `yaml:"labelStyleBigQuery"`
 	RequireViewpoints        RequireViewpoints        `yaml:"requireViewpoints"`
+	// ◆ 追加
+	RequireMaskingTypes      RequireMaskingTypes      `yaml:"requireMaskingTypes"`
 }
 
 // RuleWarn is struct of Rule error.
@@ -708,5 +710,61 @@ T:
 		})
 	}
 
+	return warns
+}
+
+// ◆ マスキング種別必須ルール ----------------------------------------------
+type RequireMaskingTypes struct {
+	Enabled       bool     `yaml:"enabled"`
+	AllOrNothing  bool     `yaml:"allOrNothing"`
+	Exclude       []string `yaml:"exclude"`
+	ExcludeTables []string `yaml:"excludeTables"`
+}
+
+func (r RequireMaskingTypes) IsEnabled() bool { return r.Enabled }
+
+var allowedMaskingTypes = map[string]struct{}{
+	"salon_id": {},
+	"random":   {},
+	"none":     {},
+}
+
+func (r RequireMaskingTypes) Check(s *schema.Schema, exclude []string) []RuleWarn {
+	if !r.IsEnabled() {
+		return nil
+	}
+	warns := []RuleWarn{}
+	msgMissing := "maskingTypes required."
+	msgInvalid := "invalid maskingType '%s'. (allowed: salon_id, random, none)"
+
+	nt := s.NormalizeTableNames(r.ExcludeTables)
+	exists := false
+
+	for _, t := range s.Tables {
+		if match(exclude, t.Name) || match(nt, t.Name) {
+			continue
+		}
+		for _, c := range t.Columns {
+			target := fmt.Sprintf("%s.%s", t.Name, c.Name)
+			if match(r.Exclude, c.Name) || match(r.Exclude, target) {
+				continue
+			}
+			if c.MaskingType == "" {
+				warns = append(warns, RuleWarn{Target: target, Message: msgMissing})
+				continue
+			}
+			if _, ok := allowedMaskingTypes[c.MaskingType]; !ok {
+				warns = append(warns, RuleWarn{
+					Target:  target,
+					Message: fmt.Sprintf(msgInvalid, c.MaskingType),
+				})
+				continue
+			}
+			exists = true
+		}
+	}
+	if r.AllOrNothing && !exists {
+		return nil
+	}
 	return warns
 }
