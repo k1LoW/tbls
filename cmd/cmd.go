@@ -3,9 +3,9 @@ package cmd
 import (
 	"os"
 
-	"github.com/k1LoW/tbls/config"
-	"github.com/k1LoW/tbls/datasource"
-	"github.com/k1LoW/tbls/schema"
+	"github.com/SouhlInc/tbls/config"
+	"github.com/SouhlInc/tbls/datasource"
+	"github.com/SouhlInc/tbls/schema"
 )
 
 func getSchemaFromJSONorDSN(c *config.Config) (*schema.Schema, error) {

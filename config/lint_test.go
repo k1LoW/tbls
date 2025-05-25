@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/k1LoW/tbls/schema"
+	"github.com/SouhlInc/tbls/schema"
 )
 
 func TestRequireTableComment(t *testing.T) {

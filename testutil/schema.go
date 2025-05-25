@@ -3,7 +3,7 @@ package testutil
 import (
 	"testing"
 
-	"github.com/k1LoW/tbls/schema"
+	"github.com/SouhlInc/tbls/schema"
 )
 
 func NewSchema(t *testing.T) *schema.Schema {

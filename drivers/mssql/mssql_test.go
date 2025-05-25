@@ -7,7 +7,7 @@ import (
 	"log"
 	"testing"
 
-	"github.com/k1LoW/tbls/schema"
+	"github.com/SouhlInc/tbls/schema"
 	_ "github.com/microsoft/go-mssqldb"
 	"github.com/xo/dburl"
 )

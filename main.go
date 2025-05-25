@@ -27,7 +27,7 @@ import (
 	_ "github.com/microsoft/go-mssqldb"
 	_ "github.com/snowflakedb/gosnowflake"
 
-	"github.com/k1LoW/tbls/cmd"
+	"github.com/SouhlInc/tbls/cmd"
 )
 
 func main() {

@@ -2,7 +2,7 @@ package config
 
 import (
 	"github.com/goccy/go-yaml"
-	"github.com/k1LoW/tbls/schema"
+	"github.com/SouhlInc/tbls/schema"
 )
 
 func (d DSN) MarshalYAML() ([]byte, error) {

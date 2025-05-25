@@ -9,8 +9,8 @@ import (
 	"strings"
 
 	"github.com/k1LoW/errors"
-	"github.com/k1LoW/tbls/dict"
-	"github.com/k1LoW/tbls/schema"
+	"github.com/SouhlInc/tbls/dict"
+	"github.com/SouhlInc/tbls/schema"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"

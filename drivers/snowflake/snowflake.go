@@ -4,7 +4,7 @@ import (
 	"database/sql"
 
 	"github.com/k1LoW/errors"
-	"github.com/k1LoW/tbls/schema"
+	"github.com/SouhlInc/tbls/schema"
 
 	// Import the Snowflake driver for side effects (database/sql driver registration).
 	_ "github.com/snowflakedb/gosnowflake"

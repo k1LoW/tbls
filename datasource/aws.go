@@ -10,8 +10,8 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
-	"github.com/k1LoW/tbls/drivers/dynamo"
-	"github.com/k1LoW/tbls/schema"
+	"github.com/SouhlInc/tbls/drivers/dynamo"
+	"github.com/SouhlInc/tbls/schema"
 )
 
 // AnalizeDynamodb analyze `dynamodb://`

@@ -31,10 +31,10 @@ import (
 
 	"github.com/cli/safeexec"
 	"github.com/k1LoW/errors"
-	"github.com/k1LoW/tbls/cmdutil"
-	"github.com/k1LoW/tbls/config"
-	"github.com/k1LoW/tbls/output/json"
-	"github.com/k1LoW/tbls/version"
+	"github.com/SouhlInc/tbls/cmdutil"
+	"github.com/SouhlInc/tbls/config"
+	"github.com/SouhlInc/tbls/output/json"
+	"github.com/SouhlInc/tbls/version"
 	"github.com/samber/lo"
 	"github.com/spf13/cobra"
 )

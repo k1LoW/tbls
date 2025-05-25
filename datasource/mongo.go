@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/k1LoW/tbls/drivers/mongodb"
-	"github.com/k1LoW/tbls/schema"
+	"github.com/SouhlInc/tbls/drivers/mongodb"
+	"github.com/SouhlInc/tbls/schema"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"

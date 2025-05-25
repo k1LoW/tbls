@@ -26,8 +26,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/k1LoW/tbls/config"
-	"github.com/k1LoW/tbls/schema"
+	"github.com/SouhlInc/tbls/config"
+	"github.com/SouhlInc/tbls/schema"
 	"github.com/minio/pkg/wildcard"
 	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"

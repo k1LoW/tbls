@@ -4,7 +4,7 @@ import (
 	"io"
 
 	"github.com/goccy/go-yaml"
-	"github.com/k1LoW/tbls/schema"
+	"github.com/SouhlInc/tbls/schema"
 )
 
 // YAML struct.

@@ -1,7 +1,7 @@
 package drivers
 
 import (
-	"github.com/k1LoW/tbls/schema"
+	"github.com/SouhlInc/tbls/schema"
 )
 
 // Driver is the common interface for database drivers.

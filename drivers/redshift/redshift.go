@@ -3,7 +3,7 @@ package redshift
 import (
 	"database/sql"
 
-	"github.com/k1LoW/tbls/drivers/postgres"
+	"github.com/SouhlInc/tbls/drivers/postgres"
 )
 
 type Redshift struct {

@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/k1LoW/errors"
-	"github.com/k1LoW/tbls/dict"
+	"github.com/SouhlInc/tbls/dict"
 	"github.com/minio/pkg/wildcard"
 	"github.com/samber/lo"
 )

@@ -27,9 +27,9 @@ import (
 	"os"
 
 	"github.com/k1LoW/errors"
-	"github.com/k1LoW/tbls/cmdutil"
-	"github.com/k1LoW/tbls/config"
-	"github.com/k1LoW/tbls/coverage"
+	"github.com/SouhlInc/tbls/cmdutil"
+	"github.com/SouhlInc/tbls/config"
+	"github.com/SouhlInc/tbls/coverage"
 	"github.com/labstack/gommon/color"
 	"github.com/mattn/go-runewidth"
 	"github.com/spf13/cobra"

@@ -6,8 +6,8 @@ import (
 
 	"github.com/goccy/go-yaml"
 	"github.com/k1LoW/errors"
-	"github.com/k1LoW/tbls/config"
-	"github.com/k1LoW/tbls/schema"
+	"github.com/SouhlInc/tbls/config"
+	"github.com/SouhlInc/tbls/schema"
 )
 
 const NoTableComment = "table comment required."

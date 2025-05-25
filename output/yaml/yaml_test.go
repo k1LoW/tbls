@@ -9,9 +9,9 @@ import (
 	"github.com/goccy/go-yaml"
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-cmp/cmp/cmpopts"
-	"github.com/k1LoW/tbls/dict"
-	"github.com/k1LoW/tbls/schema"
-	"github.com/k1LoW/tbls/testutil"
+	"github.com/SouhlInc/tbls/dict"
+	"github.com/SouhlInc/tbls/schema"
+	"github.com/SouhlInc/tbls/testutil"
 	"github.com/tenntenn/golden"
 )
 

@@ -7,8 +7,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/k1LoW/tbls/config"
-	"github.com/k1LoW/tbls/testutil"
+	"github.com/SouhlInc/tbls/config"
+	"github.com/SouhlInc/tbls/testutil"
 	"github.com/tenntenn/golden"
 )
 

@@ -7,8 +7,8 @@ import (
 
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/k1LoW/errors"
-	"github.com/k1LoW/tbls/dict"
-	"github.com/k1LoW/tbls/schema"
+	"github.com/SouhlInc/tbls/dict"
+	"github.com/SouhlInc/tbls/schema"
 )
 
 var re = regexp.MustCompile(`(?s)\n\s*`)

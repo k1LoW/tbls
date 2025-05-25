@@ -7,8 +7,8 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/k1LoW/tbls/dict"
-	"github.com/k1LoW/tbls/schema"
+	"github.com/SouhlInc/tbls/dict"
+	"github.com/SouhlInc/tbls/schema"
 	"gitlab.com/golang-commonmark/mdurl"
 )
 

@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/k1LoW/tbls/config"
-	"github.com/k1LoW/tbls/schema"
+	"github.com/SouhlInc/tbls/config"
+	"github.com/SouhlInc/tbls/schema"
 )
 
 func TestOutputSchema(t *testing.T) {

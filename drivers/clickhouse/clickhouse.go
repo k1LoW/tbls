@@ -8,8 +8,8 @@ import (
 	// Import the ClickHouse driver for side effects (database/sql driver registration).
 	_ "github.com/ClickHouse/clickhouse-go/v2"
 	"github.com/k1LoW/errors"
-	"github.com/k1LoW/tbls/dict"
-	"github.com/k1LoW/tbls/schema"
+	"github.com/SouhlInc/tbls/dict"
+	"github.com/SouhlInc/tbls/schema"
 	"github.com/samber/lo"
 )
 

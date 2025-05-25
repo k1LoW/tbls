@@ -7,9 +7,9 @@ import (
 	"text/template"
 
 	"github.com/k1LoW/errors"
-	"github.com/k1LoW/tbls/config"
-	"github.com/k1LoW/tbls/output"
-	"github.com/k1LoW/tbls/schema"
+	"github.com/SouhlInc/tbls/config"
+	"github.com/SouhlInc/tbls/output"
+	"github.com/SouhlInc/tbls/schema"
 )
 
 //go:embed templates/*

@@ -3,9 +3,9 @@ package output
 import (
 	"testing"
 
-	"github.com/k1LoW/tbls/config"
-	"github.com/k1LoW/tbls/datasource"
-	"github.com/k1LoW/tbls/schema"
+	"github.com/SouhlInc/tbls/config"
+	"github.com/SouhlInc/tbls/datasource"
+	"github.com/SouhlInc/tbls/schema"
 )
 
 func TestDistance(t *testing.T) {

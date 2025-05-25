@@ -9,8 +9,8 @@ import (
 	"regexp"
 
 	"github.com/k1LoW/errors"
-	"github.com/k1LoW/tbls/ddl"
-	"github.com/k1LoW/tbls/schema"
+	"github.com/SouhlInc/tbls/ddl"
+	"github.com/SouhlInc/tbls/schema"
 	"github.com/samber/lo"
 )
 

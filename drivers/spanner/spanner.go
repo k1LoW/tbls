@@ -7,7 +7,7 @@ import (
 
 	"cloud.google.com/go/spanner"
 	"github.com/k1LoW/errors"
-	"github.com/k1LoW/tbls/schema"
+	"github.com/SouhlInc/tbls/schema"
 	"google.golang.org/api/iterator"
 )
 

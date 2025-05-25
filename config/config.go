@@ -11,9 +11,9 @@ import (
 	"github.com/goccy/go-yaml"
 	"github.com/k1LoW/errors"
 	"github.com/k1LoW/expand"
-	"github.com/k1LoW/tbls/dict"
-	"github.com/k1LoW/tbls/schema"
-	ver "github.com/k1LoW/tbls/version"
+	"github.com/SouhlInc/tbls/dict"
+	"github.com/SouhlInc/tbls/schema"
+	ver "github.com/SouhlInc/tbls/version"
 	"github.com/minio/pkg/wildcard"
 	"github.com/samber/lo"
 )

@@ -9,7 +9,7 @@ import (
 
 	"github.com/iancoleman/strcase"
 	"github.com/invopop/jsonschema"
-	"github.com/k1LoW/tbls/schema"
+	"github.com/SouhlInc/tbls/schema"
 )
 
 // Generate JSON Schema of schema.json.

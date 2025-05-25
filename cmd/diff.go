@@ -25,11 +25,11 @@ import (
 	"os"
 	"strings"
 
-	"github.com/k1LoW/tbls/cmdutil"
-	"github.com/k1LoW/tbls/config"
-	"github.com/k1LoW/tbls/datasource"
-	"github.com/k1LoW/tbls/output/md"
-	"github.com/k1LoW/tbls/schema"
+	"github.com/SouhlInc/tbls/cmdutil"
+	"github.com/SouhlInc/tbls/config"
+	"github.com/SouhlInc/tbls/datasource"
+	"github.com/SouhlInc/tbls/output/md"
+	"github.com/SouhlInc/tbls/schema"
 	"github.com/spf13/cobra"
 )
 

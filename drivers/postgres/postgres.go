@@ -8,9 +8,9 @@ import (
 
 	"github.com/aquasecurity/go-version/pkg/version"
 	"github.com/k1LoW/errors"
-	"github.com/k1LoW/tbls/ddl"
-	"github.com/k1LoW/tbls/dict"
-	"github.com/k1LoW/tbls/schema"
+	"github.com/SouhlInc/tbls/ddl"
+	"github.com/SouhlInc/tbls/dict"
+	"github.com/SouhlInc/tbls/schema"
 	"github.com/lib/pq"
 )
 
