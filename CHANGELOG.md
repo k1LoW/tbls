@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.85.5](https://github.com/k1LoW/tbls/compare/v1.85.4...v1.85.5) - 2025-05-31
+### Other Changes
+- chore(deps): bump github.com/cli/go-gh/v2 from 2.12.0 to 2.12.1 by @dependabot in https://github.com/k1LoW/tbls/pull/706
+
 ## [v1.85.4](https://github.com/k1LoW/tbls/compare/v1.85.3...v1.85.4) - 2025-05-19
 ### Fix bug 🐛
 - Fix: apply showColumnTypes to ER diagram in Viewpoint pages (mermaid) by @k1LoW in https://github.com/k1LoW/tbls/pull/701
