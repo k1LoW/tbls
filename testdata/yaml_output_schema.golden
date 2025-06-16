@@ -11,7 +11,7 @@ tables:
   - name: a2
     type: TEXT
     nullable: false
-    comment: column a2
+    comment: column `a2`
   indexes:
   - name: PRIMARY KEY
     def: PRIMARY KEY(a)
