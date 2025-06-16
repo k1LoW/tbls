@@ -25,7 +25,7 @@ import (
 
 // mdEscRep is a replacer for markdown escape.
 // Add when a case of actual display collapse appears.
-var mdEscRep = strings.NewReplacer("`", "\\`", `|`, `\|`, "<", `\<`, ">", `\>`)
+var mdEscRep = strings.NewReplacer(`|`, `\|`, "<", `\<`, ">", `\>`)
 
 var _ output.Output = &Md{}
 

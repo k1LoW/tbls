@@ -55,7 +55,7 @@ func NewSchema(t *testing.T) *schema.Schema {
 			&schema.Column{
 				Name:    "a2",
 				Type:    "TEXT",
-				Comment: "column a2",
+				Comment: "column `a2`",
 			},
 		},
 		Labels: []*schema.Label{labelBlue, labelGreen},
