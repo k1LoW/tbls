@@ -31,6 +31,9 @@ updates:
     commit-message:
       prefix: "chore"
       include: "scope"
+    ignore:
+      - dependency-name: "github.com/googleapis/go-sql-spanner"
+        versions: ["1.13.*"]
     open-pull-requests-limit: 10
     assignees:
       - "k1LoW"

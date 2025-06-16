@@ -461,6 +461,9 @@ func (c *Config) ModifySchema(s *schema.Schema) error {
 		}); err != nil {
 			return err
 		}
+		if err := c.detectShowColumnsForER(cs); err != nil {
+			return err
+		}
 		groups := []*schema.ViewpointGroup{}
 		tables := lo.Map(cs.Tables, func(t *schema.Table, _ int) string {
 			return t.Name
@@ -602,7 +605,7 @@ func (c *Config) detectShowColumnsForER(s *schema.Schema) error {
 
 	for _, t := range s.Tables {
 		for _, cc := range t.Columns {
-			if c.ER.ShowColumnTypes.Related && (cc.ChildRelations != nil || cc.ParentRelations != nil) {
+			if c.ER.ShowColumnTypes.Related && (len(cc.ChildRelations) > 0 || len(cc.ParentRelations) > 0) {
 				// related
 				cc.HideForER = false
 			} else if c.ER.ShowColumnTypes.Primary && cc.PK {
