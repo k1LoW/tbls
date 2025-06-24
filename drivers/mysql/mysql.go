@@ -517,7 +517,13 @@ WHERE t.table_schema = ?
 				Name:     strParentTable,
 				External: true,
 			}
-			// Skip setting ParentColumns for external tables
+			// Don't look for a match in parentTable for external tables
+			for _, c := range strParentColumns {
+                              column := &schema.Column{
+                                      Name: c,
+                              }
+                              r.ParentColumns = append(r.ParentColumns, column)
+                      }
 		} else {
 			for _, c := range strParentColumns {
 				column, err := parentTable.FindColumnByName(c)
