@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.86.0](https://github.com/k1LoW/tbls/compare/v1.85.5...v1.86.0) - 2025-06-24
+### New Features 🎉
+- feat: include functions in filters by @BaronBonet in https://github.com/k1LoW/tbls/pull/714
+
 ## [v1.85.5](https://github.com/k1LoW/tbls/compare/v1.85.4...v1.85.5) - 2025-06-16
 ### Fix bug 🐛
 - fix: correct https://github.com/k1LoW/tbls/issues/710 by @k1LoW in https://github.com/k1LoW/tbls/pull/712
