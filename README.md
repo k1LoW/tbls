@@ -863,10 +863,10 @@ lintExclude:
 
 #### Filter logic
 
-1. Add tables from include
-2. Remove tables from exclude
+1. Add tables/functions from include
+2. Remove tables/functions from exclude
     - Check for include/exclude overlaps
-    - If include is more specific than exclude (i.e. `schema.MyTable` > `schema.*` or `schema.MyT*` > `schema.*`), include the table(s). If include is equally or less specific than exclude, exclude wins.
+    - If include is more specific than exclude (i.e. `schema.MyTable` > `schema.*` or `schema.MyT*` > `schema.*`), include the table(s)/function(s). If include is equally or less specific than exclude, exclude wins.
 3. Result
 
 ### Comments

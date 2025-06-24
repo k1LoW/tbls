@@ -31,6 +31,17 @@ func (s *Schema) Filter(opt *FilterOption) (err error) {
 		}
 	}
 
+	_, excludedFuncs, err := s.SeparateFunctionsThatAreIncludedOrNot(opt)
+	if err != nil {
+		return err
+	}
+	for _, f := range excludedFuncs {
+		err := excludeFunctionFromSchema(f.Name, s)
+		if err != nil {
+			return fmt.Errorf("failed to filter function '%s': %w", f.Name, err)
+		}
+	}
+
 	return nil
 }
 
@@ -178,4 +189,54 @@ func matchLength(s []string, e string) (int, bool) {
 		}
 	}
 	return 0, false
+}
+
+func (s *Schema) SeparateFunctionsThatAreIncludedOrNot(opt *FilterOption) (_ []*Function, _ []*Function, err error) {
+	defer func() {
+		err = errors.WithStack(err)
+	}()
+	i := append(opt.Include, s.NormalizeTableNames(opt.Include)...)
+	e := append(opt.Exclude, s.NormalizeTableNames(opt.Exclude)...)
+
+	includes := []*Function{}
+	excludes := []*Function{}
+	for _, f := range s.Functions {
+		li, mi := matchLength(i, f.Name)
+		le, me := matchLength(e, f.Name)
+		switch {
+		case mi:
+			if me && li < le {
+				excludes = append(excludes, f)
+				continue
+			}
+			includes = append(includes, f)
+		case len(opt.Include) == 0:
+			if me {
+				excludes = append(excludes, f)
+				continue
+			}
+			includes = append(includes, f)
+		default:
+			excludes = append(excludes, f)
+		}
+	}
+
+	// assert
+	if len(s.Functions) != len(includes)+len(excludes) {
+		return nil, nil, fmt.Errorf("failed to separate functions. Expected: %d, actual: %d", len(s.Functions), len(includes)+len(excludes))
+	}
+
+	return includes, excludes, nil
+}
+
+func excludeFunctionFromSchema(name string, s *Schema) error {
+	functions := []*Function{}
+	for _, f := range s.Functions {
+		if f.Name != name {
+			functions = append(functions, f)
+		}
+	}
+	s.Functions = functions
+
+	return nil
 }
