@@ -36,6 +36,15 @@ func TestLoadDefault(t *testing.T) {
 	if want := 1; *config.ER.Distance != want {
 		t.Errorf("got %v\nwant %v", config.ER.Distance, want)
 	}
+	if want := "|"; config.Format.LogicalName.Delimiter != want {
+		t.Errorf("got %v\nwant %v", config.Format.LogicalName.Delimiter, want)
+	}
+	if want := false; config.Format.LogicalName.Enabled != want {
+		t.Errorf("got %v\nwant %v", config.Format.LogicalName.Enabled, want)
+	}
+	if want := false; config.Format.LogicalName.FallbackToName != want {
+		t.Errorf("got %v\nwant %v", config.Format.LogicalName.FallbackToName, want)
+	}
 }
 
 func TestLoadConfigFile(t *testing.T) {
@@ -685,6 +694,43 @@ func TestDetectShowColumnsForER(t *testing.T) {
 				t.Errorf("got %v\nwant %v", gotRelationCount, tt.wantRelationCount)
 			}
 		})
+	}
+}
+
+func TestLogicalNameConfigStructure(t *testing.T) {
+	// Test basic structure and default values only (scope of #2)
+	config, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Test default delimiter is set
+	if got := config.LogicalNameDelimiter(); got != DefaultLogicalNameDelimiter {
+		t.Errorf("LogicalNameDelimiter() = %v, want %v", got, DefaultLogicalNameDelimiter)
+	}
+
+	// Test helper methods exist and return correct types
+	if enabled := config.IsLogicalNameEnabled(); enabled != false {
+		t.Errorf("IsLogicalNameEnabled() should return false by default, got %v", enabled)
+	}
+
+	if fallback := config.LogicalNameFallbackToName(); fallback != false {
+		t.Errorf("LogicalNameFallbackToName() should return false by default, got %v", fallback)
+	}
+
+	// Test that structure can be accessed
+	config.Format.LogicalName.Enabled = true
+	config.Format.LogicalName.Delimiter = ";"
+	config.Format.LogicalName.FallbackToName = true
+
+	if !config.IsLogicalNameEnabled() {
+		t.Error("IsLogicalNameEnabled() should return true after setting Enabled = true")
+	}
+	if config.LogicalNameDelimiter() != ";" {
+		t.Errorf("LogicalNameDelimiter() = %v, want ';'", config.LogicalNameDelimiter())
+	}
+	if !config.LogicalNameFallbackToName() {
+		t.Error("LogicalNameFallbackToName() should return true after setting FallbackToName = true")
 	}
 }
 
