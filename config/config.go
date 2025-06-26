@@ -32,6 +32,9 @@ const SchemaFileName = "schema.json"
 // DefaultERDistance is the default distance between tables that display relations in the ER.
 var DefaultERDistance = 1
 
+// DefaultLogicalNameDelimiter is the default delimiter for logical name separation.
+const DefaultLogicalNameDelimiter = "|"
+
 // Config is tbls config.
 type Config struct {
 	Name   string   `yaml:"name"`
@@ -73,11 +76,12 @@ type DSN struct {
 
 // Format is document format setting.
 type Format struct {
-	Adjust                   bool     `yaml:"adjust,omitempty"`
-	Sort                     bool     `yaml:"sort,omitempty"`
-	Number                   bool     `yaml:"number,omitempty"`
-	ShowOnlyFirstParagraph   bool     `yaml:"showOnlyFirstParagraph,omitempty"`
-	HideColumnsWithoutValues []string `yaml:"hideColumnsWithoutValues,omitempty"`
+	Adjust                   bool        `yaml:"adjust,omitempty"`
+	Sort                     bool        `yaml:"sort,omitempty"`
+	Number                   bool        `yaml:"number,omitempty"`
+	ShowOnlyFirstParagraph   bool        `yaml:"showOnlyFirstParagraph,omitempty"`
+	HideColumnsWithoutValues []string    `yaml:"hideColumnsWithoutValues,omitempty"`
+	LogicalName              LogicalName `yaml:"logicalName,omitempty"`
 }
 
 // ER is er setting.
@@ -95,6 +99,13 @@ type ER struct {
 type ShowColumnTypes struct {
 	Related bool `yaml:"related,omitempty"`
 	Primary bool `yaml:"primary,omitempty"`
+}
+
+// LogicalName is logical name setting.
+type LogicalName struct {
+	Enabled        bool   `yaml:"enabled,omitempty"`
+	Delimiter      string `yaml:"delimiter,omitempty"`
+	FallbackToName bool   `yaml:"fallbackToName,omitempty"`
 }
 
 // AdditionalRelation is the struct for table relation from yaml.
@@ -288,6 +299,10 @@ func (c *Config) setDefault() error {
 
 	if c.ER.Distance == nil {
 		c.ER.Distance = &DefaultERDistance
+	}
+
+	if c.Format.LogicalName.Delimiter == "" {
+		c.Format.LogicalName.Delimiter = DefaultLogicalNameDelimiter
 	}
 
 	return nil
@@ -592,6 +607,21 @@ func (c *Config) NeedToGenerateERImages() bool {
 		return false
 	}
 	return true
+}
+
+func (c *Config) IsLogicalNameEnabled() bool {
+	return c.Format.LogicalName.Enabled
+}
+
+func (c *Config) LogicalNameDelimiter() string {
+	if c.Format.LogicalName.Delimiter != "" {
+		return c.Format.LogicalName.Delimiter
+	}
+	return DefaultLogicalNameDelimiter
+}
+
+func (c *Config) LogicalNameFallbackToName() bool {
+	return c.Format.LogicalName.FallbackToName
 }
 
 func (c *Config) detectShowColumnsForER(s *schema.Schema) error {
