@@ -502,6 +502,11 @@ func (p *Postgres) getFunctionsByQuery(query string) ([]*schema.Function, error)
 func (p *Postgres) getEnums() ([]*schema.Enum, error) {
 	enums := []*schema.Enum{}
 
+	// Amazon RedShift does not support enum
+	if p.rsMode {
+		return enums, nil
+	}
+
 	enumsResult, err := p.db.Query(`SELECT n.nspname, t.typname AS enum_name, ARRAY_AGG(e.enumlabel) AS enum_values
 											FROM pg_type t, pg_enum e, pg_catalog.pg_namespace n
 											WHERE t.typcategory = 'E'
