@@ -82,16 +82,23 @@ func (m *Md) OutputTable(wr io.Writer, t *schema.Table) error {
 	tmpl := template.Must(template.New(t.Name).Funcs(output.Funcs(&m.config.MergedDict)).Parse(ts))
 	templateData := m.makeTableTemplateData(t)
 	templateData["er"] = !m.config.ER.Skip
-	switch m.config.ER.Format {
-	case "mermaid":
-		buf := new(bytes.Buffer)
-		mmd := mermaid.New(m.config)
-		if err := mmd.OutputTable(buf, t); err != nil {
-			return err
+
+	// Skip ER diagram generation for external tables
+	if t.External {
+		templateData["er"] = false
+		templateData["erDiagram"] = "" // No ER diagram for external tables
+	} else {
+		switch m.config.ER.Format {
+		case "mermaid":
+			buf := new(bytes.Buffer)
+			mmd := mermaid.New(m.config)
+			if err := mmd.OutputTable(buf, t); err != nil {
+				return err
+			}
+			templateData["erDiagram"] = fmt.Sprintf("```mermaid\n%s```", buf.String())
+		default:
+			templateData["erDiagram"] = fmt.Sprintf("![er](%s%s.%s)", m.config.BaseURL, mdurl.Encode(t.Name), m.config.ER.Format)
 		}
-		templateData["erDiagram"] = fmt.Sprintf("```mermaid\n%s```", buf.String())
-	default:
-		templateData["erDiagram"] = fmt.Sprintf("![er](%s%s.%s)", m.config.BaseURL, mdurl.Encode(t.Name), m.config.ER.Format)
 	}
 
 	if err := tmpl.Execute(wr, templateData); err != nil {
@@ -565,7 +572,12 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 			if _, ok := cEncountered[r.Table.Name]; ok {
 				continue
 			}
-			childRelations = append(childRelations, fmt.Sprintf("[%s](%s%s.md)", r.Table.Name, m.config.BaseURL, mdurl.Encode(r.Table.Name)))
+			// For external tables, display the name without creating a link
+			if r.Table.External {
+				childRelations = append(childRelations, r.Table.Name)
+			} else {
+				childRelations = append(childRelations, fmt.Sprintf("[%s](%s%s.md)", r.Table.Name, m.config.BaseURL, mdurl.Encode(r.Table.Name)))
+			}
 			cEncountered[r.Table.Name] = true
 		}
 		parentRelations := []string{}
@@ -574,7 +586,12 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 			if _, ok := pEncountered[r.ParentTable.Name]; ok {
 				continue
 			}
-			parentRelations = append(parentRelations, fmt.Sprintf("[%s](%s%s.md)", r.ParentTable.Name, m.config.BaseURL, mdurl.Encode(r.ParentTable.Name)))
+			// For external tables, display the name without creating a link
+			if r.ParentTable.External {
+				parentRelations = append(parentRelations, r.ParentTable.Name)
+			} else {
+				parentRelations = append(parentRelations, fmt.Sprintf("[%s](%s%s.md)", r.ParentTable.Name, m.config.BaseURL, mdurl.Encode(r.ParentTable.Name)))
+			}
 			pEncountered[r.ParentTable.Name] = true
 		}
 
