@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.86.1](https://github.com/k1LoW/tbls/compare/v1.86.0...v1.86.1) - 2025-07-01
+### Fix bug 🐛
+- fix: Skip enum fetching for Redshift compatibility in postgres driver by @ritsu2891 in https://github.com/k1LoW/tbls/pull/718
+### Other Changes
+- test: use windows-2022 by @k1LoW in https://github.com/k1LoW/tbls/pull/719
+
 ## [v1.86.0](https://github.com/k1LoW/tbls/compare/v1.85.5...v1.86.0) - 2025-06-24
 ### New Features 🎉
 - feat: include functions in filters by @BaronBonet in https://github.com/k1LoW/tbls/pull/714
