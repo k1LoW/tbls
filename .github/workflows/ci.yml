@@ -86,7 +86,7 @@ jobs:
     name: Test
     strategy:
       matrix:
-        platform: [windows-2019, windows-latest]
+        platform: [windows-2022, windows-latest]
     runs-on: ${{ matrix.platform }}
     steps:
       - name: Use LF

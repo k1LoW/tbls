@@ -81,7 +81,7 @@ jobs:
   windows-release-test:
     strategy:
       matrix:
-        os: [windows-2019, windows-latest]
+        os: [windows-2022, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Use LF
