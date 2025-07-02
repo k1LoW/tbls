@@ -2,6 +2,7 @@ package schema
 
 import (
 	"database/sql"
+	"strings"
 	"testing"
 )
 
@@ -202,31 +203,10 @@ func TestColumn_LogicalNameSerialization(t *testing.T) {
 
 	// JSON文字列に論理名が含まれているかチェック
 	jsonStr := string(jsonData)
-	if !contains(jsonStr, "logical_name") {
+	if !strings.Contains(jsonStr, "logical_name") {
 		t.Errorf("JSON should contain logical_name field, got: %s", jsonStr)
 	}
-	if !contains(jsonStr, "ユーザーID") {
+	if !strings.Contains(jsonStr, "ユーザーID") {
 		t.Errorf("JSON should contain logical name value, got: %s", jsonStr)
 	}
-}
-
-// ヘルパー関数：文字列の包含チェック
-func contains(s, substr string) bool {
-	return len(s) >= len(substr) && (s == substr || len(substr) == 0 || 
-		(len(s) > len(substr) && containsAt(s, substr, 0)))
-}
-
-func containsAt(s, substr string, start int) bool {
-	if start+len(substr) > len(s) {
-		return false
-	}
-	for i := 0; i < len(substr); i++ {
-		if s[start+i] != substr[i] {
-			if start+len(substr) < len(s) {
-				return containsAt(s, substr, start+1)
-			}
-			return false
-		}
-	}
-	return true
 }
