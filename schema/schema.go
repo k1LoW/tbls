@@ -121,6 +121,7 @@ type Column struct {
 	Nullable        bool
 	Default         sql.NullString
 	Comment         string
+	LogicalName     string `json:"logicalName,omitempty" yaml:"logicalName,omitempty"`
 	ExtraDef        string
 	Occurrences     sql.NullInt32
 	Percents        sql.NullFloat64
@@ -130,6 +131,33 @@ type Column struct {
 	PK              bool
 	FK              bool
 	HideForER       bool
+}
+
+// SetLogicalNameFromComment コメントから論理名を抽出してLogicalNameフィールドに設定します
+func (c *Column) SetLogicalNameFromComment(delimiter string, fallbackToName bool) {
+	logicalName := ExtractLogicalName(c.Comment, delimiter, c.Name, fallbackToName)
+	c.LogicalName = logicalName
+	
+	// コメントから論理名部分を除去
+	c.Comment = ExtractCleanComment(c.Comment, delimiter)
+}
+
+// GetLogicalNameOrFallback 論理名を取得し、空の場合はフォールバック処理を行います
+func (c Column) GetLogicalNameOrFallback(fallbackToName bool) string {
+	if c.LogicalName != "" {
+		return c.LogicalName
+	}
+	
+	if fallbackToName {
+		return c.Name
+	}
+	
+	return ""
+}
+
+// HasLogicalName 論理名が設定されているかチェックします
+func (c Column) HasLogicalName() bool {
+	return c.LogicalName != ""
 }
 
 type TableViewpoint struct {
