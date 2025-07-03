@@ -121,6 +121,12 @@ ORDER BY ORDINAL_POSITION ASC;
 				Type:     columnType,
 				Nullable: convertColumnNullable(isNullable),
 			}
+			
+			// 論理名をコメントから抽出（固定区切り文字"|"を使用）
+			// Spannerではカラムレベルのコメントがないため、この処理は実質的に何もしない
+			if column.Comment != "" {
+				column.SetLogicalNameFromComment("|", false)
+			}
 
 			// column options
 			optionStmt := spanner.Statement{

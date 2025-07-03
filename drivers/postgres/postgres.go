@@ -277,6 +277,12 @@ ORDER BY tgrelid
 				Nullable: isNullable,
 				Comment:  columnComment.String,
 			}
+
+			// 論理名をコメントから抽出（固定区切り文字"|"を使用）
+			if columnComment.Valid && columnComment.String != "" {
+				column.SetLogicalNameFromComment("|", false)
+			}
+
 			switch attrgenerated.String {
 			case "":
 				column.Default = columnDefaultOrGenerated

@@ -116,6 +116,12 @@ func listColumns(s bigquery.Schema, prefix string) []*schema.Column {
 			Type:     string(c.Type),
 			// TODO: c.Repeated
 		}
+
+		// 論理名をコメントから抽出（固定区切り文字"|"を使用）
+		if c.Description != "" {
+			column.SetLogicalNameFromComment("|", false)
+		}
+
 		columns = append(columns, column)
 		if len(c.Schema) > 0 {
 			nestedColumns := listColumns(c.Schema, fmt.Sprintf("%s.", name))

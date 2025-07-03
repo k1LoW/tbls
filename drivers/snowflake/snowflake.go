@@ -107,6 +107,12 @@ where table_schema = ? and table_name = ? order by ordinal_position`, s.Name, ta
 				Default:  columnDefault,
 				Comment:  columnComment.String,
 			}
+
+			// 論理名をコメントから抽出（固定区切り文字"|"を使用）
+			if columnComment.Valid && columnComment.String != "" {
+				column.SetLogicalNameFromComment("|", false)
+			}
+
 			columns = append(columns, column)
 		}
 		table.Columns = columns

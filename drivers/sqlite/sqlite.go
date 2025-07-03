@@ -127,6 +127,13 @@ WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
 				Nullable: convertColumnNullable(columnNotNull),
 				Default:  columnDefault,
 			}
+			
+			// 論理名をコメントから抽出（固定区切り文字"|"を使用）
+			// SQLiteでは現在の実装ではカラムコメントを取得していないため、この処理は実質的に何もしない
+			if column.Comment != "" {
+				column.SetLogicalNameFromComment("|", false)
+			}
+			
 			columns = append(columns, column)
 
 			if columnPk != "0" {
