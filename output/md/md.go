@@ -545,6 +545,7 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 	columnsHeader := []string{}
 	columnsHeaderLine := []string{}
 	m.adjustColumnHeader(&columnsHeader, &columnsHeaderLine, true, "Name")
+	m.adjustColumnHeader(&columnsHeader, &columnsHeaderLine, m.config.IsLogicalNameEnabled(), "Logical Name")
 	m.adjustColumnHeader(&columnsHeader, &columnsHeaderLine, true, "Type")
 	m.adjustColumnHeader(&columnsHeader, &columnsHeaderLine, true, "Default")
 	m.adjustColumnHeader(&columnsHeader, &columnsHeaderLine, true, "Nullable")
@@ -580,10 +581,13 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 
 		data := []string{
 			c.Name,
+		}
+		adjustData(&data, m.config.IsLogicalNameEnabled(), mdEscRep.Replace(c.GetLogicalNameOrFallback(m.config.LogicalNameFallbackToName())))
+		data = append(data,
 			c.Type,
 			c.Default.String,
 			fmt.Sprintf("%v", c.Nullable),
-		}
+		)
 		adjustData(&data, t.ShowColumn(schema.ColumnExtraDef, hideColumns), mdEscRep.Replace(c.ExtraDef))
 		adjustData(&data, t.ShowColumn(schema.ColumnOccurrences, hideColumns), fmt.Sprint(c.Occurrences.Int32))
 		adjustData(&data, t.ShowColumn(schema.ColumnPercents, hideColumns), fmt.Sprintf("%.1f", c.Percents.Float64))

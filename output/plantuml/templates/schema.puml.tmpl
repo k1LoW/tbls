@@ -22,7 +22,7 @@ view("{{ $t.Name }}", "{{ $t.Name }}{{ if $sc }}{{ if ne $t.Comment "" }}\n{{ $t
 {{- end }}
 {{- range $ii, $c := $t.Columns }}
   {{- if $c.HideForER }}{{ continue }}{{ end }}
-  column("{{ if $c.PK}}+ {{ end }}{{ if $c.FK }}# {{ end }}{{ $c.Name | html }}", "{{ $c.Type | html }}", "{{ if $sc }}{{ if ne $c.Comment "" }} {{ $c.Comment | html | nl2space }}{{ end }}{{ end }}")
+  column("{{ if $c.PK}}+ {{ end }}{{ if $c.FK }}# {{ end }}{{ $c.Name | html }}{{ if $c.HasLogicalName }} ({{ $c.LogicalName | html }}){{ end }}", "{{ $c.Type | html }}", "{{ if $sc }}{{ if ne $c.Comment "" }} {{ $c.Comment | html | nl2space }}{{ end }}{{ end }}")
 {{- end }}
 }
 {{- end }}
