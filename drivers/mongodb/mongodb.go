@@ -119,6 +119,12 @@ func (m *Mongodb) listFields(collection *mongo.Collection) ([]*schema.Column, er
 				Type:     valueType,
 				Nullable: false,
 			}
+			
+			// 論理名をコメントから抽出（固定区切り文字"|"を使用）
+			// MongoDBではフィールドレベルのコメントがないため、この処理は実質的に何もしない
+			if column.Comment != "" {
+				column.SetLogicalNameFromComment("|", false)
+			}
 			if val, ok := occurrences[key]; ok {
 				occurrences[key] = val + 1
 			} else {

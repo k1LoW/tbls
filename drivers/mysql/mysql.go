@@ -265,6 +265,11 @@ WHERE table_schema = ? ORDER BY table_name, ordinal_position`
 			ExtraDef: extraDef,
 		}
 
+		// 論理名をコメントから抽出（固定区切り文字"|"を使用）
+		if columnComment.Valid && columnComment.String != "" {
+			column.SetLogicalNameFromComment("|", false)
+		}
+
 		tableColumns[tableName] = append(tableColumns[tableName], column)
 	}
 

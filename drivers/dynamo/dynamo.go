@@ -81,6 +81,12 @@ func listColumns(td *dynamodb.TableDescription) []*schema.Column {
 			Type:     *ad.AttributeType,
 			Nullable: false,
 		}
+		
+		// 論理名をコメントから抽出（固定区切り文字"|"を使用）
+		// DynamoDBではアトリビュートレベルのコメントがないため、この処理は実質的に何もしない
+		if column.Comment != "" {
+			column.SetLogicalNameFromComment("|", false)
+		}
 		columns = append(columns, column)
 	}
 	return columns

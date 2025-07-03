@@ -203,6 +203,11 @@ ORDER BY table
 			Nullable: false,
 		}
 
+		// 論理名をコメントから抽出（固定区切り文字"|"を使用）
+		if colComment != "" {
+			column.SetLogicalNameFromComment("|", false)
+		}
+
 		if lo.Contains(filtered, colTable) {
 			continue
 		}
