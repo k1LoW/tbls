@@ -11,7 +11,7 @@ digraph "{{ .Table.Name }}" {
                  <tr><td bgcolor="#EFEFEF"><font face="Arial Bold" point-size="18">{{ .Table.Name | html }}</font>&nbsp;&nbsp;&nbsp;&nbsp;<font color="#666666">[{{ .Table.Type | html }}]</font>{{ if $sc }}{{ if ne .Table.Comment "" }}<br /><font color="#333333">{{ .Table.Comment | html | nl2br_slash }}</font>{{ end }}{{ end }}</td></tr>
                  {{- range $ii, $c := .Table.Columns }}
                  {{- if $c.HideForER }}{{ continue }}{{ end }}
-                 <tr><td port="{{ $c.Name | html }}" align="left">{{ $c.Name | html }} <font color="#666666">[{{ $c.Type | html }}]</font>{{ if $sc }}{{ if ne $c.Comment "" }} {{ $c.Comment | html | nl2space }}{{ end }}{{ end }}</td></tr>
+                 <tr><td port="{{ $c.Name | html }}" align="left">{{ $c.Name | html }}{{ if $c.HasLogicalName }} ({{ $c.LogicalName | html }}){{ end }} <font color="#666666">[{{ $c.Type | html }}]</font>{{ if $sc }}{{ if ne $c.Comment "" }} {{ $c.Comment | html | nl2space }}{{ end }}{{ end }}</td></tr>
                  {{- end }}
               </table>>];
   {{- range $i, $t := .Tables }}
@@ -19,7 +19,7 @@ digraph "{{ .Table.Name }}" {
                  <tr><td bgcolor="#EFEFEF"><font face="Arial Bold" point-size="18">{{ $t.Name | html }}</font>&nbsp;&nbsp;&nbsp;&nbsp;<font color="#666666">[{{ $t.Type | html }}]</font>{{ if $sc }}{{ if ne $t.Comment "" }}<br /><font color="#333333">{{ $t.Comment | html | nl2br_slash }}</font>{{ end }}{{ end }}</td></tr>
                  {{- range $ii, $c := $t.Columns }}
                  {{- if $c.HideForER }}{{ continue }}{{ end }}
-                 <tr><td port="{{ $c.Name | html }}" align="left">{{ $c.Name | html }} <font color="#666666">[{{ $c.Type | html }}]</font>{{ if $sc }}{{ if ne $c.Comment "" }} {{ $c.Comment | html | nl2space }}{{ end }}{{ end }}</td></tr>
+                 <tr><td port="{{ $c.Name | html }}" align="left">{{ $c.Name | html }}{{ if $c.HasLogicalName }} ({{ $c.LogicalName | html }}){{ end }} <font color="#666666">[{{ $c.Type | html }}]</font>{{ if $sc }}{{ if ne $c.Comment "" }} {{ $c.Comment | html | nl2space }}{{ end }}{{ end }}</td></tr>
                  {{- end }}
               </table>>];
   {{- end }}
