@@ -1,0 +1,85 @@
+# tbls日本語対応設定ファイル
+dsn: postgres://postgres:pgpass@localhost:55413/testdb?sslmode=disable
+
+# 出力ディレクトリ
+docPath: docs/japanese
+
+# 日本語辞書設定
+dict:
+  Tables: テーブル一覧
+  Description: 概要
+  Columns: カラム一覧
+  Indexes: インデックス一覧
+  Constraints: 制約一覧
+  Triggers: トリガー一覧
+  Relations: ER図
+  Name: 名前
+  Comment: コメント
+  Type: データ型
+  Default: デフォルト値
+  Nullable: NULL許可
+  Children: 子テーブル
+  Parents: 親テーブル
+  Definition: 定義
+  Table Definition: テーブル定義
+  Column: カラム
+  Index: インデックス
+  Constraint: 制約
+  Trigger: トリガー
+  Relation: リレーション
+  Schema: スキーマ
+  View: ビュー
+  Materialized View: マテリアライズドビュー
+  Function: 関数
+  Procedure: プロシージャ
+  Primary Key: 主キー
+  Foreign Key: 外部キー
+  Unique: 一意制約
+  Check: チェック制約
+  Required: 必須
+  Optional: 任意
+  Database: データベース
+  Owner: 所有者
+  Size: サイズ
+  Created: 作成日時
+  Updated: 更新日時
+  User: ユーザー
+  Access: アクセス権限
+  Properties: プロパティ
+  
+# 設定オプション
+sort: true
+er:
+  comment: true
+  
+# ドキュメント生成の詳細設定
+# include:
+#   - "^public\\."
+#   - "^administrator\\."
+#   - "^backup\\."
+#   - "^time\\."
+
+format:
+  adjust: true
+  sort: true
+  logicalName:
+    enabled: true
+    delimiter: "|"
+    fallbackToName: true
+
+# 追加のコメント設定（論理名）
+comments:
+  - table: users
+    tableComment: "ユーザー情報テーブル"
+    columnComments:
+      id: "ユーザーID|Unique identifier for users"
+      username: "ユーザー名|User display name"
+      email: "メールアドレス|User email address"
+      password: "パスワード|User password"
+      created: "作成日時|Account creation timestamp"
+      updated: "更新日時|Last update timestamp"
+
+# コメント設定
+lint:
+  requireTableComment:
+    enabled: false
