@@ -103,9 +103,9 @@ type ShowColumnTypes struct {
 
 // LogicalName is logical name setting.
 type LogicalName struct {
-	Enabled        bool   `yaml:"enabled,omitempty"`
+	Enabled        bool   `yaml:"enabled"`
 	Delimiter      string `yaml:"delimiter,omitempty"`
-	FallbackToName bool   `yaml:"fallbackToName,omitempty"`
+	FallbackToName bool   `yaml:"fallbackToName"`
 }
 
 // AdditionalRelation is the struct for table relation from yaml.

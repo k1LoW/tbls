@@ -51,11 +51,12 @@ func (f Format) MarshalYAML() ([]byte, error) {
 
 func (f *Format) UnmarshalYAML(data []byte) error {
 	s := struct {
-		Adjust                   bool        `yaml:"adjust,omitempty"`
-		Sort                     bool        `yaml:"sort,omitempty"`
-		Number                   bool        `yaml:"number,omitempty"`
-		ShowOnlyFirstParagraph   bool        `yaml:"showOnlyFirstParagraph,omitempty"`
-		HideColumnsWithoutValues interface{} `yaml:"hideColumnsWithoutValues,omitempty"`
+		Adjust                   bool         `yaml:"adjust,omitempty"`
+		Sort                     bool         `yaml:"sort,omitempty"`
+		Number                   bool         `yaml:"number,omitempty"`
+		ShowOnlyFirstParagraph   bool         `yaml:"showOnlyFirstParagraph,omitempty"`
+		HideColumnsWithoutValues interface{}  `yaml:"hideColumnsWithoutValues,omitempty"`
+		LogicalName              LogicalName  `yaml:"logicalName,omitempty"`
 	}{}
 	if err := yaml.Unmarshal(data, &s); err != nil {
 		return err
@@ -64,6 +65,7 @@ func (f *Format) UnmarshalYAML(data []byte) error {
 	f.Sort = s.Sort
 	f.Number = s.Number
 	f.ShowOnlyFirstParagraph = s.ShowOnlyFirstParagraph
+	f.LogicalName = s.LogicalName
 	switch v := s.HideColumnsWithoutValues.(type) {
 	case bool:
 		if v {
