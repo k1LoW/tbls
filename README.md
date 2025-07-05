@@ -714,8 +714,12 @@ er:
   # Distance between tables that display relations in the ER
   # Default is 1
   distance: 2
-  # ER diagram (png/jpg) font (font name, font file, font path or keyword)
+  # ER diagram (png/jpg/svg) font (font name, font file, font path or keyword)
   # Default is "" (system default)
+  # For Japanese characters, specify a Japanese font:
+  # - macOS: font: "/System/Library/Fonts/ヒラギノ角ゴシック W3.ttc"
+  # - Windows: font: "C:/Windows/Fonts/msgothic.ttc"
+  # - Linux: font: "/usr/share/fonts/truetype/fonts-japanese-gothic.ttf"
   font: M+
 ```
 

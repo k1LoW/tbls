@@ -1,0 +1,105 @@
+# 日本語論理名機能サンプル設定ファイル
+# このファイルは日本語でのデータベースドキュメント生成のサンプルです
+
+# データベース接続情報
+# dsn: postgres://user:pass@localhost:5432/dbname?sslmode=disable
+# dsn: mysql://user:pass@localhost:3306/dbname
+# dsn: sqlite:///path/to/database.db
+
+# 出力ディレクトリ
+docPath: docs/database_docs
+
+# ER図設定（日本語フォント対応）
+# 重要: 日本語を含むER図を生成する場合は、必ず日本語フォントを指定してください
+er:
+  format: svg
+  comment: true
+  # 日本語フォントのパスを指定（環境に応じて変更してください）
+  # font: "/System/Library/Fonts/ヒラギノ角ゴシック W3.ttc"  # macOS
+  # font: "C:/Windows/Fonts/msgothic.ttc"                      # Windows
+  # font: "/usr/share/fonts/truetype/fonts-japanese-gothic.ttf" # Linux
+  font: "./testdata/mplus-1p-light.ttf"  # サンプル用M+フォント
+
+# 論理名機能の設定
+format:
+  logicalName:
+    # 論理名機能を有効化
+    enabled: true
+    # 論理名とコメントの区切り文字
+    delimiter: "|"
+    # 論理名がない場合に物理名を表示
+    fallbackToName: true
+
+# 日本語辞書設定（UI要素の日本語化）
+dict:
+  Tables: テーブル一覧
+  Description: 概要
+  Columns: カラム一覧
+  Indexes: インデックス一覧
+  Constraints: 制約一覧
+  Triggers: トリガー一覧
+  Relations: リレーション
+  Name: 名前
+  "Logical Name": 論理名
+  Comment: コメント
+  Type: データ型
+  Default: デフォルト値
+  Nullable: NULL許可
+  Children: 子テーブル
+  Parents: 親テーブル
+  Definition: 定義
+  "Extra Definition": 追加定義
+
+# コメント設定の例（論理名付き）
+# フォーマット: "論理名|詳細説明"
+comments:
+  - table: users
+    tableComment: "ユーザー情報を管理するマスターテーブル"
+    columnComments:
+      id: "ユーザーID|システム内で一意のユーザー識別子"
+      username: "ユーザー名|ログイン時に使用する名前（4文字以上必須）"
+      password: "パスワード|ハッシュ化されたパスワード"
+      email: "メールアドレス|連絡用メールアドレス（一意制約あり）"
+      created: "登録日時|アカウント作成日時"
+      updated: "更新日時|最終更新日時"
+      
+  - table: posts
+    tableComment: "ブログ投稿を管理するテーブル"
+    columnComments:
+      id: "投稿ID|投稿の一意識別子"
+      user_id: "投稿者ID|投稿したユーザーのID（外部キー）"
+      title: "タイトル|投稿のタイトル（最大255文字）"
+      body: "本文|投稿の本文内容"
+      status: "ステータス|投稿の公開状態（下書き/公開/非公開）"
+      created: "投稿日時|投稿作成日時"
+      updated: "更新日時|投稿の最終更新日時"
+      
+  - table: comments
+    tableComment: "投稿へのコメントを管理するテーブル"
+    columnComments:
+      id: "コメントID|コメントの一意識別子"
+      post_id: "投稿ID|コメント対象の投稿ID（外部キー）"
+      user_id: "コメント者ID|コメントしたユーザーのID（外部キー）"
+      comment: "コメント内容|コメントの本文"
+      created: "コメント日時|コメント投稿日時"
+      updated: "更新日時|コメントの最終更新日時"
+
+# フィルタ設定（必要に応じて）
+# include:
+#   - users
+#   - posts
+#   - comments
+# exclude:
+#   - schema_migrations
+#   - ar_internal_metadata
+
+# Lint設定（必要に応じて）
+# lint:
+#   requireTableComment:
+#     enabled: true
+#   requireColumnComment:
+#     enabled: true
+#     exclude:
+#       - id
+#       - created_at
+#       - updated_at
