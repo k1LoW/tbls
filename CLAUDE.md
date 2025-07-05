@@ -127,3 +127,7 @@ tbls doc --config custom.yml postgres://...
 - 出力フォーマット固有の処理は出力層に実装
 - 環境変数の展開は`${VAR_NAME}`形式を使用
 - Lint機能追加時は`config/lint.go`を更新
+
+## リポジトリ運用
+
+- ISSUE、PRは、NTTAT-Higuchi-Hiroyuki/tblsリポジトリに対して行うこと
