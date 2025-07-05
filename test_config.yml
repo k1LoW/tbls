@@ -1,0 +1,5 @@
+format:
+  logicalName:
+    enabled: true
+    delimiter: "|"
+    fallbackToName: true

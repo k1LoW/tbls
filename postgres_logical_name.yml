@@ -1,0 +1,28 @@
+# PostgreSQL論理名機能テスト設定
+dsn: postgres://postgres:pgpass@localhost:55413/testdb?sslmode=disable
+
+# 出力ディレクトリ
+docPath: docs/postgres_logical_name
+
+# 論理名機能の設定
+format:
+  logicalName:
+    enabled: true
+    delimiter: "|"
+    fallbackToName: true
+
+# 日本語辞書設定
+dict:
+  Tables: テーブル一覧
+  Description: 概要
+  Columns: カラム一覧
+  Indexes: インデックス一覧
+  Constraints: 制約一覧
+  Name: 名前
+  "Logical Name": 論理名
+  Comment: コメント
+  Type: データ型
+  Default: デフォルト値
+  Nullable: NULL許可
+  Children: 子テーブル
+  Parents: 親テーブル

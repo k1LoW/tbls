@@ -4,6 +4,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 このプロジェクトの担当者は、日本語でのコミュニケーションを希望しています。ドキュメント・コメントは全て日本語で記載してください。
 
+## AI実装運用ルール
+- MUST: k1LoW/tbls リポジトリに対する一切の変更、ISSUUE,PRをあげてはならない
+- MUST: ISSUE、PRは、NTTAT-Higuchi-Hiroyuki/tblsリポジトリに対して行うこと
+
 ## プロジェクト概要
 
 tblsは、CI-Friendlyなデータベースドキュメント生成ツールです。単一バイナリで動作し、多数のデータベースをサポートしています。
@@ -128,6 +132,4 @@ tbls doc --config custom.yml postgres://...
 - 環境変数の展開は`${VAR_NAME}`形式を使用
 - Lint機能追加時は`config/lint.go`を更新
 
-## リポジトリ運用
 
-- ISSUE、PRは、NTTAT-Higuchi-Hiroyuki/tblsリポジトリに対して行うこと
