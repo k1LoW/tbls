@@ -44,7 +44,7 @@ archives:
 checksum:
   name_template: 'checksums-linux.txt'
 snapshot:
-  name_template: "{{ .Version }}-next"
+  version_template: "{{ .Version }}-next"
 changelog:
   sort: asc
   filters:
@@ -55,7 +55,7 @@ nfpms:
   -
     id: tbls-nfpms
     file_name_template: "{{ .ProjectName }}_{{ .Version }}-1_{{ .Arch }}"
-    builds:
+    ids:
     - tbls-linux
     homepage: https://github.com/k1LoW/tbls
     maintainer: Ken'ichiro Oyama <k1lowxb@gmail.com>

@@ -27,7 +27,8 @@ archives:
   name_template: '{{ .ProjectName }}_v{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
   format_overrides:
     - goos: windows
-      format: zip
+      formats:
+        - zip
   files:
     - LICENSE
     - CREDITS
@@ -36,7 +37,7 @@ archives:
 checksum:
   name_template: 'checksums-windows.txt'
 snapshot:
-  name_template: "{{ .Version }}-next"
+  version_template: "{{ .Version }}-next"
 changelog:
   sort: asc
   filters:
