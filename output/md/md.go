@@ -413,7 +413,11 @@ func DiffSchemaAndDocs(docPath string, s *schema.Schema, c *config.Config) (stri
 		return "", errors.WithStack(err)
 	}
 
-	targetPath := filepath.Join(fullPath, "README.md")
+	indexPath, err := c.ConstructIndexPath()
+	if err != nil {
+		return "", errors.WithStack(err)
+	}
+	targetPath := filepath.Join(fullPath, indexPath)
 	a, err := os.ReadFile(filepath.Clean(targetPath))
 	if err != nil {
 		a = []byte{}
@@ -425,7 +429,7 @@ func DiffSchemaAndDocs(docPath string, s *schema.Schema, c *config.Config) (stri
 	}
 	to := fmt.Sprintf("tbls doc %s", mdsn)
 
-	from := filepath.Join(docPath, "README.md")
+	from := filepath.Join(docPath, indexPath)
 
 	d := difflib.UnifiedDiff{
 		A:        difflib.SplitLines(string(a)),
@@ -440,7 +444,7 @@ func DiffSchemaAndDocs(docPath string, s *schema.Schema, c *config.Config) (stri
 		diff += fmt.Sprintf("diff '%s' '%s'\n", from, to)
 		diff += text
 	}
-	diffed["README.md"] = struct{}{}
+	diffed[indexPath] = struct{}{}
 
 	// tables
 	for _, t := range s.Tables {
@@ -449,13 +453,20 @@ func DiffSchemaAndDocs(docPath string, s *schema.Schema, c *config.Config) (stri
 		if err := md.OutputTable(buf, t); err != nil {
 			return "", errors.WithStack(err)
 		}
-		fn := fmt.Sprintf("%s.md", t.Name)
-		targetPath := filepath.Join(fullPath, fn)
+		tablePath, err := c.ConstructTablePath(t.Name)
+		if err != nil {
+			return "", errors.WithStack(err)
+		}
+		// Skip if disabled
+		if tablePath == "" {
+			continue
+		}
+		targetPath := filepath.Join(fullPath, tablePath)
 		a, err := os.ReadFile(filepath.Clean(targetPath))
 		if err != nil {
 			a = []byte{}
 		}
-		from := filepath.Join(docPath, fn)
+		from := filepath.Join(docPath, tablePath)
 
 		d := difflib.UnifiedDiff{
 			A:        difflib.SplitLines(string(a)),
@@ -470,24 +481,31 @@ func DiffSchemaAndDocs(docPath string, s *schema.Schema, c *config.Config) (stri
 			diff += fmt.Sprintf("diff '%s' '%s'\n", from, to)
 			diff += text
 		}
-		diffed[fn] = struct{}{}
+		diffed[tablePath] = struct{}{}
 	}
 
 	// viewpoints
 	for i, v := range s.Viewpoints {
 		buf := new(bytes.Buffer)
 		n := fmt.Sprintf("viewpoint-%d", i)
-		fn := fmt.Sprintf("viewpoint-%d.md", i)
 		to := fmt.Sprintf("%s %s", mdsn, n)
 		if err := md.OutputViewpoint(buf, i, v); err != nil {
 			return "", errors.WithStack(err)
 		}
-		targetPath := filepath.Join(fullPath, fn)
+		viewpointPath, err := c.ConstructViewpointPath(v.Name, i)
+		if err != nil {
+			return "", errors.WithStack(err)
+		}
+		// Skip if disabled
+		if viewpointPath == "" {
+			continue
+		}
+		targetPath := filepath.Join(fullPath, viewpointPath)
 		a, err := os.ReadFile(filepath.Clean(targetPath))
 		if err != nil {
 			a = []byte{}
 		}
-		from := filepath.Join(docPath, fn)
+		from := filepath.Join(docPath, viewpointPath)
 
 		d := difflib.UnifiedDiff{
 			A:        difflib.SplitLines(string(a)),
@@ -502,30 +520,79 @@ func DiffSchemaAndDocs(docPath string, s *schema.Schema, c *config.Config) (stri
 			diff += fmt.Sprintf("diff '%s' '%s'\n", from, to)
 			diff += text
 		}
-		diffed[fn] = struct{}{}
+		diffed[viewpointPath] = struct{}{}
 	}
 
-	files, err := os.ReadDir(fullPath)
-	if err != nil {
-		return "", errors.WithStack(err)
-	}
-	for _, f := range files {
-		if _, ok := diffed[f.Name()]; ok {
-			continue
-		}
-		if filepath.Ext(f.Name()) != ".md" {
-			continue
-		}
-
-		fname := f.Name()
-		targetPath := filepath.Join(fullPath, fname)
-		a, err := os.ReadFile(filepath.Clean(targetPath))
+	// enums
+	for _, enum := range s.Enums {
+		enumPath, err := c.ConstructEnumPath(enum.Name)
 		if err != nil {
 			return "", errors.WithStack(err)
 		}
-		from := filepath.Join(docPath, f.Name())
+		// Skip if disabled
+		if enumPath == "" {
+			continue
+		}
+		buf := new(bytes.Buffer)
+		to := fmt.Sprintf("%s %s", mdsn, enum.Name)
+		if err := md.OutputEnum(buf, enum); err != nil {
+			return "", errors.WithStack(err)
+		}
+		targetPath := filepath.Join(fullPath, enumPath)
+		a, err := os.ReadFile(filepath.Clean(targetPath))
+		if err != nil {
+			a = []byte{}
+		}
+		from := filepath.Join(docPath, enumPath)
+
+		d := difflib.UnifiedDiff{
+			A:        difflib.SplitLines(string(a)),
+			B:        difflib.SplitLines(buf.String()),
+			FromFile: from,
+			ToFile:   to,
+			Context:  3,
+		}
+
+		text, _ := difflib.GetUnifiedDiffString(d)
+		if text != "" {
+			diff += fmt.Sprintf("diff '%s' '%s'\n", from, to)
+			diff += text
+		}
+		diffed[enumPath] = struct{}{}
+	}
+
+	// Mark remaining '.md' files as unknown
+	err = filepath.WalkDir(fullPath, func(path string, d os.DirEntry, err error) error {
+
+		if err != nil {
+			return err
+		}
+		if d.IsDir() {
+			return nil
+		}
+		if filepath.Ext(d.Name()) != ".md" {
+			return nil
+		}
+		
+		// Get relative path from fullPath
+		relPath, err := filepath.Rel(fullPath, path)
+		if err != nil {
+			return err
+		}
+
+		if _, ok := diffed[relPath]; ok {
+			return nil
+		}
+
+		a, err := os.ReadFile(filepath.Clean(path))
+		if err != nil {
+			return err
+		}
+
+		from := filepath.Join(docPath, relPath)
 
 		b := ""
+		fname := d.Name()
 		to := fmt.Sprintf("%s %s", mdsn, filepath.Base(fname[:len(fname)-len(filepath.Ext(fname))]))
 
 		d := difflib.UnifiedDiff{
@@ -541,6 +608,10 @@ func DiffSchemaAndDocs(docPath string, s *schema.Schema, c *config.Config) (stri
 			diff += fmt.Sprintf("diff '%s' '%s'\n", from, to)
 			diff += text
 		}
+		return nil
+	})
+	if err != nil {
+		return "", errors.WithStack(err)
 	}
 	return diff, nil
 }
@@ -605,20 +676,26 @@ func (m *Md) enumTemplate() (string, error) {
 	return string(tb), nil
 }
 
-func (m *Md) makeSchemaTemplateData(s *schema.Schema) map[string]interface{} {
+func (m *Md) makeSchemaTemplateData(s *schema.Schema) (map[string]interface{}, error) {
 	number := m.config.Format.Number
 	adjust := m.config.Format.Adjust
 	showOnlyFirstParagraph := m.config.Format.ShowOnlyFirstParagraph
 	hasTableWithLabels := s.HasTableWithLabels()
 
 	// Tables
-	tablesData := m.tablesData(s.Tables, number, adjust, showOnlyFirstParagraph, hasTableWithLabels)
+	tablesData, err := m.tablesData(s.Tables, number, adjust, showOnlyFirstParagraph, hasTableWithLabels)
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
 
 	// Functions
 	functionsData := m.functionsData(s.Functions, number, adjust)
 
 	// Viewpoints
-	viewpointsData := m.viewpointsData(s.Viewpoints, number, adjust, showOnlyFirstParagraph)
+	viewpointsData, err := m.viewpointsData(s.Viewpoints, number, adjust, showOnlyFirstParagraph)
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
 
 	// Enums
 	enumData := m.enumData(s.Enums)
@@ -629,10 +706,10 @@ func (m *Md) makeSchemaTemplateData(s *schema.Schema) map[string]interface{} {
 		"Functions":  functionsData,
 		"Viewpoints": viewpointsData,
 		"Enums":      enumData,
-	}
+	}, nil
 }
 
-func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
+func (m *Md) makeTableTemplateData(t *schema.Table) (map[string]interface{}, error) {
 	number := m.config.Format.Number
 	adjust := m.config.Format.Adjust
 	hideColumns := m.config.Format.HideColumnsWithoutValues
@@ -663,7 +740,15 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 			if _, ok := cEncountered[r.Table.Name]; ok {
 				continue
 			}
-			childRelations = append(childRelations, fmt.Sprintf("[%s](%s%s.md)", r.Table.Name, m.config.BaseURL, mdurl.Encode(r.Table.Name)))
+			linkPath, shouldLink, err := m.tableLinkPath(r.Table.Name)
+			if err != nil {
+				return nil, errors.WithStack(err)
+			}
+			if shouldLink {
+				childRelations = append(childRelations, fmt.Sprintf("[%s](%s%s)", r.Table.Name, m.config.BaseURL, linkPath))
+			} else {
+				childRelations = append(childRelations, r.Table.Name)
+			}
 			cEncountered[r.Table.Name] = true
 		}
 		parentRelations := []string{}
@@ -672,7 +757,15 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 			if _, ok := pEncountered[r.ParentTable.Name]; ok {
 				continue
 			}
-			parentRelations = append(parentRelations, fmt.Sprintf("[%s](%s%s.md)", r.ParentTable.Name, m.config.BaseURL, mdurl.Encode(r.ParentTable.Name)))
+			linkPath, shouldLink, err := m.tableLinkPath(r.ParentTable.Name)
+			if err != nil {
+				return nil, errors.WithStack(err)
+			}
+			if shouldLink {
+				parentRelations = append(parentRelations, fmt.Sprintf("[%s](%s%s)", r.ParentTable.Name, m.config.BaseURL, linkPath))
+			} else {
+				parentRelations = append(parentRelations, r.ParentTable.Name)
+			}
 			pEncountered[r.ParentTable.Name] = true
 		}
 
@@ -706,8 +799,18 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 		if showOnlyFirstParagraph {
 			desc = output.ShowOnlyFirstParagraph(desc)
 		}
+		linkPath, shouldLink, err := m.viewpointLinkPath(v.Name, v.Index)
+		if err != nil {
+			return nil, errors.WithStack(err)
+		}
+		var nameColumn string
+		if shouldLink {
+			nameColumn = fmt.Sprintf("[%s](%s)", v.Name, linkPath)
+		} else {
+			nameColumn = v.Name
+		}
 		data := []string{
-			fmt.Sprintf("[%s](viewpoint-%d.md)", v.Name, v.Index),
+			nameColumn,
 			desc,
 		}
 
@@ -812,7 +915,10 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 		}
 	}
 
-	referencedTables := m.tablesData(t.ReferencedTables, number, adjust, showOnlyFirstParagraph, hasReferencedTableWithLabels)
+	referencedTables, err := m.tablesData(t.ReferencedTables, number, adjust, showOnlyFirstParagraph, hasReferencedTableWithLabels)
+	if err != nil {
+		return nil, err
+	}
 
 	if number {
 		columnsData = m.addNumberToTable(columnsData)
@@ -831,7 +937,7 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 			"Indexes":          adjustTable(indexesData),
 			"Triggers":         adjustTable(triggersData),
 			"ReferencedTables": adjustTable(referencedTables),
-		}
+		}, nil
 	}
 
 	return map[string]interface{}{
@@ -842,7 +948,7 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 		"Indexes":          indexesData,
 		"Triggers":         triggersData,
 		"ReferencedTables": referencedTables,
-	}
+	}, nil
 }
 
 func (m *Md) makeViewpointTemplateData(v *schema.Viewpoint) (map[string]interface{}, error) {
@@ -851,7 +957,10 @@ func (m *Md) makeViewpointTemplateData(v *schema.Viewpoint) (map[string]interfac
 	showOnlyFirstParagraph := m.config.Format.ShowOnlyFirstParagraph
 	hasTableWithLabels := v.Schema.HasTableWithLabels()
 
-	data := m.makeSchemaTemplateData(v.Schema)
+	data, err := m.makeSchemaTemplateData(v.Schema)
+	if err != nil {
+		return nil, err
+	}
 	data["Name"] = v.Name
 	data["Desc"] = v.Desc
 
@@ -865,10 +974,14 @@ func (m *Md) makeViewpointTemplateData(v *schema.Viewpoint) (map[string]interfac
 		if err != nil {
 			return nil, err
 		}
+		tablesData, err := m.tablesData(tables, number, adjust, showOnlyFirstParagraph, hasTableWithLabels)
+		if err != nil {
+			return nil, err
+		}
 		d := map[string]interface{}{
 			"Name":   g.Name,
 			"Desc":   g.Desc,
-			"Tables": m.tablesData(tables, number, adjust, showOnlyFirstParagraph, hasTableWithLabels),
+			"Tables": tablesData,
 		}
 		groups = append(groups, d)
 		nogroup = lo.Without(nogroup, tables...)
@@ -893,6 +1006,28 @@ func (m *Md) makeEnumTemplateData(e *schema.Enum) map[string]interface{} {
 		}
 }
 
+func (m *Md) tableLinkPath(tableName string) (string, bool, error) {
+	tablePath, err := m.config.ConstructTablePath(tableName)
+	if err != nil {
+		return "", false, errors.WithStack(err)
+	}
+	if tablePath == "" {
+		return "", false, nil
+	}
+	return mdurl.Encode(tablePath), true, nil
+}
+
+func (m *Md) viewpointLinkPath(viewpointName string, index int) (string, bool, error) {
+	viewpointPath, err := m.config.ConstructViewpointPath(viewpointName, index)
+	if err != nil {
+		return "", false, errors.WithStack(err)
+	}
+	if viewpointPath == "" {
+		return "", false, nil
+	}
+	return mdurl.Encode(viewpointPath), true, nil
+}
+
 func (m *Md) adjustColumnHeader(columnsHeader *[]string, columnsHeaderLine *[]string, hasColumn bool, name string) {
 	if hasColumn {
 		*columnsHeader = append(*columnsHeader, m.config.MergedDict.Lookup(name))
@@ -900,7 +1035,7 @@ func (m *Md) adjustColumnHeader(columnsHeader *[]string, columnsHeaderLine *[]st
 	}
 }
 
-func (m *Md) tablesData(tables []*schema.Table, number, adjust, showOnlyFirstParagraph, hasTableWithLabels bool) [][]string {
+func (m *Md) tablesData(tables []*schema.Table, number, adjust, showOnlyFirstParagraph, hasTableWithLabels bool) ([][]string, error) {
 	data := [][]string{}
 	header := []string{
 		m.config.MergedDict.Lookup("Name"),
@@ -925,8 +1060,18 @@ func (m *Md) tablesData(tables []*schema.Table, number, adjust, showOnlyFirstPar
 		if showOnlyFirstParagraph {
 			comment = output.ShowOnlyFirstParagraph(comment)
 		}
+		linkPath, shouldLink, err := m.tableLinkPath(t.Name)
+		if err != nil {
+			return nil, errors.WithStack(err)
+		}
+		var nameColumn string
+		if shouldLink {
+			nameColumn = fmt.Sprintf("[%s](%s%s)", t.Name, m.config.BaseURL, linkPath)
+		} else {
+			nameColumn = t.Name
+		}
 		d := []string{
-			fmt.Sprintf("[%s](%s%s.md)", t.Name, m.config.BaseURL, mdurl.Encode(t.Name)),
+			nameColumn,
 			fmt.Sprintf("%d", len(t.Columns)),
 			comment,
 			t.Type,
@@ -945,7 +1090,7 @@ func (m *Md) tablesData(tables []*schema.Table, number, adjust, showOnlyFirstPar
 		data = adjustTable(data)
 	}
 
-	return data
+	return data, nil
 }
 
 func (m *Md) functionsData(functions []*schema.Function, number, adjust bool) [][]string {
@@ -1012,7 +1157,7 @@ func (m *Md) enumData(enums []*schema.Enum) [][]string {
 	return data
 }
 
-func (m *Md) viewpointsData(viewpoints []*schema.Viewpoint, number, adjust, showOnlyFirstParagraph bool) [][]string {
+func (m *Md) viewpointsData(viewpoints []*schema.Viewpoint, number, adjust, showOnlyFirstParagraph bool) ([][]string, error) {
 	data := [][]string{}
 	header := []string{
 		m.config.MergedDict.Lookup("Name"),
@@ -1029,8 +1174,18 @@ func (m *Md) viewpointsData(viewpoints []*schema.Viewpoint, number, adjust, show
 		if showOnlyFirstParagraph {
 			desc = output.ShowOnlyFirstParagraph(desc)
 		}
+		linkPath, shouldLink, err := m.viewpointLinkPath(v.Name, i)
+		if err != nil {
+			return nil, errors.WithStack(err)
+		}
+		var nameColumn string
+		if shouldLink {
+			nameColumn = fmt.Sprintf("[%s](%s%s)", v.Name, m.config.BaseURL, linkPath)
+		} else {
+			nameColumn = v.Name
+		}
 		d := []string{
-			fmt.Sprintf("[%s](%sviewpoint-%d.md)", v.Name, m.config.BaseURL, i),
+			nameColumn,
 			desc,
 		}
 		data = append(data, d)
@@ -1044,7 +1199,7 @@ func (m *Md) viewpointsData(viewpoints []*schema.Viewpoint, number, adjust, show
 		data = adjustTable(data)
 	}
 
-	return data
+	return data, nil
 }
 
 func adjustData(data *[]string, hasData bool, value string) {
