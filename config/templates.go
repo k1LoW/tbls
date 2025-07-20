@@ -9,6 +9,21 @@ type Templates struct {
 	Mermaid Mermaid `yaml:"mermaid,omitempty"`
 }
 
+// OutputPaths holds the configurations for customizing output file paths.
+type OutputPaths struct {
+	MD OutputPathsMD `yaml:"md,omitempty"`
+}
+
+// OutputPathsMD holds the output file path patterns for markdown files.
+// Each field supports template variables to customize file naming and organization.
+// nil = use default, empty string = disable generation, non-empty = custom path
+type OutputPathsMD struct {
+	Index     *string `yaml:"index,omitempty"`     // README.md path
+	Table     *string `yaml:"table,omitempty"`     // Table file path pattern (supports {{.Name}})
+	Viewpoint *string `yaml:"viewpoint,omitempty"` // Viewpoint file path pattern (supports {{.Name}}, {{.Index}})
+	Enum      *string `yaml:"enum,omitempty"`      // Enum file path pattern (supports {{.Name}})
+}
+
 // MD holds the paths to the markdown template files.
 // If populated the files are used to override the default ones.
 type MD struct {

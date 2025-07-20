@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"text/template"
 
 	"github.com/aquasecurity/go-version/pkg/version"
 	"github.com/goccy/go-yaml"
@@ -52,6 +53,7 @@ type Config struct {
 	Comments               []AdditionalComment    `yaml:"comments,omitempty"`
 	Dict                   dict.Dict              `yaml:"dict,omitempty"`
 	Templates              Templates              `yaml:"templates,omitempty"`
+	OutputPaths            OutputPaths            `yaml:"outputPaths,omitempty"`
 	DetectVirtualRelations DetectVirtualRelations `yaml:"detectVirtualRelations,omitempty"`
 	BaseURL                string                 `yaml:"baseUrl,omitempty"`
 	RequiredVersion        string                 `yaml:"requiredVersion,omitempty"`
@@ -290,7 +292,27 @@ func (c *Config) setDefault() error {
 		c.ER.Distance = &DefaultERDistance
 	}
 
+	// Set default output paths if not configured
+	c.setDefaultOutputPaths()
+
 	return nil
+}
+
+// setDefaultOutputPaths sets default values for OutputPaths if they are nil
+func (c *Config) setDefaultOutputPaths() {
+	if c.OutputPaths.MD.Index == nil {
+		defaultIndex := "README.md"
+		c.OutputPaths.MD.Index = &defaultIndex
+	}
+	if c.OutputPaths.MD.Table == nil {
+		defaultTable := "{{.Name}}.md"
+		c.OutputPaths.MD.Table = &defaultTable
+	}
+	if c.OutputPaths.MD.Viewpoint == nil {
+		defaultViewpoint := "viewpoint-{{.Index}}.md"
+		c.OutputPaths.MD.Viewpoint = &defaultViewpoint
+	}
+	// Note: Enum defaults to nil (disabled) if not explicitly set
 }
 
 func (c *Config) checkVersion(sv string) error {
@@ -592,6 +614,87 @@ func (c *Config) NeedToGenerateERImages() bool {
 		return false
 	}
 	return true
+}
+
+// ConstructIndexPath returns the output path for the main README file.
+// Returns empty string if explicitly configured as empty (disables generation).
+func (c *Config) ConstructIndexPath() (string, error) {
+	return *c.OutputPaths.MD.Index, nil
+}
+
+// ConstructTablePath returns the output path for a table file.
+// Returns empty string if explicitly configured as empty (disables generation).
+func (c *Config) ConstructTablePath(tableName string) (string, error) {
+	pattern := *c.OutputPaths.MD.Table
+	if pattern == "" {
+		return "", nil // explicitly disabled
+	}
+	
+	tmpl, err := template.New("tablePath").Parse(pattern)
+	if err != nil {
+		return "", err
+	}
+	
+	var buf strings.Builder
+	data := struct{ Name string }{Name: tableName}
+	if err := tmpl.Execute(&buf, data); err != nil {
+		return "", err
+	}
+	
+	return buf.String(), nil
+}
+
+// ConstructViewpointPath returns the output path for a viewpoint file.
+// Returns empty string if explicitly configured as empty (disables generation).
+func (c *Config) ConstructViewpointPath(viewpointName string, index int) (string, error) {
+	pattern := *c.OutputPaths.MD.Viewpoint
+	if pattern == "" {
+		return "", nil // explicitly disabled
+	}
+	
+	tmpl, err := template.New("viewpointPath").Parse(pattern)
+	if err != nil {
+		return "", err
+	}
+	
+	var buf strings.Builder
+	data := struct {
+		Name  string
+		Index int
+	}{Name: viewpointName, Index: index}
+	if err := tmpl.Execute(&buf, data); err != nil {
+		return "", err
+	}
+	
+	return buf.String(), nil
+}
+
+// ConstructEnumPath returns the output path for an enum file.
+// Returns empty string if not configured or explicitly configured as empty (disables generation).
+// Enums are disabled by default and must be explicitly enabled.
+func (c *Config) ConstructEnumPath(enumName string) (string, error) {
+	if c.OutputPaths.MD.Enum == nil {
+		// Enums are disabled by default
+		return "", nil
+	}
+	
+	pattern := *c.OutputPaths.MD.Enum
+	if pattern == "" {
+		return "", nil // explicitly disabled
+	}
+	
+	tmpl, err := template.New("enumPath").Parse(pattern)
+	if err != nil {
+		return "", err
+	}
+	
+	var buf strings.Builder
+	data := struct{ Name string }{Name: enumName}
+	if err := tmpl.Execute(&buf, data); err != nil {
+		return "", err
+	}
+	
+	return buf.String(), nil
 }
 
 func (c *Config) detectShowColumnsForER(s *schema.Schema) error {

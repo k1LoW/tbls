@@ -130,6 +130,20 @@ func (m *Md) OutputViewpoint(wr io.Writer, i int, v *schema.Viewpoint) error {
 	return nil
 }
 
+// OutputEnum output md format for enum.
+func (m *Md) OutputEnum(wr io.Writer, e *schema.Enum) error {
+	ts, err := m.enumTemplate()
+	if err != nil {
+		return errors.WithStack(err)
+	}
+	tmpl := template.Must(template.New("enum").Funcs(output.Funcs(&m.config.MergedDict)).Parse(ts))
+	templateData := m.makeEnumTemplateData(e)
+	if err := tmpl.Execute(wr, templateData); err != nil {
+		return errors.WithStack(err)
+	}
+	return nil
+}
+
 // Output generate markdown files.
 func Output(s *schema.Schema, c *config.Config, force bool) (e error) {
 	docPath := c.DocPath
@@ -148,55 +162,124 @@ func Output(s *schema.Schema, c *config.Config, force bool) (e error) {
 		return errors.WithStack(err)
 	}
 
-	// README.md
-	f, err := os.Create(filepath.Clean(filepath.Join(fullPath, "README.md")))
-	defer func() {
-		err := f.Close()
-		if err != nil {
-			e = err
-		}
-	}()
+	md := New(c)
+
+	// README.md - generate unless template path is explicitly set to null or output path is empty
+	indexPath, err := c.ConstructIndexPath()
 	if err != nil {
 		return errors.WithStack(err)
 	}
-	md := New(c)
-	if err := md.OutputSchema(f, s); err != nil {
-		return errors.WithStack(err)
+	if shouldGenerateFile(indexPath) {
+		indexFullPath := filepath.Join(fullPath, indexPath)
+		
+		// Create directory if it doesn't exist
+		if err := os.MkdirAll(filepath.Dir(indexFullPath), 0755); err != nil {
+			return errors.WithStack(err)
+		}
+		
+		f, err := os.Create(filepath.Clean(indexFullPath))
+		defer func() {
+			err := f.Close()
+			if err != nil {
+				e = err
+			}
+		}()
+		if err != nil {
+			return errors.WithStack(err)
+		}
+		if err := md.OutputSchema(f, s); err != nil {
+			return errors.WithStack(err)
+		}
+		fmt.Printf("%s\n", filepath.Join(docPath, indexPath))
 	}
-	fmt.Printf("%s\n", filepath.Join(docPath, "README.md"))
 
 	// tables
 	for _, t := range s.Tables {
-		f, err := os.Create(filepath.Clean(filepath.Join(fullPath, fmt.Sprintf("%s.md", t.Name))))
+		tablePath, err := c.ConstructTablePath(t.Name)
 		if err != nil {
-			_ = f.Close()
 			return errors.WithStack(err)
 		}
-		if err := md.OutputTable(f, t); err != nil {
-			_ = f.Close()
-			return errors.WithStack(err)
-		}
-		fmt.Printf("%s\n", filepath.Join(docPath, fmt.Sprintf("%s.md", t.Name)))
-		if err := f.Close(); err != nil {
-			return errors.WithStack(err)
+		if shouldGenerateFile(tablePath) {
+			tableFullPath := filepath.Join(fullPath, tablePath)
+			
+			// Create directory if it doesn't exist
+			if err := os.MkdirAll(filepath.Dir(tableFullPath), 0755); err != nil {
+				return errors.WithStack(err)
+			}
+			
+			f, err := os.Create(filepath.Clean(tableFullPath))
+			if err != nil {
+				_ = f.Close()
+				return errors.WithStack(err)
+			}
+			if err := md.OutputTable(f, t); err != nil {
+				_ = f.Close()
+				return errors.WithStack(err)
+			}
+			fmt.Printf("%s\n", filepath.Join(docPath, tablePath))
+			if err := f.Close(); err != nil {
+				return errors.WithStack(err)
+			}
 		}
 	}
 
-	// viewpoints
+	// viewpoints - generate unless template path is explicitly set to null or output path is empty
 	for i, v := range s.Viewpoints {
-		fn := fmt.Sprintf("viewpoint-%d.md", i)
-		f, err := os.Create(filepath.Clean(filepath.Join(fullPath, fn)))
+		viewpointPath, err := c.ConstructViewpointPath(v.Name, i)
 		if err != nil {
-			_ = f.Close()
 			return errors.WithStack(err)
 		}
-		if err := md.OutputViewpoint(f, i, v); err != nil {
-			_ = f.Close()
+		if shouldGenerateFile(viewpointPath) {
+			viewpointFullPath := filepath.Join(fullPath, viewpointPath)
+			
+			// Create directory if it doesn't exist
+			if err := os.MkdirAll(filepath.Dir(viewpointFullPath), 0755); err != nil {
+				return errors.WithStack(err)
+			}
+			
+			f, err := os.Create(filepath.Clean(viewpointFullPath))
+			if err != nil {
+				_ = f.Close()
+				return errors.WithStack(err)
+			}
+			if err := md.OutputViewpoint(f, i, v); err != nil {
+				_ = f.Close()
+				return errors.WithStack(err)
+			}
+			fmt.Printf("%s\n", filepath.Join(docPath, viewpointPath))
+			if err := f.Close(); err != nil {
+				return errors.WithStack(err)
+			}
+		}
+	}
+
+	// enums - only generate if template path is explicitly set and output path is not empty
+	for _, enum := range s.Enums {
+		enumPath, err := c.ConstructEnumPath(enum.Name)
+		if err != nil {
 			return errors.WithStack(err)
 		}
-		fmt.Printf("%s\n", filepath.Join(docPath, fn))
-		if err := f.Close(); err != nil {
-			return errors.WithStack(err)
+		if shouldGenerateFile(enumPath) {
+			enumFullPath := filepath.Join(fullPath, enumPath)
+			
+			// Create directory if it doesn't exist
+			if err := os.MkdirAll(filepath.Dir(enumFullPath), 0755); err != nil {
+				return errors.WithStack(err)
+			}
+			
+			f, err := os.Create(filepath.Clean(enumFullPath))
+			if err != nil {
+				_ = f.Close()
+				return errors.WithStack(err)
+			}
+			if err := md.OutputEnum(f, enum); err != nil {
+				_ = f.Close()
+				return errors.WithStack(err)
+			}
+			fmt.Printf("%s\n", filepath.Join(docPath, enumPath))
+			if err := f.Close(); err != nil {
+				return errors.WithStack(err)
+			}
 		}
 	}
 
@@ -507,6 +590,21 @@ func (m *Md) viewpointTemplate() (string, error) {
 	return string(tb), nil
 }
 
+func (m *Md) enumTemplate() (string, error) {
+	if m.config.Templates.MD.Enum != "" {
+		tb, err := os.ReadFile(m.config.Templates.MD.Enum)
+		if err != nil {
+			return "", errors.WithStack(err)
+		}
+		return string(tb), nil
+	}
+	tb, err := m.tmpl.ReadFile("templates/enum.md.tmpl")
+	if err != nil {
+		return "", errors.WithStack(err)
+	}
+	return string(tb), nil
+}
+
 func (m *Md) makeSchemaTemplateData(s *schema.Schema) map[string]interface{} {
 	number := m.config.Format.Number
 	adjust := m.config.Format.Adjust
@@ -788,6 +886,34 @@ func (m *Md) makeViewpointTemplateData(v *schema.Viewpoint) (map[string]interfac
 	return data, nil
 }
 
+func (m *Md) makeEnumTemplateData(e *schema.Enum) map[string]interface{} {
+	adjust := m.config.Format.Adjust
+
+	// Values table data
+	valuesData := [][]string{}
+	valuesHeader := []string{m.config.MergedDict.Lookup("Value")}
+	valuesHeaderLine := []string{"-----"}
+	valuesData = append(valuesData, valuesHeader, valuesHeaderLine)
+
+	for _, value := range e.Values {
+		valuesData = append(valuesData, []string{value})
+	}
+
+	if adjust {
+		return map[string]interface{}{
+			"Enum":   e,
+			"Name":   e.Name,
+			"Values": adjustTable(valuesData),
+		}
+	}
+
+	return map[string]interface{}{
+		"Enum":   e,
+		"Name":   e.Name,
+		"Values": valuesData,
+	}
+}
+
 func (m *Md) adjustColumnHeader(columnsHeader *[]string, columnsHeaderLine *[]string, hasColumn bool, name string) {
 	if hasColumn {
 		*columnsHeader = append(*columnsHeader, m.config.MergedDict.Lookup(name))
@@ -1002,4 +1128,8 @@ func outputExists(s *schema.Schema, path string) bool {
 		}
 	}
 	return false
+}
+
+func shouldGenerateFile(outputPath string) bool {
+	return outputPath != ""
 }
