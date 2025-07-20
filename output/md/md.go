@@ -887,31 +887,10 @@ func (m *Md) makeViewpointTemplateData(v *schema.Viewpoint) (map[string]interfac
 }
 
 func (m *Md) makeEnumTemplateData(e *schema.Enum) map[string]interface{} {
-	adjust := m.config.Format.Adjust
-
-	// Values table data
-	valuesData := [][]string{}
-	valuesHeader := []string{m.config.MergedDict.Lookup("Value")}
-	valuesHeaderLine := []string{"-----"}
-	valuesData = append(valuesData, valuesHeader, valuesHeaderLine)
-
-	for _, value := range e.Values {
-		valuesData = append(valuesData, []string{value})
-	}
-
-	if adjust {
-		return map[string]interface{}{
-			"Enum":   e,
-			"Name":   e.Name,
-			"Values": adjustTable(valuesData),
-		}
-	}
-
 	return map[string]interface{}{
-		"Enum":   e,
-		"Name":   e.Name,
-		"Values": valuesData,
-	}
+			"Name":   e.Name,
+			"Values": e.Values,
+		}
 }
 
 func (m *Md) adjustColumnHeader(columnsHeader *[]string, columnsHeaderLine *[]string, hasColumn bool, name string) {
