@@ -53,7 +53,10 @@ func (m *Md) OutputSchema(wr io.Writer, s *schema.Schema) error {
 		return errors.WithStack(err)
 	}
 	tmpl := template.Must(template.New("index").Funcs(output.Funcs(&m.config.MergedDict)).Parse(ts))
-	templateData := m.makeSchemaTemplateData(s)
+	templateData, err := m.makeSchemaTemplateData(s)
+	if err != nil {
+		return errors.WithStack(err)
+	}
 	templateData["er"] = !m.config.ER.Skip
 	templateData["showOnlyFirstParagraph"] = m.config.Format.ShowOnlyFirstParagraph
 	switch m.config.ER.Format {
@@ -80,7 +83,10 @@ func (m *Md) OutputTable(wr io.Writer, t *schema.Table) error {
 		return errors.WithStack(err)
 	}
 	tmpl := template.Must(template.New(t.Name).Funcs(output.Funcs(&m.config.MergedDict)).Parse(ts))
-	templateData := m.makeTableTemplateData(t)
+	templateData, err := m.makeTableTemplateData(t)
+	if err != nil {
+		return errors.WithStack(err)
+	}
 	templateData["er"] = !m.config.ER.Skip
 	switch m.config.ER.Format {
 	case "mermaid":
@@ -562,15 +568,15 @@ func DiffSchemaAndDocs(docPath string, s *schema.Schema, c *config.Config) (stri
 	}
 
 	// Mark remaining '.md' files as unknown
-	err = filepath.WalkDir(fullPath, func(path string, d os.DirEntry, err error) error {
+	err = filepath.WalkDir(fullPath, func(path string, dirEntry os.DirEntry, err error) error {
 
 		if err != nil {
 			return err
 		}
-		if d.IsDir() {
+		if dirEntry.IsDir() {
 			return nil
 		}
-		if filepath.Ext(d.Name()) != ".md" {
+		if filepath.Ext(dirEntry.Name()) != ".md" {
 			return nil
 		}
 		
@@ -592,7 +598,7 @@ func DiffSchemaAndDocs(docPath string, s *schema.Schema, c *config.Config) (stri
 		from := filepath.Join(docPath, relPath)
 
 		b := ""
-		fname := d.Name()
+		fname := dirEntry.Name()
 		to := fmt.Sprintf("%s %s", mdsn, filepath.Base(fname[:len(fname)-len(filepath.Ext(fname))]))
 
 		d := difflib.UnifiedDiff{
@@ -987,10 +993,14 @@ func (m *Md) makeViewpointTemplateData(v *schema.Viewpoint) (map[string]interfac
 		nogroup = lo.Without(nogroup, tables...)
 	}
 	if len(v.Groups) > 0 && len(nogroup) > 0 {
+		tablesData, err := m.tablesData(nogroup, number, adjust, showOnlyFirstParagraph, hasTableWithLabels)
+		if err != nil {
+			return nil, err
+		}
 		d := map[string]interface{}{
 			"Name":   "-",
 			"Desc":   "",
-			"Tables": m.tablesData(nogroup, number, adjust, showOnlyFirstParagraph, hasTableWithLabels),
+			"Tables": tablesData,
 		}
 		groups = append(groups, d)
 	}
