@@ -1048,10 +1048,14 @@ A good starting point to design your own template is to modify a copy the defaul
 ```yaml
 outputPaths:
   md:
-    index: "docs/database-overview.md"
-    table: "tables/{{.Name}}.md"
-    viewpoint: "views/{{.Name}}.md" 
-    enum: "types/{{.Name}}.md" # Disabled by default.
+    index: "README.md"
+    table: "{{.Name}}.md"
+    viewpoint: "viewpoint-{{.Index}}.md" 
+    enum: "" # Disabled by default.
+  er:
+    schema: "schema.{{.Format}}"
+    table: "{{.Name}}.{{.Format}}"
+    viewpoint: "viewpoint-{{.Index}}.{{.Format}}"
 ```
 
 Set a path to empty string (`""`) to disable generation for that file type. Template variables like `{{.Name}}` and `{{.Index}}` are supported for dynamic naming.
