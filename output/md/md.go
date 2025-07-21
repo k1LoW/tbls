@@ -479,35 +479,37 @@ func DiffSchemaAndDocs(docPath string, s *schema.Schema, c *config.Config) (stri
 	if err != nil {
 		return "", errors.WithStack(err)
 	}
-	targetPath := filepath.Join(fullPath, indexPath)
-	a, err := os.ReadFile(filepath.Clean(targetPath))
-	if err != nil {
-		a = []byte{}
-	}
 
 	mdsn, err := c.MaskedDSN()
 	if err != nil {
 		return "", errors.WithStack(err)
 	}
-	to := fmt.Sprintf("tbls doc %s", mdsn)
 
-	from := filepath.Join(docPath, indexPath)
+	if indexPath != "" {
+		targetPath := filepath.Join(fullPath, indexPath)
+		a, err := os.ReadFile(filepath.Clean(targetPath))
+		if err != nil {
+			a = []byte{}
+		}
+		to := fmt.Sprintf("tbls doc %s", mdsn)
 
-	d := difflib.UnifiedDiff{
-		A:        difflib.SplitLines(string(a)),
-		B:        difflib.SplitLines(buf.String()),
-		FromFile: from,
-		ToFile:   to,
-		Context:  3,
+		from := filepath.Join(docPath, indexPath)
+
+		d := difflib.UnifiedDiff{
+			A:        difflib.SplitLines(string(a)),
+			B:        difflib.SplitLines(buf.String()),
+			FromFile: from,
+			ToFile:   to,
+			Context:  3,
+		}
+
+		text, _ := difflib.GetUnifiedDiffString(d)
+		if text != "" {
+			diff += fmt.Sprintf("diff '%s' '%s'\n", from, to)
+			diff += text
+		}
+		diffed[indexPath] = struct{}{}
 	}
-
-	text, _ := difflib.GetUnifiedDiffString(d)
-	if text != "" {
-		diff += fmt.Sprintf("diff '%s' '%s'\n", from, to)
-		diff += text
-	}
-	diffed[indexPath] = struct{}{}
-
 	// tables
 	for _, t := range s.Tables {
 		buf := new(bytes.Buffer)
