@@ -1058,7 +1058,7 @@ outputPaths:
     viewpoint: "viewpoint-{{.Index}}.{{.Format}}"
 ```
 
-Set a path to empty string (`""`) to disable generation for that file type. Template variables like `{{.Name}}` and `{{.Index}}` are supported for dynamic naming.
+Set a path to empty string (`""`) to disable generation for that file type. Template variables like `{{.Name}}`, `{{.ShortName}}`, and `{{.Index}}` are supported for dynamic naming. The `{{.ShortName}}` field contains the table name without the schema prefix (e.g., "users" instead of "public.users").
 
 ### Required Version
 

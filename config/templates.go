@@ -20,7 +20,7 @@ type OutputPaths struct {
 // nil = use default, empty string = disable generation, non-empty = custom path
 type OutputPathsMD struct {
 	Index     *string `yaml:"index,omitempty"`     // README.md path
-	Table     *string `yaml:"table,omitempty"`     // Table file path pattern (supports {{.Name}})
+	Table     *string `yaml:"table,omitempty"`     // Table file path pattern (supports {{.Name}}, {{.ShortName}})
 	Viewpoint *string `yaml:"viewpoint,omitempty"` // Viewpoint file path pattern (supports {{.Name}}, {{.Index}})
 	Enum      *string `yaml:"enum,omitempty"`      // Enum file path pattern (supports {{.Name}})
 }
@@ -30,7 +30,7 @@ type OutputPathsMD struct {
 // nil = use default, empty string = disable generation, non-empty = custom path
 type OutputPathsER struct {
 	Schema    *string `yaml:"schema,omitempty"`    // Schema ER diagram path pattern (supports {{.Format}})
-	Table     *string `yaml:"table,omitempty"`     // Table ER diagram path pattern (supports {{.Name}}, {{.Format}})
+	Table     *string `yaml:"table,omitempty"`     // Table ER diagram path pattern (supports {{.Name}}, {{.ShortName}}, {{.Format}})
 	Viewpoint *string `yaml:"viewpoint,omitempty"` // Viewpoint ER diagram path pattern (supports {{.Name}}, {{.Index}}, {{.Format}})
 }
 

@@ -142,9 +142,10 @@ ORDER BY oid`)
 		fullTableNames = append(fullTableNames, name)
 
 		table := &schema.Table{
-			Name:    name,
-			Type:    tableType,
-			Comment: tableComment.String,
+			ShortName: tableName,
+			Name:      name,
+			Type:      tableType,
+			Comment:   tableComment.String,
 		}
 
 		// (materialized) view definition

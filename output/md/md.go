@@ -103,7 +103,7 @@ func (m *Md) OutputTable(wr io.Writer, t *schema.Table) error {
 	}
 	tmpl := template.Must(template.New(t.Name).Funcs(output.Funcs(&m.config.MergedDict)).Parse(ts))
 	
-	currentTablePath, err := m.config.ConstructTablePath(t.Name)
+	currentTablePath, err := m.config.ConstructTablePath(t.Name, t.ShortName)
 	if err != nil {
 		return errors.WithStack(err)
 	}
@@ -122,7 +122,7 @@ func (m *Md) OutputTable(wr io.Writer, t *schema.Table) error {
 		}
 		templateData["erDiagram"] = fmt.Sprintf("```mermaid\n%s```", buf.String())
 	default:
-		tablePath, err := m.config.ConstructERTablePath(t.Name, m.config.ER.Format)
+		tablePath, err := m.config.ConstructERTablePath(t.Name, t.ShortName, m.config.ER.Format)
 		if err != nil {
 			return errors.WithStack(err)
 		}
@@ -257,7 +257,7 @@ func Output(s *schema.Schema, c *config.Config, force bool) (e error) {
 
 	// tables
 	for _, t := range s.Tables {
-		tablePath, err := c.ConstructTablePath(t.Name)
+		tablePath, err := c.ConstructTablePath(t.Name, t.ShortName)
 		if err != nil {
 			return errors.WithStack(err)
 		}
@@ -515,7 +515,7 @@ func DiffSchemaAndDocs(docPath string, s *schema.Schema, c *config.Config) (stri
 		if err := md.OutputTable(buf, t); err != nil {
 			return "", errors.WithStack(err)
 		}
-		tablePath, err := c.ConstructTablePath(t.Name)
+		tablePath, err := c.ConstructTablePath(t.Name, t.ShortName)
 		if err != nil {
 			return "", errors.WithStack(err)
 		}
@@ -802,7 +802,7 @@ func (m *Md) makeTableTemplateData(t *schema.Table, currentFilePath string) (map
 			if _, ok := cEncountered[r.Table.Name]; ok {
 				continue
 			}
-			linkPath, shouldLink, err := m.tableLinkPath(r.Table.Name, currentFilePath)
+			linkPath, shouldLink, err := m.tableLinkPath(r.Table, currentFilePath)
 			if err != nil {
 				return nil, errors.WithStack(err)
 			}
@@ -819,7 +819,7 @@ func (m *Md) makeTableTemplateData(t *schema.Table, currentFilePath string) (map
 			if _, ok := pEncountered[r.ParentTable.Name]; ok {
 				continue
 			}
-			linkPath, shouldLink, err := m.tableLinkPath(r.ParentTable.Name, currentFilePath)
+			linkPath, shouldLink, err := m.tableLinkPath(r.ParentTable, currentFilePath)
 			if err != nil {
 				return nil, errors.WithStack(err)
 			}
@@ -1072,8 +1072,8 @@ func (m *Md) makeEnumTemplateData(e *schema.Enum) map[string]interface{} {
 		}
 }
 
-func (m *Md) tableLinkPath(tableName string, currentFilePath string) (string, bool, error) {
-	tablePath, err := m.config.ConstructTablePath(tableName)
+func (m *Md) tableLinkPath(table *schema.Table, currentFilePath string) (string, bool, error) {
+	tablePath, err := m.config.ConstructTablePath(table.Name, table.ShortName)
 	if err != nil {
 		return "", false, errors.WithStack(err)
 	}
@@ -1134,7 +1134,7 @@ func (m *Md) tablesData(tables []*schema.Table, number, adjust, showOnlyFirstPar
 		if showOnlyFirstParagraph {
 			comment = output.ShowOnlyFirstParagraph(comment)
 		}
-		linkPath, shouldLink, err := m.tableLinkPath(t.Name, currentFilePath)
+		linkPath, shouldLink, err := m.tableLinkPath(t, currentFilePath)
 		if err != nil {
 			return nil, errors.WithStack(err)
 		}

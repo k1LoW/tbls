@@ -639,7 +639,7 @@ func (c *Config) ConstructIndexPath() (string, error) {
 
 // ConstructTablePath returns the output path for a table file.
 // Returns empty string if explicitly configured as empty (disables generation).
-func (c *Config) ConstructTablePath(tableName string) (string, error) {
+func (c *Config) ConstructTablePath(tableName, shortName string) (string, error) {
 	pattern := *c.OutputPaths.MD.Table
 	if pattern == "" {
 		return "", nil // explicitly disabled
@@ -651,7 +651,10 @@ func (c *Config) ConstructTablePath(tableName string) (string, error) {
 	}
 	
 	var buf strings.Builder
-	data := struct{ Name string }{Name: tableName}
+	data := struct{ 
+		Name      string 
+		ShortName string
+	}{Name: tableName, ShortName: shortName}
 	if err := tmpl.Execute(&buf, data); err != nil {
 		return "", err
 	}
@@ -736,7 +739,7 @@ func (c *Config) ConstructERSchemaPath(format string) (string, error) {
 
 // ConstructERTablePath returns the output path for a table ER diagram file.
 // Returns empty string if explicitly configured as empty (disables generation).
-func (c *Config) ConstructERTablePath(tableName, format string) (string, error) {
+func (c *Config) ConstructERTablePath(tableName, shortName, format string) (string, error) {
 	pattern := *c.OutputPaths.ER.Table
 	if pattern == "" {
 		return "", nil // explicitly disabled
@@ -749,9 +752,10 @@ func (c *Config) ConstructERTablePath(tableName, format string) (string, error) 
 	
 	var buf strings.Builder
 	data := struct {
-		Name   string
-		Format string
-	}{Name: tableName, Format: format}
+		Name      string
+		ShortName string
+		Format    string
+	}{Name: tableName, ShortName: shortName, Format: format}
 	if err := tmpl.Execute(&buf, data); err != nil {
 		return "", err
 	}

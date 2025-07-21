@@ -144,7 +144,7 @@ func Output(s *schema.Schema, c *config.Config, force bool) (e error) {
 
 	// tables
 	for _, t := range s.Tables {
-		tablePath, err := c.ConstructERTablePath(t.Name, erFormat)
+		tablePath, err := c.ConstructERTablePath(t.Name, t.ShortName, erFormat)
 		if err != nil {
 			return errors.WithStack(err)
 		}
@@ -273,7 +273,7 @@ func outputErExists(s *schema.Schema, c *config.Config, path string) bool {
 	}
 	// tables
 	for _, t := range s.Tables {
-		if tablePath, err := c.ConstructERTablePath(t.Name, c.ER.Format); err == nil && tablePath != "" {
+		if tablePath, err := c.ConstructERTablePath(t.Name, t.ShortName, c.ER.Format); err == nil && tablePath != "" {
 			if _, err := os.Lstat(filepath.Join(path, tablePath)); err == nil {
 				return true
 			}

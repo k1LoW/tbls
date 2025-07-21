@@ -140,7 +140,8 @@ type TableViewpoint struct {
 
 // Table is the struct for database table.
 type Table struct {
-	Name             string
+	ShortName        string
+	Name             string // includes the schema name
 	Type             string
 	Comment          string
 	Columns          []*Column
