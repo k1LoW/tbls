@@ -105,7 +105,7 @@ func Output(s *schema.Schema, c *config.Config, force bool) (e error) {
 		return errors.WithStack(err)
 	}
 
-	if !force && outputErExists(s, c.ER.Format, fullPath) {
+	if !force && outputErExists(s, c, fullPath) {
 		return errors.New("output ER diagram files already exists")
 	}
 
@@ -114,41 +114,92 @@ func Output(s *schema.Schema, c *config.Config, force bool) (e error) {
 		return errors.WithStack(err)
 	}
 
-	fn := fmt.Sprintf("schema.%s", erFormat)
-	fmt.Printf("%s\n", filepath.Join(outputPath, fn))
+	g := New(c)
 
-	f, err := os.OpenFile(filepath.Join(fullPath, fn), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644) // #nosec
+	schemaPath, err := c.ConstructERSchemaPath(erFormat)
 	if err != nil {
 		return errors.WithStack(err)
 	}
-	g := New(c)
-	if err := g.OutputSchema(f, s); err != nil {
-		return errors.WithStack(err)
+	if schemaPath != "" {
+		schemaFullPath := filepath.Join(fullPath, schemaPath)
+		
+		if err := os.MkdirAll(filepath.Dir(schemaFullPath), 0755); err != nil {
+			return errors.WithStack(err)
+		}
+		
+		fmt.Printf("%s\n", filepath.Join(outputPath, schemaPath))
+		
+		f, err := os.OpenFile(filepath.Clean(schemaFullPath), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644) // #nosec
+		if err != nil {
+			return errors.WithStack(err)
+		}
+		if err := g.OutputSchema(f, s); err != nil {
+			_ = f.Close()
+			return errors.WithStack(err)
+		}
+		if err := f.Close(); err != nil {
+			return errors.WithStack(err)
+		}
 	}
 
 	// tables
 	for _, t := range s.Tables {
-		fn := fmt.Sprintf("%s.%s", t.Name, erFormat)
-		fmt.Printf("%s\n", filepath.Join(outputPath, fn))
+		tablePath, err := c.ConstructERTablePath(t.Name, erFormat)
+		if err != nil {
+			return errors.WithStack(err)
+		}
+		if tablePath == "" {
+			continue
+		}
 
-		f, err := os.OpenFile(filepath.Join(fullPath, fn), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644) // #nosec
+		tableFullPath := filepath.Join(fullPath, tablePath)
+		
+		if err := os.MkdirAll(filepath.Dir(tableFullPath), 0755); err != nil {
+			return errors.WithStack(err)
+		}
+		
+		fmt.Printf("%s\n", filepath.Join(outputPath, tablePath))
+		
+		f, err := os.OpenFile(filepath.Clean(tableFullPath), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644) // #nosec
 		if err != nil {
 			return errors.WithStack(err)
 		}
 		if err := g.OutputTable(f, t); err != nil {
+			_ = f.Close()
+			return errors.WithStack(err)
+		}
+		if err := f.Close(); err != nil {
 			return errors.WithStack(err)
 		}
 	}
 
 	// viewpoints
 	for i, v := range s.Viewpoints {
-		fn := fmt.Sprintf("viewpoint-%d.%s", i, erFormat)
-		fmt.Printf("%s\n", filepath.Join(outputPath, fn))
-		f, err := os.OpenFile(filepath.Join(fullPath, fn), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644) // #nosec
+		viewpointPath, err := c.ConstructERViewpointPath(v.Name, i, erFormat)
+		if err != nil {
+			return errors.WithStack(err)
+		}
+		if viewpointPath == "" {
+			continue
+		}
+
+		viewpointFullPath := filepath.Join(fullPath, viewpointPath)
+		
+		if err := os.MkdirAll(filepath.Dir(viewpointFullPath), 0755); err != nil {
+			return errors.WithStack(err)
+		}
+		
+		fmt.Printf("%s\n", filepath.Join(outputPath, viewpointPath))
+		
+		f, err := os.OpenFile(filepath.Clean(viewpointFullPath), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644) // #nosec
 		if err != nil {
 			return errors.WithStack(err)
 		}
 		if err := g.OutputViewpoint(f, v); err != nil {
+			_ = f.Close()
+			return errors.WithStack(err)
+		}
+		if err := f.Close(); err != nil {
 			return errors.WithStack(err)
 		}
 	}
@@ -213,24 +264,27 @@ func getFaceFunc(keyword string) (func(size float64) (font.Face, error), error) 
 	return faceFunc, nil
 }
 
-func outputErExists(s *schema.Schema, erFormat, path string) bool {
-	// schema.png
-	fn := fmt.Sprintf("schema.%s", erFormat)
-	if _, err := os.Lstat(filepath.Join(path, fn)); err == nil {
-		return true
-	}
-	// tables
-	for _, t := range s.Tables {
-		fn := fmt.Sprintf("%s.%s", t.Name, erFormat)
-		if _, err := os.Lstat(filepath.Join(path, fn)); err == nil {
+func outputErExists(s *schema.Schema, c *config.Config, path string) bool {
+	// schema ER diagram
+	if schemaPath, err := c.ConstructERSchemaPath(c.ER.Format); err == nil && schemaPath != "" {
+		if _, err := os.Lstat(filepath.Join(path, schemaPath)); err == nil {
 			return true
 		}
 	}
+	// tables
+	for _, t := range s.Tables {
+		if tablePath, err := c.ConstructERTablePath(t.Name, c.ER.Format); err == nil && tablePath != "" {
+			if _, err := os.Lstat(filepath.Join(path, tablePath)); err == nil {
+				return true
+			}
+		}
+	}
 	// viewpoints
-	for i := range s.Viewpoints {
-		fn := fmt.Sprintf("viewpoint-%d.%s", i, erFormat)
-		if _, err := os.Lstat(filepath.Join(path, fn)); err == nil {
-			return true
+	for i, v := range s.Viewpoints {
+		if viewpointPath, err := c.ConstructERViewpointPath(v.Name, i, c.ER.Format); err == nil && viewpointPath != "" {
+			if _, err := os.Lstat(filepath.Join(path, viewpointPath)); err == nil {
+				return true
+			}
 		}
 	}
 	return false

@@ -12,6 +12,7 @@ type Templates struct {
 // OutputPaths holds the configurations for customizing output file paths.
 type OutputPaths struct {
 	MD OutputPathsMD `yaml:"md,omitempty"`
+	ER OutputPathsER `yaml:"er,omitempty"`
 }
 
 // OutputPathsMD holds the output file path patterns for markdown files.
@@ -22,6 +23,15 @@ type OutputPathsMD struct {
 	Table     *string `yaml:"table,omitempty"`     // Table file path pattern (supports {{.Name}})
 	Viewpoint *string `yaml:"viewpoint,omitempty"` // Viewpoint file path pattern (supports {{.Name}}, {{.Index}})
 	Enum      *string `yaml:"enum,omitempty"`      // Enum file path pattern (supports {{.Name}})
+}
+
+// OutputPathsER holds the output file path patterns for ER diagram image files.
+// Each field supports template variables to customize file naming and organization.
+// nil = use default, empty string = disable generation, non-empty = custom path
+type OutputPathsER struct {
+	Schema    *string `yaml:"schema,omitempty"`    // Schema ER diagram path pattern (supports {{.Format}})
+	Table     *string `yaml:"table,omitempty"`     // Table ER diagram path pattern (supports {{.Name}}, {{.Format}})
+	Viewpoint *string `yaml:"viewpoint,omitempty"` // Viewpoint ER diagram path pattern (supports {{.Name}}, {{.Index}}, {{.Format}})
 }
 
 // MD holds the paths to the markdown template files.

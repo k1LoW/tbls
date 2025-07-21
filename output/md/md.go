@@ -68,7 +68,15 @@ func (m *Md) OutputSchema(wr io.Writer, s *schema.Schema) error {
 		}
 		templateData["erDiagram"] = fmt.Sprintf("```mermaid\n%s```", buf.String())
 	default:
-		templateData["erDiagram"] = fmt.Sprintf("![er](%sschema.%s)", m.config.BaseURL, m.config.ER.Format)
+		schemaPath, err := m.config.ConstructERSchemaPath(m.config.ER.Format)
+		if err != nil {
+			return errors.WithStack(err)
+		}
+		if schemaPath != "" {
+			templateData["erDiagram"] = fmt.Sprintf("![er](%s%s)", m.config.BaseURL, mdurl.Encode(schemaPath))
+		} else {
+			templateData["erDiagram"] = ""
+		}
 	}
 	if err := tmpl.Execute(wr, templateData); err != nil {
 		return errors.WithStack(err)
@@ -97,7 +105,15 @@ func (m *Md) OutputTable(wr io.Writer, t *schema.Table) error {
 		}
 		templateData["erDiagram"] = fmt.Sprintf("```mermaid\n%s```", buf.String())
 	default:
-		templateData["erDiagram"] = fmt.Sprintf("![er](%s%s.%s)", m.config.BaseURL, mdurl.Encode(t.Name), m.config.ER.Format)
+		tablePath, err := m.config.ConstructERTablePath(t.Name, m.config.ER.Format)
+		if err != nil {
+			return errors.WithStack(err)
+		}
+		if tablePath != "" {
+			templateData["erDiagram"] = fmt.Sprintf("![er](%s%s)", m.config.BaseURL, mdurl.Encode(tablePath))
+		} else {
+			templateData["erDiagram"] = ""
+		}
 	}
 
 	if err := tmpl.Execute(wr, templateData); err != nil {
@@ -128,7 +144,15 @@ func (m *Md) OutputViewpoint(wr io.Writer, i int, v *schema.Viewpoint) error {
 		}
 		templateData["erDiagram"] = fmt.Sprintf("```mermaid\n%s```", buf.String())
 	default:
-		templateData["erDiagram"] = fmt.Sprintf("![er](%sviewpoint-%d.%s)", m.config.BaseURL, i, m.config.ER.Format)
+		viewpointPath, err := m.config.ConstructERViewpointPath(v.Name, i, m.config.ER.Format)
+		if err != nil {
+			return errors.WithStack(err)
+		}
+		if viewpointPath != "" {
+			templateData["erDiagram"] = fmt.Sprintf("![er](%s%s)", m.config.BaseURL, mdurl.Encode(viewpointPath))
+		} else {
+			templateData["erDiagram"] = ""
+		}
 	}
 	if err := tmpl.Execute(wr, templateData); err != nil {
 		return errors.WithStack(err)

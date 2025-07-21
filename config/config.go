@@ -300,6 +300,7 @@ func (c *Config) setDefault() error {
 
 // setDefaultOutputPaths sets default values for OutputPaths if they are nil
 func (c *Config) setDefaultOutputPaths() {
+	// Markdown output paths
 	if c.OutputPaths.MD.Index == nil {
 		defaultIndex := "README.md"
 		c.OutputPaths.MD.Index = &defaultIndex
@@ -313,6 +314,20 @@ func (c *Config) setDefaultOutputPaths() {
 		c.OutputPaths.MD.Viewpoint = &defaultViewpoint
 	}
 	// Note: Enum defaults to nil (disabled) if not explicitly set
+
+	// ER image output paths
+	if c.OutputPaths.ER.Schema == nil {
+		defaultERSchema := "schema.{{.Format}}"
+		c.OutputPaths.ER.Schema = &defaultERSchema
+	}
+	if c.OutputPaths.ER.Table == nil {
+		defaultERTable := "{{.Name}}.{{.Format}}"
+		c.OutputPaths.ER.Table = &defaultERTable
+	}
+	if c.OutputPaths.ER.Viewpoint == nil {
+		defaultERViewpoint := "viewpoint-{{.Index}}.{{.Format}}"
+		c.OutputPaths.ER.Viewpoint = &defaultERViewpoint
+	}
 }
 
 func (c *Config) checkVersion(sv string) error {
@@ -690,6 +705,79 @@ func (c *Config) ConstructEnumPath(enumName string) (string, error) {
 	
 	var buf strings.Builder
 	data := struct{ Name string }{Name: enumName}
+	if err := tmpl.Execute(&buf, data); err != nil {
+		return "", err
+	}
+	
+	return buf.String(), nil
+}
+
+// ConstructERSchemaPath returns the output path for the schema ER diagram file.
+// Returns empty string if explicitly configured as empty (disables generation).
+func (c *Config) ConstructERSchemaPath(format string) (string, error) {
+	pattern := *c.OutputPaths.ER.Schema
+	if pattern == "" {
+		return "", nil // explicitly disabled
+	}
+	
+	tmpl, err := template.New("erSchemaPath").Parse(pattern)
+	if err != nil {
+		return "", err
+	}
+	
+	var buf strings.Builder
+	data := struct{ Format string }{Format: format}
+	if err := tmpl.Execute(&buf, data); err != nil {
+		return "", err
+	}
+	
+	return buf.String(), nil
+}
+
+// ConstructERTablePath returns the output path for a table ER diagram file.
+// Returns empty string if explicitly configured as empty (disables generation).
+func (c *Config) ConstructERTablePath(tableName, format string) (string, error) {
+	pattern := *c.OutputPaths.ER.Table
+	if pattern == "" {
+		return "", nil // explicitly disabled
+	}
+	
+	tmpl, err := template.New("erTablePath").Parse(pattern)
+	if err != nil {
+		return "", err
+	}
+	
+	var buf strings.Builder
+	data := struct {
+		Name   string
+		Format string
+	}{Name: tableName, Format: format}
+	if err := tmpl.Execute(&buf, data); err != nil {
+		return "", err
+	}
+	
+	return buf.String(), nil
+}
+
+// ConstructERViewpointPath returns the output path for a viewpoint ER diagram file.
+// Returns empty string if explicitly configured as empty (disables generation).
+func (c *Config) ConstructERViewpointPath(viewpointName string, index int, format string) (string, error) {
+	pattern := *c.OutputPaths.ER.Viewpoint
+	if pattern == "" {
+		return "", nil // explicitly disabled
+	}
+	
+	tmpl, err := template.New("erViewpointPath").Parse(pattern)
+	if err != nil {
+		return "", err
+	}
+	
+	var buf strings.Builder
+	data := struct {
+		Name   string
+		Index  int
+		Format string
+	}{Name: viewpointName, Index: index, Format: format}
 	if err := tmpl.Execute(&buf, data); err != nil {
 		return "", err
 	}
