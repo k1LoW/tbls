@@ -55,7 +55,7 @@ nfpms:
   -
     id: tbls-nfpms
     file_name_template: "{{ .ProjectName }}_{{ .Version }}-1_{{ .Arch }}"
-    ids:
+    builds:
     - tbls-linux
     homepage: https://github.com/k1LoW/tbls
     maintainer: Ken'ichiro Oyama <k1lowxb@gmail.com>
