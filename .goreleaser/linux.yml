@@ -44,7 +44,7 @@ archives:
 checksum:
   name_template: 'checksums-linux.txt'
 snapshot:
-  name_template: "{{ .Version }}-next"
+  version_template: "{{ .Version }}-next"
 changelog:
   sort: asc
   filters:
