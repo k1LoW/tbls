@@ -1,1 +1,65 @@
-{"tables":[{"name":"test.restaurants","type":"collection","comment":"Count of documents is 149","columns":[{"name":"_id","type":"objectId","nullable":false},{"name":"address","type":"document","nullable":false},{"name":"borough","type":"string","nullable":false},{"name":"cuisine","type":"string","nullable":false},{"name":"grades","type":"array","nullable":false},{"name":"name","type":"string","nullable":false},{"name":"restaurant_id","type":"string","nullable":false}],"indexes":[{"name":"_id_","def":"{\"_id\": {\"$numberInt\":\"1\"}}","table":null,"columns":null,"comment":"Non-unique, Version 2"}]}],"driver":{"name":"mongodb","meta":{"dict":{"Column":"Attribute","Columns":"Attributes","Indexes":"Indexes"}}}}
+{
+  "tables": [
+    {
+      "name": "test.restaurants",
+      "type": "collection",
+      "comment": "Count of documents is 149",
+      "columns": [
+        {
+          "name": "_id",
+          "type": "objectId",
+          "nullable": false
+        },
+        {
+          "name": "address",
+          "type": "document",
+          "nullable": false
+        },
+        {
+          "name": "borough",
+          "type": "string",
+          "nullable": false
+        },
+        {
+          "name": "cuisine",
+          "type": "string",
+          "nullable": false
+        },
+        {
+          "name": "grades",
+          "type": "array",
+          "nullable": false
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "nullable": false
+        },
+        {
+          "name": "restaurant_id",
+          "type": "string",
+          "nullable": false
+        }
+      ],
+      "indexes": [
+        {
+          "name": "_id_",
+          "def": "{\"_id\": {\"$numberInt\":\"1\"}}",
+          "table": null,
+          "columns": null,
+          "comment": "Non-unique, Version 2"
+        }
+      ]
+    }
+  ],
+  "driver": {
+    "name": "mongodb",
+    "meta": {
+      "dict": {
+        "Column": "Attribute",
+        "Columns": "Attributes",
+        "Indexes": "Indexes"
+      }
+    }
+  }
+}
