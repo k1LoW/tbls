@@ -2,6 +2,7 @@
 
 ## Description
 
+Data Updated On : 2022-08-08  
 Overview: The United States Census Bureau’s international dataset provides estimates of country populations since 1950 and projections through 2050. Specifically, the dataset includes midyear population figures broken down by age and gender assignment at birth. Additionally, time-series data is provided for attributes including fertility rates, birth rates, death rates, and migration rates.  
   
 Update frequency: Historic (none)  
@@ -14,7 +15,7 @@ See the GCP Marketplace listing for more details and sample queries: https://con
 
 ## Labels
 
-`freebqcovid:freebqcovid`
+`dg_data_confidentiality:public` `dg_data_context:metadata` `dg_data_source:public` `freebqcovid:freebqcovid`
 
 ## Tables
 
