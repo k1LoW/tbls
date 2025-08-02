@@ -1,5 +1,12 @@
 # Changelog
 
+## [v1.87.0](https://github.com/k1LoW/tbls/compare/v1.86.1...v1.87.0) - 2025-08-02
+### Breaking Changes 🛠
+- feat: change schema.json indentation by @k1LoW in https://github.com/k1LoW/tbls/pull/735
+### Other Changes
+- chore(deps): bump the dependencies group across 1 directory with 19 updates by @dependabot[bot] in https://github.com/k1LoW/tbls/pull/733
+- Update GoReleaser configurations by @emmanuel-ferdman in https://github.com/k1LoW/tbls/pull/726
+
 ## [v1.86.1](https://github.com/k1LoW/tbls/compare/v1.86.0...v1.86.1) - 2025-07-01
 ### Fix bug 🐛
 - fix: Skip enum fetching for Redshift compatibility in postgres driver by @ritsu2891 in https://github.com/k1LoW/tbls/pull/718
