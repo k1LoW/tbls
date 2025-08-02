@@ -83,7 +83,7 @@ $ yum install https://github.com/k1LoW/tbls/releases/download/v$TBLS_VERSION/tbl
 **Homebrew:**
 
 ```console
-$ brew install k1LoW/tap/tbls
+$ brew install tbls
 ```
 
 **MacPorts:**
