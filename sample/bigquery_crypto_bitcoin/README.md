@@ -1,5 +1,9 @@
 # bigquery-public-data:crypto_bitcoin
 
+## Labels
+
+`dg_data_confidentiality:public` `dg_data_context:metadata` `dg_data_source:public`
+
 ## Tables
 
 | Name | Columns | Description | Type | Labels |
