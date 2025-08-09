@@ -2,6 +2,7 @@ package datasource
 
 import (
 	"bytes"
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -21,6 +22,7 @@ import (
 	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/drivers"
 	"github.com/k1LoW/tbls/drivers/clickhouse"
+	"github.com/k1LoW/tbls/drivers/databricks"
 	"github.com/k1LoW/tbls/drivers/mariadb"
 	"github.com/k1LoW/tbls/drivers/mssql"
 	"github.com/k1LoW/tbls/drivers/mysql"
@@ -67,6 +69,9 @@ func Analyze(dsn config.DSN) (_ *schema.Schema, err error) {
 	}
 	if strings.HasPrefix(urlstr, "mongodb://") || strings.HasPrefix(urlstr, "mongo://") {
 		return AnalyzeMongodb(urlstr)
+	}
+	if strings.HasPrefix(urlstr, "databricks://") {
+		return AnalyzeDatabricks(urlstr)
 	}
 	s := &schema.Schema{}
 	u, err := dburl.Parse(urlstr)
@@ -302,5 +307,59 @@ func AnalyzeWithExtDriver(urlstr string) (*schema.Schema, error) {
 	if err := s.Repair(); err != nil {
 		return nil, err
 	}
+	return s, nil
+}
+
+// AnalyzeDatabricks analyze `databricks://`
+func AnalyzeDatabricks(urlstr string) (_ *schema.Schema, err error) {
+	defer func() {
+		err = errors.WithStack(err)
+	}()
+
+	s := &schema.Schema{}
+	
+	// Parse the URL to extract catalog and schema
+	u, err := url.Parse(urlstr)
+	if err != nil {
+		return nil, err
+	}
+	
+	// Get catalog and schema from query parameters, default to main.default
+	catalog := u.Query().Get("catalog")
+	if catalog == "" {
+		catalog = "main"
+	}
+	schemaName := u.Query().Get("schema")
+	if schemaName == "" {
+		schemaName = "default"
+	}
+	
+	// Set the schema name
+	s.Name = fmt.Sprintf("%s.%s", catalog, schemaName)
+
+	// Convert databricks:// URL to the format expected by the Databricks driver
+	// Remove the databricks:// prefix
+	dsnStr := strings.TrimPrefix(urlstr, "databricks://")
+	
+	// Open database connection using the Databricks driver
+	db, err := sql.Open("databricks", dsnStr)
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		_ = db.Close()
+	}()
+	
+	// Test the connection
+	if err := db.Ping(); err != nil {
+		return nil, err
+	}
+	
+	// Create driver instance and analyze
+	driver := databricks.New(db)
+	if err := driver.Analyze(s); err != nil {
+		return nil, err
+	}
+	
 	return s, nil
 }
