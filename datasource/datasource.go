@@ -312,36 +312,26 @@ func AnalyzeWithExtDriver(urlstr string) (*schema.Schema, error) {
 
 // AnalyzeDatabricks analyze `databricks://`
 func AnalyzeDatabricks(urlstr string) (_ *schema.Schema, err error) {
-	defer func() {
-		err = errors.WithStack(err)
-	}()
-
 	s := &schema.Schema{}
-	
-	// Parse the URL to extract catalog and schema
+
 	u, err := url.Parse(urlstr)
 	if err != nil {
 		return nil, err
 	}
-	
-	// Get catalog and schema from query parameters, default to main.default
+
 	catalog := u.Query().Get("catalog")
 	if catalog == "" {
-		catalog = "main"
+		return nil, errors.New("no catalog name in the connection string")
 	}
 	schemaName := u.Query().Get("schema")
 	if schemaName == "" {
-		schemaName = "default"
+		return nil, errors.New("no schema name in the connection string")
 	}
-	
-	// Set the schema name
+
 	s.Name = fmt.Sprintf("%s.%s", catalog, schemaName)
 
-	// Convert databricks:// URL to the format expected by the Databricks driver
-	// Remove the databricks:// prefix
 	dsnStr := strings.TrimPrefix(urlstr, "databricks://")
-	
-	// Open database connection using the Databricks driver
+
 	db, err := sql.Open("databricks", dsnStr)
 	if err != nil {
 		return nil, err
@@ -349,17 +339,11 @@ func AnalyzeDatabricks(urlstr string) (_ *schema.Schema, err error) {
 	defer func() {
 		_ = db.Close()
 	}()
-	
-	// Test the connection
-	if err := db.Ping(); err != nil {
-		return nil, err
-	}
-	
-	// Create driver instance and analyze
+
 	driver := databricks.New(db)
 	if err := driver.Analyze(s); err != nil {
 		return nil, err
 	}
-	
+
 	return s, nil
 }
