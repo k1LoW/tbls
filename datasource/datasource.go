@@ -307,4 +307,3 @@ func AnalyzeWithExtDriver(urlstr string) (*schema.Schema, error) {
 	}
 	return s, nil
 }
-

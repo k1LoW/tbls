@@ -167,14 +167,14 @@ func (dbx *Databricks) getColumns(catalog, schemaName, tableName string) ([]*sch
 }
 
 func (dbx *Databricks) getConstraints(catalog, schemaName, tableName string) ([]*schema.Constraint, error) {
+	// SQL-level aggregation query (like PostgreSQL driver) - one row per constraint
 	query := `
 		SELECT 
 			tc.constraint_name,
 			tc.constraint_type,
-			kcu.column_name,
-			kcu.ordinal_position,
-			COALESCE(kcu2.table_name, '') as referenced_table_name,
-			COALESCE(kcu2.column_name, '') as referenced_column_name
+			COALESCE(COLLECT_LIST(kcu.column_name), ARRAY()) as constraint_columns,
+			COALESCE(MAX(kcu2.table_name), '') as referenced_table_name,
+			COALESCE(COLLECT_LIST(kcu2.column_name), ARRAY()) as referenced_columns
 		FROM system.information_schema.table_constraints tc
 		LEFT JOIN system.information_schema.key_column_usage kcu
 			ON tc.constraint_catalog = kcu.constraint_catalog
@@ -191,7 +191,8 @@ func (dbx *Databricks) getConstraints(catalog, schemaName, tableName string) ([]
 			AND rc.unique_constraint_name = kcu2.constraint_name
 			AND kcu.position_in_unique_constraint = kcu2.ordinal_position
 		WHERE tc.table_catalog = ? AND tc.table_schema = ? AND tc.table_name = ?
-		ORDER BY tc.constraint_name, kcu.ordinal_position`
+		GROUP BY tc.constraint_name, tc.constraint_type
+		ORDER BY tc.constraint_name`
 
 	rows, err := dbx.db.Query(query, catalog, schemaName, tableName)
 	if err != nil {
@@ -199,59 +200,34 @@ func (dbx *Databricks) getConstraints(catalog, schemaName, tableName string) ([]
 	}
 	defer rows.Close()
 
-	constraintMap := make(map[string]*constraintData)
-
+	var constraints []*schema.Constraint
 	for rows.Next() {
-		var constraintName, constraintType string
-		var columnName sql.NullString
-		var ordinalPosition sql.NullInt32
-		var referencedTableName, referencedColumnName sql.NullString
+		var constraintName, constraintType, referencedTableName string
+		var constraintColumnsStr, referencedColumnsStr string
 
-		if err := rows.Scan(&constraintName, &constraintType, &columnName, &ordinalPosition, &referencedTableName, &referencedColumnName); err != nil {
+		if err := rows.Scan(&constraintName, &constraintType, &constraintColumnsStr, &referencedTableName, &referencedColumnsStr); err != nil {
 			return nil, errors.WithStack(err)
 		}
 
-		cd, exists := constraintMap[constraintName]
-		if !exists {
-			cd = &constraintData{
-				name:              constraintName,
-				constraintType:    constraintType,
-				columns:           []string{},
-				referencedTable:   "",
-				referencedColumns: []string{},
-			}
-			constraintMap[constraintName] = cd
-		}
+		// Parse array strings into slices
+		constraintColumns := dbx.parseArrayString(constraintColumnsStr)
+		referencedColumns := dbx.parseArrayString(referencedColumnsStr)
 
-		if columnName.Valid && columnName.String != "" {
-			cd.columns = append(cd.columns, columnName.String)
-		}
-
-		if strings.ToUpper(constraintType) == "FOREIGN KEY" {
-			if referencedTableName.Valid && cd.referencedTable == "" {
-				cd.referencedTable = referencedTableName.String
-			}
-			if referencedColumnName.Valid && referencedColumnName.String != "" {
-				cd.referencedColumns = append(cd.referencedColumns, referencedColumnName.String)
-			}
-		}
-	}
-
-	var constraints []*schema.Constraint
-	for _, cd := range constraintMap {
-		def := dbx.buildConstraintDefinition(cd.constraintType, cd.columns, cd.referencedTable, cd.referencedColumns)
+		// Build constraint definition
+		def := dbx.buildConstraintDefinition(constraintType, constraintColumns, referencedTableName, referencedColumns)
 
 		constraint := &schema.Constraint{
-			Name:    cd.name,
-			Type:    strings.ToUpper(cd.constraintType),
+			Name:    constraintName,
+			Type:    strings.ToUpper(constraintType),
 			Table:   &tableName,
 			Def:     def,
-			Columns: cd.columns,
+			Columns: constraintColumns,
 		}
 
-		if strings.ToUpper(cd.constraintType) == "FOREIGN KEY" && cd.referencedTable != "" {
-			constraint.ReferencedTable = &cd.referencedTable
-			constraint.ReferencedColumns = cd.referencedColumns
+		// For foreign key constraints, populate referenced table and columns
+		if strings.ToUpper(constraintType) == "FOREIGN KEY" && referencedTableName != "" {
+			constraint.ReferencedTable = &referencedTableName
+			constraint.ReferencedColumns = referencedColumns
 		}
 
 		constraints = append(constraints, constraint)
@@ -260,12 +236,38 @@ func (dbx *Databricks) getConstraints(catalog, schemaName, tableName string) ([]
 	return constraints, nil
 }
 
-type constraintData struct {
-	name              string
-	constraintType    string
-	columns           []string
-	referencedTable   string
-	referencedColumns []string
+// parseArrayString parses Databricks array string format into Go slice
+func (dbx *Databricks) parseArrayString(arrayStr string) []string {
+	// Trim whitespace from input
+	arrayStr = strings.TrimSpace(arrayStr)
+
+	if arrayStr == "" || arrayStr == "[]" {
+		return []string{}
+	}
+
+	// Remove brackets and split by comma
+	arrayStr = strings.TrimPrefix(arrayStr, "[")
+	arrayStr = strings.TrimSuffix(arrayStr, "]")
+
+	if arrayStr == "" {
+		return []string{}
+	}
+
+	// Split and clean up each element
+	parts := strings.Split(arrayStr, ",")
+	var result []string
+	for _, part := range parts {
+		part = strings.TrimSpace(part)
+		// Remove quotes if present
+		if len(part) >= 2 && part[0] == '"' && part[len(part)-1] == '"' {
+			part = part[1 : len(part)-1]
+		}
+		if part != "" {
+			result = append(result, part)
+		}
+	}
+
+	return result
 }
 
 func (dbx *Databricks) buildConstraintDefinition(constraintType string, columns []string, referencedTable string, referencedColumns []string) string {
@@ -281,9 +283,9 @@ func (dbx *Databricks) buildConstraintDefinition(constraintType string, columns 
 			return fmt.Sprintf("FOREIGN KEY (%s) REFERENCES %s(%s)", columnsStr, referencedTable, referencedColumnsStr)
 		}
 		return fmt.Sprintf("FOREIGN KEY (%s)", columnsStr)
-	} else {
-		return fmt.Sprintf("%s (%s)", strings.ToUpper(constraintType), columnsStr)
 	}
+
+	return fmt.Sprintf("%s (%s)", strings.ToUpper(constraintType), columnsStr)
 }
 
 func (dbx *Databricks) getRelations(catalog, schemaName string, tables []*schema.Table) ([]*schema.Relation, error) {
