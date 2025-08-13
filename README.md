@@ -607,6 +607,20 @@ dsn: clickhouse://dbuser:dbpass@hostname:9000/dbname
 
 See also: https://pkg.go.dev/github.com/ClickHouse/clickhouse-go
 
+**Databricks:**
+
+```yaml
+# .tbls.yml
+dsn: databricks://token:pat_token@databricks_workspace_id.cloud.databricks.com:443/sql/1.0/warehouses/your-warehouse-id?catalog=catalog&schema=schema
+```
+
+Required parameters:
+- `pat_token`: Personal access token for authentication
+- `databricks_workspace_id`: databricks workspace ID
+- `warehoue_id`: databricks sql warehouse ID
+- `catalog`: Unity Catalog name
+- `schema`: Schema name within the catalog  
+
 **JSON:**
 
 The JSON file output by the `tbls out -t json` command can be read as a datasource (JSON Schema is [here](spec/tbls.schema.json_schema.json)).
