@@ -46,16 +46,19 @@ func (dbx *Databricks) Analyze(s *schema.Schema) error {
 		return errors.WithStack(err)
 	}
 
+	constraintsByTable, err := dbx.getAllConstraints(currentCatalog, currentSchema)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
 	for _, table := range tables {
 		if columns, exists := columnsByTable[table.Name]; exists {
 			table.Columns = columns
 		}
 
-		constraints, err := dbx.getConstraints(currentCatalog, currentSchema, table.Name)
-		if err != nil {
-			return errors.WithStack(err)
+		if constraints, exists := constraintsByTable[table.Name]; exists {
+			table.Constraints = constraints
 		}
-		table.Constraints = constraints
 	}
 
 	s.Tables = tables
@@ -175,10 +178,10 @@ func (dbx *Databricks) getAllColumns(catalog, schemaName string) (map[string][]*
 	return columnsByTable, nil
 }
 
-func (dbx *Databricks) getConstraints(catalog, schemaName, tableName string) ([]*schema.Constraint, error) {
-	// SQL-level aggregation query (like PostgreSQL driver) - one row per constraint
+func (dbx *Databricks) getAllConstraints(catalog, schemaName string) (map[string][]*schema.Constraint, error) {
 	query := `
 		SELECT 
+			tc.table_name,
 			tc.constraint_name,
 			tc.constraint_type,
 			COALESCE(COLLECT_LIST(kcu.column_name), ARRAY()) as constraint_columns,
@@ -199,30 +202,33 @@ func (dbx *Databricks) getConstraints(catalog, schemaName, tableName string) ([]
 			AND rc.unique_constraint_schema = kcu2.constraint_schema
 			AND rc.unique_constraint_name = kcu2.constraint_name
 			AND kcu.position_in_unique_constraint = kcu2.ordinal_position
-		WHERE tc.table_catalog = ? AND tc.table_schema = ? AND tc.table_name = ?
-		GROUP BY tc.constraint_name, tc.constraint_type
-		ORDER BY tc.constraint_name`
+		WHERE tc.table_catalog = ? AND tc.table_schema = ?
+		    AND tc.table_name IN (
+		        SELECT table_name 
+		        FROM system.information_schema.tables 
+		        WHERE table_catalog = ? AND table_schema = ?
+		    )
+		GROUP BY tc.table_name, tc.constraint_name, tc.constraint_type
+		ORDER BY tc.table_name, tc.constraint_name`
 
-	rows, err := dbx.db.Query(query, catalog, schemaName, tableName)
+	rows, err := dbx.db.Query(query, catalog, schemaName, catalog, schemaName)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
 	defer rows.Close()
 
-	var constraints []*schema.Constraint
+	constraintsByTable := make(map[string][]*schema.Constraint)
 	for rows.Next() {
-		var constraintName, constraintType, referencedTableName string
+		var tableName, constraintName, constraintType, referencedTableName string
 		var constraintColumnsStr, referencedColumnsStr string
 
-		if err := rows.Scan(&constraintName, &constraintType, &constraintColumnsStr, &referencedTableName, &referencedColumnsStr); err != nil {
+		if err := rows.Scan(&tableName, &constraintName, &constraintType, &constraintColumnsStr, &referencedTableName, &referencedColumnsStr); err != nil {
 			return nil, errors.WithStack(err)
 		}
 
-		// Parse array strings into slices
 		constraintColumns := dbx.parseArrayString(constraintColumnsStr)
 		referencedColumns := dbx.parseArrayString(referencedColumnsStr)
 
-		// Build constraint definition
 		def := dbx.buildConstraintDefinition(constraintType, constraintColumns, referencedTableName, referencedColumns)
 
 		constraint := &schema.Constraint{
@@ -233,16 +239,15 @@ func (dbx *Databricks) getConstraints(catalog, schemaName, tableName string) ([]
 			Columns: constraintColumns,
 		}
 
-		// For foreign key constraints, populate referenced table and columns
 		if strings.ToUpper(constraintType) == "FOREIGN KEY" && referencedTableName != "" {
 			constraint.ReferencedTable = &referencedTableName
 			constraint.ReferencedColumns = referencedColumns
 		}
 
-		constraints = append(constraints, constraint)
+		constraintsByTable[tableName] = append(constraintsByTable[tableName], constraint)
 	}
 
-	return constraints, nil
+	return constraintsByTable, nil
 }
 
 func (dbx *Databricks) parseArrayString(arrayStr string) []string {
