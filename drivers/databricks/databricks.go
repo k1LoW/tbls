@@ -41,12 +41,15 @@ func (dbx *Databricks) Analyze(s *schema.Schema) error {
 		return errors.WithStack(err)
 	}
 
+	columnsByTable, err := dbx.getAllColumns(currentCatalog, currentSchema)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
 	for _, table := range tables {
-		columns, err := dbx.getColumns(currentCatalog, currentSchema, table.Name)
-		if err != nil {
-			return errors.WithStack(err)
+		if columns, exists := columnsByTable[table.Name]; exists {
+			table.Columns = columns
 		}
-		table.Columns = columns
 
 		constraints, err := dbx.getConstraints(currentCatalog, currentSchema, table.Name)
 		if err != nil {
@@ -125,30 +128,36 @@ func (dbx *Databricks) getTables(catalog, schemaName string) ([]*schema.Table, e
 	return tables, nil
 }
 
-func (dbx *Databricks) getColumns(catalog, schemaName, tableName string) ([]*schema.Column, error) {
+func (dbx *Databricks) getAllColumns(catalog, schemaName string) (map[string][]*schema.Column, error) {
 	query := `
 		SELECT 
+			table_name,
 			column_name,
 			data_type,
 			is_nullable,
 			column_default,
 			COALESCE(comment, '') as column_comment
 		FROM system.information_schema.columns 
-		WHERE table_catalog = ? AND table_schema = ? AND table_name = ?
-		ORDER BY ordinal_position`
+		WHERE table_catalog = ? AND table_schema = ?
+		    AND table_name IN (
+		        SELECT table_name 
+		        FROM system.information_schema.tables 
+		        WHERE table_catalog = ? AND table_schema = ?
+		    )
+		ORDER BY table_name, ordinal_position`
 
-	rows, err := dbx.db.Query(query, catalog, schemaName, tableName)
+	rows, err := dbx.db.Query(query, catalog, schemaName, catalog, schemaName)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
 	defer rows.Close()
 
-	var columns []*schema.Column
+	columnsByTable := make(map[string][]*schema.Column)
 	for rows.Next() {
-		var columnName, dataType, isNullable string
+		var tableName, columnName, dataType, isNullable string
 		var columnDefault, columnComment sql.NullString
 
-		if err := rows.Scan(&columnName, &dataType, &isNullable, &columnDefault, &columnComment); err != nil {
+		if err := rows.Scan(&tableName, &columnName, &dataType, &isNullable, &columnDefault, &columnComment); err != nil {
 			return nil, errors.WithStack(err)
 		}
 
@@ -160,10 +169,10 @@ func (dbx *Databricks) getColumns(catalog, schemaName, tableName string) ([]*sch
 			Comment:  columnComment.String,
 		}
 
-		columns = append(columns, column)
+		columnsByTable[tableName] = append(columnsByTable[tableName], column)
 	}
 
-	return columns, nil
+	return columnsByTable, nil
 }
 
 func (dbx *Databricks) getConstraints(catalog, schemaName, tableName string) ([]*schema.Constraint, error) {
@@ -236,7 +245,6 @@ func (dbx *Databricks) getConstraints(catalog, schemaName, tableName string) ([]
 	return constraints, nil
 }
 
-// parseArrayString parses Databricks array string format into Go slice
 func (dbx *Databricks) parseArrayString(arrayStr string) []string {
 	// Trim whitespace from input
 	arrayStr = strings.TrimSpace(arrayStr)
