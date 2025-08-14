@@ -10,6 +10,7 @@ require (
 	github.com/aws/aws-sdk-go v1.55.8
 	github.com/beta/freetype v0.0.1
 	github.com/cli/safeexec v1.0.1
+	github.com/databricks/databricks-sql-go v1.8.0
 	github.com/expr-lang/expr v1.17.5
 	github.com/gertd/go-pluralize v0.2.1
 	github.com/go-sql-driver/mysql v1.9.3
@@ -64,7 +65,9 @@ require (
 	github.com/JohnCGriffin/overflow v0.0.0-20211019200055-46fa312c352c // indirect
 	github.com/andybalholm/brotli v1.2.0 // indirect
 	github.com/apache/arrow-go/v18 v18.0.0 // indirect
+	github.com/apache/arrow/go/v12 v12.0.1 // indirect
 	github.com/apache/arrow/go/v15 v15.0.2 // indirect
+	github.com/apache/thrift v0.21.0 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.32.7 // indirect
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.6.7 // indirect
 	github.com/aws/aws-sdk-go-v2/config v1.28.7 // indirect
@@ -89,17 +92,22 @@ require (
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/cli/go-gh/v2 v2.12.1 // indirect
 	github.com/cncf/xds/go v0.0.0-20250326154945-ae57f3c0d45f // indirect
+	github.com/coreos/go-oidc/v3 v3.5.0 // indirect
 	github.com/danieljoos/wincred v1.2.2 // indirect
 	github.com/disintegration/imaging v1.6.2 // indirect
+	github.com/dnephin/pflag v1.0.7 // indirect
 	github.com/dvsekhvalnov/jose2go v1.8.0 // indirect
 	github.com/envoyproxy/go-control-plane/envoy v1.32.4 // indirect
 	github.com/envoyproxy/protoc-gen-validate v1.2.1 // indirect
+	github.com/fatih/color v1.16.0 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/flopp/go-findfont v0.1.0 // indirect
 	github.com/fogleman/gg v1.3.0 // indirect
+	github.com/fsnotify/fsnotify v1.5.4 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.7 // indirect
 	github.com/go-faster/city v1.0.1 // indirect
 	github.com/go-faster/errors v0.7.1 // indirect
+	github.com/go-jose/go-jose/v3 v3.0.4 // indirect
 	github.com/go-jose/go-jose/v4 v4.0.5 // indirect
 	github.com/go-logr/logr v1.4.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
@@ -117,26 +125,34 @@ require (
 	github.com/google/go-github/v72 v72.0.0 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/google/s2a-go v0.1.9 // indirect
+	github.com/google/shlex v0.0.0-20191202100458-e7afc7fbc510 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.3.6 // indirect
 	github.com/googleapis/gax-go/v2 v2.14.2 // indirect
 	github.com/gsterjov/go-libsecret v0.0.0-20161001094733-a6f4afe4910c // indirect
+	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
+	github.com/hashicorp/go-retryablehttp v0.7.7 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/josharian/mapfs v0.0.0-20210615234106-095c008854e6 // indirect
 	github.com/josharian/txtarfs v0.0.0-20240408113805-5dc76b8fe6bf // indirect
 	github.com/k1LoW/fontdir v0.1.1 // indirect
+	github.com/klauspost/asmfmt v1.3.2 // indirect
 	github.com/klauspost/compress v1.18.0 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.9 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
+	github.com/minio/asm2plan9s v0.0.0-20200509001527-cdd76441f9d8 // indirect
+	github.com/minio/c2goasm v0.0.0-20190812172519-36a3d3bbc4f3 // indirect
 	github.com/montanaflynn/stats v0.7.1 // indirect
 	github.com/mtibben/percent v0.2.1 // indirect
 	github.com/paulmach/orb v0.11.1 // indirect
 	github.com/pierrec/lz4/v4 v4.1.22 // indirect
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c // indirect
+	github.com/pkg/errors v0.9.1 // indirect
 	github.com/planetscale/vtprotobuf v0.6.1-0.20240319094008-0393e58bdf10 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
+	github.com/rs/zerolog v1.28.0 // indirect
 	github.com/sahilm/fuzzy v0.1.0 // indirect
 	github.com/segmentio/asm v1.2.0 // indirect
 	github.com/shopspring/decimal v1.4.0 // indirect
@@ -177,4 +193,5 @@ require (
 	google.golang.org/grpc v1.73.0 // indirect
 	google.golang.org/protobuf v1.36.6 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
+	gotest.tools/gotestsum v1.8.2 // indirect
 )
