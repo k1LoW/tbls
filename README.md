@@ -611,15 +611,17 @@ See also: https://pkg.go.dev/github.com/ClickHouse/clickhouse-go
 
 ```yaml
 # .tbls.yml
-dsn: databricks://token:pat_token@databricks_workspace_id.cloud.databricks.com:443/sql/1.0/warehouses/your-warehouse-id?catalog=catalog&schema=schema
+dsn: databricks://your_databricks_workspace_id.cloud.databricks.com:443/sql/1.0/warehouses/your-warehouse-id?catalog=your_catalog&schema=your_schema&token=your_token
 ```
 
 Required parameters:
-- `pat_token`: Personal access token for authentication
-- `databricks_workspace_id`: databricks workspace ID
-- `warehoue_id`: databricks sql warehouse ID
-- `catalog`: Unity Catalog name
-- `schema`: Schema name within the catalog  
+- `your_databricks_workspace_id`: databricks workspace ID
+- `your_warehouse_id`: databricks sql warehouse ID
+- `your_catalog`: Unity Catalog name
+- `your_schema`: Schema/database name within the catalog  
+- `your_token`: Personal access token for authentication
+
+See also: https://pkg.go.dev/github.com/databricks/databricks-sql-go
 
 **JSON:**
 
