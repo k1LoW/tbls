@@ -612,13 +612,13 @@ See also: https://pkg.go.dev/github.com/ClickHouse/clickhouse-go
 **Personal Access Token (PAT) Authentication:**
 ```yaml
 # .tbls.yml
-dsn: databricks://your_databricks_workspace_id.cloud.databricks.com:443/sql/1.0/warehouses/your-warehouse-id?catalog=your_catalog&schema=your_schema&token=your_token
+dsn: databricks://your_databricks_workspace_id.cloud.databricks.com:443/sql/1.0/warehouses/your_warehouse_id?catalog=your_catalog&schema=your_schema&token=your_token
 ```
 
 **OAuth Client Credentials Authentication:**
 ```yaml
 # .tbls.yml
-dsn: databricks://your_databricks_workspace_id.cloud.databricks.com:443/sql/1.0/warehouses/your-warehouse-id?catalog=your_catalog&schema=your_schema&client_id=your_client_id&client_secret=your_client_secret
+dsn: databricks://your_databricks_workspace_id.cloud.databricks.com:443/sql/1.0/warehouses/your_warehouse_id?catalog=your_catalog&schema=your_schema&client_id=your_client_id&client_secret=your_client_secret
 ```
 
 Required parameters:
