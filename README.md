@@ -607,7 +607,7 @@ dsn: clickhouse://dbuser:dbpass@hostname:9000/dbname
 
 See also: https://pkg.go.dev/github.com/ClickHouse/clickhouse-go
 
-**Databricks:**
+**Databricks (Experimental):**
 
 **Personal Access Token (PAT) Authentication:**
 ```yaml
