@@ -1,5 +1,6 @@
 tbls
 tbls.exe
+tbls.yml
 dist/
 dbdoc/
 coverage.out

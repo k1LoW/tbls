@@ -1,0 +1,735 @@
+{
+  "name": "workspace.tpch_sf1",
+  "tables": [
+    {
+      "name": "customer",
+      "type": "MANAGED",
+      "comment": "Customer information including demographics and account details",
+      "columns": [
+        {
+          "name": "C_CUSTKEY",
+          "type": "LONG",
+          "nullable": false,
+          "comment": "Unique identifier for each customer"
+        },
+        {
+          "name": "C_NAME",
+          "type": "STRING",
+          "nullable": false,
+          "comment": "Name of the customer"
+        },
+        {
+          "name": "C_ADDRESS",
+          "type": "STRING",
+          "nullable": false,
+          "comment": "Complete address of the customer"
+        },
+        {
+          "name": "C_NATIONKEY",
+          "type": "LONG",
+          "nullable": false,
+          "comment": "Foreign key to the nation where customer is located"
+        },
+        {
+          "name": "C_PHONE",
+          "type": "STRING",
+          "nullable": false,
+          "comment": "Phone number of the customer"
+        },
+        {
+          "name": "C_ACCTBAL",
+          "type": "DECIMAL",
+          "nullable": false,
+          "comment": "Account balance of the customer"
+        },
+        {
+          "name": "C_MKTSEGMENT",
+          "type": "STRING",
+          "nullable": true,
+          "comment": "Market segment classification (e.g. BUILDING, AUTOMOBILE)"
+        },
+        {
+          "name": "C_COMMENT",
+          "type": "STRING",
+          "nullable": true,
+          "comment": "General comments about the customer"
+        }
+      ],
+      "constraints": [
+        {
+          "name": "customer_nationkey_fk",
+          "type": "FOREIGN KEY",
+          "def": "FOREIGN KEY (C_NATIONKEY) REFERENCES nation(N_NATIONKEY)",
+          "table": "customer",
+          "referenced_table": "nation",
+          "columns": [
+            "C_NATIONKEY"
+          ],
+          "referenced_columns": [
+            "N_NATIONKEY"
+          ]
+        },
+        {
+          "name": "customer_pk",
+          "type": "PRIMARY KEY",
+          "def": "PRIMARY KEY (C_CUSTKEY)",
+          "table": "customer",
+          "columns": [
+            "C_CUSTKEY"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "lineitem",
+      "type": "MANAGED",
+      "comment": "Individual line items within orders, including pricing, shipping, and part details",
+      "columns": [
+        {
+          "name": "L_ORDERKEY",
+          "type": "LONG",
+          "nullable": false,
+          "comment": "Foreign key to the parent order"
+        },
+        {
+          "name": "L_PARTKEY",
+          "type": "LONG",
+          "nullable": false,
+          "comment": "Foreign key to the part being ordered"
+        },
+        {
+          "name": "L_SUPPKEY",
+          "type": "LONG",
+          "nullable": false,
+          "comment": "Foreign key to the supplier of the part"
+        },
+        {
+          "name": "L_LINENUMBER",
+          "type": "LONG",
+          "nullable": false,
+          "comment": "Line number within the order (1, 2, 3, ...)"
+        },
+        {
+          "name": "L_QUANTITY",
+          "type": "DECIMAL",
+          "nullable": false,
+          "comment": "Quantity of the part ordered"
+        },
+        {
+          "name": "L_EXTENDEDPRICE",
+          "type": "DECIMAL",
+          "nullable": false,
+          "comment": "Extended price (quantity * unit price)"
+        },
+        {
+          "name": "L_DISCOUNT",
+          "type": "DECIMAL",
+          "nullable": false,
+          "comment": "Discount percentage applied to this line item"
+        },
+        {
+          "name": "L_TAX",
+          "type": "DECIMAL",
+          "nullable": false,
+          "comment": "Tax percentage applied to this line item"
+        },
+        {
+          "name": "L_RETURNFLAG",
+          "type": "STRING",
+          "nullable": false,
+          "comment": "Return flag (A=Available, N=Not available, R=Returned)"
+        },
+        {
+          "name": "L_LINESTATUS",
+          "type": "STRING",
+          "nullable": false,
+          "comment": "Line status (F=Fulfilled, O=Open)"
+        },
+        {
+          "name": "L_SHIPDATE",
+          "type": "DATE",
+          "nullable": false,
+          "comment": "Date when the line item was shipped"
+        },
+        {
+          "name": "L_COMMITDATE",
+          "type": "DATE",
+          "nullable": false,
+          "comment": "Date when delivery was committed"
+        },
+        {
+          "name": "L_RECEIPTDATE",
+          "type": "DATE",
+          "nullable": false,
+          "comment": "Date when the line item was received"
+        },
+        {
+          "name": "L_SHIPINSTRUCT",
+          "type": "STRING",
+          "nullable": false,
+          "comment": "Shipping instructions for this line item"
+        },
+        {
+          "name": "L_SHIPMODE",
+          "type": "STRING",
+          "nullable": false,
+          "comment": "Mode of shipping (TRUCK, MAIL, SHIP, AIR, etc.)"
+        },
+        {
+          "name": "L_COMMENT",
+          "type": "STRING",
+          "nullable": false,
+          "comment": "General comments about this line item"
+        }
+      ],
+      "constraints": [
+        {
+          "name": "lineitem_orderkey_fk",
+          "type": "FOREIGN KEY",
+          "def": "FOREIGN KEY (L_ORDERKEY) REFERENCES orders(O_ORDERKEY)",
+          "table": "lineitem",
+          "referenced_table": "orders",
+          "columns": [
+            "L_ORDERKEY"
+          ],
+          "referenced_columns": [
+            "O_ORDERKEY"
+          ]
+        },
+        {
+          "name": "lineitem_partsupp_fk",
+          "type": "FOREIGN KEY",
+          "def": "FOREIGN KEY (L_SUPPKEY, L_PARTKEY) REFERENCES partsupp(PS_SUPPKEY, PS_PARTKEY)",
+          "table": "lineitem",
+          "referenced_table": "partsupp",
+          "columns": [
+            "L_SUPPKEY",
+            "L_PARTKEY"
+          ],
+          "referenced_columns": [
+            "PS_SUPPKEY",
+            "PS_PARTKEY"
+          ]
+        },
+        {
+          "name": "lineitem_pk",
+          "type": "PRIMARY KEY",
+          "def": "PRIMARY KEY (L_LINENUMBER, L_ORDERKEY)",
+          "table": "lineitem",
+          "columns": [
+            "L_LINENUMBER",
+            "L_ORDERKEY"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "nation",
+      "type": "MANAGED",
+      "comment": "Countries/nations with their associated regions",
+      "columns": [
+        {
+          "name": "N_NATIONKEY",
+          "type": "LONG",
+          "nullable": false,
+          "comment": "Unique identifier for each nation/country"
+        },
+        {
+          "name": "N_NAME",
+          "type": "STRING",
+          "nullable": false,
+          "comment": "Name of the nation/country"
+        },
+        {
+          "name": "N_REGIONKEY",
+          "type": "LONG",
+          "nullable": false,
+          "comment": "Foreign key to the region this nation belongs to"
+        },
+        {
+          "name": "N_COMMENT",
+          "type": "STRING",
+          "nullable": true,
+          "comment": "General comments about the nation"
+        }
+      ],
+      "constraints": [
+        {
+          "name": "nation_pk",
+          "type": "PRIMARY KEY",
+          "def": "PRIMARY KEY (N_NATIONKEY)",
+          "table": "nation",
+          "columns": [
+            "N_NATIONKEY"
+          ]
+        },
+        {
+          "name": "nation_regionkey_fk",
+          "type": "FOREIGN KEY",
+          "def": "FOREIGN KEY (N_REGIONKEY) REFERENCES region(R_REGIONKEY)",
+          "table": "nation",
+          "referenced_table": "region",
+          "columns": [
+            "N_REGIONKEY"
+          ],
+          "referenced_columns": [
+            "R_REGIONKEY"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "orders",
+      "type": "MANAGED",
+      "comment": "Customer orders with status, pricing, and processing information",
+      "columns": [
+        {
+          "name": "O_ORDERKEY",
+          "type": "LONG",
+          "nullable": false,
+          "comment": "Unique identifier for each order"
+        },
+        {
+          "name": "O_CUSTKEY",
+          "type": "LONG",
+          "nullable": false,
+          "comment": "Foreign key to the customer who placed the order"
+        },
+        {
+          "name": "O_ORDERSTATUS",
+          "type": "STRING",
+          "nullable": false,
+          "comment": "Status of the order (F=Fulfilled, O=Open, P=Partial)"
+        },
+        {
+          "name": "O_TOTALPRICE",
+          "type": "DECIMAL",
+          "nullable": false,
+          "comment": "Total price of the order including all line items"
+        },
+        {
+          "name": "O_ORDERDATE",
+          "type": "DATE",
+          "nullable": false,
+          "comment": "Date when the order was placed"
+        },
+        {
+          "name": "O_ORDERPRIORITY",
+          "type": "STRING",
+          "nullable": false,
+          "comment": "Priority level assigned to the order"
+        },
+        {
+          "name": "O_CLERK",
+          "type": "STRING",
+          "nullable": false,
+          "comment": "Clerk who processed the order"
+        },
+        {
+          "name": "O_SHIPPRIORITY",
+          "type": "LONG",
+          "nullable": false,
+          "comment": "Shipping priority assigned to the order"
+        },
+        {
+          "name": "O_COMMENT",
+          "type": "STRING",
+          "nullable": false,
+          "comment": "General comments about the order"
+        }
+      ],
+      "constraints": [
+        {
+          "name": "orders_custkey_fk",
+          "type": "FOREIGN KEY",
+          "def": "FOREIGN KEY (O_CUSTKEY) REFERENCES customer(C_CUSTKEY)",
+          "table": "orders",
+          "referenced_table": "customer",
+          "columns": [
+            "O_CUSTKEY"
+          ],
+          "referenced_columns": [
+            "C_CUSTKEY"
+          ]
+        },
+        {
+          "name": "orders_pk",
+          "type": "PRIMARY KEY",
+          "def": "PRIMARY KEY (O_ORDERKEY)",
+          "table": "orders",
+          "columns": [
+            "O_ORDERKEY"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "part",
+      "type": "MANAGED",
+      "comment": "Parts catalog with manufacturing and pricing information",
+      "columns": [
+        {
+          "name": "P_PARTKEY",
+          "type": "LONG",
+          "nullable": false,
+          "comment": "Unique identifier for each part in the catalog"
+        },
+        {
+          "name": "P_NAME",
+          "type": "STRING",
+          "nullable": false,
+          "comment": "Name of the part"
+        },
+        {
+          "name": "P_MFGR",
+          "type": "STRING",
+          "nullable": false,
+          "comment": "Manufacturer of the part"
+        },
+        {
+          "name": "P_BRAND",
+          "type": "STRING",
+          "nullable": false,
+          "comment": "Brand name of the part"
+        },
+        {
+          "name": "P_TYPE",
+          "type": "STRING",
+          "nullable": false,
+          "comment": "Type/category of the part"
+        },
+        {
+          "name": "P_SIZE",
+          "type": "LONG",
+          "nullable": false,
+          "comment": "Size of the part in standardized units"
+        },
+        {
+          "name": "P_CONTAINER",
+          "type": "STRING",
+          "nullable": false,
+          "comment": "Container type for shipping the part"
+        },
+        {
+          "name": "P_RETAILPRICE",
+          "type": "DECIMAL",
+          "nullable": false,
+          "comment": "Retail price of the part"
+        },
+        {
+          "name": "P_COMMENT",
+          "type": "STRING",
+          "nullable": true,
+          "comment": "General comments about the part"
+        }
+      ],
+      "constraints": [
+        {
+          "name": "part_pk",
+          "type": "PRIMARY KEY",
+          "def": "PRIMARY KEY (P_PARTKEY)",
+          "table": "part",
+          "columns": [
+            "P_PARTKEY"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "partsupp",
+      "type": "MANAGED",
+      "comment": "Association of parts with suppliers including available quantity and cost",
+      "columns": [
+        {
+          "name": "PS_PARTKEY",
+          "type": "LONG",
+          "nullable": false,
+          "comment": "Foreign key to the part being supplied"
+        },
+        {
+          "name": "PS_SUPPKEY",
+          "type": "LONG",
+          "nullable": false,
+          "comment": "Foreign key to the supplier providing the part"
+        },
+        {
+          "name": "PS_AVAILQTY",
+          "type": "LONG",
+          "nullable": false,
+          "comment": "Available quantity of this part from this supplier"
+        },
+        {
+          "name": "PS_SUPPLYCOST",
+          "type": "DECIMAL",
+          "nullable": false,
+          "comment": "Cost to supply this part from this supplier"
+        },
+        {
+          "name": "PS_COMMENT",
+          "type": "STRING",
+          "nullable": true,
+          "comment": "General comments about this part-supplier relationship"
+        }
+      ],
+      "constraints": [
+        {
+          "name": "partsupp_partkey_fk",
+          "type": "FOREIGN KEY",
+          "def": "FOREIGN KEY (PS_PARTKEY) REFERENCES part(P_PARTKEY)",
+          "table": "partsupp",
+          "referenced_table": "part",
+          "columns": [
+            "PS_PARTKEY"
+          ],
+          "referenced_columns": [
+            "P_PARTKEY"
+          ]
+        },
+        {
+          "name": "partsupp_pk",
+          "type": "PRIMARY KEY",
+          "def": "PRIMARY KEY (PS_SUPPKEY, PS_PARTKEY)",
+          "table": "partsupp",
+          "columns": [
+            "PS_SUPPKEY",
+            "PS_PARTKEY"
+          ]
+        },
+        {
+          "name": "partsupp_suppkey_fk",
+          "type": "FOREIGN KEY",
+          "def": "FOREIGN KEY (PS_SUPPKEY) REFERENCES supplier(S_SUPPKEY)",
+          "table": "partsupp",
+          "referenced_table": "supplier",
+          "columns": [
+            "PS_SUPPKEY"
+          ],
+          "referenced_columns": [
+            "S_SUPPKEY"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "region",
+      "type": "MANAGED",
+      "comment": "Geographic regions containing nations",
+      "columns": [
+        {
+          "name": "R_REGIONKEY",
+          "type": "LONG",
+          "nullable": false,
+          "comment": "Unique identifier for each geographic region"
+        },
+        {
+          "name": "R_NAME",
+          "type": "STRING",
+          "nullable": false,
+          "comment": "Name of the geographic region (e.g. AMERICA, ASIA)"
+        },
+        {
+          "name": "R_COMMENT",
+          "type": "STRING",
+          "nullable": true,
+          "comment": "General comments about the region"
+        }
+      ],
+      "constraints": [
+        {
+          "name": "region_pk",
+          "type": "PRIMARY KEY",
+          "def": "PRIMARY KEY (R_REGIONKEY)",
+          "table": "region",
+          "columns": [
+            "R_REGIONKEY"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "supplier",
+      "type": "MANAGED",
+      "comment": "Suppliers with contact and account information",
+      "columns": [
+        {
+          "name": "S_SUPPKEY",
+          "type": "LONG",
+          "nullable": false,
+          "comment": "Unique identifier for each supplier"
+        },
+        {
+          "name": "S_NAME",
+          "type": "STRING",
+          "nullable": false,
+          "comment": "Name of the supplier company"
+        },
+        {
+          "name": "S_ADDRESS",
+          "type": "STRING",
+          "nullable": false,
+          "comment": "Complete address of the supplier"
+        },
+        {
+          "name": "S_NATIONKEY",
+          "type": "LONG",
+          "nullable": false,
+          "comment": "Foreign key to the nation where supplier is located"
+        },
+        {
+          "name": "S_PHONE",
+          "type": "STRING",
+          "nullable": false,
+          "comment": "Phone number of the supplier"
+        },
+        {
+          "name": "S_ACCTBAL",
+          "type": "DECIMAL",
+          "nullable": false,
+          "comment": "Account balance with this supplier"
+        },
+        {
+          "name": "S_COMMENT",
+          "type": "STRING",
+          "nullable": true,
+          "comment": "General comments about the supplier"
+        }
+      ],
+      "constraints": [
+        {
+          "name": "supplier_nationkey_fk",
+          "type": "FOREIGN KEY",
+          "def": "FOREIGN KEY (S_NATIONKEY) REFERENCES nation(N_NATIONKEY)",
+          "table": "supplier",
+          "referenced_table": "nation",
+          "columns": [
+            "S_NATIONKEY"
+          ],
+          "referenced_columns": [
+            "N_NATIONKEY"
+          ]
+        },
+        {
+          "name": "supplier_pk",
+          "type": "PRIMARY KEY",
+          "def": "PRIMARY KEY (S_SUPPKEY)",
+          "table": "supplier",
+          "columns": [
+            "S_SUPPKEY"
+          ]
+        }
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "table": "customer",
+      "columns": [
+        "C_NATIONKEY"
+      ],
+      "cardinality": "zero_or_more",
+      "parent_table": "nation",
+      "parent_columns": [
+        "N_NATIONKEY"
+      ],
+      "parent_cardinality": "exactly_one",
+      "def": "FOREIGN KEY REFERENCES nation"
+    },
+    {
+      "table": "lineitem",
+      "columns": [
+        "L_ORDERKEY"
+      ],
+      "cardinality": "zero_or_more",
+      "parent_table": "orders",
+      "parent_columns": [
+        "O_ORDERKEY"
+      ],
+      "parent_cardinality": "exactly_one",
+      "def": "FOREIGN KEY REFERENCES orders"
+    },
+    {
+      "table": "lineitem",
+      "columns": [
+        "L_PARTKEY",
+        "L_SUPPKEY"
+      ],
+      "cardinality": "zero_or_more",
+      "parent_table": "partsupp",
+      "parent_columns": [
+        "PS_PARTKEY",
+        "PS_SUPPKEY"
+      ],
+      "parent_cardinality": "exactly_one",
+      "def": "FOREIGN KEY REFERENCES partsupp"
+    },
+    {
+      "table": "nation",
+      "columns": [
+        "N_REGIONKEY"
+      ],
+      "cardinality": "zero_or_more",
+      "parent_table": "region",
+      "parent_columns": [
+        "R_REGIONKEY"
+      ],
+      "parent_cardinality": "exactly_one",
+      "def": "FOREIGN KEY REFERENCES region"
+    },
+    {
+      "table": "orders",
+      "columns": [
+        "O_CUSTKEY"
+      ],
+      "cardinality": "zero_or_more",
+      "parent_table": "customer",
+      "parent_columns": [
+        "C_CUSTKEY"
+      ],
+      "parent_cardinality": "exactly_one",
+      "def": "FOREIGN KEY REFERENCES customer"
+    },
+    {
+      "table": "partsupp",
+      "columns": [
+        "PS_PARTKEY"
+      ],
+      "cardinality": "zero_or_more",
+      "parent_table": "part",
+      "parent_columns": [
+        "P_PARTKEY"
+      ],
+      "parent_cardinality": "exactly_one",
+      "def": "FOREIGN KEY REFERENCES part"
+    },
+    {
+      "table": "partsupp",
+      "columns": [
+        "PS_SUPPKEY"
+      ],
+      "cardinality": "zero_or_more",
+      "parent_table": "supplier",
+      "parent_columns": [
+        "S_SUPPKEY"
+      ],
+      "parent_cardinality": "exactly_one",
+      "def": "FOREIGN KEY REFERENCES supplier"
+    },
+    {
+      "table": "supplier",
+      "columns": [
+        "S_NATIONKEY"
+      ],
+      "cardinality": "zero_or_more",
+      "parent_table": "nation",
+      "parent_columns": [
+        "N_NATIONKEY"
+      ],
+      "parent_cardinality": "exactly_one",
+      "def": "FOREIGN KEY REFERENCES nation"
+    }
+  ],
+  "driver": {
+    "name": "databricks",
+    "database_version": "4.0.0 0000000000000000000000000000000000000000"
+  }
+}
