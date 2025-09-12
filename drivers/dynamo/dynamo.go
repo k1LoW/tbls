@@ -3,7 +3,6 @@ package dynamo
 import (
 	"context"
 	"fmt"
-	"regexp"
 
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
@@ -12,7 +11,30 @@ import (
 	"github.com/k1LoW/tbls/schema"
 )
 
-var re = regexp.MustCompile(`(?s)\n\s*`)
+// formatKeySchema formats KeySchemaElement slice to expected string format.
+func formatKeySchema(keySchema []types.KeySchemaElement) string {
+	if len(keySchema) == 0 {
+		return "[]"
+	}
+
+	result := "["
+	for i, k := range keySchema {
+		if i > 0 {
+			result += " "
+		}
+		result += fmt.Sprintf("{ AttributeName: \"%s\", KeyType: \"%s\" }", *k.AttributeName, string(k.KeyType))
+	}
+	result += "]"
+	return result
+}
+
+// formatProjection formats Projection to expected string format.
+func formatProjection(projection *types.Projection) string {
+	if projection == nil {
+		return "{ ProjectionType: \"\" }"
+	}
+	return fmt.Sprintf("{ ProjectionType: \"%s\" }", string(projection.ProjectionType))
+}
 
 type Dynamodb struct {
 	ctx    context.Context
@@ -95,7 +117,7 @@ func listConstraints(td *types.TableDescription) []*schema.Constraint {
 		for _, k := range td.KeySchema {
 			columns = append(columns, *k.AttributeName)
 		}
-		def := re.ReplaceAllString(fmt.Sprintf("%v", td.KeySchema), " ")
+		def := formatKeySchema(td.KeySchema)
 		constraint := &schema.Constraint{
 			Name:    "Primary Key",
 			Type:    "Partition key and sort key",
@@ -108,7 +130,7 @@ func listConstraints(td *types.TableDescription) []*schema.Constraint {
 		for _, k := range td.KeySchema {
 			columns = append(columns, *k.AttributeName)
 		}
-		def := re.ReplaceAllString(fmt.Sprintf("%v", td.KeySchema), " ")
+		def := formatKeySchema(td.KeySchema)
 		constraint := &schema.Constraint{
 			Name:    "Primary Key",
 			Type:    "Partition key",
@@ -123,7 +145,7 @@ func listConstraints(td *types.TableDescription) []*schema.Constraint {
 func listIndexes(td *types.TableDescription) []*schema.Index {
 	indexes := []*schema.Index{}
 	for _, lsi := range td.LocalSecondaryIndexes {
-		def := re.ReplaceAllString(fmt.Sprintf("LocalSecondaryIndex { %v, %v }", lsi.KeySchema, lsi.Projection), " ")
+		def := fmt.Sprintf("LocalSecondaryIndex { %s, %s }", formatKeySchema(lsi.KeySchema), formatProjection(lsi.Projection))
 		Index := &schema.Index{
 			Name: *lsi.IndexName,
 			Def:  def,
@@ -131,7 +153,7 @@ func listIndexes(td *types.TableDescription) []*schema.Index {
 		indexes = append(indexes, Index)
 	}
 	for _, gsi := range td.GlobalSecondaryIndexes {
-		def := re.ReplaceAllString(fmt.Sprintf("GlobalSecondaryIndex { %v, %v }", gsi.KeySchema, gsi.Projection), " ")
+		def := fmt.Sprintf("GlobalSecondaryIndex { %s, %s }", formatKeySchema(gsi.KeySchema), formatProjection(gsi.Projection))
 		Index := &schema.Index{
 			Name: *gsi.IndexName,
 			Def:  def,
