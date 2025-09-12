@@ -1,5 +1,13 @@
 # Changelog
 
+## [v1.88.0](https://github.com/k1LoW/tbls/compare/v1.87.0...v1.88.0) - 2025-09-12
+### New Features 🎉
+- Add databricks support by @Ewan-Keith in https://github.com/k1LoW/tbls/pull/737
+### Other Changes
+- chore: fix lint warn by @k1LoW in https://github.com/k1LoW/tbls/pull/743
+- chore(deps): bump actions/checkout from 4 to 5 in the dependencies group by @dependabot[bot] in https://github.com/k1LoW/tbls/pull/739
+- chore(deps): bump the dependencies group across 1 directory with 12 updates by @dependabot[bot] in https://github.com/k1LoW/tbls/pull/744
+
 ## [v1.87.0](https://github.com/k1LoW/tbls/compare/v1.86.1...v1.87.0) - 2025-08-02
 ### Breaking Changes 🛠
 - feat: change schema.json indentation by @k1LoW in https://github.com/k1LoW/tbls/pull/735
