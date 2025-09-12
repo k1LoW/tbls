@@ -1,13 +1,15 @@
 module github.com/k1LoW/tbls
 
-go 1.23.11
+go 1.24.7
 
 require (
 	cloud.google.com/go/bigquery v1.69.0
 	cloud.google.com/go/spanner v1.83.0
 	github.com/ClickHouse/clickhouse-go/v2 v2.40.1
 	github.com/aquasecurity/go-version v0.0.1
-	github.com/aws/aws-sdk-go v1.55.8
+	github.com/aws/aws-sdk-go-v2 v1.39.0
+	github.com/aws/aws-sdk-go-v2/config v1.28.7
+	github.com/aws/aws-sdk-go-v2/service/dynamodb v1.50.3
 	github.com/beta/freetype v0.0.1
 	github.com/cli/safeexec v1.0.1
 	github.com/databricks/databricks-sql-go v1.8.0
@@ -68,9 +70,7 @@ require (
 	github.com/apache/arrow/go/v12 v12.0.1 // indirect
 	github.com/apache/arrow/go/v15 v15.0.2 // indirect
 	github.com/apache/thrift v0.21.0 // indirect
-	github.com/aws/aws-sdk-go-v2 v1.39.0 // indirect
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.6.7 // indirect
-	github.com/aws/aws-sdk-go-v2/config v1.28.7 // indirect
 	github.com/aws/aws-sdk-go-v2/credentials v1.17.48 // indirect
 	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.16.22 // indirect
 	github.com/aws/aws-sdk-go-v2/feature/s3/manager v1.17.44 // indirect
@@ -78,7 +78,6 @@ require (
 	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.7.7 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/ini v1.8.1 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/v4a v1.3.26 // indirect
-	github.com/aws/aws-sdk-go-v2/service/dynamodb v1.50.3 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/accept-encoding v1.13.1 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/checksum v1.4.7 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/endpoint-discovery v1.11.7 // indirect
@@ -135,7 +134,6 @@ require (
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
 	github.com/hashicorp/go-retryablehttp v0.7.7 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
-	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/josharian/mapfs v0.0.0-20210615234106-095c008854e6 // indirect
 	github.com/josharian/txtarfs v0.0.0-20240408113805-5dc76b8fe6bf // indirect
 	github.com/k1LoW/fontdir v0.1.1 // indirect
