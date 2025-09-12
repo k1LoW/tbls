@@ -3,22 +3,45 @@ package dynamo
 import (
 	"context"
 	"fmt"
-	"regexp"
 
-	"github.com/aws/aws-sdk-go/service/dynamodb"
+	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
+	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 	"github.com/k1LoW/errors"
 	"github.com/k1LoW/tbls/dict"
 	"github.com/k1LoW/tbls/schema"
 )
 
-var re = regexp.MustCompile(`(?s)\n\s*`)
+// formatKeySchema formats KeySchemaElement slice to expected string format.
+func formatKeySchema(keySchema []types.KeySchemaElement) string {
+	if len(keySchema) == 0 {
+		return "[]"
+	}
+
+	result := "["
+	for i, k := range keySchema {
+		if i > 0 {
+			result += " "
+		}
+		result += fmt.Sprintf("{ AttributeName: \"%s\", KeyType: \"%s\" }", *k.AttributeName, string(k.KeyType))
+	}
+	result += "]"
+	return result
+}
+
+// formatProjection formats Projection to expected string format.
+func formatProjection(projection *types.Projection) string {
+	if projection == nil {
+		return "{ ProjectionType: \"\" }"
+	}
+	return fmt.Sprintf("{ ProjectionType: \"%s\" }", string(projection.ProjectionType))
+}
 
 type Dynamodb struct {
 	ctx    context.Context
-	client *dynamodb.DynamoDB
+	client *dynamodb.Client
 }
 
-func New(ctx context.Context, client *dynamodb.DynamoDB) (*Dynamodb, error) {
+func New(ctx context.Context, client *dynamodb.Client) (*Dynamodb, error) {
 	return &Dynamodb{
 		ctx:    ctx,
 		client: client,
@@ -38,16 +61,16 @@ func (d *Dynamodb) Analyze(s *schema.Schema) error {
 	tables := []*schema.Table{}
 	tableType := "BASIC TABLE"
 	for {
-		list, err := d.client.ListTablesWithContext(d.ctx, input)
+		list, err := d.client.ListTables(d.ctx, input)
 		if err != nil {
 			return err
 		}
 
 		for _, t := range list.TableNames {
 			input := &dynamodb.DescribeTableInput{
-				TableName: t,
+				TableName: &t,
 			}
-			desc, err := d.client.DescribeTableWithContext(d.ctx, input)
+			desc, err := d.client.DescribeTable(d.ctx, input)
 			if err != nil {
 				return err
 			}
@@ -73,12 +96,12 @@ func (d *Dynamodb) Analyze(s *schema.Schema) error {
 	return nil
 }
 
-func listColumns(td *dynamodb.TableDescription) []*schema.Column {
+func listColumns(td *types.TableDescription) []*schema.Column {
 	columns := []*schema.Column{}
 	for _, ad := range td.AttributeDefinitions {
 		column := &schema.Column{
 			Name:     *ad.AttributeName,
-			Type:     *ad.AttributeType,
+			Type:     string(ad.AttributeType),
 			Nullable: false,
 		}
 		columns = append(columns, column)
@@ -86,7 +109,7 @@ func listColumns(td *dynamodb.TableDescription) []*schema.Column {
 	return columns
 }
 
-func listConstraints(td *dynamodb.TableDescription) []*schema.Constraint {
+func listConstraints(td *types.TableDescription) []*schema.Constraint {
 	constraints := []*schema.Constraint{}
 	switch {
 	case len(td.KeySchema) == 2:
@@ -94,7 +117,7 @@ func listConstraints(td *dynamodb.TableDescription) []*schema.Constraint {
 		for _, k := range td.KeySchema {
 			columns = append(columns, *k.AttributeName)
 		}
-		def := re.ReplaceAllString(fmt.Sprintf("%v", td.KeySchema), " ")
+		def := formatKeySchema(td.KeySchema)
 		constraint := &schema.Constraint{
 			Name:    "Primary Key",
 			Type:    "Partition key and sort key",
@@ -107,7 +130,7 @@ func listConstraints(td *dynamodb.TableDescription) []*schema.Constraint {
 		for _, k := range td.KeySchema {
 			columns = append(columns, *k.AttributeName)
 		}
-		def := re.ReplaceAllString(fmt.Sprintf("%v", td.KeySchema), " ")
+		def := formatKeySchema(td.KeySchema)
 		constraint := &schema.Constraint{
 			Name:    "Primary Key",
 			Type:    "Partition key",
@@ -119,10 +142,10 @@ func listConstraints(td *dynamodb.TableDescription) []*schema.Constraint {
 	return constraints
 }
 
-func listIndexes(td *dynamodb.TableDescription) []*schema.Index {
+func listIndexes(td *types.TableDescription) []*schema.Index {
 	indexes := []*schema.Index{}
 	for _, lsi := range td.LocalSecondaryIndexes {
-		def := re.ReplaceAllString(fmt.Sprintf("LocalSecondaryIndex { %s, %s }", lsi.KeySchema, lsi.Projection.String()), " ")
+		def := fmt.Sprintf("LocalSecondaryIndex { %s, %s }", formatKeySchema(lsi.KeySchema), formatProjection(lsi.Projection))
 		Index := &schema.Index{
 			Name: *lsi.IndexName,
 			Def:  def,
@@ -130,7 +153,7 @@ func listIndexes(td *dynamodb.TableDescription) []*schema.Index {
 		indexes = append(indexes, Index)
 	}
 	for _, gsi := range td.GlobalSecondaryIndexes {
-		def := re.ReplaceAllString(fmt.Sprintf("GlobalSecondaryIndex { %s, %s }", gsi.KeySchema, gsi.Projection.String()), " ")
+		def := fmt.Sprintf("GlobalSecondaryIndex { %s, %s }", formatKeySchema(gsi.KeySchema), formatProjection(gsi.Projection))
 		Index := &schema.Index{
 			Name: *gsi.IndexName,
 			Def:  def,

@@ -8,8 +8,6 @@ import (
 
 	"github.com/k1LoW/errors"
 	"github.com/k1LoW/tbls/schema"
-
-	_ "github.com/databricks/databricks-sql-go"
 )
 
 type Databricks struct {
