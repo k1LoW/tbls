@@ -7,9 +7,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/dynamodb"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/k1LoW/tbls/drivers/dynamo"
 	"github.com/k1LoW/tbls/schema"
 )
@@ -30,16 +30,16 @@ func AnalyzeDynamodb(urlstr string) (*schema.Schema, error) {
 
 	region := u.Host
 
-	sess := session.Must(session.NewSessionWithOptions(session.Options{
-		SharedConfigState: session.SharedConfigEnable,
-	}))
-
-	config := aws.NewConfig().WithRegion(region)
-	if os.Getenv("AWS_ENDPOINT_URL") != "" {
-		config = config.WithEndpoint(os.Getenv("AWS_ENDPOINT_URL"))
+	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion(region))
+	if err != nil {
+		return s, err
 	}
 
-	client := dynamodb.New(sess, config)
+	if os.Getenv("AWS_ENDPOINT_URL") != "" {
+		cfg.BaseEndpoint = aws.String(os.Getenv("AWS_ENDPOINT_URL"))
+	}
+
+	client := dynamodb.NewFromConfig(cfg)
 	ctx := context.Background()
 
 	driver, err := dynamo.New(ctx, client)

@@ -7,15 +7,15 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/dynamodb"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/k1LoW/tbls/schema"
 )
 
 var region = "ap-northeast-1"
 var ctx context.Context
-var client *dynamodb.DynamoDB
+var client *dynamodb.Client
 
 func TestAnalyze(t *testing.T) {
 	ctx, client := initClient(t)
@@ -40,12 +40,20 @@ func TestAnalyze(t *testing.T) {
 	}
 }
 
-func initClient(t *testing.T) (context.Context, *dynamodb.DynamoDB) {
-	sess := session.Must(session.NewSessionWithOptions(session.Options{
-		SharedConfigState: session.SharedConfigEnable,
-	}))
-	config := aws.NewConfig().WithRegion(region).WithEndpoint("http://localhost:18000")
-	client = dynamodb.New(sess, config)
+func initClient(t *testing.T) (context.Context, *dynamodb.Client) {
+	cfg, err := config.LoadDefaultConfig(context.TODO(),
+		config.WithRegion(region),
+		config.WithEndpointResolverWithOptions(aws.EndpointResolverWithOptionsFunc(
+			func(service, region string, options ...interface{}) (aws.Endpoint, error) {
+				return aws.Endpoint{
+					URL: "http://localhost:18000",
+				}, nil
+			})),
+	)
+	if err != nil {
+		t.Fatalf("unable to load SDK config, %v", err)
+	}
+	client = dynamodb.NewFromConfig(cfg)
 	ctx = context.Background()
 	return ctx, client
 }
