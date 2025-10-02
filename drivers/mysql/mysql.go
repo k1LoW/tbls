@@ -366,7 +366,7 @@ AND table_name = ?;
 SELECT
   kcu.table_name,
   kcu.constraint_name,
-  sub.costraint_type,
+  sub.constraint_type,
   GROUP_CONCAT(kcu.column_name ORDER BY kcu.ordinal_position, position_in_unique_constraint SEPARATOR ', ') AS column_name,
   kcu.referenced_table_name,
   GROUP_CONCAT(kcu.referenced_column_name ORDER BY kcu.ordinal_position, position_in_unique_constraint SEPARATOR ', ') AS referenced_column_name
@@ -386,7 +386,7 @@ INNER JOIN
         WHEN c.column_key = 'UNI' THEN 'UNIQUE'
         WHEN c.column_key = 'MUL' THEN 'UNIQUE'
         ELSE 'UNKNOWN'
-   END) AS costraint_type
+   END) AS constraint_type
    FROM information_schema.key_column_usage AS kcu
    LEFT JOIN information_schema.columns AS c ON kcu.table_schema = c.table_schema AND kcu.table_name = c.table_name AND kcu.column_name = c.column_name
    WHERE kcu.ordinal_position = 1
@@ -396,7 +396,7 @@ ON kcu.constraint_name = sub.constraint_name
   AND kcu.table_name = sub.table_name
   AND (kcu.referenced_table_name = sub.referenced_table_name OR (kcu.referenced_table_name IS NULL AND sub.referenced_table_name IS NULL))
 WHERE kcu.table_schema= ?
-GROUP BY kcu.table_name, kcu.constraint_name, sub.costraint_type, kcu.referenced_table_name`, s.Name)
+GROUP BY kcu.table_name, kcu.constraint_name, sub.constraint_type, kcu.referenced_table_name`, s.Name)
 	if err != nil {
 		return errors.WithStack(err)
 	}
