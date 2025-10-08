@@ -1,3 +1,8 @@
+> [!CAUTION]
+> **Correction of Licensing Error and Request for Action**<br>
+> **Please upgrade version to v1.89.0 or later**<br>
+> For details, see https://github.com/k1LoW/tbls/issues/751
+
 <p align="center">
 <br>
 <img src="https://github.com/k1LoW/tbls/raw/main/img/logo.png" width="200" alt="tbls">
