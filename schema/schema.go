@@ -7,9 +7,9 @@ import (
 	"sort"
 	"strings"
 
+	wildcard "github.com/IGLOU-EU/go-wildcard/v2"
 	"github.com/k1LoW/errors"
 	"github.com/k1LoW/tbls/dict"
-	"github.com/minio/pkg/wildcard"
 	"github.com/samber/lo"
 )
 
@@ -240,7 +240,7 @@ func (s *Schema) MatchTablesByName(name string) (_ []*Table, err error) {
 	}()
 	var tables []*Table
 	for _, t := range s.Tables {
-		if wildcard.MatchSimple(s.NormalizeTableName(name), s.NormalizeTableName(t.Name)) {
+		if wildcard.Match(s.NormalizeTableName(name), s.NormalizeTableName(t.Name)) {
 			tables = append(tables, t)
 		}
 	}

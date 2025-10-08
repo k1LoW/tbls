@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
+	wildcard "github.com/IGLOU-EU/go-wildcard/v2"
 	"github.com/k1LoW/errors"
-	"github.com/minio/pkg/wildcard"
 	"github.com/samber/lo"
 )
 
@@ -174,7 +174,7 @@ func matchTableOrColumnLabels(il []string, t *Table) bool {
 func matchLabels(il []string, l Labels) bool {
 	for _, ll := range l {
 		for _, ill := range il {
-			if wildcard.MatchSimple(ill, ll.Name) {
+			if wildcard.Match(ill, ll.Name) {
 				return true
 			}
 		}
@@ -184,7 +184,7 @@ func matchLabels(il []string, l Labels) bool {
 
 func matchLength(s []string, e string) (int, bool) {
 	for _, v := range s {
-		if wildcard.MatchSimple(v, e) {
+		if wildcard.Match(v, e) {
 			return len(strings.ReplaceAll(v, "*", "")), true
 		}
 	}

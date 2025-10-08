@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	wildcard "github.com/IGLOU-EU/go-wildcard/v2"
 	"github.com/aquasecurity/go-version/pkg/version"
 	"github.com/goccy/go-yaml"
 	"github.com/k1LoW/errors"
@@ -14,7 +15,6 @@ import (
 	"github.com/k1LoW/tbls/dict"
 	"github.com/k1LoW/tbls/schema"
 	ver "github.com/k1LoW/tbls/version"
-	"github.com/minio/pkg/wildcard"
 	"github.com/samber/lo"
 )
 
@@ -801,7 +801,7 @@ func mergeDetectedRelations(s *schema.Schema, strategy *NamingStrategy) {
 
 func matchLength(s []string, e string) (int, bool) {
 	for _, v := range s {
-		if wildcard.MatchSimple(v, e) {
+		if wildcard.Match(v, e) {
 			return len(strings.ReplaceAll(v, "*", "")), true
 		}
 	}
