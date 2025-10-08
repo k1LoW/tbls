@@ -1,5 +1,12 @@
 # Changelog
 
+## [v1.89.0](https://github.com/k1LoW/tbls/compare/v1.88.0...v1.89.0) - 2025-10-08
+### Other Changes
+- chore(deps): bump the dependencies group with 10 updates by @dependabot[bot] in https://github.com/k1LoW/tbls/pull/746
+- chore(deps): bump actions/setup-go from 5 to 6 in the dependencies group by @dependabot[bot] in https://github.com/k1LoW/tbls/pull/745
+- chore(drivers): fix typo analyze query of mysql by @seipan in https://github.com/k1LoW/tbls/pull/748
+- fix: use go-wildcard instead by @k1LoW in https://github.com/k1LoW/tbls/pull/750
+
 ## [v1.88.0](https://github.com/k1LoW/tbls/compare/v1.87.0...v1.88.0) - 2025-09-12
 ### New Features 🎉
 - Add databricks support by @Ewan-Keith in https://github.com/k1LoW/tbls/pull/737
