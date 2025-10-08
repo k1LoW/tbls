@@ -62,7 +62,7 @@ func AnalyzeDatabricks(urlstr string) (_ *schema.Schema, err error) {
 		databricksDSN = fmt.Sprintf("token:%s@%s%s?catalog=%s&schema=%s", token, u.Host, u.Path, catalog, schemaName)
 	} else {
 		// OAuth client credentials authentication: host:port/path?authType=OauthM2M&clientID=ID&clientSecret=SECRET&catalog=CATALOG&schema=SCHEMA
-		databricksDSN = fmt.Sprintf("%s%s?authType=OauthM2M&clientID=%s&clientSecret=%s&catalog=%s&schema=%s", 
+		databricksDSN = fmt.Sprintf("%s%s?authType=OauthM2M&clientID=%s&clientSecret=%s&catalog=%s&schema=%s",
 			u.Host, u.Path, clientID, clientSecret, catalog, schemaName)
 	}
 

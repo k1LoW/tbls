@@ -6,6 +6,7 @@ require (
 	cloud.google.com/go/bigquery v1.71.0
 	cloud.google.com/go/spanner v1.86.0
 	github.com/ClickHouse/clickhouse-go/v2 v2.40.3
+	github.com/IGLOU-EU/go-wildcard/v2 v2.1.0
 	github.com/aquasecurity/go-version v0.0.1
 	github.com/aws/aws-sdk-go-v2 v1.39.2
 	github.com/aws/aws-sdk-go-v2/config v1.31.12
@@ -31,7 +32,6 @@ require (
 	github.com/mattn/go-runewidth v0.0.19
 	github.com/mattn/go-sqlite3 v1.14.32
 	github.com/microsoft/go-mssqldb v1.9.3
-	github.com/minio/pkg v1.7.5
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2
 	github.com/samber/lo v1.51.0

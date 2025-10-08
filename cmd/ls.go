@@ -26,9 +26,9 @@ import (
 	"os"
 	"strings"
 
+	wildcard "github.com/IGLOU-EU/go-wildcard/v2"
 	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/schema"
-	"github.com/minio/pkg/wildcard"
 	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
 )
@@ -91,7 +91,7 @@ var lsCmd = &cobra.Command{
 		matches := []*schema.Table{}
 		for _, t := range s.Tables {
 			for _, p := range patterns {
-				if wildcard.MatchSimple(p, t.Name) {
+				if wildcard.Match(p, t.Name) {
 					matches = append(matches, t)
 				}
 			}
