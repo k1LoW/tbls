@@ -16,7 +16,7 @@ TBLS ?= ./tbls
 
 default: test
 
-ci: depsdev build db test testdoc testdoc_hide_auto_increment test_too_many_tables test_json test_ext_subcommand test_ext_driver test_jsonschema doc
+ci: depsdev check_license build db test testdoc testdoc_hide_auto_increment test_too_many_tables test_json test_ext_subcommand test_ext_driver test_jsonschema doc
 
 ci_windows: depsdev build db_sqlite testdoc_sqlite
 
@@ -125,6 +125,13 @@ test_config: build
 	$(TBLS) diff
 	rm .tbls.yml
 
+check_license:
+	go-licenses check ./... \
+	--ignore github.com/beta/freetype \
+	--ignore github.com/golang/freetype \
+	--disallowed_types=permissive,forbidden,restricted \
+	--include_tests
+
 doc_bigquery: build
 	$(TBLS) doc bq://bigquery-public-data/crypto_bitcoin?creds=client_secrets.json -c testdata/crypto_bitcoin_tbls.yml -f sample/bigquery_crypto_bitcoin
 	$(TBLS) doc bq://bigquery-public-data/census_bureau_international?creds=client_secrets.json -f sample/bigquery_census_bureau_international
@@ -175,6 +182,7 @@ depsdev:
 	go install github.com/Songmu/gocredits/cmd/gocredits@latest
 	go install github.com/securego/gosec/v2/cmd/gosec@latest
 	go install github.com/santhosh-tekuri/jsonschema/cmd/jv@latest
+	go install github.com/google/go-licenses/v2@latest
 
 prerelease:
 	git pull origin --tag
