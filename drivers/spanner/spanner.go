@@ -50,6 +50,7 @@ WHERE
 	defer tableIter.Stop()
 
 	tables := []*schema.Table{}
+	tableMap := map[string]*schema.Table{}
 	interleaves := []interleave{}
 	tableType := "BASIC TABLE"
 	for {
@@ -266,12 +267,117 @@ GROUP BY c.TABLE_CATALOG, c.TABLE_SCHEMA, c.TABLE_NAME, c.INDEX_NAME, c.INDEX_TY
 		table.Constraints = constraints
 
 		tables = append(tables, table)
+		tableMap[table.Name] = table
 	}
 
 	s.Tables = tables
 
-	// interleaves
+	// bulk get foreign keys
+	fkStmt := spanner.Statement{
+		SQL: `
+SELECT
+  kcu.TABLE_NAME,
+  rc.CONSTRAINT_NAME,
+  STRING_AGG(kcu.COLUMN_NAME, ', ' ORDER BY kcu.ORDINAL_POSITION) AS columns,
+  ccu.TABLE_NAME as REFERENCED_TABLE_NAME,
+  STRING_AGG(ccu.COLUMN_NAME, ', ' ORDER BY kcu.ORDINAL_POSITION) AS referenced_columns,
+  rc.DELETE_RULE
+FROM
+  INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS AS rc
+INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE AS kcu
+  ON rc.CONSTRAINT_NAME = kcu.CONSTRAINT_NAME
+INNER JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE AS ccu
+  ON rc.UNIQUE_CONSTRAINT_NAME = ccu.CONSTRAINT_NAME
+WHERE
+  kcu.TABLE_CATALOG = '' AND kcu.TABLE_SCHEMA = ''
+  AND ccu.TABLE_CATALOG = '' AND ccu.TABLE_SCHEMA = ''
+GROUP BY kcu.TABLE_NAME, rc.CONSTRAINT_NAME, ccu.TABLE_NAME, rc.DELETE_RULE;
+`,
+	}
+	fkIter := sp.client.Single().Query(sp.ctx, fkStmt)
+	defer fkIter.Stop()
+
 	relations := []*schema.Relation{}
+
+	for {
+		fkRow, err := fkIter.Next()
+		if errors.Is(err, iterator.Done) {
+			break
+		}
+		if err != nil {
+			return errors.WithStack(err)
+		}
+		var (
+			tableName           string
+			constraintName      string
+			columns             string
+			referencedTableName string
+			referencedColumns   string
+			deleteRule          string
+		)
+		if err := fkRow.Columns(&tableName, &constraintName, &columns, &referencedTableName, &referencedColumns, &deleteRule); err != nil {
+			return errors.WithStack(err)
+		}
+
+		t, ok := tableMap[tableName]
+		if !ok {
+			continue
+		}
+		rt, ok := tableMap[referencedTableName]
+		if !ok {
+			continue
+		}
+
+		columnList := strings.Split(columns, ", ")
+		referencedColumnList := strings.Split(referencedColumns, ", ")
+
+		constraintDef := fmt.Sprintf("FOREIGN KEY (%s) REFERENCES %s (%s)", columns, referencedTableName, referencedColumns)
+		if deleteRule != "" && deleteRule != "NO ACTION" {
+			constraintDef = fmt.Sprintf("%s ON DELETE %s", constraintDef, deleteRule)
+		}
+
+		constraint := &schema.Constraint{
+			Name:              constraintName,
+			Type:              schema.TypeFK,
+			Def:               constraintDef,
+			Table:             &t.Name,
+			Columns:           columnList,
+			ReferencedTable:   &rt.Name,
+			ReferencedColumns: referencedColumnList,
+		}
+		t.Constraints = append(t.Constraints, constraint)
+
+		relation := &schema.Relation{
+			Table:         t,
+			Columns:       []*schema.Column{},
+			ParentTable:   rt,
+			ParentColumns: []*schema.Column{},
+			Def:           constraintDef,
+			Virtual:       false,
+		}
+
+		for _, colName := range columnList {
+			column, err := t.FindColumnByName(colName)
+			if err != nil {
+				return err
+			}
+			column.ParentRelations = append(column.ParentRelations, relation)
+			relation.Columns = append(relation.Columns, column)
+		}
+
+		for _, colName := range referencedColumnList {
+			column, err := rt.FindColumnByName(colName)
+			if err != nil {
+				return err
+			}
+			column.ChildRelations = append(column.ChildRelations, relation)
+			relation.ParentColumns = append(relation.ParentColumns, column)
+		}
+
+		relations = append(relations, relation)
+	}
+
+	// interleaves
 	for _, i := range interleaves {
 		t, err := s.FindTableByName(i.tableName)
 		if err != nil {
