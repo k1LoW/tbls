@@ -32,19 +32,27 @@ func (dbx *Databricks) Analyze(s *schema.Schema) error {
 		return errors.WithStack(err)
 	}
 
-	s.Name = fmt.Sprintf("%s.%s", currentCatalog, currentSchema)
+	var targetSchema sql.NullString
+	if currentSchema != "" {
+		targetSchema = sql.NullString{String: currentSchema, Valid: true}
+		s.Name = fmt.Sprintf("%s.%s", currentCatalog, currentSchema)
+		s.Driver.Meta.CurrentSchema = currentSchema
+	} else {
+		targetSchema = sql.NullString{Valid: false}
+		s.Name = currentCatalog
+	}
 
-	tables, err := dbx.getTables(currentCatalog, currentSchema)
+	tables, err := dbx.getTables(currentCatalog, targetSchema)
 	if err != nil {
 		return errors.WithStack(err)
 	}
 
-	columnsByTable, err := dbx.getAllColumns(currentCatalog, currentSchema)
+	columnsByTable, err := dbx.getAllColumns(currentCatalog, targetSchema)
 	if err != nil {
 		return errors.WithStack(err)
 	}
 
-	constraintsByTable, err := dbx.getAllConstraints(currentCatalog, currentSchema)
+	constraintsByTable, err := dbx.getAllConstraints(currentCatalog, targetSchema)
 	if err != nil {
 		return errors.WithStack(err)
 	}
@@ -61,7 +69,7 @@ func (dbx *Databricks) Analyze(s *schema.Schema) error {
 
 	s.Tables = tables
 
-	relations, err := dbx.getRelations(currentCatalog, currentSchema, tables)
+	relations, err := dbx.getRelations(currentCatalog, targetSchema, tables)
 	if err != nil {
 		return errors.WithStack(err)
 	}
@@ -86,17 +94,35 @@ func (dbx *Databricks) getCurrentContext() (string, string, error) {
 	return catalog, schema, nil
 }
 
-func (dbx *Databricks) getTables(catalog, schemaName string) ([]*schema.Table, error) {
-	query := `
-		SELECT 
-			table_name, 
-			table_type,
-			COALESCE(comment, '') as table_comment
-		FROM system.information_schema.tables 
-		WHERE table_catalog = ? AND table_schema = ?
-		ORDER BY table_name`
+func (dbx *Databricks) getTables(catalog string, schemaName sql.NullString) ([]*schema.Table, error) {
+	var query string
+	var rows *sql.Rows
+	var err error
 
-	rows, err := dbx.db.Query(query, catalog, schemaName)
+	if schemaName.Valid {
+		query = `
+			SELECT 
+				table_schema,
+				table_name, 
+				table_type,
+				COALESCE(comment, '') as table_comment
+			FROM system.information_schema.tables 
+			WHERE table_catalog = ? AND table_schema = ?
+			ORDER BY table_name`
+		rows, err = dbx.db.Query(query, catalog, schemaName.String)
+	} else {
+		query = `
+			SELECT 
+				table_schema,
+				table_name, 
+				table_type,
+				COALESCE(comment, '') as table_comment
+			FROM system.information_schema.tables 
+			WHERE table_catalog = ?
+			ORDER BY table_schema, table_name`
+		rows, err = dbx.db.Query(query, catalog)
+	}
+
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
@@ -104,19 +130,24 @@ func (dbx *Databricks) getTables(catalog, schemaName string) ([]*schema.Table, e
 
 	var tables []*schema.Table
 	for rows.Next() {
-		var tableName, tableType, tableComment string
-		if err := rows.Scan(&tableName, &tableType, &tableComment); err != nil {
+		var tableSchema, tableName, tableType, tableComment string
+		if err := rows.Scan(&tableSchema, &tableName, &tableType, &tableComment); err != nil {
 			return nil, errors.WithStack(err)
 		}
 
+		fullTableName := tableName
+		if !schemaName.Valid {
+			fullTableName = fmt.Sprintf("%s.%s", tableSchema, tableName)
+		}
+
 		table := &schema.Table{
-			Name:    tableName,
+			Name:    fullTableName,
 			Type:    strings.ToUpper(tableType),
 			Comment: tableComment,
 		}
 
 		if strings.ToUpper(tableType) == "VIEW" {
-			viewDef, err := dbx.getViewDefinition(catalog, schemaName, tableName)
+			viewDef, err := dbx.getViewDefinition(catalog, tableSchema, tableName)
 			if err != nil {
 				return nil, errors.WithStack(err)
 			}
@@ -129,25 +160,50 @@ func (dbx *Databricks) getTables(catalog, schemaName string) ([]*schema.Table, e
 	return tables, nil
 }
 
-func (dbx *Databricks) getAllColumns(catalog, schemaName string) (map[string][]*schema.Column, error) {
-	query := `
-		SELECT 
-			table_name,
-			column_name,
-			data_type,
-			is_nullable,
-			column_default,
-			COALESCE(comment, '') as column_comment
-		FROM system.information_schema.columns 
-		WHERE table_catalog = ? AND table_schema = ?
-		    AND table_name IN (
-		        SELECT table_name 
-		        FROM system.information_schema.tables 
-		        WHERE table_catalog = ? AND table_schema = ?
-		    )
-		ORDER BY table_name, ordinal_position`
+func (dbx *Databricks) getAllColumns(catalog string, schemaName sql.NullString) (map[string][]*schema.Column, error) {
+	var query string
+	var rows *sql.Rows
+	var err error
 
-	rows, err := dbx.db.Query(query, catalog, schemaName, catalog, schemaName)
+	if schemaName.Valid {
+		query = `
+			SELECT 
+				table_name,
+				column_name,
+				data_type,
+				is_nullable,
+				column_default,
+				COALESCE(comment, '') as column_comment
+			FROM system.information_schema.columns 
+			WHERE table_catalog = ? AND table_schema = ?
+			    AND table_name IN (
+			        SELECT table_name 
+			        FROM system.information_schema.tables 
+			        WHERE table_catalog = ? AND table_schema = ?
+			    )
+			ORDER BY table_name, ordinal_position`
+		rows, err = dbx.db.Query(query, catalog, schemaName.String, catalog, schemaName.String)
+	} else {
+		query = `
+			SELECT 
+				table_schema,
+				table_name,
+				column_name,
+				data_type,
+				is_nullable,
+				column_default,
+				COALESCE(comment, '') as column_comment
+			FROM system.information_schema.columns 
+			WHERE table_catalog = ?
+			    AND table_name IN (
+			        SELECT table_name 
+			        FROM system.information_schema.tables 
+			        WHERE table_catalog = ?
+			    )
+			ORDER BY table_schema, table_name, ordinal_position`
+		rows, err = dbx.db.Query(query, catalog, catalog)
+	}
+
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
@@ -158,8 +214,16 @@ func (dbx *Databricks) getAllColumns(catalog, schemaName string) (map[string][]*
 		var tableName, columnName, dataType, isNullable string
 		var columnDefault, columnComment sql.NullString
 
-		if err := rows.Scan(&tableName, &columnName, &dataType, &isNullable, &columnDefault, &columnComment); err != nil {
-			return nil, errors.WithStack(err)
+		if schemaName.Valid {
+			if err := rows.Scan(&tableName, &columnName, &dataType, &isNullable, &columnDefault, &columnComment); err != nil {
+				return nil, errors.WithStack(err)
+			}
+		} else {
+			var tableSchema string
+			if err := rows.Scan(&tableSchema, &tableName, &columnName, &dataType, &isNullable, &columnDefault, &columnComment); err != nil {
+				return nil, errors.WithStack(err)
+			}
+			tableName = fmt.Sprintf("%s.%s", tableSchema, tableName)
 		}
 
 		column := &schema.Column{
@@ -176,40 +240,81 @@ func (dbx *Databricks) getAllColumns(catalog, schemaName string) (map[string][]*
 	return columnsByTable, nil
 }
 
-func (dbx *Databricks) getAllConstraints(catalog, schemaName string) (map[string][]*schema.Constraint, error) {
-	query := `
-		SELECT 
-			tc.table_name,
-			tc.constraint_name,
-			tc.constraint_type,
-			COALESCE(COLLECT_LIST(kcu.column_name), ARRAY()) as constraint_columns,
-			COALESCE(MAX(kcu2.table_name), '') as referenced_table_name,
-			COALESCE(COLLECT_LIST(kcu2.column_name), ARRAY()) as referenced_columns
-		FROM system.information_schema.table_constraints tc
-		LEFT JOIN system.information_schema.key_column_usage kcu
-			ON tc.constraint_catalog = kcu.constraint_catalog
-			AND tc.constraint_schema = kcu.constraint_schema
-			AND tc.constraint_name = kcu.constraint_name
-			AND tc.table_name = kcu.table_name
-		LEFT JOIN system.information_schema.referential_constraints rc
-			ON tc.constraint_catalog = rc.constraint_catalog
-			AND tc.constraint_schema = rc.constraint_schema
-			AND tc.constraint_name = rc.constraint_name
-		LEFT JOIN system.information_schema.key_column_usage kcu2
-			ON rc.unique_constraint_catalog = kcu2.constraint_catalog
-			AND rc.unique_constraint_schema = kcu2.constraint_schema
-			AND rc.unique_constraint_name = kcu2.constraint_name
-			AND kcu.position_in_unique_constraint = kcu2.ordinal_position
-		WHERE tc.table_catalog = ? AND tc.table_schema = ?
-		    AND tc.table_name IN (
-		        SELECT table_name 
-		        FROM system.information_schema.tables 
-		        WHERE table_catalog = ? AND table_schema = ?
-		    )
-		GROUP BY tc.table_name, tc.constraint_name, tc.constraint_type
-		ORDER BY tc.table_name, tc.constraint_name`
+func (dbx *Databricks) getAllConstraints(catalog string, schemaName sql.NullString) (map[string][]*schema.Constraint, error) {
+	var query string
+	var rows *sql.Rows
+	var err error
 
-	rows, err := dbx.db.Query(query, catalog, schemaName, catalog, schemaName)
+	if schemaName.Valid {
+		query = `
+			SELECT 
+				tc.table_name,
+				tc.constraint_name,
+				tc.constraint_type,
+				COALESCE(COLLECT_LIST(kcu.column_name), ARRAY()) as constraint_columns,
+				COALESCE(MAX(kcu2.table_name), '') as referenced_table_name,
+				COALESCE(COLLECT_LIST(kcu2.column_name), ARRAY()) as referenced_columns
+			FROM system.information_schema.table_constraints tc
+			LEFT JOIN system.information_schema.key_column_usage kcu
+				ON tc.constraint_catalog = kcu.constraint_catalog
+				AND tc.constraint_schema = kcu.constraint_schema
+				AND tc.constraint_name = kcu.constraint_name
+				AND tc.table_name = kcu.table_name
+			LEFT JOIN system.information_schema.referential_constraints rc
+				ON tc.constraint_catalog = rc.constraint_catalog
+				AND tc.constraint_schema = rc.constraint_schema
+				AND tc.constraint_name = rc.constraint_name
+			LEFT JOIN system.information_schema.key_column_usage kcu2
+				ON rc.unique_constraint_catalog = kcu2.constraint_catalog
+				AND rc.unique_constraint_schema = kcu2.constraint_schema
+				AND rc.unique_constraint_name = kcu2.constraint_name
+				AND kcu.position_in_unique_constraint = kcu2.ordinal_position
+			WHERE tc.table_catalog = ? AND tc.table_schema = ?
+			    AND tc.table_name IN (
+			        SELECT table_name 
+			        FROM system.information_schema.tables 
+			        WHERE table_catalog = ? AND table_schema = ?
+			    )
+			GROUP BY tc.table_name, tc.constraint_name, tc.constraint_type
+			ORDER BY tc.table_name, tc.constraint_name`
+		rows, err = dbx.db.Query(query, catalog, schemaName.String, catalog, schemaName.String)
+	} else {
+		query = `
+			SELECT 
+				tc.table_schema,
+				tc.table_name,
+				tc.constraint_name,
+				tc.constraint_type,
+				COALESCE(COLLECT_LIST(kcu.column_name), ARRAY()) as constraint_columns,
+				COALESCE(MAX(kcu2.table_schema), '') as referenced_table_schema,
+				COALESCE(MAX(kcu2.table_name), '') as referenced_table_name,
+				COALESCE(COLLECT_LIST(kcu2.column_name), ARRAY()) as referenced_columns
+			FROM system.information_schema.table_constraints tc
+			LEFT JOIN system.information_schema.key_column_usage kcu
+				ON tc.constraint_catalog = kcu.constraint_catalog
+				AND tc.constraint_schema = kcu.constraint_schema
+				AND tc.constraint_name = kcu.constraint_name
+				AND tc.table_name = kcu.table_name
+			LEFT JOIN system.information_schema.referential_constraints rc
+				ON tc.constraint_catalog = rc.constraint_catalog
+				AND tc.constraint_schema = rc.constraint_schema
+				AND tc.constraint_name = rc.constraint_name
+			LEFT JOIN system.information_schema.key_column_usage kcu2
+				ON rc.unique_constraint_catalog = kcu2.constraint_catalog
+				AND rc.unique_constraint_schema = kcu2.constraint_schema
+				AND rc.unique_constraint_name = kcu2.constraint_name
+				AND kcu.position_in_unique_constraint = kcu2.ordinal_position
+			WHERE tc.table_catalog = ?
+			    AND tc.table_name IN (
+			        SELECT table_name 
+			        FROM system.information_schema.tables 
+			        WHERE table_catalog = ?
+			    )
+			GROUP BY tc.table_schema, tc.table_name, tc.constraint_name, tc.constraint_type
+			ORDER BY tc.table_schema, tc.table_name, tc.constraint_name`
+		rows, err = dbx.db.Query(query, catalog, catalog)
+	}
+
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
@@ -220,8 +325,19 @@ func (dbx *Databricks) getAllConstraints(catalog, schemaName string) (map[string
 		var tableName, constraintName, constraintType, referencedTableName string
 		var constraintColumnsStr, referencedColumnsStr string
 
-		if err := rows.Scan(&tableName, &constraintName, &constraintType, &constraintColumnsStr, &referencedTableName, &referencedColumnsStr); err != nil {
-			return nil, errors.WithStack(err)
+		if schemaName.Valid {
+			if err := rows.Scan(&tableName, &constraintName, &constraintType, &constraintColumnsStr, &referencedTableName, &referencedColumnsStr); err != nil {
+				return nil, errors.WithStack(err)
+			}
+		} else {
+			var tableSchema, referencedTableSchema string
+			if err := rows.Scan(&tableSchema, &tableName, &constraintName, &constraintType, &constraintColumnsStr, &referencedTableSchema, &referencedTableName, &referencedColumnsStr); err != nil {
+				return nil, errors.WithStack(err)
+			}
+			tableName = fmt.Sprintf("%s.%s", tableSchema, tableName)
+			if referencedTableName != "" && referencedTableSchema != "" {
+				referencedTableName = fmt.Sprintf("%s.%s", referencedTableSchema, referencedTableName)
+			}
 		}
 
 		constraintColumns := dbx.parseArrayString(constraintColumnsStr)
@@ -299,33 +415,66 @@ func (dbx *Databricks) buildConstraintDefinition(constraintType string, columns 
 	return fmt.Sprintf("%s (%s)", strings.ToUpper(constraintType), columnsStr)
 }
 
-func (dbx *Databricks) getRelations(catalog, schemaName string, tables []*schema.Table) ([]*schema.Relation, error) {
-	query := `
-		SELECT 
-			rc.constraint_name,
-			kcu1.table_name as table_name,
-			kcu1.column_name as column_name,
-			rc.unique_constraint_catalog,
-			rc.unique_constraint_schema,
-			rc.unique_constraint_name,
-			kcu2.table_name as referenced_table_name,
-			kcu2.column_name as referenced_column_name,
-			kcu1.ordinal_position
-		FROM system.information_schema.referential_constraints rc
-		INNER JOIN system.information_schema.key_column_usage kcu1 
-			ON rc.constraint_catalog = kcu1.constraint_catalog
-			AND rc.constraint_schema = kcu1.constraint_schema
-			AND rc.constraint_name = kcu1.constraint_name
-		INNER JOIN system.information_schema.key_column_usage kcu2
-			ON rc.unique_constraint_catalog = kcu2.constraint_catalog
-			AND rc.unique_constraint_schema = kcu2.constraint_schema
-			AND rc.unique_constraint_name = kcu2.constraint_name
-			AND kcu1.position_in_unique_constraint = kcu2.ordinal_position
-		WHERE rc.constraint_catalog = ?
-			AND rc.constraint_schema = ?
-		ORDER BY rc.constraint_name, kcu1.ordinal_position`
+func (dbx *Databricks) getRelations(catalog string, schemaName sql.NullString, tables []*schema.Table) ([]*schema.Relation, error) {
+	var query string
+	var rows *sql.Rows
+	var err error
 
-	rows, err := dbx.db.Query(query, catalog, schemaName)
+	if schemaName.Valid {
+		query = `
+			SELECT 
+				rc.constraint_name,
+				kcu1.table_name as table_name,
+				kcu1.column_name as column_name,
+				rc.unique_constraint_catalog,
+				rc.unique_constraint_schema,
+				rc.unique_constraint_name,
+				kcu2.table_name as referenced_table_name,
+				kcu2.column_name as referenced_column_name,
+				kcu1.ordinal_position
+			FROM system.information_schema.referential_constraints rc
+			INNER JOIN system.information_schema.key_column_usage kcu1 
+				ON rc.constraint_catalog = kcu1.constraint_catalog
+				AND rc.constraint_schema = kcu1.constraint_schema
+				AND rc.constraint_name = kcu1.constraint_name
+			INNER JOIN system.information_schema.key_column_usage kcu2
+				ON rc.unique_constraint_catalog = kcu2.constraint_catalog
+				AND rc.unique_constraint_schema = kcu2.constraint_schema
+				AND rc.unique_constraint_name = kcu2.constraint_name
+				AND kcu1.position_in_unique_constraint = kcu2.ordinal_position
+			WHERE rc.constraint_catalog = ?
+				AND rc.constraint_schema = ?
+			ORDER BY rc.constraint_name, kcu1.ordinal_position`
+		rows, err = dbx.db.Query(query, catalog, schemaName.String)
+	} else {
+		query = `
+			SELECT 
+				rc.constraint_name,
+				kcu1.table_schema as table_schema,
+				kcu1.table_name as table_name,
+				kcu1.column_name as column_name,
+				rc.unique_constraint_catalog,
+				rc.unique_constraint_schema,
+				rc.unique_constraint_name,
+				kcu2.table_schema as referenced_table_schema,
+				kcu2.table_name as referenced_table_name,
+				kcu2.column_name as referenced_column_name,
+				kcu1.ordinal_position
+			FROM system.information_schema.referential_constraints rc
+			INNER JOIN system.information_schema.key_column_usage kcu1 
+				ON rc.constraint_catalog = kcu1.constraint_catalog
+				AND rc.constraint_schema = kcu1.constraint_schema
+				AND rc.constraint_name = kcu1.constraint_name
+			INNER JOIN system.information_schema.key_column_usage kcu2
+				ON rc.unique_constraint_catalog = kcu2.constraint_catalog
+				AND rc.unique_constraint_schema = kcu2.constraint_schema
+				AND rc.unique_constraint_name = kcu2.constraint_name
+				AND kcu1.position_in_unique_constraint = kcu2.ordinal_position
+			WHERE rc.constraint_catalog = ?
+			ORDER BY rc.constraint_name, kcu1.ordinal_position`
+		rows, err = dbx.db.Query(query, catalog)
+	}
+
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
@@ -343,9 +492,19 @@ func (dbx *Databricks) getRelations(catalog, schemaName string, tables []*schema
 		var refCatalog, refSchema, refConstraintName, refTableName, refColumnName string
 		var ordinalPosition int
 
-		if err := rows.Scan(&constraintName, &tableName, &columnName,
-			&refCatalog, &refSchema, &refConstraintName, &refTableName, &refColumnName, &ordinalPosition); err != nil {
-			continue
+		if schemaName.Valid {
+			if err := rows.Scan(&constraintName, &tableName, &columnName,
+				&refCatalog, &refSchema, &refConstraintName, &refTableName, &refColumnName, &ordinalPosition); err != nil {
+				continue
+			}
+		} else {
+			var tableSchema, refTableSchema string
+			if err := rows.Scan(&constraintName, &tableSchema, &tableName, &columnName,
+				&refCatalog, &refSchema, &refConstraintName, &refTableSchema, &refTableName, &refColumnName, &ordinalPosition); err != nil {
+				continue
+			}
+			tableName = fmt.Sprintf("%s.%s", tableSchema, tableName)
+			refTableName = fmt.Sprintf("%s.%s", refTableSchema, refTableName)
 		}
 
 		relation, exists := relationMap[constraintName]
@@ -372,10 +531,8 @@ func (dbx *Databricks) getRelations(catalog, schemaName string, tables []*schema
 		}
 	}
 
-	// Convert map to slice and filter out incomplete relations
 	var relations []*schema.Relation
 	for _, relation := range relationMap {
-		// Only include relations that have both table and parent table with columns
 		if relation.Table != nil && relation.ParentTable != nil &&
 			len(relation.Columns) > 0 && len(relation.ParentColumns) > 0 {
 			relations = append(relations, relation)
@@ -411,5 +568,6 @@ func (dbx *Databricks) Info() (*schema.Driver, error) {
 	return &schema.Driver{
 		Name:            "databricks",
 		DatabaseVersion: v,
+		Meta:            &schema.DriverMeta{},
 	}, nil
 }
