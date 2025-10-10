@@ -83,6 +83,9 @@ func AnalyzeDatabricks(urlstr string) (_ *schema.Schema, err error) {
 	}()
 
 	driver := databricks.New(db)
+	if schemaName != "" {
+		driver.SetExplicitSchema(true)
+	}
 	if err := driver.Analyze(s); err != nil {
 		return nil, err
 	}

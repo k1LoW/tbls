@@ -11,13 +11,19 @@ import (
 )
 
 type Databricks struct {
-	db *sql.DB
+	db             *sql.DB
+	explicitSchema bool
 }
 
 func New(db *sql.DB) *Databricks {
 	return &Databricks{
-		db: db,
+		db:             db,
+		explicitSchema: false,
 	}
+}
+
+func (dbx *Databricks) SetExplicitSchema(explicit bool) {
+	dbx.explicitSchema = explicit
 }
 
 func (dbx *Databricks) Analyze(s *schema.Schema) error {
@@ -33,19 +39,22 @@ func (dbx *Databricks) Analyze(s *schema.Schema) error {
 	}
 
 	var targetSchema sql.NullString
-	if currentSchema != "" {
+	if dbx.explicitSchema && currentSchema != "" {
 		targetSchema = sql.NullString{String: currentSchema, Valid: true}
 		s.Name = fmt.Sprintf("%s.%s", currentCatalog, currentSchema)
 		s.Driver.Meta.CurrentSchema = currentSchema
+		fmt.Printf("DEBUG: Using single schema mode - catalog=%s, schema=%s\n", currentCatalog, currentSchema)
 	} else {
 		targetSchema = sql.NullString{Valid: false}
 		s.Name = currentCatalog
+		fmt.Printf("DEBUG: Using multi-schema mode - catalog=%s, explicitSchema=%v, currentSchema=%s\n", currentCatalog, dbx.explicitSchema, currentSchema)
 	}
 
 	tables, err := dbx.getTables(currentCatalog, targetSchema)
 	if err != nil {
 		return errors.WithStack(err)
 	}
+	fmt.Printf("DEBUG: Found %d tables\n", len(tables))
 
 	columnsByTable, err := dbx.getAllColumns(currentCatalog, targetSchema)
 	if err != nil {
@@ -186,22 +195,21 @@ func (dbx *Databricks) getAllColumns(catalog string, schemaName sql.NullString) 
 	} else {
 		query = `
 			SELECT 
-				table_schema,
-				table_name,
-				column_name,
-				data_type,
-				is_nullable,
-				column_default,
-				COALESCE(comment, '') as column_comment
-			FROM system.information_schema.columns 
-			WHERE table_catalog = ?
-			    AND table_name IN (
-			        SELECT table_name 
-			        FROM system.information_schema.tables 
-			        WHERE table_catalog = ?
-			    )
-			ORDER BY table_schema, table_name, ordinal_position`
-		rows, err = dbx.db.Query(query, catalog, catalog)
+				c.table_schema,
+				c.table_name,
+				c.column_name,
+				c.data_type,
+				c.is_nullable,
+				c.column_default,
+				COALESCE(c.comment, '') as column_comment
+			FROM system.information_schema.columns c
+			INNER JOIN system.information_schema.tables t
+			    ON c.table_catalog = t.table_catalog
+			    AND c.table_schema = t.table_schema
+			    AND c.table_name = t.table_name
+			WHERE c.table_catalog = ?
+			ORDER BY c.table_schema, c.table_name, c.ordinal_position`
+		rows, err = dbx.db.Query(query, catalog)
 	}
 
 	if err != nil {
@@ -305,14 +313,9 @@ func (dbx *Databricks) getAllConstraints(catalog string, schemaName sql.NullStri
 				AND rc.unique_constraint_name = kcu2.constraint_name
 				AND kcu.position_in_unique_constraint = kcu2.ordinal_position
 			WHERE tc.table_catalog = ?
-			    AND tc.table_name IN (
-			        SELECT table_name 
-			        FROM system.information_schema.tables 
-			        WHERE table_catalog = ?
-			    )
 			GROUP BY tc.table_schema, tc.table_name, tc.constraint_name, tc.constraint_type
 			ORDER BY tc.table_schema, tc.table_name, tc.constraint_name`
-		rows, err = dbx.db.Query(query, catalog, catalog)
+		rows, err = dbx.db.Query(query, catalog)
 	}
 
 	if err != nil {
