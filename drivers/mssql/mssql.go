@@ -80,6 +80,7 @@ WHERE type IN ('U', 'V')  ORDER BY OBJECT_ID
 		}
 
 		table := &schema.Table{
+			ShortName: tableName,
 			Name:    name,
 			Type:    tableType,
 			Comment: tableComment.String,
