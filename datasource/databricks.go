@@ -57,22 +57,7 @@ func AnalyzeDatabricks(urlstr string) (_ *schema.Schema, err error) {
 	}
 
 	// Build databricks driver DSN based on authentication method
-	var databricksDSN string
-	if hasToken {
-		if schemaName != "" {
-			databricksDSN = fmt.Sprintf("token:%s@%s%s?catalog=%s&schema=%s", token, u.Host, u.Path, catalog, schemaName)
-		} else {
-			databricksDSN = fmt.Sprintf("token:%s@%s%s?catalog=%s", token, u.Host, u.Path, catalog)
-		}
-	} else {
-		if schemaName != "" {
-			databricksDSN = fmt.Sprintf("%s%s?authType=OauthM2M&clientID=%s&clientSecret=%s&catalog=%s&schema=%s",
-				u.Host, u.Path, clientID, clientSecret, catalog, schemaName)
-		} else {
-			databricksDSN = fmt.Sprintf("%s%s?authType=OauthM2M&clientID=%s&clientSecret=%s&catalog=%s",
-				u.Host, u.Path, clientID, clientSecret, catalog)
-		}
-	}
+	databricksDSN := buildDatabricksDSN(u.Host, u.Path, catalog, schemaName, token, clientID, clientSecret)
 
 	db, err := sql.Open("databricks", databricksDSN)
 	if err != nil {
@@ -91,4 +76,17 @@ func AnalyzeDatabricks(urlstr string) (_ *schema.Schema, err error) {
 	}
 
 	return s, nil
+}
+
+func buildDatabricksDSN(host, path, catalog, schema, token, clientID, clientSecret string) string {
+	baseParams := fmt.Sprintf("catalog=%s", catalog)
+	if schema != "" {
+		baseParams = fmt.Sprintf("%s&schema=%s", baseParams, schema)
+	}
+
+	if token != "" {
+		return fmt.Sprintf("token:%s@%s%s?%s", token, host, path, baseParams)
+	}
+	return fmt.Sprintf("%s%s?authType=OauthM2M&clientID=%s&clientSecret=%s&%s",
+		host, path, clientID, clientSecret, baseParams)
 }

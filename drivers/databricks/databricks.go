@@ -10,32 +10,38 @@ import (
 	"github.com/k1LoW/tbls/schema"
 )
 
+// Databricks struct.
 type Databricks struct {
 	db             *sql.DB
 	explicitSchema bool
 }
 
+// New return new Databricks.
 func New(db *sql.DB) *Databricks {
 	return &Databricks{
-		db:             db,
-		explicitSchema: false,
+		db: db,
 	}
 }
 
+// SetExplicitSchema sets whether the schema was explicitly provided in the connection string.
 func (dbx *Databricks) SetExplicitSchema(explicit bool) {
 	dbx.explicitSchema = explicit
 }
 
-func (dbx *Databricks) Analyze(s *schema.Schema) error {
+// Analyze Databricks database schema.
+func (dbx *Databricks) Analyze(s *schema.Schema) (err error) {
+	defer func() {
+		err = errors.WithStack(err)
+	}()
 	d, err := dbx.Info()
 	if err != nil {
-		return errors.WithStack(err)
+		return err
 	}
 	s.Driver = d
 
 	currentCatalog, currentSchema, err := dbx.getCurrentContext()
 	if err != nil {
-		return errors.WithStack(err)
+		return err
 	}
 
 	var targetSchema sql.NullString
@@ -43,27 +49,24 @@ func (dbx *Databricks) Analyze(s *schema.Schema) error {
 		targetSchema = sql.NullString{String: currentSchema, Valid: true}
 		s.Name = fmt.Sprintf("%s.%s", currentCatalog, currentSchema)
 		s.Driver.Meta.CurrentSchema = currentSchema
-		fmt.Printf("DEBUG: Using single schema mode - catalog=%s, schema=%s\n", currentCatalog, currentSchema)
 	} else {
 		targetSchema = sql.NullString{Valid: false}
 		s.Name = currentCatalog
-		fmt.Printf("DEBUG: Using multi-schema mode - catalog=%s, explicitSchema=%v, currentSchema=%s\n", currentCatalog, dbx.explicitSchema, currentSchema)
 	}
 
 	tables, err := dbx.getTables(currentCatalog, targetSchema)
 	if err != nil {
-		return errors.WithStack(err)
+		return err
 	}
-	fmt.Printf("DEBUG: Found %d tables\n", len(tables))
 
 	columnsByTable, err := dbx.getAllColumns(currentCatalog, targetSchema)
 	if err != nil {
-		return errors.WithStack(err)
+		return err
 	}
 
 	constraintsByTable, err := dbx.getAllConstraints(currentCatalog, targetSchema)
 	if err != nil {
-		return errors.WithStack(err)
+		return err
 	}
 
 	for _, table := range tables {
@@ -80,7 +83,7 @@ func (dbx *Databricks) Analyze(s *schema.Schema) error {
 
 	relations, err := dbx.getRelations(currentCatalog, targetSchema, tables)
 	if err != nil {
-		return errors.WithStack(err)
+		return err
 	}
 	s.Relations = relations
 
@@ -144,6 +147,7 @@ func (dbx *Databricks) getTables(catalog string, schemaName sql.NullString) ([]*
 			return nil, errors.WithStack(err)
 		}
 
+		// In single-schema mode, don't prepend schema to table name
 		fullTableName := tableName
 		if !schemaName.Valid {
 			fullTableName = fmt.Sprintf("%s.%s", tableSchema, tableName)
@@ -221,13 +225,13 @@ func (dbx *Databricks) getAllColumns(catalog string, schemaName sql.NullString) 
 	for rows.Next() {
 		var tableName, columnName, dataType, isNullable string
 		var columnDefault, columnComment sql.NullString
+		var tableSchema string
 
 		if schemaName.Valid {
 			if err := rows.Scan(&tableName, &columnName, &dataType, &isNullable, &columnDefault, &columnComment); err != nil {
 				return nil, errors.WithStack(err)
 			}
 		} else {
-			var tableSchema string
 			if err := rows.Scan(&tableSchema, &tableName, &columnName, &dataType, &isNullable, &columnDefault, &columnComment); err != nil {
 				return nil, errors.WithStack(err)
 			}
@@ -327,18 +331,18 @@ func (dbx *Databricks) getAllConstraints(catalog string, schemaName sql.NullStri
 	for rows.Next() {
 		var tableName, constraintName, constraintType, referencedTableName string
 		var constraintColumnsStr, referencedColumnsStr string
+		var tableSchema, referencedTableSchema string
 
 		if schemaName.Valid {
 			if err := rows.Scan(&tableName, &constraintName, &constraintType, &constraintColumnsStr, &referencedTableName, &referencedColumnsStr); err != nil {
 				return nil, errors.WithStack(err)
 			}
 		} else {
-			var tableSchema, referencedTableSchema string
 			if err := rows.Scan(&tableSchema, &tableName, &constraintName, &constraintType, &constraintColumnsStr, &referencedTableSchema, &referencedTableName, &referencedColumnsStr); err != nil {
 				return nil, errors.WithStack(err)
 			}
 			tableName = fmt.Sprintf("%s.%s", tableSchema, tableName)
-			if referencedTableName != "" && referencedTableSchema != "" {
+			if referencedTableName != "" {
 				referencedTableName = fmt.Sprintf("%s.%s", referencedTableSchema, referencedTableName)
 			}
 		}
@@ -368,14 +372,12 @@ func (dbx *Databricks) getAllConstraints(catalog string, schemaName sql.NullStri
 }
 
 func (dbx *Databricks) parseArrayString(arrayStr string) []string {
-	// Trim whitespace from input
 	arrayStr = strings.TrimSpace(arrayStr)
 
 	if arrayStr == "" || arrayStr == "[]" {
 		return []string{}
 	}
 
-	// Remove brackets and split by comma
 	arrayStr = strings.TrimPrefix(arrayStr, "[")
 	arrayStr = strings.TrimSuffix(arrayStr, "]")
 
@@ -383,12 +385,10 @@ func (dbx *Databricks) parseArrayString(arrayStr string) []string {
 		return []string{}
 	}
 
-	// Split and clean up each element
 	parts := strings.Split(arrayStr, ",")
-	var result []string
+	result := make([]string, 0, len(parts))
 	for _, part := range parts {
 		part = strings.TrimSpace(part)
-		// Remove quotes if present
 		if len(part) >= 2 && part[0] == '"' && part[len(part)-1] == '"' {
 			part = part[1 : len(part)-1]
 		}
@@ -494,6 +494,7 @@ func (dbx *Databricks) getRelations(catalog string, schemaName sql.NullString, t
 		var constraintName, tableName, columnName string
 		var refCatalog, refSchema, refConstraintName, refTableName, refColumnName string
 		var ordinalPosition int
+		var tableSchema, refTableSchema string
 
 		if schemaName.Valid {
 			if err := rows.Scan(&constraintName, &tableName, &columnName,
@@ -501,7 +502,6 @@ func (dbx *Databricks) getRelations(catalog string, schemaName sql.NullString, t
 				continue
 			}
 		} else {
-			var tableSchema, refTableSchema string
 			if err := rows.Scan(&constraintName, &tableSchema, &tableName, &columnName,
 				&refCatalog, &refSchema, &refConstraintName, &refTableSchema, &refTableName, &refColumnName, &ordinalPosition); err != nil {
 				continue
@@ -555,17 +555,18 @@ func (dbx *Databricks) getViewDefinition(catalog, schemaName, viewName string) (
 
 	var createStatement string
 	if err := row.Scan(&createStatement); err != nil {
-		return "", err
+		return "", errors.WithStack(err)
 	}
 
 	return createStatement, nil
 }
 
+// Info return schema.Driver.
 func (dbx *Databricks) Info() (*schema.Driver, error) {
 	var v string
 	row := dbx.db.QueryRow(`SELECT VERSION()`)
 	if err := row.Scan(&v); err != nil {
-		return nil, err
+		return nil, errors.WithStack(err)
 	}
 
 	return &schema.Driver{
