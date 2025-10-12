@@ -181,21 +181,20 @@ func (dbx *Databricks) getAllColumns(catalog string, schemaName sql.NullString) 
 	if schemaName.Valid {
 		query = `
 			SELECT 
-				table_name,
-				column_name,
-				data_type,
-				is_nullable,
-				column_default,
-				COALESCE(comment, '') as column_comment
-			FROM system.information_schema.columns 
-			WHERE table_catalog = ? AND table_schema = ?
-			    AND table_name IN (
-			        SELECT table_name 
-			        FROM system.information_schema.tables 
-			        WHERE table_catalog = ? AND table_schema = ?
-			    )
-			ORDER BY table_name, ordinal_position`
-		rows, err = dbx.db.Query(query, catalog, schemaName.String, catalog, schemaName.String)
+				c.table_name,
+				c.column_name,
+				c.data_type,
+				c.is_nullable,
+				c.column_default,
+				COALESCE(c.comment, '') as column_comment
+			FROM system.information_schema.columns c
+			INNER JOIN system.information_schema.tables t
+			    ON c.table_catalog = t.table_catalog
+			    AND c.table_schema = t.table_schema
+			    AND c.table_name = t.table_name
+			WHERE c.table_catalog = ? AND c.table_schema = ?
+			ORDER BY c.table_name, c.ordinal_position`
+		rows, err = dbx.db.Query(query, catalog, schemaName.String)
 	} else {
 		query = `
 			SELECT 
@@ -282,14 +281,9 @@ func (dbx *Databricks) getAllConstraints(catalog string, schemaName sql.NullStri
 				AND rc.unique_constraint_name = kcu2.constraint_name
 				AND kcu.position_in_unique_constraint = kcu2.ordinal_position
 			WHERE tc.table_catalog = ? AND tc.table_schema = ?
-			    AND tc.table_name IN (
-			        SELECT table_name 
-			        FROM system.information_schema.tables 
-			        WHERE table_catalog = ? AND table_schema = ?
-			    )
 			GROUP BY tc.table_name, tc.constraint_name, tc.constraint_type
 			ORDER BY tc.table_name, tc.constraint_name`
-		rows, err = dbx.db.Query(query, catalog, schemaName.String, catalog, schemaName.String)
+		rows, err = dbx.db.Query(query, catalog, schemaName.String)
 	} else {
 		query = `
 			SELECT 
