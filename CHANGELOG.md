@@ -1,5 +1,12 @@
 # Changelog
 
+## [v1.89.1](https://github.com/k1LoW/tbls/compare/v1.89.0...v1.89.1) - 2025-10-14
+### New Features 🎉
+- feat(drivers): Support foreignKey for spanner by @seipan in https://github.com/k1LoW/tbls/pull/749
+### Other Changes
+- test: add check license using go-licenses by @k1LoW in https://github.com/k1LoW/tbls/pull/753
+- fix: retract versions by @k1LoW in https://github.com/k1LoW/tbls/pull/755
+
 ## [v1.89.0](https://github.com/k1LoW/tbls/compare/v1.88.0...v1.89.0) - 2025-10-08
 ### Other Changes
 - chore(deps): bump the dependencies group with 10 updates by @dependabot[bot] in https://github.com/k1LoW/tbls/pull/746
