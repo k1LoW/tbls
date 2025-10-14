@@ -195,3 +195,6 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	gotest.tools/gotestsum v1.8.2 // indirect
 )
+
+// Licensing error. ref: https://github.com/k1LoW/tbls/issues/751
+retract [v1.51.0, v1.88.0]
