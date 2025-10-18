@@ -949,7 +949,7 @@ func adjustData(data *[]string, hasData bool, value string) {
 }
 
 func adjustTable(data [][]string) [][]string {
-	r := strings.NewReplacer("\r\n", "<br>", "\n", "<br>", "\r", "<br>")
+	r := strings.NewReplacer("\r\n", "<br />", "\n", "<br />", "\r", "<br />")
 	w := make([]int, len(data[0]))
 	for i := range data {
 		for j := range w {
