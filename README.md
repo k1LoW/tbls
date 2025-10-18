@@ -630,7 +630,9 @@ Required parameters:
 - `your_databricks_workspace_id`: databricks workspace ID
 - `your_warehouse_id`: databricks sql warehouse ID
 - `your_catalog`: Unity Catalog name
-- `your_schema`: Schema/database name within the catalog
+
+optional parameters:
+- `your_schema`: Schema/database name within the catalog. If not specified all tables in the catalogue will be documented and generated table references will include schema name.
 
 Authentication (choose one):
 - PAT Authentication: `token` - Personal access token for authentication

@@ -24,9 +24,6 @@ func AnalyzeDatabricks(urlstr string) (_ *schema.Schema, err error) {
 		return nil, errors.New("no catalog name in the connection string")
 	}
 	schemaName := u.Query().Get("schema")
-	if schemaName == "" {
-		return nil, errors.New("no schema name in the connection string")
-	}
 
 	// Extract authentication parameters
 	token := u.Query().Get("token")
@@ -53,18 +50,14 @@ func AnalyzeDatabricks(urlstr string) (_ *schema.Schema, err error) {
 		return nil, errors.New("incomplete OAuth credentials: 'client_id' is required when 'client_secret' is provided")
 	}
 
-	s.Name = fmt.Sprintf("%s.%s", catalog, schemaName)
+	if schemaName != "" {
+		s.Name = fmt.Sprintf("%s.%s", catalog, schemaName)
+	} else {
+		s.Name = catalog
+	}
 
 	// Build databricks driver DSN based on authentication method
-	var databricksDSN string
-	if hasToken {
-		// PAT token authentication: token:TOKEN@host:port/path?catalog=CATALOG&schema=SCHEMA
-		databricksDSN = fmt.Sprintf("token:%s@%s%s?catalog=%s&schema=%s", token, u.Host, u.Path, catalog, schemaName)
-	} else {
-		// OAuth client credentials authentication: host:port/path?authType=OauthM2M&clientID=ID&clientSecret=SECRET&catalog=CATALOG&schema=SCHEMA
-		databricksDSN = fmt.Sprintf("%s%s?authType=OauthM2M&clientID=%s&clientSecret=%s&catalog=%s&schema=%s",
-			u.Host, u.Path, clientID, clientSecret, catalog, schemaName)
-	}
+	databricksDSN := buildDatabricksDSN(u.Host, u.Path, catalog, schemaName, token, clientID, clientSecret)
 
 	db, err := sql.Open("databricks", databricksDSN)
 	if err != nil {
@@ -75,9 +68,25 @@ func AnalyzeDatabricks(urlstr string) (_ *schema.Schema, err error) {
 	}()
 
 	driver := databricks.New(db)
+	if schemaName != "" {
+		driver.SetExplicitSchema(true)
+	}
 	if err := driver.Analyze(s); err != nil {
 		return nil, err
 	}
 
 	return s, nil
+}
+
+func buildDatabricksDSN(host, path, catalog, schema, token, clientID, clientSecret string) string {
+	baseParams := fmt.Sprintf("catalog=%s", catalog)
+	if schema != "" {
+		baseParams = fmt.Sprintf("%s&schema=%s", baseParams, schema)
+	}
+
+	if token != "" {
+		return fmt.Sprintf("token:%s@%s%s?%s", token, host, path, baseParams)
+	}
+	return fmt.Sprintf("%s%s?authType=OauthM2M&clientID=%s&clientSecret=%s&%s",
+		host, path, clientID, clientSecret, baseParams)
 }
