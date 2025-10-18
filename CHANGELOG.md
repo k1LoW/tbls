@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.90.0](https://github.com/k1LoW/tbls/compare/v1.89.1...v1.90.0) - 2025-10-18
+### New Features 🎉
+- Add multi schema support for databricks by @Ewan-Keith in https://github.com/k1LoW/tbls/pull/754
+
 ## [v1.89.1](https://github.com/k1LoW/tbls/compare/v1.89.0...v1.89.1) - 2025-10-14
 ### New Features 🎉
 - feat(drivers): Support foreignKey for spanner by @seipan in https://github.com/k1LoW/tbls/pull/749
