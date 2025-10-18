@@ -14,7 +14,7 @@ Sample PostgreSQL database document.
 ## Tables
 
 | Name                                                      | Columns | Comment                                          | Type              |
-|-----------------------------------------------------------|---------|--------------------------------------------------|-------------------|
+| --------------------------------------------------------- | ------- | ------------------------------------------------ | ----------------- |
 | [public.users](public.users.md)                           | 6       | Users table                                      | BASE TABLE        |
 | [public.user_options](public.user_options.md)             | 4       | User options table                               | BASE TABLE        |
 | [public.posts](public.posts.md)                           | 8       | Posts table                                      | BASE TABLE        |
