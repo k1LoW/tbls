@@ -57,7 +57,7 @@ CREATE TABLE `posts` (
 
 | 名前                   | 定義                                                                                                                  |
 | -------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| update_posts_updated | CREATE TRIGGER update_posts_updated BEFORE UPDATE ON posts<br>FOR EACH ROW<br>SET NEW.updated = CURRENT_TIMESTAMP() |
+| update_posts_updated | CREATE TRIGGER update_posts_updated BEFORE UPDATE ON posts<br />FOR EACH ROW<br />SET NEW.updated = CURRENT_TIMESTAMP() |
 
 ## ER図
 

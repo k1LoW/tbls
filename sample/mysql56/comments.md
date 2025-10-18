@@ -36,7 +36,7 @@ CREATE TABLE `comments` (
 | id | bigint(20) |  | false | auto_increment | [logs](logs.md) |  |  |
 | post_id | bigint(20) |  | false |  | [comment_stars](comment_stars.md) | [posts](posts.md) |  |
 | user_id | int(11) |  | false |  | [comment_stars](comment_stars.md) | [users](users.md) |  |
-| comment | text |  | false |  |  |  | Comment<br>Multi-line<br>column<br>comment |
+| comment | text |  | false |  |  |  | Comment<br />Multi-line<br />column<br />comment |
 | created | datetime |  | false |  |  |  |  |
 | updated | datetime |  | true |  |  |  |  |
 

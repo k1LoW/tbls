@@ -14,7 +14,7 @@ comment
 | id | bigint | nextval('comments_id_seq'::regclass) | false | [public.logs](public.logs.md) |  |  |
 | post_id | bigint |  | false | [public.comment_stars](public.comment_stars.md) | [public.posts](public.posts.md) |  |
 | user_id | integer |  | false | [public.comment_stars](public.comment_stars.md) | [public.users](public.users.md) |  |
-| comment | text |  | false |  |  | Comment<br>Multi-line<br>column<br>comment |
+| comment | text |  | false |  |  | Comment<br />Multi-line<br />column<br />comment |
 | created | timestamp without time zone |  | false |  |  |  |
 | updated | timestamp without time zone |  | true |  |  |  |
 

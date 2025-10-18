@@ -61,7 +61,7 @@ CREATE TABLE `posts` (
 
 | # | Name | Definition |
 | - | ---- | ---------- |
-| 1 | update_posts_updated | CREATE TRIGGER update_posts_updated BEFORE UPDATE ON posts<br>FOR EACH ROW<br>SET NEW.updated = CURRENT_TIMESTAMP() |
+| 1 | update_posts_updated | CREATE TRIGGER update_posts_updated BEFORE UPDATE ON posts<br />FOR EACH ROW<br />SET NEW.updated = CURRENT_TIMESTAMP() |
 
 ## Relations
 

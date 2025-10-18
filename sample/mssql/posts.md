@@ -37,7 +37,7 @@
 
 | Name | Definition |
 | ---- | ---------- |
-| update_posts_updated | CREATE TRIGGER update_posts_updated<br>ON posts<br>AFTER UPDATE<br>AS<br>BEGIN<br>  UPDATE users SET updated = GETDATE()<br>  WHERE id = ( SELECT user_id FROM deleted)<br>END; |
+| update_posts_updated | CREATE TRIGGER update_posts_updated<br />ON posts<br />AFTER UPDATE<br />AS<br />BEGIN<br />  UPDATE users SET updated = GETDATE()<br />  WHERE id = ( SELECT user_id FROM deleted)<br />END; |
 
 ## Relations
 

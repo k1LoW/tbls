@@ -20,7 +20,7 @@ CREATE VIEW post_comments AS (select `c`.`id` AS `id`,`p`.`title` AS `title`,`u2
 | id           | bigint       | 0            | true     |            |            |                                            |
 | title        | varchar(255) | Untitled     | false    |            |            |                                            |
 | post_user    | varchar(50)  |              | true     |            |            |                                            |
-| comment      | text         |              | true     |            |            | Comment<br>Multi-line<br>column<br>comment |
+| comment      | text         |              | true     |            |            | Comment<br />Multi-line<br />column<br />comment |
 | comment_user | varchar(50)  |              | true     |            |            |                                            |
 | created      | datetime     |              | true     |            |            |                                            |
 | updated      | datetime     |              | true     |            |            |                                            |
@@ -30,7 +30,7 @@ CREATE VIEW post_comments AS (select `c`.`id` AS `id`,`p`.`title` AS `title`,`u2
 | 名前                        | カラム一覧           | コメント                                           | タイプ           |
 | ------------------------- | --------------- | ---------------------------------------------- | ------------- |
 | [posts](posts.md)         | 7               | Posts table                                    | BASE TABLE    |
-| [comments](comments.md)   | 7               | Comments<br>Multi-line<br>table<br>comment     | BASE TABLE    |
+| [comments](comments.md)   | 7               | Comments<br />Multi-line<br />table<br />comment     | BASE TABLE    |
 | [users](users.md)         | 6               | Users table                                    | BASE TABLE    |
 
 ## ER図

@@ -33,7 +33,7 @@ CREATE TABLE `comments` (
 | id | bigint |  | false | auto_increment | [logs](logs.md) |  |  |
 | post_id | bigint |  | false |  |  | [posts](posts.md) |  |
 | user_id | int |  | false |  |  | [users](users.md) |  |
-| comment | text |  | false |  |  |  | Comment<br>Multi-line<br>column<br>comment |
+| comment | text |  | false |  |  |  | Comment<br />Multi-line<br />column<br />comment |
 | created | datetime |  | false |  |  |  |  |
 | updated | datetime |  | true |  |  |  |  |
 

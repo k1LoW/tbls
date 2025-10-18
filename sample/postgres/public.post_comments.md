@@ -42,7 +42,7 @@ CREATE VIEW post_comments AS (
 | Name | Columns | Comment | Type |
 | ---- | ------- | ------- | ---- |
 | [public.posts](public.posts.md) | 8 | Posts table | BASE TABLE |
-| [public.comments](public.comments.md) | 7 | Comments<br>Multi-line<br>table<br>comment | BASE TABLE |
+| [public.comments](public.comments.md) | 7 | Comments<br />Multi-line<br />table<br />comment | BASE TABLE |
 | [public.users](public.users.md) | 6 | Users table | BASE TABLE |
 
 ## Viewpoints
