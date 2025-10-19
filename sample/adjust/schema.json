@@ -1373,7 +1373,7 @@
   ],
   "driver": {
     "name": "postgres",
-    "database_version": "PostgreSQL 15.13 (Debian 15.13-1.pgdg120+1) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit",
+    "database_version": "PostgreSQL 15.14 (Debian 15.14-1.pgdg13+1) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
     "meta": {
       "current_schema": "public",
       "search_paths": [

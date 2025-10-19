@@ -962,7 +962,7 @@
   ],
   "driver": {
     "name": "sqlite",
-    "database_version": "3.50.3"
+    "database_version": "3.50.4"
   },
   "labels": [
     {
