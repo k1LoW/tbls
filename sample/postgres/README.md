@@ -18,7 +18,7 @@ Sample PostgreSQL database document.
 | [public.users](public.users.md) | 6 | Users table | BASE TABLE |
 | [public.user_options](public.user_options.md) | 4 | User options table | BASE TABLE |
 | [public.posts](public.posts.md) | 8 | Posts table | BASE TABLE |
-| [public.comments](public.comments.md) | 7 | Comments<br>Multi-line<br>table<br>comment | BASE TABLE |
+| [public.comments](public.comments.md) | 7 | Comments<br />Multi-line<br />table<br />comment | BASE TABLE |
 | [public.comment_stars](public.comment_stars.md) | 6 |  | BASE TABLE |
 | [public.logs](public.logs.md) | 7 | audit log table | BASE TABLE |
 | [public.post_comments](public.post_comments.md) | 7 | post and comments View table | VIEW |

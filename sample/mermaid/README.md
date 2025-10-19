@@ -14,7 +14,7 @@ Sample database document.
 | ---- | ------- | ------- | ---- | ------ |
 | [CamelizeTable](CamelizeTable.md) | 2 |  | BASE TABLE |  |
 | [comment_stars](comment_stars.md) | 6 |  | BASE TABLE |  |
-| [comments](comments.md) | 7 | Comments<br>Multi-line<br>table<br>comment | BASE TABLE |  |
+| [comments](comments.md) | 7 | Comments<br />Multi-line<br />table<br />comment | BASE TABLE |  |
 | [hyphen-table](hyphen-table.md) | 3 |  | BASE TABLE |  |
 | [logs](logs.md) | 7 | Auditログ | BASE TABLE |  |
 | [long_long_long_long_long_long_long_long_table_name](long_long_long_long_long_long_long_long_table_name.md) | 2 |  | BASE TABLE |  |

@@ -51,7 +51,7 @@ CREATE TABLE posts (
 
 | Name | Definition |
 | ---- | ---------- |
-| update_posts_updated | CREATE TRIGGER update_posts_updated AFTER UPDATE ON posts FOR EACH ROW<br>BEGIN<br>  UPDATE posts SET updated = current_timestamp WHERE id = OLD.id;<br>END |
+| update_posts_updated | CREATE TRIGGER update_posts_updated AFTER UPDATE ON posts FOR EACH ROW<br />BEGIN<br />  UPDATE posts SET updated = current_timestamp WHERE id = OLD.id;<br />END |
 
 ## Relations
 

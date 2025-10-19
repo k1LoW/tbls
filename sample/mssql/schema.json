@@ -1030,7 +1030,7 @@
   ],
   "driver": {
     "name": "sqlserver",
-    "database_version": "Microsoft SQL Server 2019 (RTM-CU30) (KB5049235) - 15.0.4415.2 (X64) \n\tNov 18 2024 17:45:37 \n\tCopyright (C) 2019 Microsoft Corporation\n\tDeveloper Edition (64-bit) on Linux (Ubuntu 20.04.6 LTS) \u003cX64\u003e",
+    "database_version": "Microsoft SQL Server 2019 (RTM-CU32-GDR) (KB5065222) - 15.0.4445.1 (X64) \n\tAug 13 2025 11:07:18 \n\tCopyright (C) 2019 Microsoft Corporation\n\tDeveloper Edition (64-bit) on Linux (Ubuntu 20.04.6 LTS) \u003cX64\u003e",
     "meta": {
       "dict": {
         "Functions": "Stored procedures and functions"

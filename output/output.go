@@ -23,7 +23,7 @@ var escapeMermaidRe = regexp.MustCompile(`[^a-zA-Z0-9_\-]`)
 func Funcs(d *dict.Dict) map[string]interface{} {
 	return template.FuncMap{
 		"nl2br": func(text string) string {
-			r := strings.NewReplacer("\r\n", "<br>", "\n", "<br>", "\r", "<br>")
+			r := strings.NewReplacer("\r\n", "<br />", "\n", "<br />", "\r", "<br />")
 			return r.Replace(text)
 		},
 		"nl2br_slash": func(text string) string {

@@ -220,7 +220,7 @@ diff postgres://dbuser:*****@hostname:5432/dbname doc/schema/README.md
 +| [users](users.md) | 6 | Users table | BASE TABLE |
  | [user_options](user_options.md) | 4 | User options table | BASE TABLE |
  | [posts](posts.md) | 8 | Posts table | BASE TABLE |
- | [comments](comments.md) | 6 | Comments<br>Multi-line<br>table<br>comment | BASE TABLE |
+ | [comments](comments.md) | 6 | Comments<br />Multi-line<br />table<br />comment | BASE TABLE |
 diff postgres://dbuser:*****@hostname:5432/dbname doc/schema/users.md
 --- postgres://dbuser:*****@hostname:5432/dbname
 +++ doc/schema/users.md

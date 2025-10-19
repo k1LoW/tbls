@@ -13,7 +13,7 @@ Sample database document.
 | Name | Columns | Comment | Type | Labels |
 | ---- | ------- | ------- | ---- | ------ |
 | [CamelizeTable](CamelizeTable.md) | 2 |  | BASE TABLE |  |
-| [comments](comments.md) | 7 | Comments<br>Multi-line<br>table<br>comment | BASE TABLE |  |
+| [comments](comments.md) | 7 | Comments<br />Multi-line<br />table<br />comment | BASE TABLE |  |
 | [comment_stars](comment_stars.md) | 6 |  | BASE TABLE |  |
 | [hyphen-table](hyphen-table.md) | 3 |  | BASE TABLE |  |
 | [logs](logs.md) | 7 | Auditログ | BASE TABLE |  |

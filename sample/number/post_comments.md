@@ -20,7 +20,7 @@ CREATE VIEW post_comments AS (select `c`.`id` AS `id`,`p`.`title` AS `title`,`u2
 | 1 | id | bigint | 0 | true |  |  | comments.id |
 | 2 | title | varchar(255) | Untitled | false |  |  | posts.title |
 | 3 | post_user | varchar(50) |  | true |  |  | posts.users.username |
-| 4 | comment | text |  | true |  |  | Comment<br>Multi-line<br>column<br>comment |
+| 4 | comment | text |  | true |  |  | Comment<br />Multi-line<br />column<br />comment |
 | 5 | comment_user | varchar(50) |  | true |  |  | comments.users.username |
 | 6 | created | datetime |  | true |  |  | comments.created |
 | 7 | updated | datetime |  | true |  |  | comments.updated |
@@ -30,7 +30,7 @@ CREATE VIEW post_comments AS (select `c`.`id` AS `id`,`p`.`title` AS `title`,`u2
 | # | # | Name | Columns | Comment | Type | Labels |
 | - | - | ---- | ------- | ------- | ---- | ------ |
 | 1 | 1 | [posts](posts.md) | 7 | Posts table | BASE TABLE | `green` `red` `blue` |
-| 2 | 2 | [comments](comments.md) | 7 | Comments<br>Multi-line<br>table<br>comment | BASE TABLE |  |
+| 2 | 2 | [comments](comments.md) | 7 | Comments<br />Multi-line<br />table<br />comment | BASE TABLE |  |
 | 3 | 3 | [users](users.md) | 6 | Users table | BASE TABLE |  |
 
 ## Relations
