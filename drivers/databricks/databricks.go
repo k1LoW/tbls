@@ -1,34 +1,57 @@
 package databricks
 
 import (
+	"context"
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"sort"
 	"strings"
 
+	_ "github.com/databricks/databricks-sql-go"
 	"github.com/k1LoW/errors"
+	"github.com/rs/zerolog"
+
 	"github.com/k1LoW/tbls/schema"
 )
 
-// Databricks struct.
-type Databricks struct {
-	db             *sql.DB
-	explicitSchema bool
+func init() {
+	// required to silence some internal logging on the databricks sdk
+	zerolog.SetGlobalLevel(zerolog.Disabled)
 }
 
-// New return new Databricks.
-func New(db *sql.DB) *Databricks {
+type Databricks struct {
+	db              *sql.DB
+	tablesAPIClient TablesAPIClient
+	explicitSchema  bool
+}
+
+type TablesAPIClient interface {
+	GetTable(ctx context.Context, catalog, schema, tableName string) (*TableInfo, error)
+}
+
+type TableInfo struct {
+	FullName string       `json:"full_name"`
+	Columns  []ColumnInfo `json:"columns"`
+}
+
+type ColumnInfo struct {
+	Name     string `json:"name"`
+	TypeName string `json:"type_name"`
+	TypeText string `json:"type_text"`
+	TypeJson string `json:"type_json"`
+	Position int    `json:"position"`
+	Nullable bool   `json:"nullable"`
+}
+
+func New(db *sql.DB, apiClient TablesAPIClient, explicitSchema bool) *Databricks {
 	return &Databricks{
-		db: db,
+		db:              db,
+		tablesAPIClient: apiClient,
+		explicitSchema:  explicitSchema,
 	}
 }
 
-// SetExplicitSchema sets whether the schema was explicitly provided in the connection string.
-func (dbx *Databricks) SetExplicitSchema(explicit bool) {
-	dbx.explicitSchema = explicit
-}
-
-// Analyze Databricks database schema.
 func (dbx *Databricks) Analyze(s *schema.Schema) (err error) {
 	defer func() {
 		err = errors.WithStack(err)
@@ -45,7 +68,7 @@ func (dbx *Databricks) Analyze(s *schema.Schema) (err error) {
 	}
 
 	var targetSchema sql.NullString
-	if dbx.explicitSchema && currentSchema != "" {
+	if dbx.explicitSchema {
 		targetSchema = sql.NullString{String: currentSchema, Valid: true}
 		s.Name = fmt.Sprintf("%s.%s", currentCatalog, currentSchema)
 		s.Driver.Meta.CurrentSchema = currentSchema
@@ -76,6 +99,12 @@ func (dbx *Databricks) Analyze(s *schema.Schema) (err error) {
 
 		if constraints, exists := constraintsByTable[table.Name]; exists {
 			table.Constraints = constraints
+		}
+
+		if dbx.hasStructColumns(table.Columns) {
+			if err := dbx.enrichStructColumns(context.Background(), currentCatalog, currentSchema, table); err != nil {
+				return err
+			}
 		}
 	}
 
@@ -147,7 +176,6 @@ func (dbx *Databricks) getTables(catalog string, schemaName sql.NullString) ([]*
 			return nil, err
 		}
 
-		// In single-schema mode, don't prepend schema to table name
 		fullTableName := tableName
 		if !schemaName.Valid {
 			fullTableName = fmt.Sprintf("%s.%s", tableSchema, tableName)
@@ -555,7 +583,207 @@ func (dbx *Databricks) getViewDefinition(catalog, schemaName, viewName string) (
 	return createStatement, nil
 }
 
-// Info return schema.Driver.
+func (dbx *Databricks) hasStructColumns(columns []*schema.Column) bool {
+	for _, col := range columns {
+		colType := strings.ToUpper(col.Type)
+		if strings.HasPrefix(colType, "STRUCT") || strings.HasPrefix(colType, "ARRAY(STRUCT") {
+			return true
+		}
+	}
+	return false
+}
+
+func (dbx *Databricks) enrichStructColumns(ctx context.Context, catalog, schemaName string, table *schema.Table) error {
+	tableName := table.Name
+	tableSchema := schemaName
+
+	if strings.Contains(tableName, ".") {
+		parts := strings.SplitN(tableName, ".", 2)
+		tableSchema = parts[0]
+		tableName = parts[1]
+	}
+
+	tableInfo, err := dbx.tablesAPIClient.GetTable(ctx, catalog, tableSchema, tableName)
+	if err != nil {
+		return err
+	}
+
+	columnMap := make(map[string]*ColumnInfo)
+	for i := range tableInfo.Columns {
+		columnMap[tableInfo.Columns[i].Name] = &tableInfo.Columns[i]
+	}
+
+	var expandedColumns []*schema.Column
+	for _, col := range table.Columns {
+		colInfo, exists := columnMap[col.Name]
+
+		expandedColumns = append(expandedColumns, col)
+
+		if !exists || colInfo.TypeJson == "" {
+			continue
+		}
+
+		isStructOrArray := strings.HasPrefix(strings.ToUpper(colInfo.TypeName), "STRUCT") ||
+			strings.HasPrefix(strings.ToUpper(colInfo.TypeName), "ARRAY")
+
+		if !isStructOrArray {
+			continue
+		}
+
+		var typeData map[string]any
+		if err := json.Unmarshal([]byte(colInfo.TypeJson), &typeData); err != nil {
+			continue
+		}
+
+		col.Type = dbx.formatType(typeData)
+
+		nestedCols := dbx.extractNestedColumns(typeData, col.Name)
+		expandedColumns = append(expandedColumns, nestedCols...)
+	}
+
+	table.Columns = expandedColumns
+
+	return nil
+}
+
+func (dbx *Databricks) extractNestedColumns(typeData map[string]any, prefix string) []*schema.Column {
+	var columns []*schema.Column
+
+	typeObj, ok := typeData["type"]
+	if !ok {
+		return columns
+	}
+
+	nullable := true
+	if nullableVal, ok := typeData["nullable"].(bool); ok {
+		nullable = nullableVal
+	}
+
+	var typeStr string
+	var fieldsSource map[string]any
+
+	switch t := typeObj.(type) {
+	case string:
+		typeStr = t
+		fieldsSource = typeData
+	case map[string]any:
+		typeStr, _ = t["type"].(string)
+		fieldsSource = t
+	default:
+		return columns
+	}
+
+	switch typeStr {
+	case "struct":
+		return dbx.processStructFields(fieldsSource, prefix)
+	case "array":
+		return dbx.processArrayType(fieldsSource, prefix, nullable)
+	}
+
+	return columns
+}
+
+func (dbx *Databricks) processStructFields(source map[string]any, prefix string) []*schema.Column {
+	var columns []*schema.Column
+
+	fields, ok := source["fields"].([]any)
+	if !ok {
+		return columns
+	}
+
+	for _, f := range fields {
+		field, ok := f.(map[string]any)
+		if !ok {
+			continue
+		}
+
+		fieldName, _ := field["name"].(string)
+		if fieldName == "" {
+			continue
+		}
+
+		fullName := fmt.Sprintf("%s.%s", prefix, fieldName)
+
+		fieldType := dbx.formatType(field)
+		fieldNullable := true
+		if nullableVal, ok := field["nullable"].(bool); ok {
+			fieldNullable = nullableVal
+		}
+
+		fieldComment := ""
+		if metadata, ok := field["metadata"].(map[string]any); ok {
+			if comment, ok := metadata["comment"].(string); ok {
+				fieldComment = comment
+			}
+		}
+
+		col := &schema.Column{
+			Name:     fullName,
+			Type:     fieldType,
+			Nullable: fieldNullable,
+			Comment:  fieldComment,
+		}
+		columns = append(columns, col)
+
+		nestedCols := dbx.extractNestedColumns(field, fullName)
+		columns = append(columns, nestedCols...)
+	}
+
+	return columns
+}
+
+func (dbx *Databricks) processArrayType(source map[string]any, prefix string, nullable bool) []*schema.Column {
+	elementType, ok := source["elementType"].(map[string]any)
+	if !ok {
+		return nil
+	}
+
+	return dbx.extractNestedColumns(map[string]any{
+		"type":     elementType,
+		"nullable": nullable,
+	}, prefix)
+}
+
+func (dbx *Databricks) formatType(typeData map[string]any) string {
+	typeObj, ok := typeData["type"]
+	if !ok {
+		return "UNKNOWN"
+	}
+
+	switch t := typeObj.(type) {
+	case string:
+		return strings.ToUpper(t)
+
+	case map[string]any:
+		structType, ok := t["type"].(string)
+		if !ok {
+			return "UNKNOWN"
+		}
+
+		switch structType {
+		case "struct":
+			return "STRUCT"
+		case "array":
+			if elementType, ok := t["elementType"].(string); ok {
+				return fmt.Sprintf("ARRAY(%s)", strings.ToUpper(elementType))
+			} else if elementMap, ok := t["elementType"].(map[string]any); ok {
+				if nestedType, ok := elementMap["type"].(string); ok {
+					if nestedType == "struct" {
+						return "ARRAY(STRUCT)"
+					}
+					return fmt.Sprintf("ARRAY(%s)", strings.ToUpper(nestedType))
+				}
+			}
+			return "ARRAY"
+		default:
+			return strings.ToUpper(structType)
+		}
+
+	default:
+		return "UNKNOWN"
+	}
+}
+
 func (dbx *Databricks) Info() (*schema.Driver, error) {
 	var v string
 	row := dbx.db.QueryRow(`SELECT VERSION()`)
