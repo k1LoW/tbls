@@ -1,0 +1,301 @@
+{
+  "name": "workspace.nesting_examples",
+  "tables": [
+    {
+      "name": "orders",
+      "type": "MANAGED",
+      "comment": "E-commerce orders with complex nested data structures",
+      "columns": [
+        {
+          "name": "order_id",
+          "type": "STRING",
+          "nullable": true,
+          "comment": "Unique identifier for each order"
+        },
+        {
+          "name": "order_date",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "comment": "Date and time when the order was placed"
+        },
+        {
+          "name": "total_amount",
+          "type": "DECIMAL",
+          "nullable": true,
+          "comment": "Total order amount in the base currency"
+        },
+        {
+          "name": "customer",
+          "type": "STRUCT",
+          "nullable": true,
+          "comment": "Customer information as a simple struct"
+        },
+        {
+          "name": "customer.customer_id",
+          "type": "STRING",
+          "nullable": true,
+          "comment": "Unique customer identifier"
+        },
+        {
+          "name": "customer.email",
+          "type": "STRING",
+          "nullable": true,
+          "comment": "Customer email address"
+        },
+        {
+          "name": "customer.loyalty_tier",
+          "type": "STRING",
+          "nullable": true,
+          "comment": "Customer loyalty program tier (Bronze, Silver, Gold, Platinum)"
+        },
+        {
+          "name": "shipping_address",
+          "type": "STRUCT",
+          "nullable": true,
+          "comment": "Shipping address with nested coordinate struct"
+        },
+        {
+          "name": "shipping_address.street",
+          "type": "STRING",
+          "nullable": true,
+          "comment": "Street address"
+        },
+        {
+          "name": "shipping_address.city",
+          "type": "STRING",
+          "nullable": true,
+          "comment": "City name"
+        },
+        {
+          "name": "shipping_address.state",
+          "type": "STRING",
+          "nullable": true,
+          "comment": "State or province"
+        },
+        {
+          "name": "shipping_address.postal_code",
+          "type": "STRING",
+          "nullable": true,
+          "comment": "Postal or ZIP code"
+        },
+        {
+          "name": "shipping_address.country",
+          "type": "STRING",
+          "nullable": true,
+          "comment": "Country name"
+        },
+        {
+          "name": "shipping_address.coordinates",
+          "type": "STRUCT",
+          "nullable": true,
+          "comment": "Geographic coordinates for delivery location"
+        },
+        {
+          "name": "shipping_address.coordinates.latitude",
+          "type": "DOUBLE",
+          "nullable": true,
+          "comment": "Latitude coordinate"
+        },
+        {
+          "name": "shipping_address.coordinates.longitude",
+          "type": "DOUBLE",
+          "nullable": true,
+          "comment": "Longitude coordinate"
+        },
+        {
+          "name": "applied_coupon_codes",
+          "type": "ARRAY(STRING)",
+          "nullable": true,
+          "comment": "List of coupon codes applied to this order"
+        },
+        {
+          "name": "line_items",
+          "type": "ARRAY(STRUCT)",
+          "nullable": true,
+          "comment": "Order line items with product details and pricing"
+        },
+        {
+          "name": "line_items.item_id",
+          "type": "STRING",
+          "nullable": true,
+          "comment": "Unique item identifier"
+        },
+        {
+          "name": "line_items.product_name",
+          "type": "STRING",
+          "nullable": true,
+          "comment": "Name of the product"
+        },
+        {
+          "name": "line_items.quantity",
+          "type": "INTEGER",
+          "nullable": true,
+          "comment": "Number of units ordered"
+        },
+        {
+          "name": "line_items.unit_price",
+          "type": "DECIMAL(10,2)",
+          "nullable": true,
+          "comment": "Price per unit"
+        },
+        {
+          "name": "line_items.discount_percentage",
+          "type": "DOUBLE",
+          "nullable": true,
+          "comment": "Discount percentage applied to this item"
+        },
+        {
+          "name": "payment_info",
+          "type": "STRUCT",
+          "nullable": true,
+          "comment": "Payment information including method, billing, and transaction history"
+        },
+        {
+          "name": "payment_info.payment_method",
+          "type": "STRING",
+          "nullable": true,
+          "comment": "Payment method used (credit card, PayPal, etc.)"
+        },
+        {
+          "name": "payment_info.currency",
+          "type": "STRING",
+          "nullable": true,
+          "comment": "Currency code (USD, EUR, GBP, etc.)"
+        },
+        {
+          "name": "payment_info.billing_address",
+          "type": "STRUCT",
+          "nullable": true,
+          "comment": "Billing address for payment"
+        },
+        {
+          "name": "payment_info.billing_address.street",
+          "type": "STRING",
+          "nullable": true,
+          "comment": "Billing street address"
+        },
+        {
+          "name": "payment_info.billing_address.city",
+          "type": "STRING",
+          "nullable": true,
+          "comment": "Billing city"
+        },
+        {
+          "name": "payment_info.billing_address.postal_code",
+          "type": "STRING",
+          "nullable": true,
+          "comment": "Billing postal code"
+        },
+        {
+          "name": "payment_info.transactions",
+          "type": "ARRAY(STRUCT)",
+          "nullable": true,
+          "comment": "List of payment transactions for this order"
+        },
+        {
+          "name": "payment_info.transactions.transaction_id",
+          "type": "STRING",
+          "nullable": true,
+          "comment": "Unique transaction identifier"
+        },
+        {
+          "name": "payment_info.transactions.amount",
+          "type": "DECIMAL(10,2)",
+          "nullable": true,
+          "comment": "Transaction amount"
+        },
+        {
+          "name": "payment_info.transactions.status",
+          "type": "STRING",
+          "nullable": true,
+          "comment": "Transaction status (pending, completed, failed, refunded)"
+        },
+        {
+          "name": "payment_info.transactions.timestamp",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "comment": "Transaction timestamp"
+        },
+        {
+          "name": "fulfillment_events",
+          "type": "ARRAY(STRUCT)",
+          "nullable": true,
+          "comment": "Order fulfillment history with packaging and shipping details"
+        },
+        {
+          "name": "fulfillment_events.event_type",
+          "type": "STRING",
+          "nullable": true,
+          "comment": "Type of fulfillment event (picked, packed, shipped, delivered)"
+        },
+        {
+          "name": "fulfillment_events.event_timestamp",
+          "type": "TIMESTAMP",
+          "nullable": true,
+          "comment": "When the event occurred"
+        },
+        {
+          "name": "fulfillment_events.warehouse_location",
+          "type": "STRING",
+          "nullable": true,
+          "comment": "Warehouse or distribution center code"
+        },
+        {
+          "name": "fulfillment_events.tracking_numbers",
+          "type": "ARRAY(STRING)",
+          "nullable": true,
+          "comment": "Shipping carrier tracking numbers"
+        },
+        {
+          "name": "fulfillment_events.packages",
+          "type": "ARRAY(STRUCT)",
+          "nullable": true,
+          "comment": "List of packages in this fulfillment event"
+        },
+        {
+          "name": "fulfillment_events.packages.package_id",
+          "type": "STRING",
+          "nullable": true,
+          "comment": "Unique package identifier"
+        },
+        {
+          "name": "fulfillment_events.packages.weight_kg",
+          "type": "DOUBLE",
+          "nullable": true,
+          "comment": "Package weight in kilograms"
+        },
+        {
+          "name": "fulfillment_events.packages.dimensions_cm",
+          "type": "STRUCT",
+          "nullable": true,
+          "comment": "Package dimensions for shipping calculations"
+        },
+        {
+          "name": "fulfillment_events.packages.dimensions_cm.length",
+          "type": "INTEGER",
+          "nullable": true,
+          "comment": "Package length in centimeters"
+        },
+        {
+          "name": "fulfillment_events.packages.dimensions_cm.width",
+          "type": "INTEGER",
+          "nullable": true,
+          "comment": "Package width in centimeters"
+        },
+        {
+          "name": "fulfillment_events.packages.dimensions_cm.height",
+          "type": "INTEGER",
+          "nullable": true,
+          "comment": "Package height in centimeters"
+        }
+      ]
+    }
+  ],
+  "driver": {
+    "name": "databricks",
+    "database_version": "4.0.0 0000000000000000000000000000000000000000",
+    "meta": {
+      "current_schema": "nesting_examples"
+    }
+  }
+}

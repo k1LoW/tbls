@@ -1,8 +1,70 @@
 package datasource
 
 import (
+	"strings"
 	"testing"
 )
+
+func TestValidateDatabricksAuth(t *testing.T) {
+	tests := []struct {
+		name         string
+		token        string
+		clientID     string
+		clientSecret string
+		wantErr      string
+	}{
+		{
+			name:    "valid PAT authentication",
+			token:   "dapi1234567890",
+			wantErr: "",
+		},
+		{
+			name:         "valid OAuth authentication",
+			clientID:     "client123",
+			clientSecret: "secret456",
+			wantErr:      "",
+		},
+		{
+			name:    "no authentication provided",
+			wantErr: "authentication required: provide either 'token' for PAT authentication or both 'client_id' and 'client_secret' for OAuth authentication",
+		},
+		{
+			name:         "conflicting authentication methods",
+			token:        "dapi1234567890",
+			clientID:     "client123",
+			clientSecret: "secret456",
+			wantErr:      "conflicting authentication methods: provide either 'token' for PAT authentication OR 'client_id'/'client_secret' for OAuth authentication, not both",
+		},
+		{
+			name:     "incomplete OAuth - only clientID",
+			clientID: "client123",
+			wantErr:  "authentication required: provide either 'token' for PAT authentication or both 'client_id' and 'client_secret' for OAuth authentication",
+		},
+		{
+			name:         "incomplete OAuth - only clientSecret",
+			clientSecret: "secret456",
+			wantErr:      "authentication required: provide either 'token' for PAT authentication or both 'client_id' and 'client_secret' for OAuth authentication",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := validateDatabricksAuth(tt.token, tt.clientID, tt.clientSecret)
+			if tt.wantErr != "" {
+				if err == nil {
+					t.Errorf("validateDatabricksAuth() expected error but got nil")
+					return
+				}
+				if !strings.Contains(err.Error(), tt.wantErr) {
+					t.Errorf("validateDatabricksAuth() error = %v, want error containing %v", err, tt.wantErr)
+				}
+			} else {
+				if err != nil {
+					t.Errorf("validateDatabricksAuth() unexpected error = %v", err)
+				}
+			}
+		})
+	}
+}
 
 func TestBuildDatabricksDSN(t *testing.T) {
 	tests := []struct {
