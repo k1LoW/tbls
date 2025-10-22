@@ -43,4 +43,5 @@ changelog:
     - '^test:'
 release:
   draft: true
-  skip_upload: true
+  replace_existing_draft: true
+

@@ -69,4 +69,4 @@ nfpms:
     epoch: 1
 release:
   draft: true
-  skip_upload: true
+  replace_existing_draft: true
