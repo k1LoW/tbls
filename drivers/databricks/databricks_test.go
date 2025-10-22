@@ -368,7 +368,7 @@ func TestEnrichStructColumns(t *testing.T) {
 					{
 						Name:     "parent",
 						TypeName: "STRUCT",
-						TypeJson: `{"type":"struct","fields":[{"name":"field1","type":"string","nullable":true,"metadata":{"comment":"first field"}},{"name":"field2","type":"integer","nullable":false}]}`,
+						TypeJSON: `{"type":"struct","fields":[{"name":"field1","type":"string","nullable":true,"metadata":{"comment":"first field"}},{"name":"field2","type":"integer","nullable":false}]}`,
 					},
 				},
 			},
@@ -393,7 +393,7 @@ func TestEnrichStructColumns(t *testing.T) {
 					{
 						Name:     "data",
 						TypeName: "STRUCT",
-						TypeJson: `{"type":"struct","fields":[{"name":"address","type":{"type":"struct","fields":[{"name":"street","type":"string","nullable":true},{"name":"city","type":"string","nullable":true}]},"nullable":true}]}`,
+						TypeJSON: `{"type":"struct","fields":[{"name":"address","type":{"type":"struct","fields":[{"name":"street","type":"string","nullable":true},{"name":"city","type":"string","nullable":true}]},"nullable":true}]}`,
 					},
 				},
 			},
@@ -418,7 +418,7 @@ func TestEnrichStructColumns(t *testing.T) {
 					{
 						Name:     "items",
 						TypeName: "ARRAY",
-						TypeJson: `{"type":{"type":"array","elementType":{"type":"struct","fields":[{"name":"id","type":"integer","nullable":false},{"name":"name","type":"string","nullable":true}]}}}`,
+						TypeJSON: `{"type":{"type":"array","elementType":{"type":"struct","fields":[{"name":"id","type":"integer","nullable":false},{"name":"name","type":"string","nullable":true}]}}}`,
 					},
 				},
 			},
@@ -442,7 +442,7 @@ func TestEnrichStructColumns(t *testing.T) {
 					{
 						Name:     "root",
 						TypeName: "STRUCT",
-						TypeJson: `{"type":"struct","fields":[{"name":"level1","type":{"type":"struct","fields":[{"name":"level2","type":{"type":"struct","fields":[{"name":"value","type":"string","nullable":true}]},"nullable":true}]},"nullable":true}]}`,
+						TypeJSON: `{"type":"struct","fields":[{"name":"level1","type":{"type":"struct","fields":[{"name":"level2","type":{"type":"struct","fields":[{"name":"value","type":"string","nullable":true}]},"nullable":true}]},"nullable":true}]}`,
 					},
 				},
 			},
@@ -467,7 +467,7 @@ func TestEnrichStructColumns(t *testing.T) {
 					{
 						Name:     "user",
 						TypeName: "STRUCT",
-						TypeJson: `{"type":"struct","fields":[{"name":"user_id","type":"bigint","nullable":false,"metadata":{"comment":"Unique user identifier"}},{"name":"email","type":"string","nullable":true,"metadata":{"comment":"User email address"}}]}`,
+						TypeJSON: `{"type":"struct","fields":[{"name":"user_id","type":"bigint","nullable":false,"metadata":{"comment":"Unique user identifier"}},{"name":"email","type":"string","nullable":true,"metadata":{"comment":"User email address"}}]}`,
 					},
 				},
 			},
@@ -512,7 +512,7 @@ func TestEnrichStructColumns(t *testing.T) {
 					{
 						Name:     "data",
 						TypeName: "STRUCT",
-						TypeJson: `{"type":"struct","fields":[{"name":"field1","type":"string","nullable":true}]}`,
+						TypeJSON: `{"type":"struct","fields":[{"name":"field1","type":"string","nullable":true}]}`,
 					},
 				},
 			},
@@ -535,7 +535,7 @@ func TestEnrichStructColumns(t *testing.T) {
 					{
 						Name:     "empty",
 						TypeName: "STRUCT",
-						TypeJson: `{"type":"struct","fields":[]}`,
+						TypeJSON: `{"type":"struct","fields":[]}`,
 					},
 				},
 			},
@@ -557,7 +557,7 @@ func TestEnrichStructColumns(t *testing.T) {
 					{
 						Name:     "data",
 						TypeName: "STRUCT",
-						TypeJson: `{"type":"struct","fields":[{"type":"string","nullable":true},{"name":"valid","type":"integer","nullable":false}]}`,
+						TypeJSON: `{"type":"struct","fields":[{"type":"string","nullable":true},{"name":"valid","type":"integer","nullable":false}]}`,
 					},
 				},
 			},
@@ -580,7 +580,7 @@ func TestEnrichStructColumns(t *testing.T) {
 					{
 						Name:     "tags",
 						TypeName: "ARRAY",
-						TypeJson: `{"type":"array","elementType":"string"}`,
+						TypeJSON: `{"type":"array","elementType":"string"}`,
 					},
 				},
 			},
@@ -589,7 +589,7 @@ func TestEnrichStructColumns(t *testing.T) {
 			},
 		},
 		{
-			name:      "malformed TypeJson skipped",
+			name:      "malformed TypeJSON skipped",
 			tableName: "test_table",
 			catalog:   "main",
 			schema:    "default",
@@ -602,7 +602,7 @@ func TestEnrichStructColumns(t *testing.T) {
 					{
 						Name:     "bad_json",
 						TypeName: "STRUCT",
-						TypeJson: `{invalid json`,
+						TypeJSON: `{invalid json`,
 					},
 				},
 			},
@@ -611,7 +611,7 @@ func TestEnrichStructColumns(t *testing.T) {
 			},
 		},
 		{
-			name:      "TypeJson with unknown type",
+			name:      "TypeJSON with unknown type",
 			tableName: "test_table",
 			catalog:   "main",
 			schema:    "default",
@@ -624,7 +624,7 @@ func TestEnrichStructColumns(t *testing.T) {
 					{
 						Name:     "unknown",
 						TypeName: "STRUCT",
-						TypeJson: `{"unknown":"value"}`,
+						TypeJSON: `{"unknown":"value"}`,
 					},
 				},
 			},
@@ -646,7 +646,7 @@ func TestEnrichStructColumns(t *testing.T) {
 					{
 						Name:     "items",
 						TypeName: "ARRAY",
-						TypeJson: `{"type":{"type":"array","elementType":{"type":"integer"}}}`,
+						TypeJSON: `{"type":{"type":"array","elementType":{"type":"integer"}}}`,
 					},
 				},
 			},
@@ -668,7 +668,7 @@ func TestEnrichStructColumns(t *testing.T) {
 					{
 						Name:     "data",
 						TypeName: "STRUCT",
-						TypeJson: `{"type":"struct","fields":["invalid_field",{"name":"valid","type":"string","nullable":true}]}`,
+						TypeJSON: `{"type":"struct","fields":["invalid_field",{"name":"valid","type":"string","nullable":true}]}`,
 					},
 				},
 			},
@@ -691,7 +691,7 @@ func TestEnrichStructColumns(t *testing.T) {
 					{
 						Name:     "custom",
 						TypeName: "STRUCT",
-						TypeJson: `{"type":{"type":"custom_type"}}`,
+						TypeJSON: `{"type":{"type":"custom_type"}}`,
 					},
 				},
 			},
@@ -713,7 +713,7 @@ func TestEnrichStructColumns(t *testing.T) {
 					{
 						Name:     "items",
 						TypeName: "ARRAY",
-						TypeJson: `{"type":{"type":"array","elementType":{"name":"something"}}}`,
+						TypeJSON: `{"type":{"type":"array","elementType":{"name":"something"}}}`,
 					},
 				},
 			},
@@ -735,7 +735,7 @@ func TestEnrichStructColumns(t *testing.T) {
 					{
 						Name:     "weird",
 						TypeName: "STRUCT",
-						TypeJson: `{"type":123}`,
+						TypeJSON: `{"type":123}`,
 					},
 				},
 			},
@@ -757,7 +757,7 @@ func TestEnrichStructColumns(t *testing.T) {
 					{
 						Name:     "data",
 						TypeName: "STRUCT",
-						TypeJson: `{"type":{"name":"something"}}`,
+						TypeJSON: `{"type":{"name":"something"}}`,
 					},
 				},
 			},
@@ -779,7 +779,7 @@ func TestEnrichStructColumns(t *testing.T) {
 					{
 						Name:     "numbers",
 						TypeName: "ARRAY",
-						TypeJson: `{"type":{"type":"array","elementType":{"type":"decimal"}}}`,
+						TypeJSON: `{"type":{"type":"array","elementType":{"type":"decimal"}}}`,
 					},
 				},
 			},
@@ -791,9 +791,9 @@ func TestEnrichStructColumns(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 				w.WriteHeader(http.StatusOK)
-				json.NewEncoder(w).Encode(tt.apiResponse)
+				_ = json.NewEncoder(w).Encode(tt.apiResponse)
 			}))
 			defer server.Close()
 
@@ -829,7 +829,7 @@ type mockTablesAPIClient struct {
 	response TableInfo
 }
 
-func (m *mockTablesAPIClient) GetTable(ctx context.Context, catalog, schema, tableName string) (*TableInfo, error) {
+func (m *mockTablesAPIClient) GetTable(_ context.Context, _, _, _ string) (*TableInfo, error) {
 	return &m.response, nil
 }
 

@@ -135,7 +135,7 @@ func (c *sdkTablesAPIClient) GetTable(ctx context.Context, catalogName, schemaNa
 			Name:     col.Name,
 			TypeName: string(col.TypeName),
 			TypeText: col.TypeText,
-			TypeJson: col.TypeJson,
+			TypeJSON: col.TypeJson,
 			Position: int(col.Position),
 			Nullable: col.Nullable,
 		}

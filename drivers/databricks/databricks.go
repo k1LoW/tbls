@@ -8,6 +8,7 @@ import (
 	"sort"
 	"strings"
 
+	// Import databricks-sql-go driver for database/sql registration.
 	_ "github.com/databricks/databricks-sql-go"
 	"github.com/k1LoW/errors"
 	"github.com/rs/zerolog"
@@ -39,7 +40,7 @@ type ColumnInfo struct {
 	Name     string `json:"name"`
 	TypeName string `json:"type_name"`
 	TypeText string `json:"type_text"`
-	TypeJson string `json:"type_json"`
+	TypeJSON string `json:"type_json"`
 	Position int    `json:"position"`
 	Nullable bool   `json:"nullable"`
 }
@@ -619,7 +620,7 @@ func (dbx *Databricks) enrichStructColumns(ctx context.Context, catalog, schemaN
 
 		expandedColumns = append(expandedColumns, col)
 
-		if !exists || colInfo.TypeJson == "" {
+		if !exists || colInfo.TypeJSON == "" {
 			continue
 		}
 
@@ -631,7 +632,7 @@ func (dbx *Databricks) enrichStructColumns(ctx context.Context, catalog, schemaN
 		}
 
 		var typeData map[string]any
-		if err := json.Unmarshal([]byte(colInfo.TypeJson), &typeData); err != nil {
+		if err := json.Unmarshal([]byte(colInfo.TypeJSON), &typeData); err != nil {
 			continue
 		}
 
