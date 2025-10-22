@@ -1,5 +1,13 @@
 # Changelog
 
+## [v1.91.0](https://github.com/k1LoW/tbls/compare/v1.90.0...v1.91.0) - 2025-10-22
+### Breaking Changes 🛠
+- Changed HTML line-break output from <br> to self-closing <br /> in adjustTable. by @Mistat in https://github.com/k1LoW/tbls/pull/758
+### New Features 🎉
+- Add support for structs in databricks adaptor by @Ewan-Keith in https://github.com/k1LoW/tbls/pull/760
+### Other Changes
+- chore: setup tagpr labels by @k1LoW in https://github.com/k1LoW/tbls/pull/761
+
 ## [v1.90.0](https://github.com/k1LoW/tbls/compare/v1.89.1...v1.90.0) - 2025-10-18
 ### New Features 🎉
 - Add multi schema support for databricks by @Ewan-Keith in https://github.com/k1LoW/tbls/pull/754
