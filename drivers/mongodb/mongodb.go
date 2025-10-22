@@ -67,6 +67,7 @@ func (m *Mongodb) Analyze(s *schema.Schema) error {
 			return columns[i].Name < columns[j].Name
 		})
 		table := &schema.Table{
+			ShortName: coll.Name,
 			Name:    fmt.Sprintf("%s.%s", m.dbName, coll.Name),
 			Type:    coll.Type,
 			Columns: columns,
