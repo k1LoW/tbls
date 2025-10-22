@@ -787,6 +787,72 @@ func TestEnrichStructColumns(t *testing.T) {
 				{Name: "numbers", Type: "ARRAY(DECIMAL)"},
 			},
 		},
+		{
+			name:      "map with string key and string value",
+			tableName: "test_table",
+			catalog:   "main",
+			schema:    "default",
+			inputColumns: []*schema.Column{
+				{Name: "metadata", Type: "MAP"},
+			},
+			apiResponse: TableInfo{
+				FullName: "main.default.test_table",
+				Columns: []ColumnInfo{
+					{
+						Name:     "metadata",
+						TypeName: "MAP",
+						TypeJSON: `{"type":{"type":"map","keyType":"string","valueType":"string"}}`,
+					},
+				},
+			},
+			wantColumns: []*schema.Column{
+				{Name: "metadata", Type: "MAP(STRING, STRING)"},
+			},
+		},
+		{
+			name:      "map with string key and int value",
+			tableName: "test_table",
+			catalog:   "main",
+			schema:    "default",
+			inputColumns: []*schema.Column{
+				{Name: "counters", Type: "MAP"},
+			},
+			apiResponse: TableInfo{
+				FullName: "main.default.test_table",
+				Columns: []ColumnInfo{
+					{
+						Name:     "counters",
+						TypeName: "MAP",
+						TypeJSON: `{"type":{"type":"map","keyType":"string","valueType":"integer"}}`,
+					},
+				},
+			},
+			wantColumns: []*schema.Column{
+				{Name: "counters", Type: "MAP(STRING, INTEGER)"},
+			},
+		},
+		{
+			name:      "map with complex value type",
+			tableName: "test_table",
+			catalog:   "main",
+			schema:    "default",
+			inputColumns: []*schema.Column{
+				{Name: "settings", Type: "MAP"},
+			},
+			apiResponse: TableInfo{
+				FullName: "main.default.test_table",
+				Columns: []ColumnInfo{
+					{
+						Name:     "settings",
+						TypeName: "MAP",
+						TypeJSON: `{"type":{"type":"map","keyType":"string","valueType":{"type":"struct"}}}`,
+					},
+				},
+			},
+			wantColumns: []*schema.Column{
+				{Name: "settings", Type: "MAP(STRING, STRUCT)"},
+			},
+		},
 	}
 
 	for _, tt := range tests {
@@ -831,6 +897,143 @@ type mockTablesAPIClient struct {
 
 func (m *mockTablesAPIClient) GetTable(_ context.Context, _, _, _ string) (*TableInfo, error) {
 	return &m.response, nil
+}
+
+func TestFormatType(t *testing.T) {
+	tests := []struct {
+		name     string
+		typeData map[string]any
+		want     string
+	}{
+		{
+			name: "simple string type",
+			typeData: map[string]any{
+				"type": "string",
+			},
+			want: "STRING",
+		},
+		{
+			name: "simple integer type",
+			typeData: map[string]any{
+				"type": "integer",
+			},
+			want: "INTEGER",
+		},
+		{
+			name: "struct type",
+			typeData: map[string]any{
+				"type": map[string]any{
+					"type": "struct",
+				},
+			},
+			want: "STRUCT",
+		},
+		{
+			name: "array of string",
+			typeData: map[string]any{
+				"type": map[string]any{
+					"type":        "array",
+					"elementType": "string",
+				},
+			},
+			want: "ARRAY(STRING)",
+		},
+		{
+			name: "array of struct",
+			typeData: map[string]any{
+				"type": map[string]any{
+					"type": "array",
+					"elementType": map[string]any{
+						"type": "struct",
+					},
+				},
+			},
+			want: "ARRAY(STRUCT)",
+		},
+		{
+			name: "map with string key and string value",
+			typeData: map[string]any{
+				"type": map[string]any{
+					"type":      "map",
+					"keyType":   "string",
+					"valueType": "string",
+				},
+			},
+			want: "MAP(STRING, STRING)",
+		},
+		{
+			name: "map with string key and integer value",
+			typeData: map[string]any{
+				"type": map[string]any{
+					"type":      "map",
+					"keyType":   "string",
+					"valueType": "integer",
+				},
+			},
+			want: "MAP(STRING, INTEGER)",
+		},
+		{
+			name: "map with integer key and double value",
+			typeData: map[string]any{
+				"type": map[string]any{
+					"type":      "map",
+					"keyType":   "integer",
+					"valueType": "double",
+				},
+			},
+			want: "MAP(INTEGER, DOUBLE)",
+		},
+		{
+			name: "map with struct value",
+			typeData: map[string]any{
+				"type": map[string]any{
+					"type":    "map",
+					"keyType": "string",
+					"valueType": map[string]any{
+						"type": "struct",
+					},
+				},
+			},
+			want: "MAP(STRING, STRUCT)",
+		},
+		{
+			name: "map with array value",
+			typeData: map[string]any{
+				"type": map[string]any{
+					"type":    "map",
+					"keyType": "string",
+					"valueType": map[string]any{
+						"type": "array",
+					},
+				},
+			},
+			want: "MAP(STRING, ARRAY)",
+		},
+		{
+			name: "unknown type",
+			typeData: map[string]any{
+				"type": map[string]any{
+					"type": "custom_unknown",
+				},
+			},
+			want: "CUSTOM_UNKNOWN",
+		},
+		{
+			name:     "missing type field",
+			typeData: map[string]any{},
+			want:     "UNKNOWN",
+		},
+	}
+
+	dbx := &Databricks{}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := dbx.formatType(tt.typeData)
+			if got != tt.want {
+				t.Errorf("formatType() = %q, want %q", got, tt.want)
+			}
+		})
+	}
 }
 
 func TestNew(t *testing.T) {

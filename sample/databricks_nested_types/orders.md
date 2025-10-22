@@ -43,6 +43,7 @@ E-commerce orders with complex nested data structures
 | payment_info.transactions.amount | DECIMAL(10,2) |  | true |  |  | Transaction amount |
 | payment_info.transactions.status | STRING |  | true |  |  | Transaction status (pending, completed, failed, refunded) |
 | payment_info.transactions.timestamp | TIMESTAMP |  | true |  |  | Transaction timestamp |
+| product_metadata | MAP(STRING, STRING) |  | true |  |  | Key-value pairs for custom product attributes and metadata |
 | fulfillment_events | ARRAY(STRUCT) |  | true |  |  | Order fulfillment history with packaging and shipping details |
 | fulfillment_events.event_type | STRING |  | true |  |  | Type of fulfillment event (picked, packed, shipped, delivered) |
 | fulfillment_events.event_timestamp | TIMESTAMP |  | true |  |  | When the event occurred |

@@ -50,6 +50,8 @@ CREATE OR REPLACE TABLE orders (
     >> COMMENT 'List of payment transactions for this order'
   > COMMENT 'Payment information including method, billing, and transaction history',
   
+  product_metadata MAP<STRING, STRING> COMMENT 'Key-value pairs for custom product attributes and metadata',
+  
   fulfillment_events ARRAY<STRUCT<
     event_type: STRING COMMENT 'Type of fulfillment event (picked, packed, shipped, delivered)',
     event_timestamp: TIMESTAMP COMMENT 'When the event occurred',
