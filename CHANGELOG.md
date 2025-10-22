@@ -1,5 +1,7 @@
 # Changelog
 
+## [v1.91.1](https://github.com/k1LoW/tbls/compare/v1.91.0...v1.91.1) - 2025-10-22
+
 ## [v1.91.0](https://github.com/k1LoW/tbls/compare/v1.90.0...v1.91.0) - 2025-10-22
 ### Breaking Changes 🛠
 - Changed HTML line-break output from <br> to self-closing <br /> in adjustTable. by @Mistat in https://github.com/k1LoW/tbls/pull/758
