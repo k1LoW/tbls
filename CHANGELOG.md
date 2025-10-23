@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.91.2](https://github.com/k1LoW/tbls/compare/v1.91.1...v1.91.2) - 2025-10-23
+### New Features 🎉
+- add support for map key and value types in databricks by @Ewan-Keith in https://github.com/k1LoW/tbls/pull/763
+
 ## [v1.91.1](https://github.com/k1LoW/tbls/compare/v1.91.0...v1.91.1) - 2025-10-22
 
 ## [v1.91.0](https://github.com/k1LoW/tbls/compare/v1.90.0...v1.91.0) - 2025-10-22
