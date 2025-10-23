@@ -4,7 +4,7 @@
 
 | Name | Columns | Comment | Type |
 | ---- | ------- | ------- | ---- |
-| [orders](orders.md) | 47 | E-commerce orders with complex nested data structures | MANAGED |
+| [orders](orders.md) | 48 | E-commerce orders with complex nested data structures | MANAGED |
 
 ## Relations
 

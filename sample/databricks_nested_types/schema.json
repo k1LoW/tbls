@@ -217,6 +217,12 @@
           "comment": "Transaction timestamp"
         },
         {
+          "name": "product_metadata",
+          "type": "MAP(STRING, STRING)",
+          "nullable": true,
+          "comment": "Key-value pairs for custom product attributes and metadata"
+        },
+        {
           "name": "fulfillment_events",
           "type": "ARRAY(STRUCT)",
           "nullable": true,

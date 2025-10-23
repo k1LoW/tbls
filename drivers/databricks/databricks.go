@@ -624,10 +624,11 @@ func (dbx *Databricks) enrichStructColumns(ctx context.Context, catalog, schemaN
 			continue
 		}
 
-		isStructOrArray := strings.HasPrefix(strings.ToUpper(colInfo.TypeName), "STRUCT") ||
-			strings.HasPrefix(strings.ToUpper(colInfo.TypeName), "ARRAY")
+		isComplexType := strings.HasPrefix(strings.ToUpper(colInfo.TypeName), "STRUCT") ||
+			strings.HasPrefix(strings.ToUpper(colInfo.TypeName), "ARRAY") ||
+			strings.HasPrefix(strings.ToUpper(colInfo.TypeName), "MAP")
 
-		if !isStructOrArray {
+		if !isComplexType {
 			continue
 		}
 
@@ -776,6 +777,17 @@ func (dbx *Databricks) formatType(typeData map[string]any) string {
 				}
 			}
 			return "ARRAY"
+		case "map":
+			keyType := strings.ToUpper(t["keyType"].(string))
+
+			var valueType string
+			if vt, ok := t["valueType"].(string); ok {
+				valueType = strings.ToUpper(vt)
+			} else if valueMap, ok := t["valueType"].(map[string]any); ok {
+				valueType = strings.ToUpper(valueMap["type"].(string))
+			}
+
+			return fmt.Sprintf("MAP(%s, %s)", keyType, valueType)
 		default:
 			return strings.ToUpper(structType)
 		}
