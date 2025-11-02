@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.91.3](https://github.com/k1LoW/tbls/compare/v1.91.2...v1.91.3) - 2025-11-02
+### Other Changes
+- chore(deps): bump the dependencies group with 12 updates by @dependabot[bot] in https://github.com/k1LoW/tbls/pull/765
+
 ## [v1.91.2](https://github.com/k1LoW/tbls/compare/v1.91.1...v1.91.2) - 2025-10-23
 ### New Features 🎉
 - add support for map key and value types in databricks by @Ewan-Keith in https://github.com/k1LoW/tbls/pull/763
