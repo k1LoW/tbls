@@ -45,9 +45,10 @@ func (sf *Snowflake) Analyze(s *schema.Schema) error {
 			return errors.WithStack(err)
 		}
 		table := &schema.Table{
-			Name:    tableName,
-			Type:    tableType,
-			Comment: comment.String,
+			ShortName: tableName,
+			Name:      tableName,
+			Type:      tableType,
+			Comment:   comment.String,
 		}
 
 		var getDDLObjectType string
