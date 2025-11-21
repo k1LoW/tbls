@@ -158,6 +158,7 @@ test_ext_driver: build
 	env PATH="${PWD}/testdata/bin:${PATH}" $(TBLS) ls --dsn foodb://bar | grep 'users' > /dev/null
 
 test_jsonschema:
+	cd scripts/jsonschema && go mod tidy
 	cd scripts/jsonschema && go run main.go | diff -u ../../spec/tbls.schema.json_schema.json -
 	jv spec/tbls.schema.json_schema.json --assert-content sample/mysql/schema.json
 	jv spec/tbls.schema.json_schema.json --assert-content sample/postgres/schema.json
