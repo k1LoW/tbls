@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.91.4](https://github.com/k1LoW/tbls/compare/v1.91.3...v1.91.4) - 2025-11-29
+### Other Changes
+- chore: update go-graphviz version by @k1LoW in https://github.com/k1LoW/tbls/pull/769
+
 ## [v1.91.3](https://github.com/k1LoW/tbls/compare/v1.91.2...v1.91.3) - 2025-11-21
 ### Other Changes
 - chore(deps): bump the dependencies group with 12 updates by @dependabot[bot] in https://github.com/k1LoW/tbls/pull/765
