@@ -375,6 +375,7 @@ FROM sys.indexes AS i
 LEFT JOIN sys.key_constraints AS c
   ON i.object_id = c.parent_object_id AND i.index_id = c.unique_index_id
 WHERE i.object_id = object_id(@p1)
+  AND i.type <> 0
   AND EXISTS (SELECT 1 FROM sys.index_columns AS ic0 WHERE ic0.index_id = i.index_id)
 GROUP BY i.name, i.index_id, i.type_desc, i.is_unique, i.is_primary_key, i.is_unique_constraint, c.is_system_named, i.object_id
 ORDER BY i.index_id
