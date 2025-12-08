@@ -6,10 +6,12 @@
 <summary><strong>Table Definition</strong></summary>
 
 ```sql
-CREATE VIEW "name with spaces" AS (
+
+CREATE VIEW [name with spaces] AS (
   SELECT TOP 1 p.title
   FROM posts AS p
 );
+
 ```
 
 </details>

@@ -12,6 +12,7 @@ Sample database document.
 
 | Name | Columns | Comment | Type | Labels |
 | ---- | ------- | ------- | ---- | ------ |
+| [tableWithOutClusterIndex](tableWithOutClusterIndex.md) | 4 |  | BASIC TABLE |  |
 | [users](users.md) | 6 | Users table | BASIC TABLE |  |
 | [user_options](user_options.md) | 4 | User options table | BASIC TABLE |  |
 | [posts](posts.md) | 6 |  | BASIC TABLE | `green` `red` `blue` |
