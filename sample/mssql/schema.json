@@ -3,6 +3,70 @@
   "desc": "Sample database document.",
   "tables": [
     {
+      "name": "tableWithOutClusterIndex",
+      "type": "BASIC TABLE",
+      "columns": [
+        {
+          "name": "id",
+          "type": "int",
+          "nullable": false
+        },
+        {
+          "name": "test1",
+          "type": "nvarchar(50)",
+          "nullable": false
+        },
+        {
+          "name": "testIndex",
+          "type": "int",
+          "nullable": false
+        },
+        {
+          "name": "comments",
+          "type": "nvarchar(255)",
+          "nullable": true
+        }
+      ],
+      "indexes": [
+        {
+          "name": "PK_tableWithOutClusterIndex",
+          "def": "NONCLUSTERED, unique, part of a PRIMARY KEY constraint, [ id ]",
+          "table": "tableWithOutClusterIndex",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "IX_tableWithOutClusterIndex_testIndex",
+          "def": "NONCLUSTERED, [ testIndex ]",
+          "table": "tableWithOutClusterIndex",
+          "columns": [
+            "testIndex"
+          ]
+        },
+        {
+          "name": "IX_tableWithOutClusterIndex_testIndex_id",
+          "def": "NONCLUSTERED, [ testIndex, id ]",
+          "table": "tableWithOutClusterIndex",
+          "columns": [
+            "testIndex",
+            "id"
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "name": "PK_tableWithOutClusterIndex",
+          "type": "PRIMARY KEY",
+          "def": "NONCLUSTERED, unique, part of a PRIMARY KEY constraint, [ id ]",
+          "table": "tableWithOutClusterIndex",
+          "columns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    {
       "name": "users",
       "type": "BASIC TABLE",
       "comment": "Users table",

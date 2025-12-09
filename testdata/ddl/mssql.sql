@@ -1,5 +1,6 @@
 DROP TRIGGER IF EXISTS update_users_updated;
 DROP TRIGGER IF EXISTS update_posts_updated;
+DROP TABLE IF EXISTS tableWithOutClusterIndex;
 DROP TABLE IF EXISTS administrator.blogs;
 DROP VIEW IF EXISTS post_comments;
 DROP TABLE IF EXISTS "hyphen-table";
@@ -19,6 +20,17 @@ DROP TABLE IF EXISTS [Rabbits].[Running];
 DROP TABLE IF EXISTS [Sales].[Product];
 DROP SCHEMA IF EXISTS Sales;
 DROP SCHEMA IF EXISTS Rabbits;
+
+CREATE TABLE tableWithOutClusterIndex (
+  id INT NOT NULL,
+  test1 NVARCHAR(50) NOT NULL,
+  testIndex INT NOT NULL,
+  comments NVARCHAR(255) NULL,
+  CONSTRAINT PK_tableWithOutClusterIndex PRIMARY KEY NONCLUSTERED (id)
+);
+
+CREATE INDEX IX_tableWithOutClusterIndex_testIndex ON tableWithOutClusterIndex (testIndex);
+CREATE INDEX IX_tableWithOutClusterIndex_testIndex_id ON tableWithOutClusterIndex (testIndex, id);
 
 CREATE TABLE users (
   id int NOT NULL IDENTITY(1,1) PRIMARY KEY,
