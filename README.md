@@ -1028,6 +1028,7 @@ detectVirtualRelations:
 | `singularTableName`          | `some_table.user_id` | `user.id`       |
 | `identical`                  | `some_table.user_id` | `users.user_id` |
 | `identicalSingularTableName` | `some_table.user_id` | `user.user_id`  |
+| `invertedSingularTableName`  | `some_table.id_user` | `user.id`       |
 
 
 ### Dictionary

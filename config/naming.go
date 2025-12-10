@@ -48,6 +48,12 @@ func SelectNamingStrategy(name string) (*NamingStrategy, error) {
 			ParentColumn: identicalParentColumnNamer,
 		}, nil
 
+	case "invertedSingularTableName":
+		return &NamingStrategy{
+			ParentTable:  invertedSingularTableParentTableNamer,
+			ParentColumn: singularTableParentColumnNamer,
+		}, nil
+
 	default:
 		return nil, fmt.Errorf("naming strategy does not exist. strategy: %s", name)
 	}
@@ -91,4 +97,13 @@ func singularTableParentColumnNamer(_ string) string {
 
 func identicalParentColumnNamer(name string) string {
 	return name
+}
+
+func invertedSingularTableParentTableNamer(name string) string {
+	index := strings.Index(name, "_")
+
+	if index == -1 || name[:index] != "id" {
+		return ""
+	}
+	return pluralizeClient.Singular(name[index+1:])
 }
