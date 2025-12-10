@@ -1,5 +1,13 @@
 # Changelog
 
+## [v1.92.0](https://github.com/k1LoW/tbls/compare/v1.91.4...v1.92.0) - 2025-12-10
+### New Features 🎉
+- feat: add naming strategy `invertedSingularTableName` by @k1LoW in https://github.com/k1LoW/tbls/pull/778
+### Fix bug 🐛
+- fix(mssql): exclude HEAP indexes from index retrieval query by @ejsmile in https://github.com/k1LoW/tbls/pull/777
+### Other Changes
+- chore(deps): bump actions/checkout from 5 to 6 in the dependencies group by @dependabot[bot] in https://github.com/k1LoW/tbls/pull/771
+
 ## [v1.91.4](https://github.com/k1LoW/tbls/compare/v1.91.3...v1.91.4) - 2025-11-29
 ### Other Changes
 - chore: update go-graphviz version by @k1LoW in https://github.com/k1LoW/tbls/pull/769
