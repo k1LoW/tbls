@@ -27,7 +27,7 @@ var tests = []struct {
 func TestMain(m *testing.M) {
 	cPath := credentialPath()
 	if _, err := os.Lstat(cPath); err == nil {
-		os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", cPath)
+		_ = os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", cPath)
 		bqTest := struct {
 			dsn           config.DSN
 			schemaName    string

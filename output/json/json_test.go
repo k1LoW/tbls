@@ -1,4 +1,4 @@
-package json
+package json //nolint:revive
 
 import (
 	"bytes"
