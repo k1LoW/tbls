@@ -1,5 +1,10 @@
 # Changelog
 
+## [v1.92.1](https://github.com/k1LoW/tbls/compare/v1.92.0...v1.92.1) - 2025-12-17
+### Other Changes
+- chore(deps): bump github.com/expr-lang/expr from 1.17.6 to 1.17.7 by @dependabot[bot] in https://github.com/k1LoW/tbls/pull/782
+- chore(deps): bump the dependencies group across 1 directory with 18 updates by @dependabot[bot] in https://github.com/k1LoW/tbls/pull/784
+
 ## [v1.92.0](https://github.com/k1LoW/tbls/compare/v1.91.4...v1.92.0) - 2025-12-10
 ### New Features 🎉
 - feat: add naming strategy `invertedSingularTableName` by @k1LoW in https://github.com/k1LoW/tbls/pull/778
