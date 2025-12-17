@@ -15,7 +15,7 @@ require (
 	github.com/cli/safeexec v1.0.1
 	github.com/databricks/databricks-sdk-go v0.86.0
 	github.com/databricks/databricks-sql-go v1.9.0
-	github.com/expr-lang/expr v1.17.6
+	github.com/expr-lang/expr v1.17.7
 	github.com/gertd/go-pluralize v0.2.1
 	github.com/go-sql-driver/mysql v1.9.3
 	github.com/goccy/go-graphviz v0.2.10
