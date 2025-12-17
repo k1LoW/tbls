@@ -129,6 +129,7 @@ check_license:
 	go-licenses check ./... \
 	--ignore github.com/beta/freetype \
 	--ignore github.com/golang/freetype \
+	--ignore github.com/segmentio/asm \
 	--disallowed_types=permissive,forbidden,restricted \
 	--include_tests
 
@@ -188,7 +189,7 @@ depsdev:
 prerelease:
 	git pull origin --tag
 	ghch -w -N ${VER}
-	gocredits -w .
+	gocredits -w -skip-missing .
 	cat _EXTRA_CREDITS >> CREDITS
 	git add CHANGELOG.md CREDITS
 	git commit -m'Bump up version number'
