@@ -1289,6 +1289,13 @@
   ],
   "functions": [
     {
+      "name": "public.reset_comment",
+      "return_type": "void",
+      "arguments": "IN comment_id integer",
+      "type": "PROCEDURE",
+      "comment": "Updates the comment field to \"updated\" for a given comment ID and commits the change."
+    },
+    {
       "name": "public.uuid_nil",
       "return_type": "uuid",
       "arguments": "",
@@ -1352,13 +1359,8 @@
       "name": "public.update_updated",
       "return_type": "trigger",
       "arguments": "",
-      "type": "FUNCTION"
-    },
-    {
-      "name": "public.reset_comment",
-      "return_type": "void",
-      "arguments": "IN comment_id integer",
-      "type": "PROCEDURE"
+      "type": "FUNCTION",
+      "comment": "Trigger function that automatically sets the updated column to the current timestamp whenever a row is updated."
     }
   ],
   "enums": [
@@ -1373,7 +1375,7 @@
   ],
   "driver": {
     "name": "postgres",
-    "database_version": "PostgreSQL 15.14 (Debian 15.14-1.pgdg13+1) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
+    "database_version": "PostgreSQL 15.15 (Debian 15.15-1.pgdg13+1) on aarch64-unknown-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit",
     "meta": {
       "current_schema": "public",
       "search_paths": [

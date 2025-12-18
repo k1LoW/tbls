@@ -34,19 +34,19 @@ Sample PostgreSQL database document.
 
 ## Stored procedures and functions
 
-| Name | ReturnType | Arguments | Type |
-| ---- | ------- | ------- | ---- |
-| public.uuid_nil | uuid |  | FUNCTION |
-| public.uuid_ns_dns | uuid |  | FUNCTION |
-| public.uuid_ns_url | uuid |  | FUNCTION |
-| public.uuid_ns_oid | uuid |  | FUNCTION |
-| public.uuid_ns_x500 | uuid |  | FUNCTION |
-| public.uuid_generate_v1 | uuid |  | FUNCTION |
-| public.uuid_generate_v1mc | uuid |  | FUNCTION |
-| public.uuid_generate_v3 | uuid | namespace uuid, name text | FUNCTION |
-| public.uuid_generate_v4 | uuid |  | FUNCTION |
-| public.uuid_generate_v5 | uuid | namespace uuid, name text | FUNCTION |
-| public.update_updated | trigger |  | FUNCTION |
+| Name | ReturnType | Arguments | Type | Comment |
+| ---- | ------- | ------- | ---- | ------- |
+| public.uuid_nil | uuid |  | FUNCTION |  |
+| public.uuid_ns_dns | uuid |  | FUNCTION |  |
+| public.uuid_ns_url | uuid |  | FUNCTION |  |
+| public.uuid_ns_oid | uuid |  | FUNCTION |  |
+| public.uuid_ns_x500 | uuid |  | FUNCTION |  |
+| public.uuid_generate_v1 | uuid |  | FUNCTION |  |
+| public.uuid_generate_v1mc | uuid |  | FUNCTION |  |
+| public.uuid_generate_v3 | uuid | namespace uuid, name text | FUNCTION |  |
+| public.uuid_generate_v4 | uuid |  | FUNCTION |  |
+| public.uuid_generate_v5 | uuid | namespace uuid, name text | FUNCTION |  |
+| public.update_updated | trigger |  | FUNCTION | Trigger function that sets the updated column to the current timestamp whenever a row is updated. |
 
 ## Enums
 
