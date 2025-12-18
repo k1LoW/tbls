@@ -179,6 +179,7 @@ type Function struct {
 	ReturnType string `json:"return_type" yaml:"returnType"`
 	Arguments  string `json:"arguments"`
 	Type       string `json:"type"`
+	Comment    string `json:"comment,omitempty"`
 }
 
 type Enum struct {
