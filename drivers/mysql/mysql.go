@@ -546,17 +546,17 @@ WHERE t.table_schema = ?
 	return nil
 }
 
-const queryFunctions = `SELECT r.routine_schema as database_name,
-r.routine_name,
+const queryFunctions = `SELECT r.routine_schema AS database_name, r.routine_name,
 r.routine_type AS type,
 r.data_type AS return_type,
-GROUP_CONCAT(CONCAT(p.parameter_name, ' ', p.data_type) SEPARATOR '; ') AS parameter
+GROUP_CONCAT(CONCAT(p.parameter_name, ' ', p.data_type) SEPARATOR '; ') AS parameter,
+r.routine_comment AS comment
 FROM information_schema.routines r
 LEFT JOIN information_schema.parameters p
-	 ON p.specific_schema = r.routine_schema
-	 AND p.specific_name = r.specific_name
-WHERE routine_schema NOT IN ('sys', 'information_schema', 'mysql', 'performance_schema')
-GROUP BY r.routine_schema, r.routine_name, r.routine_type, r.data_type, r.routine_definition`
+     ON p.specific_schema = r.routine_schema
+    AND p.specific_name = r.specific_name
+WHERE r.routine_schema NOT IN ('sys', 'information_schema', 'mysql', 'performance_schema')
+GROUP BY r.routine_schema, r.routine_name, r.routine_type, r.data_type, r.routine_comment;`
 
 func (m *Mysql) getFunctions() ([]*schema.Function, error) {
 	functions := []*schema.Function{}
@@ -573,8 +573,9 @@ func (m *Mysql) getFunctions() ([]*schema.Function, error) {
 			typeValue    string
 			returnType   string
 			arguments    sql.NullString
+			comment      sql.NullString
 		)
-		err := functionsResult.Scan(&databaseName, &name, &typeValue, &returnType, &arguments)
+		err := functionsResult.Scan(&databaseName, &name, &typeValue, &returnType, &arguments, &comment)
 		if err != nil {
 			return functions, errors.WithStack(err)
 		}
@@ -583,6 +584,7 @@ func (m *Mysql) getFunctions() ([]*schema.Function, error) {
 			Type:       typeValue,
 			ReturnType: returnType,
 			Arguments:  arguments.String,
+			Comment:    comment.String,
 		}
 
 		functions = append(functions, subroutine)
