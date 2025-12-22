@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.92.2](https://github.com/k1LoW/tbls/compare/v1.92.1...v1.92.2) - 2025-12-22
+### Fix bug 🐛
+- fix: merge viewpoints only by name, not by tables/labels combination by @k1LoW in https://github.com/k1LoW/tbls/pull/787
+
 ## [v1.92.1](https://github.com/k1LoW/tbls/compare/v1.92.0...v1.92.1) - 2025-12-17
 ### Other Changes
 - chore(deps): bump github.com/expr-lang/expr from 1.17.6 to 1.17.7 by @dependabot[bot] in https://github.com/k1LoW/tbls/pull/782
