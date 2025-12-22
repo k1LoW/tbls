@@ -632,10 +632,3 @@ func (t *Table) CollectTablesAndRelations(distance int, root bool) ([]*Table, []
 
 	return uTables, uRelations, nil
 }
-
-func sameElements(a, b []string) bool {
-	if len(a) == len(b) && lo.Every(a, b) {
-		return true
-	}
-	return false
-}
