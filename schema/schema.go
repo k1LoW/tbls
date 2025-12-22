@@ -74,10 +74,6 @@ type Viewpoints []*Viewpoint
 
 func (vs Viewpoints) Merge(in *Viewpoint) Viewpoints {
 	for i, v := range vs {
-		if sameElements(v.Labels, in.Labels) && sameElements(v.Tables, in.Tables) {
-			vs[i] = in
-			return vs
-		}
 		if v.Name == in.Name {
 			vs[i] = in
 			return vs
