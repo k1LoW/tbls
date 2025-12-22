@@ -180,7 +180,7 @@ build:
 depsdev:
 	go install github.com/linyows/git-semv/cmd/git-semv@latest
 	go install github.com/Songmu/ghch/cmd/ghch@latest
-	go install github.com/xo/usql@latest
+	go install github.com/xo/usql@v0.19.24
 	go install github.com/Songmu/gocredits/cmd/gocredits@latest
 	go install github.com/securego/gosec/v2/cmd/gosec@latest
 	go install github.com/santhosh-tekuri/jsonschema/cmd/jv@latest
