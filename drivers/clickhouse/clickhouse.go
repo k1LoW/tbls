@@ -84,10 +84,11 @@ WHERE database = ?
 		}
 
 		table := &schema.Table{
-			Name:    tableName,
-			Type:    tableType,
-			Def:     tableDef,
-			Comment: tableComment,
+			ShortName: tableName,
+			Name:      tableName,
+			Type:      tableType,
+			Def:       tableDef,
+			Comment:   tableComment,
 		}
 
 		if shadowTableRe.MatchString(tableName) {
