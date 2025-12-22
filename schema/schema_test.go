@@ -368,3 +368,102 @@ func newTestSchema(t *testing.T) *Schema {
 	}
 	return s
 }
+
+func TestViewpointsMerge(t *testing.T) {
+	t.Run("same tables with different names should not be merged", func(t *testing.T) {
+		vs := Viewpoints{}
+
+		v1 := &Viewpoint{
+			Name:   "Viewpoint 1",
+			Tables: []string{"table_a", "table_b"},
+		}
+		v2 := &Viewpoint{
+			Name:   "Viewpoint 2",
+			Tables: []string{"table_a", "table_b"},
+		}
+
+		vs = vs.Merge(v1)
+		vs = vs.Merge(v2)
+
+		if len(vs) != 2 {
+			t.Fatalf("expected 2 viewpoints, got %d", len(vs))
+		}
+		if vs[0].Name != "Viewpoint 1" {
+			t.Errorf("expected first viewpoint name to be 'Viewpoint 1', got '%s'", vs[0].Name)
+		}
+		if vs[1].Name != "Viewpoint 2" {
+			t.Errorf("expected second viewpoint name to be 'Viewpoint 2', got '%s'", vs[1].Name)
+		}
+	})
+
+	t.Run("same labels with different names should not be merged", func(t *testing.T) {
+		vs := Viewpoints{}
+
+		v1 := &Viewpoint{
+			Name:   "Label Viewpoint 1",
+			Labels: []string{"label1", "label2"},
+		}
+		v2 := &Viewpoint{
+			Name:   "Label Viewpoint 2",
+			Labels: []string{"label1", "label2"},
+		}
+
+		vs = vs.Merge(v1)
+		vs = vs.Merge(v2)
+
+		if len(vs) != 2 {
+			t.Fatalf("expected 2 viewpoints, got %d", len(vs))
+		}
+		if vs[0].Name != "Label Viewpoint 1" {
+			t.Errorf("expected first viewpoint name to be 'Label Viewpoint 1', got '%s'", vs[0].Name)
+		}
+		if vs[1].Name != "Label Viewpoint 2" {
+			t.Errorf("expected second viewpoint name to be 'Label Viewpoint 2', got '%s'", vs[1].Name)
+		}
+	})
+
+	t.Run("same name should be merged (updated)", func(t *testing.T) {
+		vs := Viewpoints{}
+
+		v1 := &Viewpoint{
+			Name:   "Same Name",
+			Tables: []string{"table_a"},
+			Desc:   "First description",
+		}
+		v2 := &Viewpoint{
+			Name:   "Same Name",
+			Tables: []string{"table_b"},
+			Desc:   "Updated description",
+		}
+
+		vs = vs.Merge(v1)
+		vs = vs.Merge(v2)
+
+		if len(vs) != 1 {
+			t.Errorf("expected 1 viewpoint, got %d", len(vs))
+		}
+		if vs[0].Desc != "Updated description" {
+			t.Errorf("expected viewpoint to be updated, got desc '%s'", vs[0].Desc)
+		}
+	})
+
+	t.Run("different names and different tables should not be merged", func(t *testing.T) {
+		vs := Viewpoints{}
+
+		v1 := &Viewpoint{
+			Name:   "Viewpoint A",
+			Tables: []string{"table_a"},
+		}
+		v2 := &Viewpoint{
+			Name:   "Viewpoint B",
+			Tables: []string{"table_b"},
+		}
+
+		vs = vs.Merge(v1)
+		vs = vs.Merge(v2)
+
+		if len(vs) != 2 {
+			t.Errorf("expected 2 viewpoints, got %d", len(vs))
+		}
+	})
+}
