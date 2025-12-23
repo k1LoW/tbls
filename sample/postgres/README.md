@@ -36,7 +36,6 @@ Sample PostgreSQL database document.
 
 | Name | ReturnType | Arguments | Type | Comment |
 | ---- | ------- | ------- | ---- | ------- |
-| public.reset_comment | void | IN comment_id integer | PROCEDURE | Updates the comment field to "updated" for a given comment ID and commits the change. |
 | public.uuid_nil | uuid |  | FUNCTION |  |
 | public.uuid_ns_dns | uuid |  | FUNCTION |  |
 | public.uuid_ns_url | uuid |  | FUNCTION |  |
@@ -48,6 +47,7 @@ Sample PostgreSQL database document.
 | public.uuid_generate_v4 | uuid |  | FUNCTION |  |
 | public.uuid_generate_v5 | uuid | namespace uuid, name text | FUNCTION |  |
 | public.update_updated | trigger |  | FUNCTION | Trigger function that automatically sets the updated column to the current timestamp whenever a row is updated. |
+| public.reset_comment | void | IN comment_id integer | PROCEDURE | Updates the comment field to "updated" for a given comment ID and commits the change. |
 
 ## Enums
 

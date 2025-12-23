@@ -1289,13 +1289,6 @@
   ],
   "functions": [
     {
-      "name": "public.reset_comment",
-      "return_type": "void",
-      "arguments": "IN comment_id integer",
-      "type": "PROCEDURE",
-      "comment": "Updates the comment field to \"updated\" for a given comment ID and commits the change."
-    },
-    {
       "name": "public.uuid_nil",
       "return_type": "uuid",
       "arguments": "",
@@ -1361,6 +1354,13 @@
       "arguments": "",
       "type": "FUNCTION",
       "comment": "Trigger function that automatically sets the updated column to the current timestamp whenever a row is updated."
+    },
+    {
+      "name": "public.reset_comment",
+      "return_type": "void",
+      "arguments": "IN comment_id integer",
+      "type": "PROCEDURE",
+      "comment": "Updates the comment field to \"updated\" for a given comment ID and commits the change."
     }
   ],
   "enums": [
