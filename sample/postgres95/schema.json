@@ -1346,7 +1346,8 @@
       "name": "public.update_updated",
       "return_type": "trigger",
       "arguments": "",
-      "type": "FUNCTION"
+      "type": "FUNCTION",
+      "comment": "Trigger function that sets the updated column to the current timestamp whenever a row is updated."
     }
   ],
   "enums": [

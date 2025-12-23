@@ -969,18 +969,20 @@
       "name": "CustomerLevel",
       "return_type": "varchar",
       "arguments": "credit decimal",
-      "type": "FUNCTION"
+      "type": "FUNCTION",
+      "comment": "Determines customer tier (PLATINUM, GOLD, SILVER) based on the credit amount"
     },
     {
       "name": "GetAllComments",
       "return_type": "",
       "arguments": "",
-      "type": "PROCEDURE"
+      "type": "PROCEDURE",
+      "comment": "Retrieves all rows from the comments table"
     }
   ],
   "driver": {
     "name": "mysql",
-    "database_version": "8.4.6",
+    "database_version": "8.4.7",
     "meta": {
       "dict": {
         "Functions": "Stored procedures and functions"

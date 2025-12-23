@@ -850,8 +850,9 @@ func (m *Md) functionsData(functions []*schema.Function, number, adjust bool) []
 		m.config.MergedDict.Lookup("ReturnType"),
 		m.config.MergedDict.Lookup("Arguments"),
 		m.config.MergedDict.Lookup("Type"),
+		m.config.MergedDict.Lookup("Comment"),
 	}
-	headerLine := []string{"----", "-------", "-------", "----"}
+	headerLine := []string{"----", "-------", "-------", "----", "-------"}
 	data = append(data,
 		header,
 		headerLine,
@@ -863,6 +864,7 @@ func (m *Md) functionsData(functions []*schema.Function, number, adjust bool) []
 			f.ReturnType,
 			f.Arguments,
 			f.Type,
+			f.Comment,
 		}
 		data = append(data, d)
 	}
