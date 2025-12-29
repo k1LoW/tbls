@@ -40,7 +40,7 @@ test:
 	go test ./... -tags 'bq clickhouse databricks dynamo mariadb mongodb mssql mysql postgres redshift snowflake spanner sqlite fts5' -coverprofile=coverage.out -covermode=count
 
 test-no-db:
-	go test ./... -coverprofile=coverage.out -covermode=count
+	go test ./... -tags 'sqlite_fts5' -coverprofile=coverage.out -covermode=count
 
 doc: build doc_sqlite
 	$(TBLS) doc pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable -c testdata/test_tbls_postgres.yml -f sample/postgres95
