@@ -85,6 +85,15 @@ WHERE type IN ('U', 'V')  ORDER BY OBJECT_ID
 			Comment: tableComment.String,
 		}
 
+		// table definition
+		if tableType == "BASIC TABLE" {
+			tableDef, err := m.getTableDefinition(tableSchema, tableName, tableOid)
+			if err != nil {
+				return errors.WithStack(err)
+			}
+			table.Def = tableDef
+		}
+
 		// view definition
 		if tableType == "VIEW" {
 			viewDefRows, err := m.db.Query(`
@@ -550,6 +559,335 @@ func (m *Mssql) getFunctions() ([]*schema.Function, error) {
 
 func fullTableName(owner string, tableName string) string {
 	return fmt.Sprintf("%s.%s", owner, tableName)
+}
+
+func (m *Mssql) getTableDefinition(schemaName, tableName, tableOid string) (string, error) {
+	// Build CREATE TABLE statement from system catalog
+	var def strings.Builder
+
+	fullName := tableName
+	if schemaName != defaultSchemaName {
+		fullName = fmt.Sprintf("[%s].[%s]", schemaName, tableName)
+	} else {
+		fullName = fmt.Sprintf("[%s]", tableName)
+	}
+
+	def.WriteString(fmt.Sprintf("CREATE TABLE %s (\n", fullName))
+
+	// Get columns with their properties
+	columnQuery := `
+SELECT
+  c.name AS column_name,
+  t.name AS type_name,
+  c.max_length,
+  c.precision,
+  c.scale,
+  c.is_nullable,
+  c.is_identity,
+  ic.seed_value,
+  ic.increment_value,
+  dc.definition AS default_definition,
+  cc.definition AS computed_definition,
+  cc.is_persisted
+FROM sys.columns AS c
+INNER JOIN sys.types AS t ON c.user_type_id = t.user_type_id
+LEFT JOIN sys.identity_columns AS ic ON ic.object_id = c.object_id AND ic.column_id = c.column_id
+LEFT JOIN sys.default_constraints AS dc ON dc.parent_object_id = c.object_id AND dc.parent_column_id = c.column_id
+LEFT JOIN sys.computed_columns AS cc ON cc.object_id = c.object_id AND cc.column_id = c.column_id
+WHERE c.object_id = @p1
+ORDER BY c.column_id`
+
+	columnRows, err := m.db.Query(columnQuery, tableOid)
+	if err != nil {
+		return "", errors.WithStack(err)
+	}
+	defer columnRows.Close()
+
+	columns := []string{}
+	for columnRows.Next() {
+		var (
+			columnName         string
+			typeName           string
+			maxLength          int
+			precision          int
+			scale              int
+			isNullable         bool
+			isIdentity         bool
+			seedValue          sql.NullInt64
+			incrementValue     sql.NullInt64
+			defaultDef         sql.NullString
+			computedDef        sql.NullString
+			computedIsPersisted sql.NullBool
+		)
+
+		err := columnRows.Scan(
+			&columnName, &typeName, &maxLength, &precision, &scale,
+			&isNullable, &isIdentity, &seedValue, &incrementValue,
+			&defaultDef, &computedDef, &computedIsPersisted,
+		)
+		if err != nil {
+			return "", errors.WithStack(err)
+		}
+
+		var colDef strings.Builder
+		colDef.WriteString(fmt.Sprintf("  [%s]", columnName))
+
+		// Handle computed columns
+		if computedDef.Valid && computedDef.String != "" {
+			colDef.WriteString(fmt.Sprintf(" AS %s", computedDef.String))
+			if computedIsPersisted.Valid && computedIsPersisted.Bool {
+				colDef.WriteString(" PERSISTED")
+			}
+		} else {
+			// Regular column - add type
+			dataType := m.formatDataType(typeName, maxLength, precision, scale)
+			colDef.WriteString(fmt.Sprintf(" %s", dataType))
+
+			// Add IDENTITY
+			if isIdentity {
+				seed := int64(1)
+				increment := int64(1)
+				if seedValue.Valid {
+					seed = seedValue.Int64
+				}
+				if incrementValue.Valid {
+					increment = incrementValue.Int64
+				}
+				colDef.WriteString(fmt.Sprintf(" IDENTITY(%d,%d)", seed, increment))
+			}
+
+			// Add NULL/NOT NULL
+			if isNullable {
+				colDef.WriteString(" NULL")
+			} else {
+				colDef.WriteString(" NOT NULL")
+			}
+
+			// Add DEFAULT constraint
+			if defaultDef.Valid && defaultDef.String != "" {
+				colDef.WriteString(fmt.Sprintf(" DEFAULT %s", defaultDef.String))
+			}
+		}
+
+		columns = append(columns, colDef.String())
+	}
+
+	def.WriteString(strings.Join(columns, ",\n"))
+
+	// Get PRIMARY KEY constraint
+	pkQuery := `
+SELECT
+  kc.name AS constraint_name,
+  STUFF(
+    (SELECT ', [' + COL_NAME(ic.object_id, ic.column_id) + ']'
+      FROM sys.index_columns AS ic
+      WHERE i.object_id = ic.object_id AND i.index_id = ic.index_id
+      ORDER BY ic.key_ordinal
+      FOR XML PATH('')
+    ), 1, 2, '') AS column_names,
+  i.type_desc
+FROM sys.key_constraints AS kc
+INNER JOIN sys.indexes AS i ON i.object_id = kc.parent_object_id AND i.index_id = kc.unique_index_id
+WHERE kc.parent_object_id = @p1 AND kc.type = 'PK'`
+
+	pkRows, err := m.db.Query(pkQuery, tableOid)
+	if err != nil {
+		return "", errors.WithStack(err)
+	}
+	defer pkRows.Close()
+
+	for pkRows.Next() {
+		var (
+			constraintName string
+			columnNames    string
+			indexType      string
+		)
+		err := pkRows.Scan(&constraintName, &columnNames, &indexType)
+		if err != nil {
+			return "", errors.WithStack(err)
+		}
+
+		clustered := ""
+		if strings.Contains(indexType, "CLUSTERED") {
+			clustered = " CLUSTERED"
+		} else if strings.Contains(indexType, "NONCLUSTERED") {
+			clustered = " NONCLUSTERED"
+		}
+
+		def.WriteString(fmt.Sprintf(",\n  CONSTRAINT [%s] PRIMARY KEY%s (%s)", constraintName, clustered, columnNames))
+	}
+
+	// Get UNIQUE constraints
+	uniqueQuery := `
+SELECT
+  kc.name AS constraint_name,
+  STUFF(
+    (SELECT ', [' + COL_NAME(ic.object_id, ic.column_id) + ']'
+      FROM sys.index_columns AS ic
+      WHERE i.object_id = ic.object_id AND i.index_id = ic.index_id
+      ORDER BY ic.key_ordinal
+      FOR XML PATH('')
+    ), 1, 2, '') AS column_names,
+  i.type_desc
+FROM sys.key_constraints AS kc
+INNER JOIN sys.indexes AS i ON i.object_id = kc.parent_object_id AND i.index_id = kc.unique_index_id
+WHERE kc.parent_object_id = @p1 AND kc.type = 'UQ'`
+
+	uniqueRows, err := m.db.Query(uniqueQuery, tableOid)
+	if err != nil {
+		return "", errors.WithStack(err)
+	}
+	defer uniqueRows.Close()
+
+	for uniqueRows.Next() {
+		var (
+			constraintName string
+			columnNames    string
+			indexType      string
+		)
+		err := uniqueRows.Scan(&constraintName, &columnNames, &indexType)
+		if err != nil {
+			return "", errors.WithStack(err)
+		}
+
+		clustered := ""
+		if strings.Contains(indexType, "CLUSTERED") {
+			clustered = " CLUSTERED"
+		} else if strings.Contains(indexType, "NONCLUSTERED") {
+			clustered = " NONCLUSTERED"
+		}
+
+		def.WriteString(fmt.Sprintf(",\n  CONSTRAINT [%s] UNIQUE%s (%s)", constraintName, clustered, columnNames))
+	}
+
+	// Get FOREIGN KEY constraints
+	fkQuery := `
+SELECT
+  f.name AS constraint_name,
+  STUFF(
+    (SELECT ', [' + COL_NAME(fc.parent_object_id, fc.parent_column_id) + ']'
+      FROM sys.foreign_key_columns AS fc
+      WHERE f.object_id = fc.constraint_object_id
+      ORDER BY fc.constraint_column_id
+      FOR XML PATH('')
+    ), 1, 2, '') AS column_names,
+  SCHEMA_NAME(ref_obj.schema_id) AS ref_schema,
+  ref_obj.name AS ref_table,
+  STUFF(
+    (SELECT ', [' + COL_NAME(fc.referenced_object_id, fc.referenced_column_id) + ']'
+      FROM sys.foreign_key_columns AS fc
+      WHERE f.object_id = fc.constraint_object_id
+      ORDER BY fc.constraint_column_id
+      FOR XML PATH('')
+    ), 1, 2, '') AS ref_column_names,
+  f.delete_referential_action_desc,
+  f.update_referential_action_desc
+FROM sys.foreign_keys AS f
+INNER JOIN sys.objects AS ref_obj ON f.referenced_object_id = ref_obj.object_id
+WHERE f.parent_object_id = @p1`
+
+	fkRows, err := m.db.Query(fkQuery, tableOid)
+	if err != nil {
+		return "", errors.WithStack(err)
+	}
+	defer fkRows.Close()
+
+	for fkRows.Next() {
+		var (
+			constraintName string
+			columnNames    string
+			refSchema      string
+			refTable       string
+			refColumnNames string
+			deleteAction   string
+			updateAction   string
+		)
+		err := fkRows.Scan(&constraintName, &columnNames, &refSchema, &refTable, &refColumnNames, &deleteAction, &updateAction)
+		if err != nil {
+			return "", errors.WithStack(err)
+		}
+
+		refFullName := refTable
+		if refSchema != defaultSchemaName {
+			refFullName = fmt.Sprintf("[%s].[%s]", refSchema, refTable)
+		} else {
+			refFullName = fmt.Sprintf("[%s]", refTable)
+		}
+
+		fkDef := fmt.Sprintf(",\n  CONSTRAINT [%s] FOREIGN KEY (%s) REFERENCES %s (%s)",
+			constraintName, columnNames, refFullName, refColumnNames)
+
+		if deleteAction != "NO_ACTION" {
+			fkDef += fmt.Sprintf(" ON DELETE %s", strings.Replace(deleteAction, "_", " ", -1))
+		}
+		if updateAction != "NO_ACTION" {
+			fkDef += fmt.Sprintf(" ON UPDATE %s", strings.Replace(updateAction, "_", " ", -1))
+		}
+
+		def.WriteString(fkDef)
+	}
+
+	// Get CHECK constraints
+	checkQuery := `
+SELECT name, definition
+FROM sys.check_constraints
+WHERE parent_object_id = @p1
+ORDER BY name`
+
+	checkRows, err := m.db.Query(checkQuery, tableOid)
+	if err != nil {
+		return "", errors.WithStack(err)
+	}
+	defer checkRows.Close()
+
+	for checkRows.Next() {
+		var (
+			constraintName string
+			definition     string
+		)
+		err := checkRows.Scan(&constraintName, &definition)
+		if err != nil {
+			return "", errors.WithStack(err)
+		}
+
+		def.WriteString(fmt.Sprintf(",\n  CONSTRAINT [%s] CHECK %s", constraintName, definition))
+	}
+
+	def.WriteString("\n)")
+
+	return def.String(), nil
+}
+
+func (m *Mssql) formatDataType(typeName string, maxLength, precision, scale int) string {
+	switch typeName {
+	case "varchar", "char", "varbinary", "binary":
+		if maxLength == -1 {
+			return fmt.Sprintf("%s(MAX)", typeName)
+		}
+		return fmt.Sprintf("%s(%d)", typeName, maxLength)
+	case "nvarchar", "nchar":
+		if maxLength == -1 {
+			return fmt.Sprintf("%s(MAX)", typeName)
+		}
+		// nvarchar and nchar use 2 bytes per character
+		return fmt.Sprintf("%s(%d)", typeName, maxLength/2)
+	case "decimal", "numeric":
+		return fmt.Sprintf("%s(%d,%d)", typeName, precision, scale)
+	case "datetime2", "time", "datetimeoffset":
+		if scale > 0 {
+			return fmt.Sprintf("%s(%d)", typeName, scale)
+		}
+		return typeName
+	case "float":
+		if precision > 0 && precision != 53 {
+			return fmt.Sprintf("%s(%d)", typeName, precision)
+		}
+		return typeName
+	case "real":
+		return typeName
+	default:
+		return typeName
+	}
 }
 
 func (m *Mssql) Info() (*schema.Driver, error) {
