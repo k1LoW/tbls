@@ -754,7 +754,42 @@ func (dbx *Databricks) formatType(typeData map[string]any) string {
 
 	switch t := typeObj.(type) {
 	case string:
-		return strings.ToUpper(t)
+		// Handle flat structure like {"type":"array","elementType":"string"}
+		switch t {
+		case "array":
+			if elementType, ok := typeData["elementType"].(string); ok {
+				return fmt.Sprintf("ARRAY(%s)", strings.ToUpper(elementType))
+			} else if elementMap, ok := typeData["elementType"].(map[string]any); ok {
+				if nestedType, ok := elementMap["type"].(string); ok {
+					if nestedType == "struct" {
+						return "ARRAY(STRUCT)"
+					}
+					return fmt.Sprintf("ARRAY(%s)", strings.ToUpper(nestedType))
+				}
+			}
+			return "ARRAY"
+		case "map":
+			keyType := ""
+			if kt, ok := typeData["keyType"].(string); ok {
+				keyType = strings.ToUpper(kt)
+			}
+
+			var valueType string
+			if vt, ok := typeData["valueType"].(string); ok {
+				valueType = strings.ToUpper(vt)
+			} else if valueMap, ok := typeData["valueType"].(map[string]any); ok {
+				if vType, ok := valueMap["type"].(string); ok {
+					valueType = strings.ToUpper(vType)
+				}
+			}
+
+			if keyType != "" && valueType != "" {
+				return fmt.Sprintf("MAP(%s, %s)", keyType, valueType)
+			}
+			return "MAP"
+		default:
+			return strings.ToUpper(t)
+		}
 
 	case map[string]any:
 		structType, ok := t["type"].(string)
