@@ -781,7 +781,7 @@
           ]
         }
       ],
-      "def": "CREATE TABLE `users` (\n  `id` int(11) NOT NULL AUTO_INCREMENT,\n  `username` varchar(50) NOT NULL,\n  `password` varchar(50) NOT NULL,\n  `email` varchar(355) NOT NULL COMMENT 'ex. user@example.com',\n  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,\n  `updated` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',\n  PRIMARY KEY (`id`),\n  UNIQUE KEY `username` (`username`),\n  UNIQUE KEY `email` (`email`)\n) ENGINE=InnoDB AUTO_INCREMENT=[Redacted by tbls] DEFAULT CHARSET=latin1 COMMENT='Users table'"
+      "def": "CREATE TABLE `users` (\n  `id` int(11) NOT NULL AUTO_INCREMENT,\n  `username` varchar(50) NOT NULL,\n  `password` varchar(50) NOT NULL,\n  `email` varchar(355) NOT NULL COMMENT 'ex. user@example.com',\n  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,\n  `updated` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',\n  PRIMARY KEY (`id`),\n  UNIQUE KEY `username` (`username`),\n  UNIQUE KEY `email` (`email`)\n) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Users table'"
     }
   ],
   "relations": [

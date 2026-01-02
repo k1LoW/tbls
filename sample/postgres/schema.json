@@ -1289,34 +1289,18 @@
   ],
   "functions": [
     {
-      "name": "public.uuid_nil",
-      "return_type": "uuid",
-      "arguments": "",
-      "type": "FUNCTION"
+      "name": "public.reset_comment",
+      "return_type": "void",
+      "arguments": "IN comment_id integer",
+      "type": "PROCEDURE",
+      "comment": "Updates the comment field to \"updated\" for a given comment ID and commits the change."
     },
     {
-      "name": "public.uuid_ns_dns",
-      "return_type": "uuid",
+      "name": "public.update_updated",
+      "return_type": "trigger",
       "arguments": "",
-      "type": "FUNCTION"
-    },
-    {
-      "name": "public.uuid_ns_url",
-      "return_type": "uuid",
-      "arguments": "",
-      "type": "FUNCTION"
-    },
-    {
-      "name": "public.uuid_ns_oid",
-      "return_type": "uuid",
-      "arguments": "",
-      "type": "FUNCTION"
-    },
-    {
-      "name": "public.uuid_ns_x500",
-      "return_type": "uuid",
-      "arguments": "",
-      "type": "FUNCTION"
+      "type": "FUNCTION",
+      "comment": "Trigger function that automatically sets the updated column to the current timestamp whenever a row is updated."
     },
     {
       "name": "public.uuid_generate_v1",
@@ -1349,18 +1333,34 @@
       "type": "FUNCTION"
     },
     {
-      "name": "public.update_updated",
-      "return_type": "trigger",
+      "name": "public.uuid_nil",
+      "return_type": "uuid",
       "arguments": "",
-      "type": "FUNCTION",
-      "comment": "Trigger function that automatically sets the updated column to the current timestamp whenever a row is updated."
+      "type": "FUNCTION"
     },
     {
-      "name": "public.reset_comment",
-      "return_type": "void",
-      "arguments": "IN comment_id integer",
-      "type": "PROCEDURE",
-      "comment": "Updates the comment field to \"updated\" for a given comment ID and commits the change."
+      "name": "public.uuid_ns_dns",
+      "return_type": "uuid",
+      "arguments": "",
+      "type": "FUNCTION"
+    },
+    {
+      "name": "public.uuid_ns_oid",
+      "return_type": "uuid",
+      "arguments": "",
+      "type": "FUNCTION"
+    },
+    {
+      "name": "public.uuid_ns_url",
+      "return_type": "uuid",
+      "arguments": "",
+      "type": "FUNCTION"
+    },
+    {
+      "name": "public.uuid_ns_x500",
+      "return_type": "uuid",
+      "arguments": "",
+      "type": "FUNCTION"
     }
   ],
   "enums": [
