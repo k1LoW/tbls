@@ -121,7 +121,7 @@ func NewSchema(t *testing.T) *schema.Schema {
 		ParentTable:       ta,
 		ParentColumns:     []*schema.Column{ca},
 		ParentCardinality: schema.ExactlyOne,
-		Def:               "FOREIGN KEY (b) REFERENCES a(a)",
+		Def:               "FOREIGN KEY (b) REFERENCES \"a\"(a)",
 		Virtual:           false,
 	}
 	ca.ChildRelations = []*schema.Relation{r}

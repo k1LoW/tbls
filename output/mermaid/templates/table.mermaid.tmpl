@@ -3,7 +3,7 @@ erDiagram
 {{ $sd := .showDef -}}
 {{- range $j, $r := .Relations }}
 {{- if $r.HideForER }}{{ continue }}{{ end }}
-"{{ $r.Table.Name }}" {{ $r.Cardinality | lcardi }}--{{ $r.ParentCardinality | rcardi }} "{{ $r.ParentTable.Name }}" : "{{ if $sd }}{{ $r.Def }}{{ end }}"
+"{{ $r.Table.Name }}" {{ $r.Cardinality | lcardi }}--{{ $r.ParentCardinality | rcardi }} "{{ $r.ParentTable.Name }}" : "{{ if $sd }}{{ $r.Def | escape_nl | escape_double_quote }}{{ end }}"
 {{- end }}
 
 "{{ .Table.Name }}" {
