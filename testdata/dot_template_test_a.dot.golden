@@ -17,5 +17,5 @@ digraph "a" {
               </table>>];
 
   // Relations
-  "b":"b" -> "a":"a" [dir=back, arrowtail=tee,  taillabel=<<table cellpadding="5" border="0" cellborder="0"><tr><td>FOREIGN KEY (b) REFERENCES a(a)</td></tr></table>>];
+  "b":"b" -> "a":"a" [dir=back, arrowtail=tee,  taillabel=<<table cellpadding="5" border="0" cellborder="0"><tr><td>FOREIGN KEY (b) REFERENCES &#34;a&#34;(a)</td></tr></table>>];
 }
