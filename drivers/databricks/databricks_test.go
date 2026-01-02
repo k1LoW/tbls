@@ -240,7 +240,7 @@ func TestBuildConstraintDefinition(t *testing.T) {
 	}
 }
 
-func TestHasStructColumns(t *testing.T) {
+func TestHasComplexColumns(t *testing.T) {
 	tests := []struct {
 		name    string
 		columns []*schema.Column
@@ -311,14 +311,28 @@ func TestHasStructColumns(t *testing.T) {
 			columns: []*schema.Column{
 				{Name: "tags", Type: "ARRAY(STRING)"},
 			},
-			want: false,
+			want: true,
+		},
+		{
+			name: "plain array without element type",
+			columns: []*schema.Column{
+				{Name: "tags", Type: "ARRAY"},
+			},
+			want: true,
 		},
 		{
 			name: "map type",
 			columns: []*schema.Column{
 				{Name: "properties", Type: "MAP<STRING,STRING>"},
 			},
-			want: false,
+			want: true,
+		},
+		{
+			name: "plain map without element types",
+			columns: []*schema.Column{
+				{Name: "properties", Type: "MAP"},
+			},
+			want: true,
 		},
 		{
 			name: "mixed types without struct",
@@ -328,16 +342,16 @@ func TestHasStructColumns(t *testing.T) {
 				{Name: "tags", Type: "ARRAY(STRING)"},
 				{Name: "props", Type: "MAP<STRING,INT>"},
 			},
-			want: false,
+			want: true,
 		},
 	}
 
 	dbx := &Databricks{}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := dbx.hasStructColumns(tt.columns)
+			got := dbx.hasComplexColumns(tt.columns)
 			if got != tt.want {
-				t.Errorf("hasStructColumns() = %v, want %v", got, tt.want)
+				t.Errorf("hasComplexColumns() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -585,7 +599,77 @@ func TestEnrichStructColumns(t *testing.T) {
 				},
 			},
 			wantColumns: []*schema.Column{
-				{Name: "tags", Type: "ARRAY"},
+				{Name: "tags", Type: "ARRAY(STRING)"},
+			},
+		},
+		{
+			name:      "flat array of struct with nested expansion",
+			tableName: "test_table",
+			catalog:   "main",
+			schema:    "default",
+			inputColumns: []*schema.Column{
+				{Name: "items", Type: "ARRAY(STRUCT)"},
+			},
+			apiResponse: TableInfo{
+				FullName: "main.default.test_table",
+				Columns: []ColumnInfo{
+					{
+						Name:     "items",
+						TypeName: "ARRAY",
+						TypeJSON: `{"type":"array","elementType":{"type":"struct","fields":[{"name":"id","type":"integer","nullable":false},{"name":"name","type":"string","nullable":true}]}}`,
+					},
+				},
+			},
+			wantColumns: []*schema.Column{
+				{Name: "items", Type: "ARRAY(STRUCT)"},
+				{Name: "items.id", Type: "INTEGER", Nullable: false, Comment: ""},
+				{Name: "items.name", Type: "STRING", Nullable: true, Comment: ""},
+			},
+		},
+		{
+			name:      "plain ARRAY type from information_schema enriched to ARRAY(STRING)",
+			tableName: "test_table",
+			catalog:   "main",
+			schema:    "default",
+			inputColumns: []*schema.Column{
+				{Name: "tags", Type: "ARRAY"}, // As returned by information_schema
+			},
+			apiResponse: TableInfo{
+				FullName: "main.default.test_table",
+				Columns: []ColumnInfo{
+					{
+						Name:     "tags",
+						TypeName: "ARRAY",
+						TypeJSON: `{"type":"array","elementType":"string"}`,
+					},
+				},
+			},
+			wantColumns: []*schema.Column{
+				{Name: "tags", Type: "ARRAY(STRING)"},
+			},
+		},
+		{
+			name:      "plain ARRAY type enriched to ARRAY(STRUCT) with nested fields",
+			tableName: "test_table",
+			catalog:   "main",
+			schema:    "default",
+			inputColumns: []*schema.Column{
+				{Name: "items", Type: "ARRAY"}, // As returned by information_schema
+			},
+			apiResponse: TableInfo{
+				FullName: "main.default.test_table",
+				Columns: []ColumnInfo{
+					{
+						Name:     "items",
+						TypeName: "ARRAY",
+						TypeJSON: `{"type":"array","elementType":{"type":"struct","fields":[{"name":"id","type":"string","nullable":true},{"name":"value","type":"integer","nullable":false}]}}`,
+					},
+				},
+			},
+			wantColumns: []*schema.Column{
+				{Name: "items", Type: "ARRAY(STRUCT)"},
+				{Name: "items.id", Type: "STRING", Nullable: true, Comment: ""},
+				{Name: "items.value", Type: "INTEGER", Nullable: false, Comment: ""},
 			},
 		},
 		{
@@ -1022,6 +1106,91 @@ func TestFormatType(t *testing.T) {
 			name:     "missing type field",
 			typeData: map[string]any{},
 			want:     "UNKNOWN",
+		},
+		{
+			name: "empty string type flat",
+			typeData: map[string]any{
+				"type": "",
+			},
+			want: "UNKNOWN",
+		},
+		{
+			name: "empty string type nested",
+			typeData: map[string]any{
+				"type": map[string]any{
+					"type": "",
+				},
+			},
+			want: "UNKNOWN",
+		},
+		{
+			name: "flat array of string",
+			typeData: map[string]any{
+				"type":        "array",
+				"elementType": "string",
+			},
+			want: "ARRAY(STRING)",
+		},
+		{
+			name: "flat array of integer",
+			typeData: map[string]any{
+				"type":        "array",
+				"elementType": "integer",
+			},
+			want: "ARRAY(INTEGER)",
+		},
+		{
+			name: "flat array of struct",
+			typeData: map[string]any{
+				"type": "array",
+				"elementType": map[string]any{
+					"type": "struct",
+				},
+			},
+			want: "ARRAY(STRUCT)",
+		},
+		{
+			name: "flat array without elementType",
+			typeData: map[string]any{
+				"type": "array",
+			},
+			want: "ARRAY",
+		},
+		{
+			name: "flat map with string key and value",
+			typeData: map[string]any{
+				"type":      "map",
+				"keyType":   "string",
+				"valueType": "string",
+			},
+			want: "MAP(STRING, STRING)",
+		},
+		{
+			name: "flat map with integer key and double value",
+			typeData: map[string]any{
+				"type":      "map",
+				"keyType":   "integer",
+				"valueType": "double",
+			},
+			want: "MAP(INTEGER, DOUBLE)",
+		},
+		{
+			name: "flat map with complex value type",
+			typeData: map[string]any{
+				"type":    "map",
+				"keyType": "string",
+				"valueType": map[string]any{
+					"type": "struct",
+				},
+			},
+			want: "MAP(STRING, STRUCT)",
+		},
+		{
+			name: "flat map without keyType or valueType",
+			typeData: map[string]any{
+				"type": "map",
+			},
+			want: "MAP",
 		},
 	}
 

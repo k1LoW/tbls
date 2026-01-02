@@ -25,6 +25,6 @@ view("view", "view") {
 }
 
 ' relations
-"b" }|--|| "a" : "FOREIGN KEY (b) REFERENCES a(a)"
+"b" }|--|| "a" : "FOREIGN KEY (b) REFERENCES &#34;a&#34;(a)"
 
 @enduml

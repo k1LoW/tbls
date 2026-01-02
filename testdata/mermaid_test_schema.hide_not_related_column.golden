@@ -1,6 +1,6 @@
 erDiagram
 
-"b" }|--|| "a" : "FOREIGN KEY (b) REFERENCES a(a)"
+"b" }|--|| "a" : "FOREIGN KEY (b) REFERENCES #quot;a#quot;(a)"
 
 "a" {
   INTEGER a PK

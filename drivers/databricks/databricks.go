@@ -102,7 +102,7 @@ func (dbx *Databricks) Analyze(s *schema.Schema) (err error) {
 			table.Constraints = constraints
 		}
 
-		if dbx.hasStructColumns(table.Columns) {
+		if dbx.hasComplexColumns(table.Columns) {
 			if err := dbx.enrichStructColumns(context.Background(), currentCatalog, currentSchema, table); err != nil {
 				return err
 			}
@@ -584,10 +584,10 @@ func (dbx *Databricks) getViewDefinition(catalog, schemaName, viewName string) (
 	return createStatement, nil
 }
 
-func (dbx *Databricks) hasStructColumns(columns []*schema.Column) bool {
+func (dbx *Databricks) hasComplexColumns(columns []*schema.Column) bool {
 	for _, col := range columns {
 		colType := strings.ToUpper(col.Type)
-		if strings.HasPrefix(colType, "STRUCT") || strings.HasPrefix(colType, "ARRAY(STRUCT") {
+		if strings.HasPrefix(colType, "STRUCT") || strings.HasPrefix(colType, "ARRAY") || strings.HasPrefix(colType, "MAP") {
 			return true
 		}
 	}
@@ -746,55 +746,87 @@ func (dbx *Databricks) processArrayType(source map[string]any, prefix string, nu
 	}, prefix)
 }
 
-func (dbx *Databricks) formatType(typeData map[string]any) string {
+// extractTypeInfo normalizes type data structure and extracts type name and attributes.
+// Handles both flat structures like {"type":"array","elementType":"string"}
+// and nested structures like {"type":{"type":"array","elementType":"string"}}.
+func extractTypeInfo(typeData map[string]any) (string, map[string]any) {
 	typeObj, ok := typeData["type"]
 	if !ok {
-		return "UNKNOWN"
+		return "", typeData
 	}
 
 	switch t := typeObj.(type) {
 	case string:
-		return strings.ToUpper(t)
-
+		return t, typeData
 	case map[string]any:
-		structType, ok := t["type"].(string)
-		if !ok {
-			return "UNKNOWN"
+		if name, ok := t["type"].(string); ok {
+			return name, t
 		}
-
-		switch structType {
-		case "struct":
-			return "STRUCT"
-		case "array":
-			if elementType, ok := t["elementType"].(string); ok {
-				return fmt.Sprintf("ARRAY(%s)", strings.ToUpper(elementType))
-			} else if elementMap, ok := t["elementType"].(map[string]any); ok {
-				if nestedType, ok := elementMap["type"].(string); ok {
-					if nestedType == "struct" {
-						return "ARRAY(STRUCT)"
-					}
-					return fmt.Sprintf("ARRAY(%s)", strings.ToUpper(nestedType))
-				}
-			}
-			return "ARRAY"
-		case "map":
-			keyType := strings.ToUpper(t["keyType"].(string))
-
-			var valueType string
-			if vt, ok := t["valueType"].(string); ok {
-				valueType = strings.ToUpper(vt)
-			} else if valueMap, ok := t["valueType"].(map[string]any); ok {
-				valueType = strings.ToUpper(valueMap["type"].(string))
-			}
-
-			return fmt.Sprintf("MAP(%s, %s)", keyType, valueType)
-		default:
-			return strings.ToUpper(structType)
-		}
-
+		return "", t
 	default:
-		return "UNKNOWN"
+		return "", typeData
 	}
+}
+
+// extractTypeString extracts and uppercases a type from either a string or nested map structure.
+func extractTypeString(source map[string]any, key string) string {
+	if s, ok := source[key].(string); ok {
+		return strings.ToUpper(s)
+	}
+	if m, ok := source[key].(map[string]any); ok {
+		if t, ok := m["type"].(string); ok {
+			return strings.ToUpper(t)
+		}
+	}
+	return ""
+}
+
+func (dbx *Databricks) formatType(typeData map[string]any) string {
+	typeName, typeAttrs := extractTypeInfo(typeData)
+
+	switch typeName {
+	case "struct":
+		return "STRUCT"
+	case "array":
+		return dbx.formatArrayType(typeAttrs)
+	case "map":
+		return dbx.formatMapType(typeAttrs)
+	case "":
+		return "UNKNOWN"
+	default:
+		return strings.ToUpper(typeName)
+	}
+}
+
+func (dbx *Databricks) formatArrayType(source map[string]any) string {
+	if elementType, ok := source["elementType"].(string); ok {
+		return fmt.Sprintf("ARRAY(%s)", strings.ToUpper(elementType))
+	}
+
+	elementMap, ok := source["elementType"].(map[string]any)
+	if !ok {
+		return "ARRAY"
+	}
+
+	nestedType, ok := elementMap["type"].(string)
+	if !ok {
+		return "ARRAY"
+	}
+
+	if nestedType == "struct" {
+		return "ARRAY(STRUCT)"
+	}
+	return fmt.Sprintf("ARRAY(%s)", strings.ToUpper(nestedType))
+}
+
+func (dbx *Databricks) formatMapType(source map[string]any) string {
+	keyType := extractTypeString(source, "keyType")
+	valueType := extractTypeString(source, "valueType")
+
+	if keyType != "" && valueType != "" {
+		return fmt.Sprintf("MAP(%s, %s)", keyType, valueType)
+	}
+	return "MAP"
 }
 
 func (dbx *Databricks) Info() (*schema.Driver, error) {

@@ -67,7 +67,7 @@ relations:
   parentColumns:
   - a
   parentCardinality: exactly_one
-  def: FOREIGN KEY (b) REFERENCES a(a)
+  def: FOREIGN KEY (b) REFERENCES "a"(a)
   virtual: false
 enums:
 - name: enum
