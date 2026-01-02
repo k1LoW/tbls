@@ -1048,6 +1048,22 @@ func TestFormatType(t *testing.T) {
 			want:     "UNKNOWN",
 		},
 		{
+			name: "empty string type flat",
+			typeData: map[string]any{
+				"type": "",
+			},
+			want: "UNKNOWN",
+		},
+		{
+			name: "empty string type nested",
+			typeData: map[string]any{
+				"type": map[string]any{
+					"type": "",
+				},
+			},
+			want: "UNKNOWN",
+		},
+		{
 			name: "flat array of string",
 			typeData: map[string]any{
 				"type":        "array",
