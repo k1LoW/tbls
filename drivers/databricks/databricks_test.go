@@ -311,14 +311,28 @@ func TestHasStructColumns(t *testing.T) {
 			columns: []*schema.Column{
 				{Name: "tags", Type: "ARRAY(STRING)"},
 			},
-			want: false,
+			want: true,
+		},
+		{
+			name: "plain array without element type",
+			columns: []*schema.Column{
+				{Name: "tags", Type: "ARRAY"},
+			},
+			want: true,
 		},
 		{
 			name: "map type",
 			columns: []*schema.Column{
 				{Name: "properties", Type: "MAP<STRING,STRING>"},
 			},
-			want: false,
+			want: true,
+		},
+		{
+			name: "plain map without element types",
+			columns: []*schema.Column{
+				{Name: "properties", Type: "MAP"},
+			},
+			want: true,
 		},
 		{
 			name: "mixed types without struct",
@@ -328,7 +342,7 @@ func TestHasStructColumns(t *testing.T) {
 				{Name: "tags", Type: "ARRAY(STRING)"},
 				{Name: "props", Type: "MAP<STRING,INT>"},
 			},
-			want: false,
+			want: true,
 		},
 	}
 
@@ -610,6 +624,52 @@ func TestEnrichStructColumns(t *testing.T) {
 				{Name: "items", Type: "ARRAY(STRUCT)"},
 				{Name: "items.id", Type: "INTEGER", Nullable: false, Comment: ""},
 				{Name: "items.name", Type: "STRING", Nullable: true, Comment: ""},
+			},
+		},
+		{
+			name:      "plain ARRAY type from information_schema enriched to ARRAY(STRING)",
+			tableName: "test_table",
+			catalog:   "main",
+			schema:    "default",
+			inputColumns: []*schema.Column{
+				{Name: "tags", Type: "ARRAY"}, // As returned by information_schema
+			},
+			apiResponse: TableInfo{
+				FullName: "main.default.test_table",
+				Columns: []ColumnInfo{
+					{
+						Name:     "tags",
+						TypeName: "ARRAY",
+						TypeJSON: `{"type":"array","elementType":"string"}`,
+					},
+				},
+			},
+			wantColumns: []*schema.Column{
+				{Name: "tags", Type: "ARRAY(STRING)"},
+			},
+		},
+		{
+			name:      "plain ARRAY type enriched to ARRAY(STRUCT) with nested fields",
+			tableName: "test_table",
+			catalog:   "main",
+			schema:    "default",
+			inputColumns: []*schema.Column{
+				{Name: "items", Type: "ARRAY"}, // As returned by information_schema
+			},
+			apiResponse: TableInfo{
+				FullName: "main.default.test_table",
+				Columns: []ColumnInfo{
+					{
+						Name:     "items",
+						TypeName: "ARRAY",
+						TypeJSON: `{"type":"array","elementType":{"type":"struct","fields":[{"name":"id","type":"string","nullable":true},{"name":"value","type":"integer","nullable":false}]}}`,
+					},
+				},
+			},
+			wantColumns: []*schema.Column{
+				{Name: "items", Type: "ARRAY(STRUCT)"},
+				{Name: "items.id", Type: "STRING", Nullable: true, Comment: ""},
+				{Name: "items.value", Type: "INTEGER", Nullable: false, Comment: ""},
 			},
 		},
 		{

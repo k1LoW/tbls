@@ -587,7 +587,7 @@ func (dbx *Databricks) getViewDefinition(catalog, schemaName, viewName string) (
 func (dbx *Databricks) hasStructColumns(columns []*schema.Column) bool {
 	for _, col := range columns {
 		colType := strings.ToUpper(col.Type)
-		if strings.HasPrefix(colType, "STRUCT") || strings.HasPrefix(colType, "ARRAY(STRUCT") {
+		if strings.HasPrefix(colType, "STRUCT") || strings.HasPrefix(colType, "ARRAY") || strings.HasPrefix(colType, "MAP") {
 			return true
 		}
 	}
