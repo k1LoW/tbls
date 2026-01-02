@@ -240,7 +240,7 @@ func TestBuildConstraintDefinition(t *testing.T) {
 	}
 }
 
-func TestHasStructColumns(t *testing.T) {
+func TestHasComplexColumns(t *testing.T) {
 	tests := []struct {
 		name    string
 		columns []*schema.Column
@@ -349,9 +349,9 @@ func TestHasStructColumns(t *testing.T) {
 	dbx := &Databricks{}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := dbx.hasStructColumns(tt.columns)
+			got := dbx.hasComplexColumns(tt.columns)
 			if got != tt.want {
-				t.Errorf("hasStructColumns() = %v, want %v", got, tt.want)
+				t.Errorf("hasComplexColumns() = %v, want %v", got, tt.want)
 			}
 		})
 	}

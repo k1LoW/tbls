@@ -102,7 +102,7 @@ func (dbx *Databricks) Analyze(s *schema.Schema) (err error) {
 			table.Constraints = constraints
 		}
 
-		if dbx.hasStructColumns(table.Columns) {
+		if dbx.hasComplexColumns(table.Columns) {
 			if err := dbx.enrichStructColumns(context.Background(), currentCatalog, currentSchema, table); err != nil {
 				return err
 			}
@@ -584,7 +584,7 @@ func (dbx *Databricks) getViewDefinition(catalog, schemaName, viewName string) (
 	return createStatement, nil
 }
 
-func (dbx *Databricks) hasStructColumns(columns []*schema.Column) bool {
+func (dbx *Databricks) hasComplexColumns(columns []*schema.Column) bool {
 	for _, col := range columns {
 		colType := strings.ToUpper(col.Type)
 		if strings.HasPrefix(colType, "STRUCT") || strings.HasPrefix(colType, "ARRAY") || strings.HasPrefix(colType, "MAP") {
@@ -746,35 +746,44 @@ func (dbx *Databricks) processArrayType(source map[string]any, prefix string, nu
 	}, prefix)
 }
 
-func (dbx *Databricks) formatType(typeData map[string]any) string {
+// extractTypeInfo normalizes type data structure and extracts type name and attributes.
+// Handles both flat structures like {"type":"array","elementType":"string"}
+// and nested structures like {"type":{"type":"array","elementType":"string"}}.
+func extractTypeInfo(typeData map[string]any) (string, map[string]any) {
 	typeObj, ok := typeData["type"]
 	if !ok {
-		typeObj = "" // Treat missing type as empty string
+		return "", typeData
 	}
-
-	// Normalize the structure: extract type name and attributes map
-	var typeName string
-	var typeAttrs map[string]any
 
 	switch t := typeObj.(type) {
 	case string:
-		// Flat structure: {"type":"array","elementType":"string"}
-		typeName = t
-		typeAttrs = typeData
+		return t, typeData
 	case map[string]any:
-		// Nested structure: {"type":{"type":"array","elementType":"string"}}
-		typeName, ok = t["type"].(string)
-		if !ok {
-			typeName = "" // Treat invalid nested type as empty
+		if name, ok := t["type"].(string); ok {
+			return name, t
 		}
-		typeAttrs = t
+		return "", t
 	default:
-		// Unknown type structure
-		typeName = ""
-		typeAttrs = typeData
+		return "", typeData
 	}
+}
 
-	// Format based on type name
+// extractTypeString extracts and uppercases a type from either a string or nested map structure.
+func extractTypeString(source map[string]any, key string) string {
+	if s, ok := source[key].(string); ok {
+		return strings.ToUpper(s)
+	}
+	if m, ok := source[key].(map[string]any); ok {
+		if t, ok := m["type"].(string); ok {
+			return strings.ToUpper(t)
+		}
+	}
+	return ""
+}
+
+func (dbx *Databricks) formatType(typeData map[string]any) string {
+	typeName, typeAttrs := extractTypeInfo(typeData)
+
 	switch typeName {
 	case "struct":
 		return "STRUCT"
@@ -794,32 +803,25 @@ func (dbx *Databricks) formatArrayType(source map[string]any) string {
 		return fmt.Sprintf("ARRAY(%s)", strings.ToUpper(elementType))
 	}
 
-	if elementMap, ok := source["elementType"].(map[string]any); ok {
-		if nestedType, ok := elementMap["type"].(string); ok {
-			if nestedType == "struct" {
-				return "ARRAY(STRUCT)"
-			}
-			return fmt.Sprintf("ARRAY(%s)", strings.ToUpper(nestedType))
-		}
+	elementMap, ok := source["elementType"].(map[string]any)
+	if !ok {
+		return "ARRAY"
 	}
 
-	return "ARRAY"
+	nestedType, ok := elementMap["type"].(string)
+	if !ok {
+		return "ARRAY"
+	}
+
+	if nestedType == "struct" {
+		return "ARRAY(STRUCT)"
+	}
+	return fmt.Sprintf("ARRAY(%s)", strings.ToUpper(nestedType))
 }
 
 func (dbx *Databricks) formatMapType(source map[string]any) string {
-	keyType := ""
-	if kt, ok := source["keyType"].(string); ok {
-		keyType = strings.ToUpper(kt)
-	}
-
-	var valueType string
-	if vt, ok := source["valueType"].(string); ok {
-		valueType = strings.ToUpper(vt)
-	} else if valueMap, ok := source["valueType"].(map[string]any); ok {
-		if vType, ok := valueMap["type"].(string); ok {
-			valueType = strings.ToUpper(vType)
-		}
-	}
+	keyType := extractTypeString(source, "keyType")
+	valueType := extractTypeString(source, "valueType")
 
 	if keyType != "" && valueType != "" {
 		return fmt.Sprintf("MAP(%s, %s)", keyType, valueType)
