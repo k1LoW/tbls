@@ -556,7 +556,8 @@ LEFT JOIN information_schema.parameters p
      ON p.specific_schema = r.routine_schema
     AND p.specific_name = r.specific_name
 WHERE r.routine_schema NOT IN ('sys', 'information_schema', 'mysql', 'performance_schema')
-GROUP BY r.routine_schema, r.routine_name, r.routine_type, r.data_type, r.routine_comment;`
+GROUP BY r.routine_schema, r.routine_name, r.routine_type, r.data_type, r.routine_comment
+ORDER BY r.routine_schema, r.routine_name;`
 
 func (m *Mysql) getFunctions() ([]*schema.Function, error) {
 	functions := []*schema.Function{}

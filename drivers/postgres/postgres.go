@@ -407,7 +407,7 @@ LEFT JOIN pg_namespace AS n ON p.pronamespace = n.oid
 LEFT JOIN pg_type AS t ON t.oid = p.prorettype
 LEFT JOIN pg_description d ON d.objoid = p.oid
 WHERE n.nspname NOT IN ('pg_catalog', 'information_schema')
-ORDER BY p.oid;`
+ORDER BY n.nspname, p.proname;`
 
 const queryFunctions = `SELECT
   n.nspname AS schema_name,
@@ -421,7 +421,7 @@ LEFT JOIN pg_namespace AS n ON p.pronamespace = n.oid
 LEFT JOIN pg_type AS t ON t.oid = p.prorettype
 LEFT JOIN pg_description d ON d.objoid = p.oid
 WHERE n.nspname NOT IN ('pg_catalog', 'information_schema')
-ORDER BY p.oid;`
+ORDER BY n.nspname, p.proname;`
 
 const queryStoredProcedureSupported = `SELECT column_name
 FROM information_schema.columns
