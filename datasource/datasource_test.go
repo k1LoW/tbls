@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/k1LoW/tbls/config"
 	_ "github.com/lib/pq"
 	_ "github.com/microsoft/go-mssqldb"
@@ -19,6 +20,7 @@ var tests = []struct {
 }{
 	{config.DSN{URL: "my://root:mypass@localhost:33306/testdb"}, "testdb", 9, 6},
 	{config.DSN{URL: "pg://postgres:pgpass@localhost:55432/testdb?sslmode=disable"}, "testdb", 17, 12},
+	{config.DSN{URL: "pgx://postgres:pgpass@localhost:55432/testdb?sslmode=disable"}, "testdb", 17, 12},
 	{config.DSN{URL: "json://../testdata/testdb.json"}, "testdb", 11, 12},
 	{config.DSN{URL: "https://raw.githubusercontent.com/k1LoW/tbls/main/testdata/testdb.json"}, "testdb", 11, 12},
 	{config.DSN{URL: "ms://SA:MSSQLServer-Passw0rd@localhost:11433/testdb"}, "testdb", 14, 8},

@@ -21,6 +21,7 @@ require (
 	github.com/goccy/go-graphviz v0.2.10
 	github.com/goccy/go-yaml v1.19.1
 	github.com/google/go-cmp v0.7.0
+	github.com/jackc/pgx/v5 v5.8.0
 	github.com/k1LoW/duration v1.2.0
 	github.com/k1LoW/errors v1.1.1
 	github.com/k1LoW/expand v0.16.6
@@ -137,6 +138,9 @@ require (
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
 	github.com/hashicorp/go-retryablehttp v0.7.7 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
+	github.com/jackc/pgpassfile v1.0.0 // indirect
+	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
+	github.com/jackc/puddle/v2 v2.2.2 // indirect
 	github.com/josharian/mapfs v0.0.0-20210615234106-095c008854e6 // indirect
 	github.com/josharian/txtarfs v0.0.0-20240408113805-5dc76b8fe6bf // indirect
 	github.com/k1LoW/fontdir v0.1.1 // indirect

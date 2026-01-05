@@ -34,6 +34,7 @@ import (
 
 var supportDriversWithDburl = []string{
 	"postgres",
+	"pgx",
 	"mysql",
 	"sqlite3",
 	"sqlserver",
@@ -123,7 +124,7 @@ func Analyze(dsn config.DSN) (_ *schema.Schema, err error) {
 	var driver drivers.Driver
 
 	switch u.Driver {
-	case "postgres":
+	case "postgres", "pgx":
 		s.Name = splitted[1]
 		if u.Scheme == "rs" || u.Scheme == "redshift" {
 			driver = redshift.New(db)
