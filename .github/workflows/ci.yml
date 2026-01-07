@@ -60,6 +60,7 @@ jobs:
         with:
           go_version_file: go.mod
           reporter: github-pr-check
+          cache: false
 
       - name: Run test
         run: make ci
