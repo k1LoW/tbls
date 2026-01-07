@@ -688,6 +688,38 @@ func TestDetectShowColumnsForER(t *testing.T) {
 	}
 }
 
+func TestConstructTablePathWithShortName(t *testing.T) {
+	c := &Config{}
+	c.OutputPaths.MD.Table = stringPtr("{{.ShortName}}.md")
+	
+	path, err := c.ConstructTablePath("public.users", "users")
+	if err != nil {
+		t.Fatal(err)
+	}
+	
+	if path != "users.md" {
+		t.Errorf("Expected 'users.md', got '%s'", path)
+	}
+}
+
+func TestConstructERTablePathWithShortName(t *testing.T) {
+	c := &Config{}
+	c.OutputPaths.ER.Table = stringPtr("{{.ShortName}}.{{.Format}}")
+	
+	path, err := c.ConstructERTablePath("public.users", "users", "svg")
+	if err != nil {
+		t.Fatal(err)
+	}
+	
+	if path != "users.svg" {
+		t.Errorf("Expected 'users.svg', got '%s'", path)
+	}
+}
+
+func stringPtr(s string) *string {
+	return &s
+}
+
 func newTestSchemaViaJSON(t *testing.T) *schema.Schema {
 	t.Helper()
 	s := &schema.Schema{}
