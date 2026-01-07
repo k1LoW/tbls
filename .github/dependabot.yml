@@ -36,6 +36,8 @@ updates:
         versions: ["1.13.*"]
       - dependency-name: "github.com/olekukonko/tablewriter"
         versions: ["1.*.*"]
+      - dependency-name: "github.com/snowflakedb/gosnowflake"
+        versions: ["*.*.*"]
     open-pull-requests-limit: 10
     assignees:
       - "k1LoW"
