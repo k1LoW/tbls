@@ -37,7 +37,7 @@ require (
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2
 	github.com/rs/zerolog v1.34.0
 	github.com/samber/lo v1.52.0
-	github.com/snowflakedb/gosnowflake v1.18.1
+	github.com/snowflakedb/gosnowflake v1.18.0
 	github.com/spf13/cobra v1.10.2
 	github.com/tenntenn/golden v0.5.5
 	github.com/xo/dburl v0.24.2
