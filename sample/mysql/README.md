@@ -25,10 +25,10 @@ Sample database document.
 
 ## Stored procedures and functions
 
-| Name | ReturnType | Arguments | Type |
-| ---- | ------- | ------- | ---- |
-| CustomerLevel | varchar | credit decimal | FUNCTION |
-| GetAllComments |  |  | PROCEDURE |
+| Name | ReturnType | Arguments | Type | Comment |
+| ---- | ------- | ------- | ---- | ------- |
+| CustomerLevel | varchar | credit decimal | FUNCTION | Determines customer tier (PLATINUM, GOLD, SILVER) based on the credit amount |
+| GetAllComments |  |  | PROCEDURE | Retrieves all rows from the comments table |
 
 ## Relations
 
