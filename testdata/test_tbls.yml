@@ -3,6 +3,15 @@ desc: Sample database document.
 labels:
   - sample
   - tbls
+
+# Exclude FTS5 shadow tables from documentation
+exclude:
+  - "*_data"
+  - "*_idx"
+  - "*_content"
+  - "*_docsize"
+  - "*_config"
+
 lint:
   requireColumnComment:
     enabled: true
