@@ -886,7 +886,7 @@
   ],
   "driver": {
     "name": "mysql",
-    "database_version": "8.4.6",
+    "database_version": "8.4.7",
     "meta": {
       "dict": {
         "Functions": "Stored procedures and functions"

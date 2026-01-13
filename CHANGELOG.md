@@ -1,5 +1,16 @@
 # Changelog
 
+## [v1.92.3](https://github.com/k1LoW/tbls/compare/v1.92.2...v1.92.3) - 2026-01-07
+### Fix bug 🐛
+- Fix databricks top level arrays by @Ewan-Keith in https://github.com/k1LoW/tbls/pull/794
+- fix: escape double quotes in Mermaid ER diagram relation definitions by @k1LoW in https://github.com/k1LoW/tbls/pull/795
+- fix: freeze github.com/snowflakedb/gosnowflake version by @k1LoW in https://github.com/k1LoW/tbls/pull/799
+### Other Changes
+- chore(deps): bump the dependencies group with 6 updates by @dependabot[bot] in https://github.com/k1LoW/tbls/pull/793
+- fix: handle errors when parsing GOOGLE_APPLICATION_CREDENTIALS_JSON by @k1LoW in https://github.com/k1LoW/tbls/pull/797
+- ci: remove Docker Hub login step from release-test workflow by @k1LoW in https://github.com/k1LoW/tbls/pull/798
+- chore(deps): bump the dependencies group with 3 updates by @dependabot[bot] in https://github.com/k1LoW/tbls/pull/800
+
 ## [v1.92.2](https://github.com/k1LoW/tbls/compare/v1.92.1...v1.92.2) - 2025-12-22
 ### Fix bug 🐛
 - fix: merge viewpoints only by name, not by tables/labels combination by @k1LoW in https://github.com/k1LoW/tbls/pull/787
