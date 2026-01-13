@@ -52,6 +52,9 @@ CREATE TABLE posts (
 | Name | Definition |
 | ---- | ---------- |
 | update_posts_updated | CREATE TRIGGER update_posts_updated AFTER UPDATE ON posts FOR EACH ROW<br />BEGIN<br />  UPDATE posts SET updated = current_timestamp WHERE id = OLD.id;<br />END |
+| posts_fts_insert | CREATE TRIGGER posts_fts_insert AFTER INSERT ON posts BEGIN<br />  INSERT INTO search_posts(rowid, title, body) VALUES (new.id, new.title, new.body);<br />END |
+| posts_fts_delete | CREATE TRIGGER posts_fts_delete AFTER DELETE ON posts BEGIN<br />  INSERT INTO search_posts(search_posts, rowid, title, body) VALUES('delete', old.id, old.title, old.body);<br />END |
+| posts_fts_update | CREATE TRIGGER posts_fts_update AFTER UPDATE ON posts BEGIN<br />  INSERT INTO search_posts(search_posts, rowid, title, body) VALUES('delete', old.id, old.title, old.body);<br />  INSERT INTO search_posts(rowid, title, body) VALUES (new.id, new.title, new.body);<br />END |
 
 ## Relations
 
