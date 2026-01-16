@@ -77,29 +77,31 @@ WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
 		}
 
 		if reFTS.MatchString(tableDef) {
-			tableType = "virtual table"
-			matches := reFTS.FindStringSubmatch(tableDef)
-			if len(matches) < 1 {
-				return fmt.Errorf("can not parse table definition: %s", tableDef)
-			}
 
-			if matches[1] == "3" || matches[1] == "4" {
-				// FTS3/FTS4 shadow tables
-				shadowTables = append(shadowTables, fmt.Sprintf("%s_content", tableName))
-				shadowTables = append(shadowTables, fmt.Sprintf("%s_segdir", tableName))
-				shadowTables = append(shadowTables, fmt.Sprintf("%s_segments", tableName))
-				if matches[1] == "4" {
-					shadowTables = append(shadowTables, fmt.Sprintf("%s_stat", tableName))
-            		shadowTables = append(shadowTables, fmt.Sprintf("%s_docsize", tableName))
-				}
-			} else if matches[1] == "5" {
-				// FTS5 shadow tables
-				shadowTables = append(shadowTables, fmt.Sprintf("%s_data", tableName))
-				shadowTables = append(shadowTables, fmt.Sprintf("%s_idx", tableName))
-				shadowTables = append(shadowTables, fmt.Sprintf("%s_docsize", tableName))
-				shadowTables = append(shadowTables, fmt.Sprintf("%s_config", tableName))
-				shadowTables = append(shadowTables, fmt.Sprintf("%s_content", tableName))
-			}
+		    tableType = "virtual table"
+		    matches := reFTS.FindStringSubmatch(tableDef)
+		    if len(matches) < 1 {
+		        return fmt.Errorf("can not parse table definition: %s", tableDef)
+		    }
+
+		    switch matches[1] {
+		    case "3", "4":
+		        // FTS3/FTS4 shadow tables
+		        shadowTables = append(shadowTables, fmt.Sprintf("%s_content", tableName))
+		        shadowTables = append(shadowTables, fmt.Sprintf("%s_segdir", tableName))
+		        shadowTables = append(shadowTables, fmt.Sprintf("%s_segments", tableName))
+		        if matches[1] == "4" {
+		            shadowTables = append(shadowTables, fmt.Sprintf("%s_stat", tableName))
+		            shadowTables = append(shadowTables, fmt.Sprintf("%s_docsize", tableName))
+		        }
+		    case "5":
+		        // FTS5 shadow tables
+		        shadowTables = append(shadowTables, fmt.Sprintf("%s_data", tableName))
+		        shadowTables = append(shadowTables, fmt.Sprintf("%s_idx", tableName))
+		        shadowTables = append(shadowTables, fmt.Sprintf("%s_docsize", tableName))
+		        shadowTables = append(shadowTables, fmt.Sprintf("%s_config", tableName))
+		        shadowTables = append(shadowTables, fmt.Sprintf("%s_content", tableName))
+		    }
 		}
 
 		table := &schema.Table{
