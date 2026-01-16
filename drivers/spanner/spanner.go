@@ -70,6 +70,7 @@ WHERE
 			return errors.WithStack(err)
 		}
 		table := &schema.Table{
+			ShortName: tableName.StringVal,
 			Name: tableName.StringVal,
 			Type: tableType,
 		}

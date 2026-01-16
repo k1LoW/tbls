@@ -70,9 +70,11 @@ func (b *Bigquery) Analyze(s *schema.Schema) error {
 		sort.SliceStable(labels, func(i, j int) bool { return labels[i].Name < labels[j].Name })
 
 		splitted := strings.Split(m.FullID, fmt.Sprintf("%s.", b.datasetID))
+		name := strings.Join(splitted[1:], "")
 
 		table := &schema.Table{
-			Name:    strings.Join(splitted[1:], ""),
+			ShortName: name,
+			Name:      name,
 			Comment: m.Description,
 			Type:    string(m.Type),
 			Def:     m.ViewQuery,

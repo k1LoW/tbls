@@ -75,6 +75,7 @@ func (d *Dynamodb) Analyze(s *schema.Schema) error {
 				return err
 			}
 			table := &schema.Table{
+				ShortName:   *desc.Table.TableName,
 				Name:        *desc.Table.TableName,
 				Type:        tableType,
 				Columns:     listColumns(desc.Table),

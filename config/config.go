@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"text/template"
 
 	wildcard "github.com/IGLOU-EU/go-wildcard/v2"
 	"github.com/aquasecurity/go-version/pkg/version"
@@ -52,6 +53,7 @@ type Config struct {
 	Comments               []AdditionalComment    `yaml:"comments,omitempty"`
 	Dict                   dict.Dict              `yaml:"dict,omitempty"`
 	Templates              Templates              `yaml:"templates,omitempty"`
+	OutputPaths            OutputPaths            `yaml:"outputPaths,omitempty"`
 	DetectVirtualRelations DetectVirtualRelations `yaml:"detectVirtualRelations,omitempty"`
 	BaseURL                string                 `yaml:"baseUrl,omitempty"`
 	RequiredVersion        string                 `yaml:"requiredVersion,omitempty"`
@@ -290,7 +292,42 @@ func (c *Config) setDefault() error {
 		c.ER.Distance = &DefaultERDistance
 	}
 
+	// Set default output paths if not configured
+	c.setDefaultOutputPaths()
+
 	return nil
+}
+
+// setDefaultOutputPaths sets default values for OutputPaths if they are nil
+func (c *Config) setDefaultOutputPaths() {
+	// Markdown output paths
+	if c.OutputPaths.MD.Index == nil {
+		defaultIndex := "README.md"
+		c.OutputPaths.MD.Index = &defaultIndex
+	}
+	if c.OutputPaths.MD.Table == nil {
+		defaultTable := "{{.Name}}.md"
+		c.OutputPaths.MD.Table = &defaultTable
+	}
+	if c.OutputPaths.MD.Viewpoint == nil {
+		defaultViewpoint := "viewpoint-{{.Index}}.md"
+		c.OutputPaths.MD.Viewpoint = &defaultViewpoint
+	}
+	// Note: Enum defaults to nil (disabled) if not explicitly set
+
+	// ER image output paths
+	if c.OutputPaths.ER.Schema == nil {
+		defaultERSchema := "schema.{{.Format}}"
+		c.OutputPaths.ER.Schema = &defaultERSchema
+	}
+	if c.OutputPaths.ER.Table == nil {
+		defaultERTable := "{{.Name}}.{{.Format}}"
+		c.OutputPaths.ER.Table = &defaultERTable
+	}
+	if c.OutputPaths.ER.Viewpoint == nil {
+		defaultERViewpoint := "viewpoint-{{.Index}}.{{.Format}}"
+		c.OutputPaths.ER.Viewpoint = &defaultERViewpoint
+	}
 }
 
 func (c *Config) checkVersion(sv string) error {
@@ -592,6 +629,164 @@ func (c *Config) NeedToGenerateERImages() bool {
 		return false
 	}
 	return true
+}
+
+// ConstructIndexPath returns the output path for the main README file.
+// Returns empty string if explicitly configured as empty (disables generation).
+func (c *Config) ConstructIndexPath() (string, error) {
+	return *c.OutputPaths.MD.Index, nil
+}
+
+// ConstructTablePath returns the output path for a table file.
+// Returns empty string if explicitly configured as empty (disables generation).
+func (c *Config) ConstructTablePath(tableName, shortName string) (string, error) {
+	pattern := *c.OutputPaths.MD.Table
+	if pattern == "" {
+		return "", nil // explicitly disabled
+	}
+	
+	tmpl, err := template.New("tablePath").Parse(pattern)
+	if err != nil {
+		return "", err
+	}
+	
+	var buf strings.Builder
+	data := struct{ 
+		Name      string 
+		ShortName string
+	}{Name: tableName, ShortName: shortName}
+	if err := tmpl.Execute(&buf, data); err != nil {
+		return "", err
+	}
+	
+	return buf.String(), nil
+}
+
+// ConstructViewpointPath returns the output path for a viewpoint file.
+// Returns empty string if explicitly configured as empty (disables generation).
+func (c *Config) ConstructViewpointPath(viewpointName string, index int) (string, error) {
+	pattern := *c.OutputPaths.MD.Viewpoint
+	if pattern == "" {
+		return "", nil // explicitly disabled
+	}
+	
+	tmpl, err := template.New("viewpointPath").Parse(pattern)
+	if err != nil {
+		return "", err
+	}
+	
+	var buf strings.Builder
+	data := struct {
+		Name  string
+		Index int
+	}{Name: viewpointName, Index: index}
+	if err := tmpl.Execute(&buf, data); err != nil {
+		return "", err
+	}
+	
+	return buf.String(), nil
+}
+
+// ConstructEnumPath returns the output path for an enum file.
+// Returns empty string if not configured or explicitly configured as empty (disables generation).
+// Enums are disabled by default and must be explicitly enabled.
+func (c *Config) ConstructEnumPath(enumName string) (string, error) {
+	if c.OutputPaths.MD.Enum == nil {
+		// Enums are disabled by default
+		return "", nil
+	}
+	
+	pattern := *c.OutputPaths.MD.Enum
+	if pattern == "" {
+		return "", nil // explicitly disabled
+	}
+	
+	tmpl, err := template.New("enumPath").Parse(pattern)
+	if err != nil {
+		return "", err
+	}
+	
+	var buf strings.Builder
+	data := struct{ Name string }{Name: enumName}
+	if err := tmpl.Execute(&buf, data); err != nil {
+		return "", err
+	}
+	
+	return buf.String(), nil
+}
+
+// ConstructERSchemaPath returns the output path for the schema ER diagram file.
+// Returns empty string if explicitly configured as empty (disables generation).
+func (c *Config) ConstructERSchemaPath(format string) (string, error) {
+	pattern := *c.OutputPaths.ER.Schema
+	if pattern == "" {
+		return "", nil // explicitly disabled
+	}
+	
+	tmpl, err := template.New("erSchemaPath").Parse(pattern)
+	if err != nil {
+		return "", err
+	}
+	
+	var buf strings.Builder
+	data := struct{ Format string }{Format: format}
+	if err := tmpl.Execute(&buf, data); err != nil {
+		return "", err
+	}
+	
+	return buf.String(), nil
+}
+
+// ConstructERTablePath returns the output path for a table ER diagram file.
+// Returns empty string if explicitly configured as empty (disables generation).
+func (c *Config) ConstructERTablePath(tableName, shortName, format string) (string, error) {
+	pattern := *c.OutputPaths.ER.Table
+	if pattern == "" {
+		return "", nil // explicitly disabled
+	}
+	
+	tmpl, err := template.New("erTablePath").Parse(pattern)
+	if err != nil {
+		return "", err
+	}
+	
+	var buf strings.Builder
+	data := struct {
+		Name      string
+		ShortName string
+		Format    string
+	}{Name: tableName, ShortName: shortName, Format: format}
+	if err := tmpl.Execute(&buf, data); err != nil {
+		return "", err
+	}
+	
+	return buf.String(), nil
+}
+
+// ConstructERViewpointPath returns the output path for a viewpoint ER diagram file.
+// Returns empty string if explicitly configured as empty (disables generation).
+func (c *Config) ConstructERViewpointPath(viewpointName string, index int, format string) (string, error) {
+	pattern := *c.OutputPaths.ER.Viewpoint
+	if pattern == "" {
+		return "", nil // explicitly disabled
+	}
+	
+	tmpl, err := template.New("erViewpointPath").Parse(pattern)
+	if err != nil {
+		return "", err
+	}
+	
+	var buf strings.Builder
+	data := struct {
+		Name   string
+		Index  int
+		Format string
+	}{Name: viewpointName, Index: index, Format: format}
+	if err := tmpl.Execute(&buf, data); err != nil {
+		return "", err
+	}
+	
+	return buf.String(), nil
 }
 
 func (c *Config) detectShowColumnsForER(s *schema.Schema) error {

@@ -1,6 +1,8 @@
 # {{ .Table.Name }}
 
+{{- if (or (ne .Table.Comment "") (ne .Table.Def "")) }}
 ## {{ "Description" | lookup }}
+{{- end }}
 {{- if ne .Table.Comment "" }}
 
 {{ .Table.Comment | nl2mdnl }}
