@@ -24,6 +24,10 @@ Sample database document.
 | [check_constraints](check_constraints.md) | 6 |  | table |  |
 | [syslog](syslog.md) | 1 |  | virtual table |  |
 | [access_log](access_log.md) | 1 |  | virtual table |  |
+| [search_posts](search_posts.md) | 2 |  | virtual table |  |
+| [search_comments](search_comments.md) | 1 |  | virtual table |  |
+| [search_logs](search_logs.md) | 1 |  | virtual table |  |
+| [search_users](search_users.md) | 2 |  | virtual table |  |
 
 ## Relations
 

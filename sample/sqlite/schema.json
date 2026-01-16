@@ -245,6 +245,18 @@
         {
           "name": "update_posts_updated",
           "def": "CREATE TRIGGER update_posts_updated AFTER UPDATE ON posts FOR EACH ROW\nBEGIN\n  UPDATE posts SET updated = current_timestamp WHERE id = OLD.id;\nEND"
+        },
+        {
+          "name": "posts_fts_insert",
+          "def": "CREATE TRIGGER posts_fts_insert AFTER INSERT ON posts BEGIN\n  INSERT INTO search_posts(rowid, title, body) VALUES (new.id, new.title, new.body);\nEND"
+        },
+        {
+          "name": "posts_fts_delete",
+          "def": "CREATE TRIGGER posts_fts_delete AFTER DELETE ON posts BEGIN\n  INSERT INTO search_posts(search_posts, rowid, title, body) VALUES('delete', old.id, old.title, old.body);\nEND"
+        },
+        {
+          "name": "posts_fts_update",
+          "def": "CREATE TRIGGER posts_fts_update AFTER UPDATE ON posts BEGIN\n  INSERT INTO search_posts(search_posts, rowid, title, body) VALUES('delete', old.id, old.title, old.body);\n  INSERT INTO search_posts(rowid, title, body) VALUES (new.id, new.title, new.body);\nEND"
         }
       ],
       "def": "CREATE TABLE posts (\n  id INTEGER PRIMARY KEY AUTOINCREMENT,\n  user_id INTEGER NOT NULL,\n  title TEXT NOT NULL,\n  body TEXT NOT NULL,\n  created NUMERIC NOT NULL,\n  updated NUMERIC,\n  CONSTRAINT posts_user_id_fk FOREIGN KEY(user_id) REFERENCES users(id) MATCH NONE ON UPDATE NO ACTION ON DELETE CASCADE\n)",
@@ -820,6 +832,64 @@
         }
       ],
       "def": "CREATE VIRTUAL TABLE access_log USING fts4(logs)"
+    },
+    {
+      "name": "search_posts",
+      "type": "virtual table",
+      "columns": [
+        {
+          "name": "title",
+          "type": "",
+          "nullable": true
+        },
+        {
+          "name": "body",
+          "type": "",
+          "nullable": true
+        }
+      ],
+      "def": "CREATE VIRTUAL TABLE search_posts USING fts5(\n  title,\n  body,\n  content='posts',\n  content_rowid='id'\n)"
+    },
+    {
+      "name": "search_comments",
+      "type": "virtual table",
+      "columns": [
+        {
+          "name": "comment",
+          "type": "",
+          "nullable": true
+        }
+      ],
+      "def": "CREATE VIRTUAL TABLE search_comments USING fts5(\n  comment,\n  tokenize='porter unicode61'\n)"
+    },
+    {
+      "name": "search_logs",
+      "type": "virtual table",
+      "columns": [
+        {
+          "name": "payload",
+          "type": "",
+          "nullable": true
+        }
+      ],
+      "def": "CREATE VIRTUAL TABLE search_logs USING fts5(\n  payload,\n  prefix='2 3',\n  tokenize='trigram'\n)"
+    },
+    {
+      "name": "search_users",
+      "type": "virtual table",
+      "columns": [
+        {
+          "name": "username",
+          "type": "",
+          "nullable": true
+        },
+        {
+          "name": "email",
+          "type": "",
+          "nullable": true
+        }
+      ],
+      "def": "CREATE VIRTUAL TABLE search_users USING fts5(\n  username,\n  email UNINDEXED,\n  detail=full\n)"
     }
   ],
   "relations": [

@@ -114,3 +114,70 @@ CREATE TABLE check_constraints (
 
 CREATE VIRTUAL TABLE syslog USING fts3(logs);
 CREATE VIRTUAL TABLE access_log USING fts4(logs);
+
+
+-- FTS5 tables for full-text search testing
+CREATE VIRTUAL TABLE search_posts USING fts5(
+  title,
+  body,
+  content='posts',
+  content_rowid='id'
+);
+
+CREATE VIRTUAL TABLE search_comments USING fts5(
+  comment,
+  tokenize='porter unicode61'
+);
+
+CREATE VIRTUAL TABLE search_logs USING fts5(
+  payload,
+  prefix='2 3',
+  tokenize='trigram'
+);
+
+-- FTS5 with auxiliary columns (not indexed)
+CREATE VIRTUAL TABLE search_users USING fts5(
+  username,
+  email UNINDEXED,
+  detail=full
+);
+
+-- Insert some test data for FTS5
+INSERT INTO users (username, password, email, created) VALUES
+  ('alice', 'pass1', 'alice@example.com', datetime('now')),
+  ('bobsmith', 'pass2', 'bob@example.com', datetime('now')),
+  ('charlie', 'pass3', 'charlie@example.com', datetime('now'));
+
+INSERT INTO posts (user_id, title, body, created) VALUES
+  (1, 'Hello World', 'This is my first post about SQLite FTS5', datetime('now')),
+  (2, 'Database Search', 'Full-text search is amazing with FTS5', datetime('now')),
+  (3, 'Performance Tips', 'Optimize your queries using indexes', datetime('now'));
+
+INSERT INTO search_comments (comment) VALUES
+  ('Great article about full-text search!'),
+  ('FTS5 is much faster than FTS3'),
+  ('Thanks for sharing this information');
+
+INSERT INTO search_logs (payload) VALUES
+  ('User login successful'),
+  ('Database connection established'),
+  ('Search query executed');
+
+INSERT INTO search_users (username, email) VALUES
+  ('alice', 'alice@example.com'),
+  ('bobsmith', 'bob@example.com'),
+  ('charlie', 'charlie@example.com');
+
+-- Triggers to keep FTS5 in sync with content table
+CREATE TRIGGER posts_fts_insert AFTER INSERT ON posts BEGIN
+  INSERT INTO search_posts(rowid, title, body) VALUES (new.id, new.title, new.body);
+END;
+
+CREATE TRIGGER posts_fts_delete AFTER DELETE ON posts BEGIN
+  INSERT INTO search_posts(search_posts, rowid, title, body) VALUES('delete', old.id, old.title, old.body);
+END;
+
+CREATE TRIGGER posts_fts_update AFTER UPDATE ON posts BEGIN
+  INSERT INTO search_posts(search_posts, rowid, title, body) VALUES('delete', old.id, old.title, old.body);
+  INSERT INTO search_posts(rowid, title, body) VALUES (new.id, new.title, new.body);
+END;

@@ -3,6 +3,7 @@ desc: Sample database document.
 labels:
   - sample
   - tbls
+
 lint:
   requireColumnComment:
     enabled: true
