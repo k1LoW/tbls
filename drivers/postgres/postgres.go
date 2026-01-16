@@ -400,24 +400,28 @@ const queryFunctions95 = `SELECT
   p.proname AS specific_name,
   TEXT 'FUNCTION',
   t.typname AS return_type,
-  pg_get_function_arguments(p.oid) AS arguments
+  pg_get_function_arguments(p.oid) AS arguments,
+  d.description AS description
 FROM pg_proc AS p
 LEFT JOIN pg_namespace AS n ON p.pronamespace = n.oid
 LEFT JOIN pg_type AS t ON t.oid = p.prorettype
+LEFT JOIN pg_description d ON d.objoid = p.oid
 WHERE n.nspname NOT IN ('pg_catalog', 'information_schema')
-ORDER BY p.oid;`
+ORDER BY n.nspname, p.proname;`
 
 const queryFunctions = `SELECT
   n.nspname AS schema_name,
   p.proname AS specific_name,
   CASE WHEN p.prokind = 'p' THEN TEXT 'PROCEDURE' ELSE CASE WHEN p.prokind = 'f' THEN TEXT 'FUNCTION' ELSE CAST(p.prokind AS TEXT) END END,
   t.typname AS return_type,
-  pg_get_function_arguments(p.oid) AS arguments
+  pg_get_function_arguments(p.oid) AS arguments,
+  d.description AS description
 FROM pg_proc AS p
 LEFT JOIN pg_namespace AS n ON p.pronamespace = n.oid
 LEFT JOIN pg_type AS t ON t.oid = p.prorettype
+LEFT JOIN pg_description d ON d.objoid = p.oid
 WHERE n.nspname NOT IN ('pg_catalog', 'information_schema')
-ORDER BY p.oid;`
+ORDER BY n.nspname, p.proname;`
 
 const queryStoredProcedureSupported = `SELECT column_name
 FROM information_schema.columns
@@ -477,13 +481,14 @@ func (p *Postgres) getFunctionsByQuery(query string) ([]*schema.Function, error)
 
 	for functionsResult.Next() {
 		var (
-			schemaName string
-			name       string
-			typeValue  string
-			returnType string
-			arguments  sql.NullString
+			schemaName  string
+			name        string
+			typeValue   string
+			returnType  string
+			arguments   sql.NullString
+			description sql.NullString
 		)
-		err := functionsResult.Scan(&schemaName, &name, &typeValue, &returnType, &arguments)
+		err := functionsResult.Scan(&schemaName, &name, &typeValue, &returnType, &arguments, &description)
 		if err != nil {
 			return functions, errors.WithStack(err)
 		}
@@ -492,6 +497,7 @@ func (p *Postgres) getFunctionsByQuery(query string) ([]*schema.Function, error)
 			Type:       typeValue,
 			ReturnType: returnType,
 			Arguments:  arguments.String,
+			Comment:    description.String,
 		}
 
 		functions = append(functions, function)
