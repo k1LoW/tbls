@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.93.0](https://github.com/k1LoW/tbls/compare/v1.92.3...v1.93.0) - 2026-01-16
+### New Features 🎉
+- Add fts5 support by @zxckaneki666 in https://github.com/k1LoW/tbls/pull/791
+
 ## [v1.92.3](https://github.com/k1LoW/tbls/compare/v1.92.2...v1.92.3) - 2026-01-07
 ### Fix bug 🐛
 - Fix databricks top level arrays by @Ewan-Keith in https://github.com/k1LoW/tbls/pull/794
