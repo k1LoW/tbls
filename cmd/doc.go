@@ -38,8 +38,10 @@ import (
 )
 
 var (
-	withoutER bool
-	rmDist    bool
+	withoutER      bool
+	rmDist         bool
+	verbose        bool
+	skipPartitions bool
 )
 
 // docCmd represents the doc command.
@@ -48,6 +50,10 @@ var docCmd = &cobra.Command{
 	Short: "document a database",
 	Long:  `'tbls doc' analyzes a database and generate document in GitHub Friendly Markdown format.`,
 	RunE: func(_ *cobra.Command, args []string) error {
+		cmdutil.SetVerbose(verbose)
+		cmdutil.SetSkipPartitions(skipPartitions)
+		cmdutil.Verbosef("Starting tbls doc")
+
 		if allow, err := cmdutil.IsAllowedToExecute(when); !allow || err != nil {
 			if err != nil {
 				return err
@@ -55,6 +61,7 @@ var docCmd = &cobra.Command{
 			return nil
 		}
 
+		cmdutil.Verbosef("Loading configuration")
 		c, err := config.New()
 		if err != nil {
 			return err
@@ -68,12 +75,16 @@ var docCmd = &cobra.Command{
 		if err := c.Load(configPath, options...); err != nil {
 			return err
 		}
+		cmdutil.Verbosef("Configuration loaded (DSN: %s)", cmdutil.MaskDSN(c.DSN.URL))
 
+		cmdutil.Verbosef("Analyzing database schema")
 		s, err := datasource.Analyze(c.DSN)
 		if err != nil {
 			return err
 		}
+		cmdutil.Verbosef("Schema analysis complete: %d tables found", len(s.Tables))
 
+		cmdutil.Verbosef("Modifying schema with config options")
 		if err := c.ModifySchema(s); err != nil {
 			return err
 		}
@@ -93,22 +104,28 @@ var docCmd = &cobra.Command{
 		}
 
 		if c.NeedToGenerateERImages() {
+			cmdutil.Verbosef("Generating ER diagrams")
 			if err := gviz.Output(s, c, force); err != nil {
 				return err
 			}
+			cmdutil.Verbosef("ER diagrams complete")
 		}
 
+		cmdutil.Verbosef("Generating markdown documentation")
 		if err := md.Output(s, c, force); err != nil {
 			return err
 		}
+		cmdutil.Verbosef("Markdown documentation complete")
 
 		// output schema.json
 		if !c.DisableOutputSchema {
+			cmdutil.Verbosef("Writing schema.json")
 			if err := withSchemaFile(s, c); err != nil {
 				return err
 			}
 		}
 
+		cmdutil.Verbosef("Done")
 		return nil
 	},
 }
@@ -177,6 +194,8 @@ func init() {
 	docCmd.Flags().StringSliceVarP(&includes, "include", "", []string{}, "tables to include")
 	docCmd.Flags().StringSliceVarP(&excludes, "exclude", "", []string{}, "tables to exclude")
 	docCmd.Flags().StringSliceVarP(&labels, "label", "", []string{}, "table labels to be included")
+	docCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "verbose output")
+	docCmd.Flags().BoolVarP(&skipPartitions, "skip-partitions", "", false, "skip table partitions (PostgreSQL)")
 
 	if err := docCmd.MarkZshCompPositionalArgumentFile(2); err != nil {
 		_, _ = fmt.Fprintf(os.Stderr, "%s\n", err)

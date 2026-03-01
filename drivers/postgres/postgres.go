@@ -8,6 +8,7 @@ import (
 
 	"github.com/aquasecurity/go-version/pkg/version"
 	"github.com/k1LoW/errors"
+	"github.com/k1LoW/tbls/cmdutil"
 	"github.com/k1LoW/tbls/ddl"
 	"github.com/k1LoW/tbls/dict"
 	"github.com/k1LoW/tbls/schema"
@@ -36,13 +37,16 @@ func (p *Postgres) Analyze(s *schema.Schema) (err error) {
 	defer func() {
 		err = errors.WithStack(err)
 	}()
+	cmdutil.Verbosef("Fetching database version info")
 	d, err := p.Info()
 	if err != nil {
 		return errors.WithStack(err)
 	}
 	s.Driver = d
+	cmdutil.Verbosef("Database version: %s", d.DatabaseVersion)
 
 	// current schema
+	cmdutil.Verbosef("Querying current schema")
 	var currentSchema sql.NullString
 	schemaRows, err := p.db.Query(`SELECT current_schema()`)
 	if err != nil {
@@ -98,24 +102,8 @@ func (p *Postgres) Analyze(s *schema.Schema) (err error) {
 	fullTableNames := []string{}
 
 	// tables
-	tableRows, err := p.db.Query(`
-SELECT
-    cls.oid AS oid,
-    cls.relname AS table_name,
-    CASE
-        WHEN cls.relkind IN ('r', 'p') THEN 'BASE TABLE'
-        WHEN cls.relkind = 'v' THEN 'VIEW'
-        WHEN cls.relkind = 'm' THEN 'MATERIALIZED VIEW'
-        WHEN cls.relkind = 'f' THEN 'FOREIGN TABLE'
-    END AS table_type,
-    ns.nspname AS table_schema,
-    descr.description AS table_comment
-FROM pg_class AS cls
-INNER JOIN pg_namespace AS ns ON cls.relnamespace = ns.oid
-LEFT JOIN pg_description AS descr ON cls.oid = descr.objoid AND descr.objsubid = 0
-WHERE ns.nspname NOT IN ('pg_catalog', 'information_schema')
-AND cls.relkind IN ('r', 'p', 'v', 'f', 'm')
-ORDER BY oid`)
+	cmdutil.Verbosef("Querying tables")
+	tableRows, err := p.db.Query(p.queryForTables())
 	if err != nil {
 		return errors.WithStack(err)
 	}
@@ -138,6 +126,7 @@ ORDER BY oid`)
 		}
 
 		name := fmt.Sprintf("%s.%s", tableSchema, tableName)
+		cmdutil.Verbosef("Processing table: %s (%s)", name, tableType)
 
 		fullTableNames = append(fullTableNames, name)
 
@@ -323,27 +312,55 @@ ORDER BY tgrelid
 		tables = append(tables, table)
 	}
 
+	cmdutil.Verbosef("Querying functions and procedures")
 	functions, err := p.getFunctions()
 	if err != nil {
 		return err
 	}
 	s.Functions = functions
+	cmdutil.Verbosef("Found %d functions/procedures", len(functions))
 
 	// Enums
+	cmdutil.Verbosef("Querying enums")
 	enums, err := p.getEnums()
 	if err != nil {
 		return err
 	}
 	s.Enums = enums
+	cmdutil.Verbosef("Found %d enums", len(enums))
 
 	s.Tables = tables
+	cmdutil.Verbosef("Found %d tables total", len(tables))
 
 	// Relations
+	cmdutil.Verbosef("Processing %d relations", len(relations))
+	validRelations := []*schema.Relation{}
+	skippedRelations := 0
 	for _, r := range relations {
 		strColumns, strParentTable, strParentColumns, err := parseFK(r.Def)
 		if err != nil {
 			return err
 		}
+
+		dn, err := detectFullTableName(strParentTable, s.Driver.Meta.SearchPaths, fullTableNames)
+		if err != nil {
+			if cmdutil.SkipPartitions() {
+				// Skip relations referencing tables not in our list (likely skipped partitions)
+				skippedRelations++
+				continue
+			}
+			return err
+		}
+		strParentTable = dn
+		parentTable, err := s.FindTableByName(strParentTable)
+		if err != nil {
+			if cmdutil.SkipPartitions() {
+				skippedRelations++
+				continue
+			}
+			return err
+		}
+
 		for _, c := range strColumns {
 			column, err := r.Table.FindColumnByName(c)
 			if err != nil {
@@ -353,15 +370,6 @@ ORDER BY tgrelid
 			column.ParentRelations = append(column.ParentRelations, r)
 		}
 
-		dn, err := detectFullTableName(strParentTable, s.Driver.Meta.SearchPaths, fullTableNames)
-		if err != nil {
-			return err
-		}
-		strParentTable = dn
-		parentTable, err := s.FindTableByName(strParentTable)
-		if err != nil {
-			return err
-		}
 		r.ParentTable = parentTable
 		for _, c := range strParentColumns {
 			column, err := parentTable.FindColumnByName(c)
@@ -371,9 +379,13 @@ ORDER BY tgrelid
 			r.ParentColumns = append(r.ParentColumns, column)
 			column.ChildRelations = append(column.ChildRelations, r)
 		}
+		validRelations = append(validRelations, r)
 	}
 
-	s.Relations = relations
+	if skippedRelations > 0 {
+		cmdutil.Verbosef("Skipped %d relations referencing excluded tables", skippedRelations)
+	}
+	s.Relations = validRelations
 
 	// referenced tables of view
 	for _, t := range s.Tables {
@@ -709,6 +721,42 @@ LEFT JOIN pg_description AS descr ON idx.indexrelid = descr.objoid
 WHERE idx.indrelid = $1::oid
 GROUP BY cls.relname, idx.indexrelid, descr.description
 ORDER BY idx.indexrelid`
+}
+
+func (p *Postgres) queryForTables() string {
+	baseQuery := `
+SELECT
+    cls.oid AS oid,
+    cls.relname AS table_name,
+    CASE
+        WHEN cls.relkind IN ('r', 'p') THEN 'BASE TABLE'
+        WHEN cls.relkind = 'v' THEN 'VIEW'
+        WHEN cls.relkind = 'm' THEN 'MATERIALIZED VIEW'
+        WHEN cls.relkind = 'f' THEN 'FOREIGN TABLE'
+    END AS table_type,
+    ns.nspname AS table_schema,
+    descr.description AS table_comment
+FROM pg_class AS cls
+INNER JOIN pg_namespace AS ns ON cls.relnamespace = ns.oid
+LEFT JOIN pg_description AS descr ON cls.oid = descr.objoid AND descr.objsubid = 0
+WHERE ns.nspname NOT IN ('pg_catalog', 'information_schema')
+AND cls.relkind IN ('r', 'p', 'v', 'f', 'm')`
+
+	if cmdutil.SkipPartitions() {
+		// Exclude tables that are partitions of a partitioned table
+		baseQuery += `
+AND NOT EXISTS (
+    SELECT 1 FROM pg_inherits inh
+    INNER JOIN pg_class parent ON inh.inhparent = parent.oid
+    WHERE inh.inhrelid = cls.oid
+    AND parent.relkind = 'p'
+)`
+		cmdutil.Verbosef("Skipping table partitions")
+	}
+
+	baseQuery += `
+ORDER BY oid`
+	return baseQuery
 }
 
 func detectFullTableName(name string, searchPaths, fullTableNames []string) (_ string, err error) {
