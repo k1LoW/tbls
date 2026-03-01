@@ -1,4 +1,4 @@
-package version
+package version //nolint:revive
 
 // Name for this.
 const Name string = "tbls"
