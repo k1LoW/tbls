@@ -176,7 +176,7 @@ func AnalyzeHTTPResource(dsn config.DSN) (_ *schema.Schema, err error) {
 		req.Header.Add(k, v)
 	}
 	client := &http.Client{Timeout: time.Duration(10) * time.Second}
-	resp, err := client.Do(req)
+	resp, err := client.Do(req) //nolint:gosec
 	if err != nil {
 		return nil, err
 	}

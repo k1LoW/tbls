@@ -64,7 +64,9 @@ func NewBigqueryClient(ctx context.Context, urlstr string) (*bigquery.Client, st
 	}
 
 	if os.Getenv("GOOGLE_APPLICATION_CREDENTIALS") == "" && os.Getenv("GOOGLE_APPLICATION_CREDENTIALS_JSON") != "" {
-		creds, err := google.CredentialsFromJSON(ctx, []byte(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS_JSON")), bigquery.Scope)
+		creds, err := google.CredentialsFromJSONWithTypeAndParams(ctx, []byte(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS_JSON")), google.ServiceAccount, google.CredentialsParams{
+			Scopes: []string{bigquery.Scope},
+		})
 		if err != nil {
 			return nil, "", "", err
 		}
@@ -136,7 +138,9 @@ func NewSpannerClient(ctx context.Context, urlstr string) (*cloudspanner.Client,
 	}
 
 	if os.Getenv("GOOGLE_APPLICATION_CREDENTIALS") == "" && os.Getenv("GOOGLE_APPLICATION_CREDENTIALS_JSON") != "" {
-		creds, err := google.CredentialsFromJSON(ctx, []byte(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS_JSON")), cloudspanner.Scope)
+		creds, err := google.CredentialsFromJSONWithTypeAndParams(ctx, []byte(os.Getenv("GOOGLE_APPLICATION_CREDENTIALS_JSON")), google.ServiceAccount, google.CredentialsParams{
+			Scopes: []string{cloudspanner.Scope},
+		})
 		if err != nil {
 			return nil, "", err
 		}

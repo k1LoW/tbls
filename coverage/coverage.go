@@ -1,4 +1,4 @@
-package coverage
+package coverage //nolint:revive
 
 import (
 	"math"
