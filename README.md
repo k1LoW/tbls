@@ -1067,9 +1067,27 @@ templates:
   md:
     index: 'templates/index.md.tmpl'
     table: 'templates/table.md.tmpl'
+    enum: 'templates/enum.md.tmpl'
 ```
 
 A good starting point to design your own template is to modify a copy the default ones for [Dot](output/dot/templates), [PlantUML](output/plantuml/templates) and [markdown](output/md/templates).
+
+**Custom Output Paths:** You can also customize where files are generated using `outputPaths`:
+
+```yaml
+outputPaths:
+  md:
+    index: "README.md"
+    table: "{{.Name}}.md"
+    viewpoint: "viewpoint-{{.Index}}.md" 
+    enum: "" # Disabled by default.
+  er:
+    schema: "schema.{{.Format}}"
+    table: "{{.Name}}.{{.Format}}"
+    viewpoint: "viewpoint-{{.Index}}.{{.Format}}"
+```
+
+Set a path to empty string (`""`) to disable generation for that file type. Template variables like `{{.Name}}`, `{{.ShortName}}`, and `{{.Index}}` are supported for dynamic naming. The `{{.ShortName}}` field contains the table name without the schema prefix (e.g., "users" instead of "public.users").
 
 ### Required Version
 
