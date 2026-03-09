@@ -53,6 +53,10 @@ var outCmd = &cobra.Command{
 	Short: "analyzes a database and output",
 	Long:  `'tbls out' analyzes a database and output.`,
 	RunE: func(_ *cobra.Command, args []string) error {
+		cmdutil.SetVerbose(verbose)
+		cmdutil.SetSkipPartitions(skipPartitions)
+		cmdutil.Verbosef("Starting tbls out")
+
 		if allow, err := cmdutil.IsAllowedToExecute(when); !allow || err != nil {
 			if err != nil {
 				return err
@@ -60,6 +64,7 @@ var outCmd = &cobra.Command{
 			return nil
 		}
 
+		cmdutil.Verbosef("Loading configuration")
 		c, err := config.New()
 		if err != nil {
 			return err
@@ -168,4 +173,6 @@ func init() {
 	outCmd.Flags().StringSliceVarP(&labels, "label", "", []string{}, "table labels to be included")
 	outCmd.Flags().IntVarP(&distance, "distance", "", 0, "distance between related tables to be displayed")
 	outCmd.Flags().StringVarP(&when, "when", "", "", "command execute condition")
+	outCmd.Flags().BoolVarP(&verbose, "verbose", "v", false, "verbose output")
+	outCmd.Flags().BoolVarP(&skipPartitions, "skip-partitions", "", false, "skip table partitions (PostgreSQL)")
 }
