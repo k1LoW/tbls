@@ -1,5 +1,15 @@
 # Changelog
 
+## [v1.93.0](https://github.com/k1LoW/tbls/compare/v1.92.3...v1.93.0) - 2026-03-19
+### New Features 🎉
+- Add fts5 support by @zxckaneki666 in https://github.com/k1LoW/tbls/pull/791
+### Other Changes
+- chore(deps): bump filippo.io/edwards25519 from 1.1.0 to 1.1.1 by @dependabot[bot] in https://github.com/k1LoW/tbls/pull/803
+- chore(deps): bump the dependencies group with 19 updates by @dependabot[bot] in https://github.com/k1LoW/tbls/pull/805
+- fix: resolve golangci-lint errors (gosec, revive, staticcheck) by @k1LoW in https://github.com/k1LoW/tbls/pull/806
+- chore(deps): bump goreleaser/goreleaser-action from 6 to 7 in the dependencies group by @dependabot[bot] in https://github.com/k1LoW/tbls/pull/804
+- chore(deps): bump google.golang.org/grpc from 1.78.0 to 1.79.3 by @dependabot[bot] in https://github.com/k1LoW/tbls/pull/807
+
 ## [v1.92.3](https://github.com/k1LoW/tbls/compare/v1.92.2...v1.92.3) - 2026-01-07
 ### Fix bug 🐛
 - Fix databricks top level arrays by @Ewan-Keith in https://github.com/k1LoW/tbls/pull/794
