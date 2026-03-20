@@ -1,5 +1,7 @@
 # Changelog
 
+## [v1.93.1](https://github.com/k1LoW/tbls/compare/v1.93.0...v1.93.1) - 2026-03-20
+
 ## [v1.93.0](https://github.com/k1LoW/tbls/compare/v1.92.3...v1.93.0) - 2026-03-19
 ### New Features 🎉
 - Add fts5 support by @zxckaneki666 in https://github.com/k1LoW/tbls/pull/791
