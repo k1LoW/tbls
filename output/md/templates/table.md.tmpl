@@ -1,5 +1,7 @@
 # {{ .Table.Name }}
 
+{{- if or (ne .Table.Comment "") .Table.Def }}
+
 ## {{ "Description" | lookup }}
 {{- if ne .Table.Comment "" }}
 
@@ -16,6 +18,7 @@
 
 </details>
 
+{{- end }}
 {{- end }}
 {{- if ne (len .Table.Labels) 0 }}
 
