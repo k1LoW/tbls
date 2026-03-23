@@ -2,7 +2,7 @@
 
 ## Labels
 
-`dg_data_confidentiality:public` `dg_data_context:metadata` `dg_data_source:public`
+`dataplex-data-documentation-published-location:us-central1` `dataplex-data-documentation-published-project:bigquery-public-data` `dataplex-data-documentation-published-scan:a0c3ac0c2-8f37-46ed-a670-86644ab8b21e` `dg_data_confidentiality:public` `dg_data_context:metadata` `dg_data_source:public`
 
 ## Tables
 
