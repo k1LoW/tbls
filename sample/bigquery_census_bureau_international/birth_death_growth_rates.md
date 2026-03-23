@@ -1,7 +1,5 @@
 # birth_death_growth_rates
 
-## Description
-
 ## Labels
 
 `freebqcovid:`

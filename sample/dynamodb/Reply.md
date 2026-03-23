@@ -1,7 +1,5 @@
 # Reply
 
-## Description
-
 ## Attributes
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |

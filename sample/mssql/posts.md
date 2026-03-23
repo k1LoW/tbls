@@ -1,7 +1,5 @@
 # posts
 
-## Description
-
 ## Labels
 
 `green` `red` `blue`

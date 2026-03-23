@@ -1,7 +1,5 @@
 # mortality_life_expectancy
 
-## Description
-
 ## Labels
 
 `freebqcovid:`
