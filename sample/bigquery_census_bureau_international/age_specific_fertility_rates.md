@@ -1,7 +1,5 @@
 # age_specific_fertility_rates
 
-## Description
-
 ## Labels
 
 `freebqcovid:`
