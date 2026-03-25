@@ -1,5 +1,9 @@
 # Changelog
 
+## [v1.94.0](https://github.com/k1LoW/tbls/compare/v1.93.0...v1.94.0) - 2026-03-25
+### Breaking Changes 🛠
+- fix: hide Description header when table has no comment or definition by @KeitaShimura in https://github.com/k1LoW/tbls/pull/810
+
 ## [v1.93.0](https://github.com/k1LoW/tbls/compare/v1.92.3...v1.93.0) - 2026-03-19
 ### New Features 🎉
 - Add fts5 support by @zxckaneki666 in https://github.com/k1LoW/tbls/pull/791
