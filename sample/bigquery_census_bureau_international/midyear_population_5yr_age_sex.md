@@ -1,7 +1,5 @@
 # midyear_population_5yr_age_sex
 
-## Description
-
 ## Labels
 
 `freebqcovid:`

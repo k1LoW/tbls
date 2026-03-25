@@ -1,7 +1,5 @@
 # Thread
 
-## Description
-
 ## Attributes
 
 | Name | Type | Default | Nullable | Children | Parents | Comment |

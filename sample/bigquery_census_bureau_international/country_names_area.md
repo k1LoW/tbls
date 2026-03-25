@@ -1,7 +1,5 @@
 # country_names_area
 
-## Description
-
 ## Labels
 
 `freebqcovid:`
