@@ -95,3 +95,8 @@ CREATE TABLE `hyphen-table` (
 CREATE TRIGGER update_posts_updated BEFORE UPDATE ON posts
   FOR EACH ROW
   SET NEW.updated = CURRENT_TIMESTAMP();
+
+CREATE TABLE other_users (
+  user_id int NOT NULL,
+  CONSTRAINT other_user_fk FOREIGN KEY (user_id) REFERENCES testdb.users (id)
+);
