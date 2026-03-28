@@ -18,6 +18,7 @@ import (
 	"github.com/k1LoW/errors"
 	"github.com/k1LoW/ghfs"
 	"github.com/k1LoW/go-github-client/v67/factory"
+	"github.com/k1LoW/tbls/cmdutil"
 	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/drivers"
 	"github.com/k1LoW/tbls/drivers/clickhouse"
@@ -109,6 +110,7 @@ func Analyze(dsn config.DSN) (_ *schema.Schema, err error) {
 		urlstr = u.String()
 	}
 
+	cmdutil.Verbosef("Opening database connection")
 	db, err := dburl.Open(urlstr)
 	if err != nil {
 		return nil, errors.WithStack(err)
@@ -116,9 +118,11 @@ func Analyze(dsn config.DSN) (_ *schema.Schema, err error) {
 	defer func() {
 		_ = db.Close()
 	}()
+	cmdutil.Verbosef("Pinging database")
 	if err := db.Ping(); err != nil {
 		return nil, errors.WithStack(err)
 	}
+	cmdutil.Verbosef("Database connection established")
 
 	var driver drivers.Driver
 
@@ -155,10 +159,12 @@ func Analyze(dsn config.DSN) (_ *schema.Schema, err error) {
 	default:
 		return s, fmt.Errorf("unsupported driver '%s'", u.Driver)
 	}
+	cmdutil.Verbosef("Running driver analysis for %s", u.Driver)
 	err = driver.Analyze(s)
 	if err != nil {
 		return nil, err
 	}
+	cmdutil.Verbosef("Driver analysis complete")
 	return s, nil
 }
 
