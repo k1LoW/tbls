@@ -41,8 +41,28 @@ var supportDriversWithDburl = []string{
 	"clickhouse",
 }
 
+// AnalyzeOption configures Analyze.
+type AnalyzeOption func(*analyzeOptions)
+
+type analyzeOptions struct {
+	tableExcludes []string
+}
+
+// WithTableExcludes hints to filterer-capable drivers to push down the
+// given exclude patterns at the query stage. Patterns use the same glob
+// syntax as the --exclude flag.
+func WithTableExcludes(patterns []string) AnalyzeOption {
+	return func(o *analyzeOptions) {
+		o.tableExcludes = patterns
+	}
+}
+
 // Analyze database.
-func Analyze(dsn config.DSN) (_ *schema.Schema, err error) {
+func Analyze(dsn config.DSN, analyzeOpts ...AnalyzeOption) (_ *schema.Schema, err error) {
+	ao := &analyzeOptions{}
+	for _, opt := range analyzeOpts {
+		opt(ao)
+	}
 	defer func() {
 		err = errors.WithStack(err)
 	}()
@@ -154,6 +174,9 @@ func Analyze(dsn config.DSN) (_ *schema.Schema, err error) {
 		driver = clickhouse.New(db)
 	default:
 		return s, fmt.Errorf("unsupported driver '%s'", u.Driver)
+	}
+	if f, ok := driver.(drivers.TableFilterer); ok && len(ao.tableExcludes) > 0 {
+		f.SetTableExcludes(ao.tableExcludes)
 	}
 	err = driver.Analyze(s)
 	if err != nil {

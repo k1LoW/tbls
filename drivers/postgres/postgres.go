@@ -8,7 +8,6 @@ import (
 
 	"github.com/aquasecurity/go-version/pkg/version"
 	"github.com/k1LoW/errors"
-	"github.com/k1LoW/tbls/cmdutil"
 	"github.com/k1LoW/tbls/ddl"
 	"github.com/k1LoW/tbls/dict"
 	"github.com/k1LoW/tbls/schema"
@@ -20,8 +19,9 @@ var reVersion = regexp.MustCompile(`([0-9]+(\.[0-9]+)*)`)
 
 // Postgres struct.
 type Postgres struct {
-	db     *sql.DB
-	rsMode bool
+	db            *sql.DB
+	rsMode        bool
+	tableExcludes []string
 }
 
 // New return new Postgres.
@@ -30,6 +30,14 @@ func New(db *sql.DB) *Postgres {
 		db:     db,
 		rsMode: false,
 	}
+}
+
+// SetTableExcludes pushes table-name exclude patterns into the table
+// listing query. Patterns use the same glob syntax as the --exclude flag;
+// only patterns that translate cleanly to SQL LIKE are pushed down, the
+// rest fall through to schema.Filter post-fetch.
+func (p *Postgres) SetTableExcludes(patterns []string) {
+	p.tableExcludes = patterns
 }
 
 // Analyze PostgreSQL database schema.
@@ -332,8 +340,8 @@ ORDER BY tgrelid
 
 		dn, err := detectFullTableName(strParentTable, s.Driver.Meta.SearchPaths, fullTableNames)
 		if err != nil {
-			if cmdutil.SkipPartitions() {
-				// Skip relations referencing tables not in our list (likely skipped partitions)
+			if len(p.tableExcludes) > 0 {
+				// Parent table was filtered out at the query stage; drop the relation.
 				continue
 			}
 			return err
@@ -341,7 +349,7 @@ ORDER BY tgrelid
 		strParentTable = dn
 		parentTable, err := s.FindTableByName(strParentTable)
 		if err != nil {
-			if cmdutil.SkipPartitions() {
+			if len(p.tableExcludes) > 0 {
 				continue
 			}
 			return err
@@ -726,20 +734,47 @@ LEFT JOIN pg_description AS descr ON cls.oid = descr.objoid AND descr.objsubid =
 WHERE ns.nspname NOT IN ('pg_catalog', 'information_schema')
 AND cls.relkind IN ('r', 'p', 'v', 'f', 'm')`
 
-	if cmdutil.SkipPartitions() {
-		// Exclude tables that are partitions of a partitioned table
-		baseQuery += `
-AND NOT EXISTS (
-    SELECT 1 FROM pg_inherits inh
-    INNER JOIN pg_class parent ON inh.inhparent = parent.oid
-    WHERE inh.inhrelid = cls.oid
-    AND parent.relkind = 'p'
-)`
+	for _, like := range tableExcludeLikes(p.tableExcludes) {
+		baseQuery += fmt.Sprintf("\nAND cls.relname NOT LIKE %s ESCAPE '\\' AND (ns.nspname || '.' || cls.relname) NOT LIKE %s ESCAPE '\\'", like, like)
 	}
 
 	baseQuery += `
 ORDER BY oid`
 	return baseQuery
+}
+
+// tableExcludeLikes converts each glob pattern that contains only `*` and
+// literal characters into a SQL-quoted LIKE pattern (with `_` and `%`
+// escaped). Patterns containing other wildcard characters are dropped;
+// schema.Filter will still exclude those tables post-fetch.
+func tableExcludeLikes(patterns []string) []string {
+	var out []string
+	for _, p := range patterns {
+		like, ok := globToLike(p)
+		if !ok {
+			continue
+		}
+		out = append(out, "'"+strings.ReplaceAll(like, "'", "''")+"'")
+	}
+	return out
+}
+
+func globToLike(pattern string) (string, bool) {
+	var b strings.Builder
+	for _, r := range pattern {
+		switch r {
+		case '*':
+			b.WriteByte('%')
+		case '?':
+			return "", false
+		case '%', '_', '\\':
+			b.WriteByte('\\')
+			b.WriteRune(r)
+		default:
+			b.WriteRune(r)
+		}
+	}
+	return b.String(), true
 }
 
 func detectFullTableName(name string, searchPaths, fullTableNames []string) (_ string, err error) {

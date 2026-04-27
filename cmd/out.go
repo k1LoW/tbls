@@ -53,8 +53,6 @@ var outCmd = &cobra.Command{
 	Short: "analyzes a database and output",
 	Long:  `'tbls out' analyzes a database and output.`,
 	RunE: func(_ *cobra.Command, args []string) error {
-		cmdutil.SetSkipPartitions(skipPartitions)
-
 		if allow, err := cmdutil.IsAllowedToExecute(when); !allow || err != nil {
 			if err != nil {
 				return err
@@ -170,5 +168,4 @@ func init() {
 	outCmd.Flags().StringSliceVarP(&labels, "label", "", []string{}, "table labels to be included")
 	outCmd.Flags().IntVarP(&distance, "distance", "", 0, "distance between related tables to be displayed")
 	outCmd.Flags().StringVarP(&when, "when", "", "", "command execute condition")
-	outCmd.Flags().BoolVarP(&skipPartitions, "skip-partitions", "", false, "skip table partitions (PostgreSQL)")
 }

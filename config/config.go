@@ -549,6 +549,17 @@ func (c *Config) MergeAdditionalData(s *schema.Schema) error {
 	return nil
 }
 
+// PushDownableTableExcludes returns the exclude patterns that are safe to
+// push down to the driver as a query-level filter. When include or label
+// filters are in play, distance traversal can re-pull excluded tables, so
+// in that case we let the post-fetch schema.Filter handle everything.
+func (c *Config) PushDownableTableExcludes() []string {
+	if len(c.Include) > 0 || len(c.includeLabels) > 0 {
+		return nil
+	}
+	return c.Exclude
+}
+
 // FilterTables filter tables from schema.Schema using include: and exclude: and includeLabels.
 func (c *Config) FilterTables(s *schema.Schema) error {
 	return s.Filter(&schema.FilterOption{
