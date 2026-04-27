@@ -38,8 +38,9 @@ import (
 )
 
 var (
-	withoutER bool
-	rmDist    bool
+	withoutER      bool
+	rmDist         bool
+	skipPartitions bool
 )
 
 // docCmd represents the doc command.
@@ -48,6 +49,8 @@ var docCmd = &cobra.Command{
 	Short: "document a database",
 	Long:  `'tbls doc' analyzes a database and generate document in GitHub Friendly Markdown format.`,
 	RunE: func(_ *cobra.Command, args []string) error {
+		cmdutil.SetSkipPartitions(skipPartitions)
+
 		if allow, err := cmdutil.IsAllowedToExecute(when); !allow || err != nil {
 			if err != nil {
 				return err
@@ -177,6 +180,7 @@ func init() {
 	docCmd.Flags().StringSliceVarP(&includes, "include", "", []string{}, "tables to include")
 	docCmd.Flags().StringSliceVarP(&excludes, "exclude", "", []string{}, "tables to exclude")
 	docCmd.Flags().StringSliceVarP(&labels, "label", "", []string{}, "table labels to be included")
+	docCmd.Flags().BoolVarP(&skipPartitions, "skip-partitions", "", false, "skip table partitions (PostgreSQL)")
 
 	if err := docCmd.MarkZshCompPositionalArgumentFile(2); err != nil {
 		_, _ = fmt.Fprintf(os.Stderr, "%s\n", err)

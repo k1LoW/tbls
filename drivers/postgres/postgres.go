@@ -8,6 +8,7 @@ import (
 
 	"github.com/aquasecurity/go-version/pkg/version"
 	"github.com/k1LoW/errors"
+	"github.com/k1LoW/tbls/cmdutil"
 	"github.com/k1LoW/tbls/ddl"
 	"github.com/k1LoW/tbls/dict"
 	"github.com/k1LoW/tbls/schema"
@@ -98,24 +99,7 @@ func (p *Postgres) Analyze(s *schema.Schema) (err error) {
 	fullTableNames := []string{}
 
 	// tables
-	tableRows, err := p.db.Query(`
-SELECT
-    cls.oid AS oid,
-    cls.relname AS table_name,
-    CASE
-        WHEN cls.relkind IN ('r', 'p') THEN 'BASE TABLE'
-        WHEN cls.relkind = 'v' THEN 'VIEW'
-        WHEN cls.relkind = 'm' THEN 'MATERIALIZED VIEW'
-        WHEN cls.relkind = 'f' THEN 'FOREIGN TABLE'
-    END AS table_type,
-    ns.nspname AS table_schema,
-    descr.description AS table_comment
-FROM pg_class AS cls
-INNER JOIN pg_namespace AS ns ON cls.relnamespace = ns.oid
-LEFT JOIN pg_description AS descr ON cls.oid = descr.objoid AND descr.objsubid = 0
-WHERE ns.nspname NOT IN ('pg_catalog', 'information_schema')
-AND cls.relkind IN ('r', 'p', 'v', 'f', 'm')
-ORDER BY oid`)
+	tableRows, err := p.db.Query(p.queryForTables())
 	if err != nil {
 		return errors.WithStack(err)
 	}
@@ -339,11 +323,30 @@ ORDER BY tgrelid
 	s.Tables = tables
 
 	// Relations
+	validRelations := []*schema.Relation{}
 	for _, r := range relations {
 		strColumns, strParentTable, strParentColumns, err := parseFK(r.Def)
 		if err != nil {
 			return err
 		}
+
+		dn, err := detectFullTableName(strParentTable, s.Driver.Meta.SearchPaths, fullTableNames)
+		if err != nil {
+			if cmdutil.SkipPartitions() {
+				// Skip relations referencing tables not in our list (likely skipped partitions)
+				continue
+			}
+			return err
+		}
+		strParentTable = dn
+		parentTable, err := s.FindTableByName(strParentTable)
+		if err != nil {
+			if cmdutil.SkipPartitions() {
+				continue
+			}
+			return err
+		}
+
 		for _, c := range strColumns {
 			column, err := r.Table.FindColumnByName(c)
 			if err != nil {
@@ -353,15 +356,6 @@ ORDER BY tgrelid
 			column.ParentRelations = append(column.ParentRelations, r)
 		}
 
-		dn, err := detectFullTableName(strParentTable, s.Driver.Meta.SearchPaths, fullTableNames)
-		if err != nil {
-			return err
-		}
-		strParentTable = dn
-		parentTable, err := s.FindTableByName(strParentTable)
-		if err != nil {
-			return err
-		}
 		r.ParentTable = parentTable
 		for _, c := range strParentColumns {
 			column, err := parentTable.FindColumnByName(c)
@@ -371,9 +365,10 @@ ORDER BY tgrelid
 			r.ParentColumns = append(r.ParentColumns, column)
 			column.ChildRelations = append(column.ChildRelations, r)
 		}
+		validRelations = append(validRelations, r)
 	}
 
-	s.Relations = relations
+	s.Relations = validRelations
 
 	// referenced tables of view
 	for _, t := range s.Tables {
@@ -710,6 +705,41 @@ LEFT JOIN pg_description AS descr ON idx.indexrelid = descr.objoid
 WHERE idx.indrelid = $1::oid
 GROUP BY cls.relname, idx.indexrelid, descr.description
 ORDER BY idx.indexrelid`
+}
+
+func (p *Postgres) queryForTables() string {
+	baseQuery := `
+SELECT
+    cls.oid AS oid,
+    cls.relname AS table_name,
+    CASE
+        WHEN cls.relkind IN ('r', 'p') THEN 'BASE TABLE'
+        WHEN cls.relkind = 'v' THEN 'VIEW'
+        WHEN cls.relkind = 'm' THEN 'MATERIALIZED VIEW'
+        WHEN cls.relkind = 'f' THEN 'FOREIGN TABLE'
+    END AS table_type,
+    ns.nspname AS table_schema,
+    descr.description AS table_comment
+FROM pg_class AS cls
+INNER JOIN pg_namespace AS ns ON cls.relnamespace = ns.oid
+LEFT JOIN pg_description AS descr ON cls.oid = descr.objoid AND descr.objsubid = 0
+WHERE ns.nspname NOT IN ('pg_catalog', 'information_schema')
+AND cls.relkind IN ('r', 'p', 'v', 'f', 'm')`
+
+	if cmdutil.SkipPartitions() {
+		// Exclude tables that are partitions of a partitioned table
+		baseQuery += `
+AND NOT EXISTS (
+    SELECT 1 FROM pg_inherits inh
+    INNER JOIN pg_class parent ON inh.inhparent = parent.oid
+    WHERE inh.inhrelid = cls.oid
+    AND parent.relkind = 'p'
+)`
+	}
+
+	baseQuery += `
+ORDER BY oid`
+	return baseQuery
 }
 
 func detectFullTableName(name string, searchPaths, fullTableNames []string) (_ string, err error) {
