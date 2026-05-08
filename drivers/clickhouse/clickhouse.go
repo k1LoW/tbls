@@ -151,6 +151,8 @@ WHERE database = ?
 	}
 
 	// columns
+	// Order by table, position so columns appear in declaration order;
+	// system.columns has no guaranteed default ordering.
 	columnRows, err := ch.db.Query(`
 SELECT
     table,
@@ -165,7 +167,7 @@ SELECT
     comment
 FROM system.columns
 WHERE database = ?
-ORDER BY table
+ORDER BY table, position
 `, s.Name)
 	if err != nil {
 		return errors.WithStack(err)
