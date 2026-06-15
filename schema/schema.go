@@ -94,16 +94,17 @@ func ViewpointName(id string, index int) string {
 }
 
 // FindViewpoint finds a viewpoint by id, falling back to index when locator is a number.
-func (s *Schema) FindViewpoint(locator string) (*Viewpoint, error) {
-	for _, v := range s.Viewpoints {
+// It also returns the index of the viewpoint.
+func (s *Schema) FindViewpoint(locator string) (*Viewpoint, int, error) {
+	for i, v := range s.Viewpoints {
 		if v.ID != "" && v.ID == locator {
-			return v, nil
+			return v, i, nil
 		}
 	}
 	if index, err := strconv.Atoi(locator); err == nil && index >= 0 && index < len(s.Viewpoints) {
-		return s.Viewpoints[index], nil
+		return s.Viewpoints[index], index, nil
 	}
-	return nil, fmt.Errorf("viewpoint not found: %s", locator)
+	return nil, 0, fmt.Errorf("viewpoint not found: %s", locator)
 }
 
 // Index is the struct for database index.

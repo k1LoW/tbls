@@ -494,19 +494,20 @@ func TestFindViewpoint(t *testing.T) {
 		},
 	}
 	tests := []struct {
-		locator string
-		wantErr bool
-		want    string
+		locator   string
+		wantErr   bool
+		want      string
+		wantIndex int
 	}{
-		{"overview", false, "Overview"}, // by id
-		{"0", false, "Overview"},        // by index
-		{"1", false, "No ID"},           // by index
-		{"unknown", true, ""},           // unknown id and not a number
-		{"2", true, ""},                 // index out of range
-		{"-1", true, ""},                // negative index
+		{"overview", false, "Overview", 0}, // by id
+		{"0", false, "Overview", 0},         // by index
+		{"1", false, "No ID", 1},            // by index
+		{"unknown", true, "", 0},            // unknown id and not a number
+		{"2", true, "", 0},                  // index out of range
+		{"-1", true, "", 0},                 // negative index
 	}
 	for _, tt := range tests {
-		v, err := s.FindViewpoint(tt.locator)
+		v, index, err := s.FindViewpoint(tt.locator)
 		if tt.wantErr {
 			if err == nil {
 				t.Errorf("FindViewpoint(%q) expected error, got nil", tt.locator)
@@ -519,6 +520,9 @@ func TestFindViewpoint(t *testing.T) {
 		}
 		if v.Name != tt.want {
 			t.Errorf("FindViewpoint(%q) = %q, want %q", tt.locator, v.Name, tt.want)
+		}
+		if index != tt.wantIndex {
+			t.Errorf("FindViewpoint(%q) index = %d, want %d", tt.locator, index, tt.wantIndex)
 		}
 	}
 }

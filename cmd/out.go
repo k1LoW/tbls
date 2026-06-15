@@ -38,6 +38,7 @@ import (
 	"github.com/k1LoW/tbls/output/plantuml"
 	"github.com/k1LoW/tbls/output/xlsx"
 	"github.com/k1LoW/tbls/output/yaml"
+	"github.com/k1LoW/tbls/schema"
 	"github.com/spf13/cobra"
 )
 
@@ -80,11 +81,15 @@ var outCmd = &cobra.Command{
 			return err
 		}
 
+		var vp *schema.Viewpoint
+		var vpIndex int
 		if viewpoint != "" {
-			v, err := s.FindViewpoint(viewpoint)
+			v, i, err := s.FindViewpoint(viewpoint)
 			if err != nil {
 				return err
 			}
+			vp = v
+			vpIndex = i
 			s = v.Schema
 		}
 
@@ -131,6 +136,18 @@ var outCmd = &cobra.Command{
 			wr = file
 		} else {
 			wr = os.Stdout
+		}
+
+		// For Markdown, output the dedicated viewpoint document (ER + groups) instead of
+		// the plain filtered schema. The ER diagram is inlined as Mermaid so the single
+		// output file stays self-contained without a separate image file.
+		if vp != nil && format == "md" {
+			c.ER.Skip = false
+			c.ER.Format = "mermaid"
+			if err := md.New(c).OutputViewpoint(wr, vpIndex, vp); err != nil {
+				return err
+			}
+			return nil
 		}
 
 		if err := o.OutputSchema(wr, s); err != nil {

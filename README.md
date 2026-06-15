@@ -1168,6 +1168,12 @@ Output only the schema of a specific viewpoint by specifying its `id` (or index)
 $ tbls out -t svg --viewpoint comments-on-post -o comments-on-post.svg
 ```
 
+With `-t md`, the viewpoint document (including groups and the ER diagram inlined as Mermaid) is generated instead of a plain schema document.
+
+```console
+$ tbls out -t md --viewpoint comments-on-post -o comments-on-post.md
+```
+
 **JSON:**
 
 ```console
