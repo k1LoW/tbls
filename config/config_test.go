@@ -609,6 +609,8 @@ func TestValidateViewpointID(t *testing.T) {
 		{"id with slash", []Viewpoint{{ID: "../../pwned", Name: "A", Desc: "a"}}, true},
 		{"id with backslash", []Viewpoint{{ID: `a\b`, Name: "A", Desc: "a"}}, true},
 		{"id with nested slash", []Viewpoint{{ID: "a/b", Name: "A", Desc: "a"}}, true},
+		{"id collides with index-based name", []Viewpoint{{Name: "A", Desc: "a"}, {ID: "0", Name: "B", Desc: "b"}}, true},
+		{"id matching own index is fine", []Viewpoint{{ID: "0", Name: "A", Desc: "a"}, {Name: "B", Desc: "b"}}, false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
