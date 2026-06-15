@@ -1124,7 +1124,7 @@ viewpoints:
 
 ```
 
-`id` is optional. When set, it is used as the suffix of the viewpoint output file name (e.g. `viewpoint-comments-on-post.md`) instead of the index, so the file name stays stable regardless of the viewpoint order. `id` must be unique. It is also used to specify the viewpoint in `tbls out --viewpoint`.
+`id` is optional. When set, it is used as the suffix of the viewpoint output file name (e.g. `viewpoint-comments-on-post.md`) instead of the index, so the file name stays stable regardless of the viewpoint order. `id` must be unique and must not contain path separators (`/` or `\`). It is also used to specify the viewpoint in `tbls out --viewpoint`.
 
 ## Output formats
 

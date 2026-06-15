@@ -331,6 +331,11 @@ func (c *Config) validate() error {
 			return fmt.Errorf("viewpoints[%d] description is required", i)
 		}
 		if v.ID != "" {
+			// id is embedded into output file paths (e.g. viewpoint-<id>.md), so path
+			// separators would allow writing outside the intended output directory.
+			if strings.ContainsAny(v.ID, `/\`) {
+				return fmt.Errorf("viewpoints[%d] id '%s' must not contain path separators ('/' or '\\')", i, v.ID)
+			}
 			if j, ok := seenViewpointIDs[v.ID]; ok {
 				return fmt.Errorf("viewpoints[%d] id '%s' is duplicated with viewpoints[%d]", i, v.ID, j)
 			}

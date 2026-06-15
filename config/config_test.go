@@ -596,7 +596,7 @@ func TestValidate(t *testing.T) {
 	}
 }
 
-func TestValidateViewpointIDUniqueness(t *testing.T) {
+func TestValidateViewpointID(t *testing.T) {
 	tests := []struct {
 		name       string
 		viewpoints []Viewpoint
@@ -606,6 +606,9 @@ func TestValidateViewpointIDUniqueness(t *testing.T) {
 		{"unique ids", []Viewpoint{{ID: "a", Name: "A", Desc: "a"}, {ID: "b", Name: "B", Desc: "b"}}, false},
 		{"empty ids are not duplicated", []Viewpoint{{Name: "A", Desc: "a"}, {Name: "B", Desc: "b"}, {Name: "C", Desc: "c"}}, false},
 		{"duplicated ids", []Viewpoint{{ID: "a", Name: "A", Desc: "a"}, {ID: "a", Name: "B", Desc: "b"}}, true},
+		{"id with slash", []Viewpoint{{ID: "../../pwned", Name: "A", Desc: "a"}}, true},
+		{"id with backslash", []Viewpoint{{ID: `a\b`, Name: "A", Desc: "a"}}, true},
+		{"id with nested slash", []Viewpoint{{ID: "a/b", Name: "A", Desc: "a"}}, true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
