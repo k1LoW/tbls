@@ -322,12 +322,19 @@ func (c *Config) validate() error {
 	if !lo.Contains(SupportERFormat, c.ER.Format) {
 		return fmt.Errorf("unsupported ER format: %s", c.ER.Format)
 	}
+	seenViewpointIDs := map[string]int{}
 	for i, v := range c.Viewpoints {
 		if v.Name == "" {
 			return fmt.Errorf("viewpoints[%d] name is required", i)
 		}
 		if v.Desc == "" {
 			return fmt.Errorf("viewpoints[%d] description is required", i)
+		}
+		if v.ID != "" {
+			if j, ok := seenViewpointIDs[v.ID]; ok {
+				return fmt.Errorf("viewpoints[%d] id '%s' is duplicated with viewpoints[%d]", i, v.ID, j)
+			}
+			seenViewpointIDs[v.ID] = i
 		}
 		for j, g := range v.Groups {
 			if g.Name == "" {
@@ -492,6 +499,7 @@ func (c *Config) ModifySchema(s *schema.Schema) error {
 			tables = left
 		}
 		s.Viewpoints = s.Viewpoints.Merge(&schema.Viewpoint{
+			ID:       v.ID,
 			Name:     v.Name,
 			Desc:     v.Desc,
 			Labels:   v.Labels,
@@ -528,6 +536,7 @@ func (c *Config) ModifySchema(s *schema.Schema) error {
 			for _, tt := range ts {
 				tt.Viewpoints = append(tt.Viewpoints, &schema.TableViewpoint{
 					Index: vi,
+					ID:    v.ID,
 					Name:  v.Name,
 					Desc:  v.Desc,
 				})

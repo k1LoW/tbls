@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"sort"
+	"strconv"
 	"strings"
 
 	wildcard "github.com/IGLOU-EU/go-wildcard/v2"
@@ -52,6 +53,7 @@ func (labels Labels) Contains(name string) bool {
 
 // Viewpoint is the struct for viewpoint information.
 type Viewpoint struct {
+	ID       string            `json:"id,omitempty"`
 	Name     string            `json:"name"`
 	Desc     string            `json:"desc"`
 	Labels   []string          `json:"labels,omitempty"`
@@ -80,6 +82,28 @@ func (vs Viewpoints) Merge(in *Viewpoint) Viewpoints {
 		}
 	}
 	return append(vs, in)
+}
+
+// ViewpointName returns the basename (without extension) used for the viewpoint output file.
+// When id is set it is used to keep the name stable regardless of viewpoint order, otherwise the index is used.
+func ViewpointName(id string, index int) string {
+	if id != "" {
+		return fmt.Sprintf("viewpoint-%s", id)
+	}
+	return fmt.Sprintf("viewpoint-%d", index)
+}
+
+// FindViewpoint finds a viewpoint by id, falling back to index when locator is a number.
+func (s *Schema) FindViewpoint(locator string) (*Viewpoint, error) {
+	for _, v := range s.Viewpoints {
+		if v.ID != "" && v.ID == locator {
+			return v, nil
+		}
+	}
+	if index, err := strconv.Atoi(locator); err == nil && index >= 0 && index < len(s.Viewpoints) {
+		return s.Viewpoints[index], nil
+	}
+	return nil, fmt.Errorf("viewpoint not found: %s", locator)
 }
 
 // Index is the struct for database index.
@@ -130,6 +154,7 @@ type Column struct {
 
 type TableViewpoint struct {
 	Index int    `json:"index"`
+	ID    string `json:"id,omitempty"`
 	Name  string `json:"name"`
 	Desc  string `json:"desc"`
 }

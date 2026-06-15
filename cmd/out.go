@@ -42,9 +42,10 @@ import (
 )
 
 var (
-	format   string
-	outPath  string
-	distance int
+	format    string
+	outPath   string
+	distance  int
+	viewpoint string
 )
 
 // outCmd represents the doc command.
@@ -77,6 +78,14 @@ var outCmd = &cobra.Command{
 		s, err := getSchemaFromJSONorDSN(c)
 		if err != nil {
 			return err
+		}
+
+		if viewpoint != "" {
+			v, err := s.FindViewpoint(viewpoint)
+			if err != nil {
+				return err
+			}
+			s = v.Schema
 		}
 
 		var o output.Output
@@ -167,5 +176,6 @@ func init() {
 	outCmd.Flags().StringSliceVarP(&excludes, "exclude", "", []string{}, "tables to exclude")
 	outCmd.Flags().StringSliceVarP(&labels, "label", "", []string{}, "table labels to be included")
 	outCmd.Flags().IntVarP(&distance, "distance", "", 0, "distance between related tables to be displayed")
+	outCmd.Flags().StringVarP(&viewpoint, "viewpoint", "", "", "output only the schema of the specified viewpoint (by id, or by index)")
 	outCmd.Flags().StringVarP(&when, "when", "", "", "command execute condition")
 }

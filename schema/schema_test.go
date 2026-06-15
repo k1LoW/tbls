@@ -467,3 +467,58 @@ func TestViewpointsMerge(t *testing.T) {
 		}
 	})
 }
+
+func TestViewpointName(t *testing.T) {
+	tests := []struct {
+		id    string
+		index int
+		want  string
+	}{
+		{"", 0, "viewpoint-0"},
+		{"", 3, "viewpoint-3"},
+		{"overview", 0, "viewpoint-overview"},
+		{"概要", 1, "viewpoint-概要"},
+	}
+	for _, tt := range tests {
+		if got := ViewpointName(tt.id, tt.index); got != tt.want {
+			t.Errorf("ViewpointName(%q, %d) = %q, want %q", tt.id, tt.index, got, tt.want)
+		}
+	}
+}
+
+func TestFindViewpoint(t *testing.T) {
+	s := &Schema{
+		Viewpoints: Viewpoints{
+			&Viewpoint{ID: "overview", Name: "Overview"},
+			&Viewpoint{Name: "No ID"},
+		},
+	}
+	tests := []struct {
+		locator string
+		wantErr bool
+		want    string
+	}{
+		{"overview", false, "Overview"}, // by id
+		{"0", false, "Overview"},        // by index
+		{"1", false, "No ID"},           // by index
+		{"unknown", true, ""},           // unknown id and not a number
+		{"2", true, ""},                 // index out of range
+		{"-1", true, ""},                // negative index
+	}
+	for _, tt := range tests {
+		v, err := s.FindViewpoint(tt.locator)
+		if tt.wantErr {
+			if err == nil {
+				t.Errorf("FindViewpoint(%q) expected error, got nil", tt.locator)
+			}
+			continue
+		}
+		if err != nil {
+			t.Errorf("FindViewpoint(%q) unexpected error: %v", tt.locator, err)
+			continue
+		}
+		if v.Name != tt.want {
+			t.Errorf("FindViewpoint(%q) = %q, want %q", tt.locator, v.Name, tt.want)
+		}
+	}
+}
