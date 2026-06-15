@@ -478,6 +478,8 @@ func TestViewpointName(t *testing.T) {
 		{"", 3, "viewpoint-3"},
 		{"overview", 0, "viewpoint-overview"},
 		{"概要", 1, "viewpoint-概要"},
+		{"../../pwned", 2, "viewpoint-2"}, // path separators fall back to index
+		{`a\b`, 4, "viewpoint-4"},         // backslash falls back to index
 	}
 	for _, tt := range tests {
 		if got := ViewpointName(tt.id, tt.index); got != tt.want {

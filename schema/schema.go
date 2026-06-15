@@ -86,8 +86,10 @@ func (vs Viewpoints) Merge(in *Viewpoint) Viewpoints {
 
 // ViewpointName returns the basename (without extension) used for the viewpoint output file.
 // When id is set it is used to keep the name stable regardless of viewpoint order, otherwise the index is used.
+// Config validation rejects ids with path separators, but schemas loaded directly (e.g. json://) bypass it,
+// so fall back to the index-based name to keep the result safe to embed in file paths.
 func ViewpointName(id string, index int) string {
-	if id != "" {
+	if id != "" && !strings.ContainsAny(id, `/\`) {
 		return fmt.Sprintf("viewpoint-%s", id)
 	}
 	return fmt.Sprintf("viewpoint-%d", index)
