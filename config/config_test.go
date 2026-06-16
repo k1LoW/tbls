@@ -596,6 +596,84 @@ func TestValidate(t *testing.T) {
 	}
 }
 
+func TestValidateViewpointID(t *testing.T) {
+	tests := []struct {
+		name       string
+		viewpoints []Viewpoint
+		wantErr    bool
+	}{
+		{"no id", []Viewpoint{{Name: "A", Desc: "a"}, {Name: "B", Desc: "b"}}, false},
+		{"unique ids", []Viewpoint{{ID: "a", Name: "A", Desc: "a"}, {ID: "b", Name: "B", Desc: "b"}}, false},
+		{"empty ids are not duplicated", []Viewpoint{{Name: "A", Desc: "a"}, {Name: "B", Desc: "b"}, {Name: "C", Desc: "c"}}, false},
+		{"duplicated ids", []Viewpoint{{ID: "a", Name: "A", Desc: "a"}, {ID: "a", Name: "B", Desc: "b"}}, true},
+		{"id with slash", []Viewpoint{{ID: "../../pwned", Name: "A", Desc: "a"}}, true},
+		{"id with backslash", []Viewpoint{{ID: `a\b`, Name: "A", Desc: "a"}}, true},
+		{"id with nested slash", []Viewpoint{{ID: "a/b", Name: "A", Desc: "a"}}, true},
+		{"id collides with index-based name", []Viewpoint{{Name: "A", Desc: "a"}, {ID: "0", Name: "B", Desc: "b"}}, true},
+		{"id matching own index is fine", []Viewpoint{{ID: "0", Name: "A", Desc: "a"}, {Name: "B", Desc: "b"}}, false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			c, err := New()
+			if err != nil {
+				t.Fatal(err)
+			}
+			c.Viewpoints = tt.viewpoints
+			if err := c.validate(); err != nil {
+				if !tt.wantErr {
+					t.Errorf("got error: %s", err)
+				}
+				return
+			}
+			if tt.wantErr {
+				t.Error("want error")
+			}
+		})
+	}
+}
+
+func TestModifySchemaViewpointID(t *testing.T) {
+	c, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	c.Viewpoints = []Viewpoint{
+		{ID: "users-overview", Name: "Users", Desc: "users overview", Tables: []string{"users"}},
+		{Name: "Posts", Desc: "posts", Tables: []string{"posts"}},
+	}
+	s := newTestSchemaViaJSON(t)
+	if err := c.ModifySchema(s); err != nil {
+		t.Fatal(err)
+	}
+
+	// ID is propagated to schema viewpoint.
+	if got := s.Viewpoints[0].ID; got != "users-overview" {
+		t.Errorf("viewpoint[0].ID = %q, want %q", got, "users-overview")
+	}
+	if got := s.Viewpoints[1].ID; got != "" {
+		t.Errorf("viewpoint[1].ID = %q, want empty", got)
+	}
+
+	// ID is propagated to table viewpoint.
+	tb, err := s.FindTableByName("users")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var found bool
+	for _, tv := range tb.Viewpoints {
+		if tv.Name != "Users" {
+			continue
+		}
+		found = true
+		if tv.ID != "users-overview" {
+			t.Errorf("table viewpoint ID = %q, want %q", tv.ID, "users-overview")
+		}
+	}
+	if !found {
+		t.Error("users table viewpoint 'Users' not found")
+	}
+}
+
 func TestCheckVersion(t *testing.T) {
 	tests := []struct {
 		v    string

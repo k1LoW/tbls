@@ -142,7 +142,7 @@ func Output(s *schema.Schema, c *config.Config, force bool) (e error) {
 
 	// viewpoints
 	for i, v := range s.Viewpoints {
-		fn := fmt.Sprintf("viewpoint-%d.%s", i, erFormat)
+		fn := fmt.Sprintf("%s.%s", schema.ViewpointName(v.ID, i), erFormat)
 		fmt.Printf("%s\n", filepath.Join(outputPath, fn))
 		f, err := os.OpenFile(filepath.Join(fullPath, fn), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644) // #nosec
 		if err != nil {
@@ -227,8 +227,8 @@ func outputErExists(s *schema.Schema, erFormat, path string) bool {
 		}
 	}
 	// viewpoints
-	for i := range s.Viewpoints {
-		fn := fmt.Sprintf("viewpoint-%d.%s", i, erFormat)
+	for i, v := range s.Viewpoints {
+		fn := fmt.Sprintf("%s.%s", schema.ViewpointName(v.ID, i), erFormat)
 		if _, err := os.Lstat(filepath.Join(path, fn)); err == nil {
 			return true
 		}

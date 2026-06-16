@@ -38,13 +38,15 @@ import (
 	"github.com/k1LoW/tbls/output/plantuml"
 	"github.com/k1LoW/tbls/output/xlsx"
 	"github.com/k1LoW/tbls/output/yaml"
+	"github.com/k1LoW/tbls/schema"
 	"github.com/spf13/cobra"
 )
 
 var (
-	format   string
-	outPath  string
-	distance int
+	format    string
+	outPath   string
+	distance  int
+	viewpoint string
 )
 
 // outCmd represents the doc command.
@@ -77,6 +79,18 @@ var outCmd = &cobra.Command{
 		s, err := getSchemaFromJSONorDSN(c)
 		if err != nil {
 			return err
+		}
+
+		var vp *schema.Viewpoint
+		var vpIndex int
+		if viewpoint != "" {
+			v, i, err := s.FindViewpoint(viewpoint)
+			if err != nil {
+				return err
+			}
+			vp = v
+			vpIndex = i
+			s = v.Schema
 		}
 
 		var o output.Output
@@ -124,6 +138,18 @@ var outCmd = &cobra.Command{
 			wr = os.Stdout
 		}
 
+		// For Markdown, output the dedicated viewpoint document (ER + groups) instead of
+		// the plain filtered schema. The ER diagram is inlined as Mermaid so the single
+		// output file stays self-contained without a separate image file.
+		if vp != nil && format == "md" {
+			c.ER.Skip = false
+			c.ER.Format = "mermaid"
+			if err := md.New(c).OutputViewpoint(wr, vpIndex, vp); err != nil {
+				return err
+			}
+			return nil
+		}
+
 		if err := o.OutputSchema(wr, s); err != nil {
 			return err
 		}
@@ -167,5 +193,6 @@ func init() {
 	outCmd.Flags().StringSliceVarP(&excludes, "exclude", "", []string{}, "tables to exclude")
 	outCmd.Flags().StringSliceVarP(&labels, "label", "", []string{}, "table labels to be included")
 	outCmd.Flags().IntVarP(&distance, "distance", "", 0, "distance between related tables to be displayed")
+	outCmd.Flags().StringVarP(&viewpoint, "viewpoint", "", "", "output only the specified viewpoint (by id, or by index); with -t md the viewpoint document (groups + ER) is generated")
 	outCmd.Flags().StringVarP(&when, "when", "", "", "command execute condition")
 }

@@ -322,6 +322,8 @@ func (c *Config) validate() error {
 	if !lo.Contains(SupportERFormat, c.ER.Format) {
 		return fmt.Errorf("unsupported ER format: %s", c.ER.Format)
 	}
+	seenViewpointIDs := map[string]int{}
+	seenViewpointNames := map[string]int{}
 	for i, v := range c.Viewpoints {
 		if v.Name == "" {
 			return fmt.Errorf("viewpoints[%d] name is required", i)
@@ -329,6 +331,25 @@ func (c *Config) validate() error {
 		if v.Desc == "" {
 			return fmt.Errorf("viewpoints[%d] description is required", i)
 		}
+		if v.ID != "" {
+			// id is embedded into output file paths (e.g. viewpoint-<id>.md), so path
+			// separators would allow writing outside the intended output directory.
+			if strings.ContainsAny(v.ID, `/\`) {
+				return fmt.Errorf("viewpoints[%d] id '%s' must not contain path separators ('/' or '\\')", i, v.ID)
+			}
+			if j, ok := seenViewpointIDs[v.ID]; ok {
+				return fmt.Errorf("viewpoints[%d] id '%s' is duplicated with viewpoints[%d]", i, v.ID, j)
+			}
+			seenViewpointIDs[v.ID] = i
+		}
+		// An id-based name and an index-based name can collide (e.g. viewpoints[0] without id
+		// produces viewpoint-0, and viewpoints[1] with id "0" produces viewpoint-0 too), which
+		// would silently overwrite output files. Reject such conflicts on the derived name.
+		name := schema.ViewpointName(v.ID, i)
+		if j, ok := seenViewpointNames[name]; ok {
+			return fmt.Errorf("viewpoints[%d] output name '%s' conflicts with viewpoints[%d]", i, name, j)
+		}
+		seenViewpointNames[name] = i
 		for j, g := range v.Groups {
 			if g.Name == "" {
 				return fmt.Errorf("viewpoints[%d].groups[%d] name is required", i, j)
@@ -492,6 +513,7 @@ func (c *Config) ModifySchema(s *schema.Schema) error {
 			tables = left
 		}
 		s.Viewpoints = s.Viewpoints.Merge(&schema.Viewpoint{
+			ID:       v.ID,
 			Name:     v.Name,
 			Desc:     v.Desc,
 			Labels:   v.Labels,
@@ -528,6 +550,7 @@ func (c *Config) ModifySchema(s *schema.Schema) error {
 			for _, tt := range ts {
 				tt.Viewpoints = append(tt.Viewpoints, &schema.TableViewpoint{
 					Index: vi,
+					ID:    v.ID,
 					Name:  v.Name,
 					Desc:  v.Desc,
 				})

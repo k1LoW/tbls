@@ -1,6 +1,7 @@
 package config
 
 type Viewpoint struct {
+	ID       string           `yaml:"id,omitempty"`
 	Name     string           `yaml:"name,omitempty"`
 	Desc     string           `yaml:"desc,omitempty"`
 	Labels   []string         `yaml:"labels,omitempty"`
