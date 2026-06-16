@@ -193,6 +193,6 @@ func init() {
 	outCmd.Flags().StringSliceVarP(&excludes, "exclude", "", []string{}, "tables to exclude")
 	outCmd.Flags().StringSliceVarP(&labels, "label", "", []string{}, "table labels to be included")
 	outCmd.Flags().IntVarP(&distance, "distance", "", 0, "distance between related tables to be displayed")
-	outCmd.Flags().StringVarP(&viewpoint, "viewpoint", "", "", "output only the schema of the specified viewpoint (by id, or by index)")
+	outCmd.Flags().StringVarP(&viewpoint, "viewpoint", "", "", "output only the specified viewpoint (by id, or by index); with -t md the viewpoint document (groups + ER) is generated")
 	outCmd.Flags().StringVarP(&when, "when", "", "", "command execute condition")
 }
