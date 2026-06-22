@@ -1,5 +1,16 @@
 # Changelog
 
+## [v1.95.0](https://github.com/k1LoW/tbls/compare/v1.94.5...v1.95.0) - 2026-06-22
+
+### New Features 🎉
+- feat: add viewpoint id and tbls out --viewpoint by @k1LoW in https://github.com/k1LoW/tbls/pull/839
+### Other Changes
+- chore(deps): bump github.com/apache/thrift from 0.22.0 to 0.23.0 by @dependabot[bot] in https://github.com/k1LoW/tbls/pull/834
+- Ensure consistent column ordering for ClickHouse by @Leward in https://github.com/k1LoW/tbls/pull/833
+- chore(deps): bump the dependencies group across 1 directory with 17 updates by @dependabot[bot] in https://github.com/k1LoW/tbls/pull/832
+- chore(deps): bump the dependencies group with 9 updates by @dependabot[bot] in https://github.com/k1LoW/tbls/pull/837
+- fix: bump gosnowflake to v2.1.0 and disable minicore at build time by @k1LoW in https://github.com/k1LoW/tbls/pull/840
+
 ## [v1.94.5](https://github.com/k1LoW/tbls/compare/v1.94.4...v1.94.5) - 2026-04-27
 ### Fix bug 🐛
 - fix(mysql): stabilize constraint introspection order by @upamune in https://github.com/k1LoW/tbls/pull/830
