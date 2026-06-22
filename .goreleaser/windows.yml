@@ -9,7 +9,7 @@ builds:
   flags:
     - -a
     - -tags
-    - netgo,timetzdata,sqlite_fts5
+    - netgo,timetzdata,sqlite_fts5,minicore_disabled
     - -installsuffix
     - netgo
   ldflags:
