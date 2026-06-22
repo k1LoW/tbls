@@ -8,7 +8,7 @@ builds:
   id: tbls-darwin
   flags:
     - -tags
-    - timetzdata,sqlite_fts5
+    - timetzdata,sqlite_fts5,minicore_disabled
   ldflags:
     - -s -w -X github.com/k1LoW/tbls.version={{.Version}} -X github.com/k1LoW/tbls.commit={{.FullCommit}} -X github.com/k1LoW/tbls.date={{.Date}} -X github.com/k1LoW/tbls/version.Version={{.Version}}
   env:

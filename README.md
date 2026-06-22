@@ -1119,6 +1119,7 @@ You can also define groups of tables within viewpoints.
 
 viewpoints:
   -
+    id: comments-on-post
     name: comments on post
     desc: Users can comment on each post multiple times and put a star on each comment.
     tables:
@@ -1144,6 +1145,8 @@ viewpoints:
           - post_comment_stars
 
 ```
+
+`id` is optional. When set, it is used as the suffix of the viewpoint output file name (e.g. `viewpoint-comments-on-post.md`) instead of the index, so the file name stays stable regardless of the viewpoint order. `id` must be unique and must not contain path separators (`/` or `\`). It is also used to specify the viewpoint in `tbls out --viewpoint`.
 
 ## Output formats
 
@@ -1177,6 +1180,20 @@ $ tbls out -t mermaid -o schema.mmd
 
 ```console
 $ tbls out -t svg --table users --distance 2 -o users.svg
+```
+
+**Viewpoint:**
+
+Output only the schema of a specific viewpoint by specifying its `id` (or index).
+
+```console
+$ tbls out -t svg --viewpoint comments-on-post -o comments-on-post.svg
+```
+
+With `-t md`, the viewpoint document (including groups and the ER diagram inlined as Mermaid) is generated instead of a plain schema document.
+
+```console
+$ tbls out -t md --viewpoint comments-on-post -o comments-on-post.md
 ```
 
 **JSON:**

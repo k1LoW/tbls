@@ -122,7 +122,7 @@ func (m *Md) OutputViewpoint(wr io.Writer, i int, v *schema.Viewpoint) error {
 		}
 		templateData["erDiagram"] = fmt.Sprintf("```mermaid\n%s```", buf.String())
 	default:
-		templateData["erDiagram"] = fmt.Sprintf("![er](%sviewpoint-%d.%s)", m.config.BaseURL, i, m.config.ER.Format)
+		templateData["erDiagram"] = fmt.Sprintf("![er](%s%s.%s)", m.config.BaseURL, mdurl.Encode(schema.ViewpointName(v.ID, i)), m.config.ER.Format)
 	}
 	if err := tmpl.Execute(wr, templateData); err != nil {
 		return errors.WithStack(err)
@@ -184,7 +184,7 @@ func Output(s *schema.Schema, c *config.Config, force bool) (e error) {
 
 	// viewpoints
 	for i, v := range s.Viewpoints {
-		fn := fmt.Sprintf("viewpoint-%d.md", i)
+		fn := fmt.Sprintf("%s.md", schema.ViewpointName(v.ID, i))
 		f, err := os.Create(filepath.Clean(filepath.Join(fullPath, fn)))
 		if err != nil {
 			_ = f.Close()
@@ -393,8 +393,8 @@ func DiffSchemaAndDocs(docPath string, s *schema.Schema, c *config.Config) (stri
 	// viewpoints
 	for i, v := range s.Viewpoints {
 		buf := new(bytes.Buffer)
-		n := fmt.Sprintf("viewpoint-%d", i)
-		fn := fmt.Sprintf("viewpoint-%d.md", i)
+		n := schema.ViewpointName(v.ID, i)
+		fn := fmt.Sprintf("%s.md", n)
 		to := fmt.Sprintf("%s %s", mdsn, n)
 		if err := md.OutputViewpoint(buf, i, v); err != nil {
 			return "", errors.WithStack(err)
@@ -609,7 +609,7 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 			desc = output.ShowOnlyFirstParagraph(desc)
 		}
 		data := []string{
-			fmt.Sprintf("[%s](viewpoint-%d.md)", v.Name, v.Index),
+			fmt.Sprintf("[%s](%s.md)", v.Name, mdurl.Encode(schema.ViewpointName(v.ID, v.Index))),
 			desc,
 		}
 
@@ -925,7 +925,7 @@ func (m *Md) viewpointsData(viewpoints []*schema.Viewpoint, number, adjust, show
 			desc = output.ShowOnlyFirstParagraph(desc)
 		}
 		d := []string{
-			fmt.Sprintf("[%s](%sviewpoint-%d.md)", v.Name, m.config.BaseURL, i),
+			fmt.Sprintf("[%s](%s%s.md)", v.Name, m.config.BaseURL, mdurl.Encode(schema.ViewpointName(v.ID, i))),
 			desc,
 		}
 		data = append(data, d)
