@@ -173,6 +173,9 @@ CREATE OR REPLACE FUNCTION update_updated () RETURNS trigger AS '
   END;
 ' LANGUAGE plpgsql;
 
+COMMENT ON FUNCTION update_updated()
+IS 'Trigger function that automatically sets the updated column to the current timestamp whenever a row is updated.';
+
 CREATE CONSTRAINT TRIGGER update_posts_updated
   AFTER INSERT OR UPDATE ON posts FOR EACH ROW
   EXECUTE PROCEDURE update_updated();
@@ -230,3 +233,6 @@ CREATE OR REPLACE PROCEDURE reset_comment (comment_id int) AS '
     commit;
   end;
 ' LANGUAGE plpgsql;
+
+COMMENT ON PROCEDURE reset_comment(int)
+IS 'Updates the comment field to "updated" for a given comment ID and commits the change.';
