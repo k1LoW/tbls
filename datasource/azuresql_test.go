@@ -1,99 +1,112 @@
 package datasource
 
 import (
+	"net/url"
 	"strings"
 	"testing"
 )
 
-func TestParseAzureSQLDatabaseName(t *testing.T) {
+func TestPrepareAzureSQLURL(t *testing.T) {
 	tests := []struct {
-		name    string
-		urlstr  string
-		want    string
-		wantErr string
+		name        string
+		urlstr      string
+		wantErr     string
+		wantScheme  string
+		wantFedauth string
+		wantEncrypt string
+		wantDB      string
 	}{
 		{
-			name:   "valid Service Principal DSN",
-			urlstr: "azuresql://myhost.datawarehouse.fabric.microsoft.com?database=mydb&fedauth=ActiveDirectoryServicePrincipal&user+id=client123@tenant456&password=secret",
-			want:   "mydb",
+			name:        "no database param returns error",
+			urlstr:      "azuresql://myhost.example.com?fedauth=ActiveDirectoryServicePrincipal",
+			wantErr:     "no database name in azuresql connection string",
 		},
 		{
-			name:    "missing database param",
-			urlstr:  "azuresql://myhost.datawarehouse.fabric.microsoft.com?fedauth=ActiveDirectoryServicePrincipal",
-			wantErr: "no database name in azuresql connection string",
+			name:        "malformed URL returns error",
+			urlstr:      "azuresql://[invalid",
+			wantErr:     "invalid",
 		},
 		{
-			name:    "malformed URL",
-			urlstr:  "azuresql://[invalid",
-			wantErr: "invalid",
+			name:        "fedauth absent gets default",
+			urlstr:      "azuresql://myhost.example.com?database=mydb",
+			wantScheme:  "sqlserver",
+			wantDB:      "mydb",
+			wantFedauth: "ActiveDirectoryServicePrincipal",
+			wantEncrypt: "true",
+		},
+		{
+			name:        "fedauth present is not overwritten",
+			urlstr:      "azuresql://myhost.example.com?database=mydb&fedauth=ActiveDirectoryPassword",
+			wantScheme:  "sqlserver",
+			wantDB:      "mydb",
+			wantFedauth: "ActiveDirectoryPassword",
+			wantEncrypt: "true",
+		},
+		{
+			name:        "scheme is swapped to sqlserver",
+			urlstr:      "azuresql://myhost.example.com?database=mydb&fedauth=ActiveDirectoryServicePrincipal",
+			wantScheme:  "sqlserver",
+			wantDB:      "mydb",
+			wantFedauth: "ActiveDirectoryServicePrincipal",
+			wantEncrypt: "true",
+		},
+		{
+			// Password containing ';' must be percent-encoded in the output URL,
+			// not interpolated raw into an ADO key=value string.
+			name:        "password with semicolon is percent-encoded, not injected",
+			urlstr:      "azuresql://myhost.example.com?database=mydb&password=sec%3Bret",
+			wantScheme:  "sqlserver",
+			wantDB:      "mydb",
+			wantFedauth: "ActiveDirectoryServicePrincipal",
+			wantEncrypt: "true",
 		},
 	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got, err := parseAzureSQLDatabaseName(tt.urlstr)
-			if tt.wantErr != "" {
-				if err == nil {
-					t.Errorf("parseAzureSQLDatabaseName() expected error but got nil")
-					return
-				}
-				if !strings.Contains(err.Error(), tt.wantErr) {
-					t.Errorf("parseAzureSQLDatabaseName() error = %v, want error containing %q", err, tt.wantErr)
-				}
-				return
-			}
-			if err != nil {
-				t.Errorf("parseAzureSQLDatabaseName() unexpected error = %v", err)
-				return
-			}
-			if got != tt.want {
-				t.Errorf("parseAzureSQLDatabaseName() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
 
-func TestBuildAzureSQLConnStr(t *testing.T) {
-	tests := []struct {
-		name    string
-		urlstr  string
-		want    string
-		wantErr string
-	}{
-		{
-			name:   "full Service Principal DSN",
-			urlstr: "azuresql://myhost.datawarehouse.fabric.microsoft.com?database=mydb&fedauth=ActiveDirectoryServicePrincipal&user+id=client123@tenant456&password=mysecret",
-			want:   "Server=myhost.datawarehouse.fabric.microsoft.com;Database=mydb;fedauth=ActiveDirectoryServicePrincipal;User ID=client123@tenant456;Password=mysecret;Encrypt=true;TrustServerCertificate=false",
-		},
-		{
-			name:    "missing database",
-			urlstr:  "azuresql://myhost.datawarehouse.fabric.microsoft.com?fedauth=ActiveDirectoryServicePrincipal",
-			wantErr: "no database name",
-		},
-		{
-			name:    "missing host",
-			urlstr:  "azuresql://?database=mydb",
-			wantErr: "no server host",
-		},
-	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := buildAzureSQLConnStr(tt.urlstr)
+			gotURL, gotDB, err := prepareAzureSQLURL(tt.urlstr)
 			if tt.wantErr != "" {
 				if err == nil {
-					t.Errorf("buildAzureSQLConnStr() expected error but got nil")
-					return
+					t.Fatalf("expected error containing %q, got nil", tt.wantErr)
 				}
 				if !strings.Contains(err.Error(), tt.wantErr) {
-					t.Errorf("buildAzureSQLConnStr() error = %v, want error containing %q", err, tt.wantErr)
+					t.Errorf("error = %q, want containing %q", err.Error(), tt.wantErr)
 				}
 				return
 			}
 			if err != nil {
-				t.Errorf("buildAzureSQLConnStr() unexpected error = %v", err)
-				return
+				t.Fatalf("unexpected error: %v", err)
 			}
-			if got != tt.want {
-				t.Errorf("buildAzureSQLConnStr() = %v, want %v", got, tt.want)
+
+			if gotDB != tt.wantDB {
+				t.Errorf("dbName = %q, want %q", gotDB, tt.wantDB)
+			}
+
+			u, err := url.Parse(gotURL)
+			if err != nil {
+				t.Fatalf("output URL not parseable: %v", err)
+			}
+			q := u.Query()
+
+			if u.Scheme != tt.wantScheme {
+				t.Errorf("scheme = %q, want %q", u.Scheme, tt.wantScheme)
+			}
+			if q.Get("fedauth") != tt.wantFedauth {
+				t.Errorf("fedauth = %q, want %q", q.Get("fedauth"), tt.wantFedauth)
+			}
+			if q.Get("encrypt") != tt.wantEncrypt {
+				t.Errorf("encrypt = %q, want %q", q.Get("encrypt"), tt.wantEncrypt)
+			}
+
+			// Verify password with ';' is not raw in the URL string
+			if strings.Contains(tt.urlstr, "%3B") {
+				if strings.Contains(gotURL, ";") {
+					// Strip the scheme+host part to avoid false positive on sqlserver://host
+					rawQuery := u.RawQuery
+					if strings.Contains(rawQuery, "=sec;ret") {
+						t.Error("password ';' leaked unencoded into query string — ADO injection possible")
+					}
+				}
 			}
 		})
 	}
