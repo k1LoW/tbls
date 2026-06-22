@@ -31,6 +31,8 @@ db: db_sqlite # MySQL8 use ./testdata/ddl/mysql:/docker-entrypoint-initdb.d
 	usql maria://root:mypass@localhost:33309/testdb -f testdata/ddl/maria.sql
 	usql ms://SA:MSSQLServer-Passw0rd@localhost:11433/master -c "IF NOT EXISTS (SELECT * FROM sys.databases WHERE NAME = 'testdb') CREATE DATABASE testdb;"
 	usql ms://SA:MSSQLServer-Passw0rd@localhost:11433/testdb -f testdata/ddl/mssql.sql || true
+	usql ms://SA:MSSQLServer-Passw0rd@localhost:11433/master -c "IF NOT EXISTS (SELECT * FROM sys.databases WHERE NAME = 'azuresqldb') CREATE DATABASE azuresqldb;"
+	usql ms://SA:MSSQLServer-Passw0rd@localhost:11433/azuresqldb -f testdata/ddl/azuresql.sql || true
 	./testdata/ddl/dynamodb.sh > /dev/null 2>&1
 
 db_sqlite:
@@ -51,6 +53,7 @@ doc: build doc_sqlite
 	$(TBLS) doc my://root:mypass@localhost:33308/relations_singular -c testdata/test_tbls_detect_relations_singular.yml -f sample/detect_relations_singular
 	$(TBLS) doc maria://root:mypass@localhost:33309/testdb -c testdata/test_tbls.yml -f sample/mariadb
 	$(TBLS) doc ms://SA:MSSQLServer-Passw0rd@localhost:11433/testdb -c testdata/test_tbls_mssql.yml -f sample/mssql
+	$(TBLS) doc ms://SA:MSSQLServer-Passw0rd@localhost:11433/azuresqldb?TrustServerCertificate=true -c testdata/test_tbls_azuresql.yml -f sample/azuresql
 	$(TBLS) doc mongodb://mongoadmin:secret@localhost:27017/test?authSource=admin -f sample/mongo
 	env AWS_ENDPOINT_URL=http://localhost:18000 $(TBLS) doc dynamodb://ap-northeast-1 -c testdata/test_tbls_dynamodb.yml -f sample/dynamodb
 	$(TBLS) doc clickhouse://default@localhost:9000/testdb -f sample/clickhouse
@@ -77,6 +80,7 @@ testdoc: build testdoc_sqlite
 	$(TBLS) diff my://root:mypass@localhost:33308/relations_singular -c testdata/test_tbls_detect_relations_singular.yml sample/detect_relations_singular
 	$(TBLS) diff maria://root:mypass@localhost:33309/testdb -c testdata/test_tbls.yml sample/mariadb
 	$(TBLS) diff ms://SA:MSSQLServer-Passw0rd@localhost:11433/testdb -c testdata/test_tbls_mssql.yml sample/mssql
+	$(TBLS) diff ms://SA:MSSQLServer-Passw0rd@localhost:11433/azuresqldb?TrustServerCertificate=true -c testdata/test_tbls_azuresql.yml sample/azuresql
 	$(TBLS) diff mongodb://mongoadmin:secret@localhost:27017/test?authSource=admin sample/mongo
 	env AWS_ENDPOINT_URL=http://localhost:18000 $(TBLS) diff dynamodb://ap-northeast-1 -c testdata/test_tbls_dynamodb.yml sample/dynamodb
 	$(TBLS) diff clickhouse://default@localhost:9000/testdb sample/clickhouse
@@ -132,6 +136,12 @@ check_license:
 	--ignore github.com/segmentio/asm \
 	--disallowed_types=permissive,forbidden,restricted \
 	--include_tests
+
+doc_azuresql: build
+	$(TBLS) doc "azuresql://$(AZURESQL_HOST)?database=$(AZURESQL_DB)&user+id=$(AZURESQL_CLIENT_ID)@$(AZURESQL_TENANT_ID)&password=$(AZURESQL_CLIENT_SECRET)" -c testdata/test_tbls_azuresql.yml -f sample/azuresql
+
+test_azuresql: build
+	$(TBLS) diff "azuresql://$(AZURESQL_HOST)?database=$(AZURESQL_DB)&user+id=$(AZURESQL_CLIENT_ID)@$(AZURESQL_TENANT_ID)&password=$(AZURESQL_CLIENT_SECRET)" -c testdata/test_tbls_azuresql.yml sample/azuresql
 
 doc_bigquery: build
 	$(TBLS) doc bq://bigquery-public-data/crypto_bitcoin?creds=client_secrets.json -c testdata/crypto_bitcoin_tbls.yml -f sample/bigquery_crypto_bitcoin

@@ -163,16 +163,11 @@ SELECT
   i.is_unique,
   i.is_primary_key,
   i.is_unique_constraint,
-  STUFF(
-    (SELECT ', ' + COL_NAME(ic.object_id, ic.column_id)
-      FROM sys.index_columns AS ic
-      WHERE i.object_id = ic.object_id AND i.index_id = ic.index_id
-      ORDER BY ic.key_ordinal
-      FOR XML PATH('')
-    ), 1, 2, '') AS index_columns,
+  STRING_AGG(COL_NAME(ic.object_id, ic.column_id), ', ') WITHIN GROUP (ORDER BY ic.key_ordinal) AS index_columns,
   c.is_system_named
 FROM sys.key_constraints AS c
 INNER JOIN sys.indexes AS i ON i.object_id = c.parent_object_id AND i.index_id = c.unique_index_id
+LEFT JOIN sys.index_columns AS ic ON i.object_id = ic.object_id AND i.index_id = ic.index_id
 WHERE i.object_id = object_id(@p1)
 GROUP BY c.name, i.index_id, i.type_desc, i.is_unique, i.is_primary_key, i.is_unique_constraint, c.is_system_named, i.object_id
 ORDER BY i.index_id
@@ -229,24 +224,15 @@ SELECT
   OBJECT_NAME(f.parent_object_id) AS table_name,
   OBJECT_NAME(f.referenced_object_id) AS parent_table_name,
   OBJECT_SCHEMA_NAME(f.referenced_object_id) AS parent_schema_name,
-  STUFF(
-    (SELECT ', ' + COL_NAME(fc.parent_object_id, fc.parent_column_id)
-      FROM sys.foreign_key_columns AS fc
-      WHERE f.object_id = fc.constraint_object_id
-      FOR XML PATH('')
-    ), 1, 2, '') AS column_names,
-  STUFF(
-    (SELECT ', ' + COL_NAME(fc.referenced_object_id, fc.referenced_column_id)
-      FROM sys.foreign_key_columns AS fc
-      WHERE f.object_id = fc.constraint_object_id
-      FOR XML PATH('')
-    ), 1, 2, '') AS parent_column_names,
-  update_referential_action_desc,
-  delete_referential_action_desc,
+  STRING_AGG(COL_NAME(fc.parent_object_id, fc.parent_column_id), ', ') WITHIN GROUP (ORDER BY fc.constraint_column_id) AS column_names,
+  STRING_AGG(COL_NAME(fc.referenced_object_id, fc.referenced_column_id), ', ') WITHIN GROUP (ORDER BY fc.constraint_column_id) AS parent_column_names,
+  f.update_referential_action_desc,
+  f.delete_referential_action_desc,
   f.is_system_named
 FROM sys.foreign_keys AS f
+INNER JOIN sys.foreign_key_columns AS fc ON f.object_id = fc.constraint_object_id
 WHERE f.parent_object_id = object_id(@p1)
-GROUP BY f.name, f.parent_object_id, f.referenced_object_id, delete_referential_action_desc, update_referential_action_desc, f.is_system_named, f.object_id
+GROUP BY f.name, f.parent_object_id, f.referenced_object_id, f.delete_referential_action_desc, f.update_referential_action_desc, f.is_system_named, f.object_id
 ORDER BY f.name
 `, fmt.Sprintf("%s.%s", tableSchema, tableName))
 		if err != nil {
@@ -363,20 +349,14 @@ SELECT
   i.is_unique,
   i.is_primary_key,
   i.is_unique_constraint,
-  STUFF(
-    (SELECT ', ' + COL_NAME(ic.object_id, ic.column_id)
-      FROM sys.index_columns AS ic
-      WHERE i.object_id = ic.object_id AND i.index_id = ic.index_id
-	  ORDER BY ic.key_ordinal
-      FOR XML PATH('')
-    ), 1, 2, '') AS column_names,
+  STRING_AGG(COL_NAME(ic.object_id, ic.column_id), ', ') WITHIN GROUP (ORDER BY ic.key_ordinal) AS column_names,
   c.is_system_named
 FROM sys.indexes AS i
 LEFT JOIN sys.key_constraints AS c
   ON i.object_id = c.parent_object_id AND i.index_id = c.unique_index_id
+INNER JOIN sys.index_columns AS ic ON i.object_id = ic.object_id AND i.index_id = ic.index_id
 WHERE i.object_id = object_id(@p1)
   AND i.type <> 0
-  AND EXISTS (SELECT 1 FROM sys.index_columns AS ic0 WHERE ic0.index_id = i.index_id)
 GROUP BY i.name, i.index_id, i.type_desc, i.is_unique, i.is_primary_key, i.is_unique_constraint, c.is_system_named, i.object_id
 ORDER BY i.index_id
 `, fmt.Sprintf("%s.%s", tableSchema, tableName))
@@ -501,15 +481,11 @@ const query = `SELECT SCHEMA_NAME(obj.schema_id) AS schema_name,
 		WHEN 'X' THEN 'Extended stored procedure'
 	END AS type,
 	TYPE_NAME(ret.user_type_id) AS return_type,
-	SUBSTRING(par.parameters, 0, LEN(par.parameters)) AS parameters
+	(SELECT STRING_AGG(p.name + ' ' + TYPE_NAME(p.user_type_id), ', ')
+	 FROM sys.parameters p
+	 WHERE p.object_id = obj.object_id AND p.parameter_id != 0) AS parameters
 FROM sys.objects obj
-JOIN sys.sql_modules mod
-ON mod.object_id = obj.object_id
-CROSS APPLY (SELECT p.name + ' ' + TYPE_NAME(p.user_type_id) + ', '
-			FROM sys.parameters p
-			WHERE p.object_id = obj.object_id
-						AND p.parameter_id != 0
-		 FOR XML PATH ('') ) par (parameters)
+JOIN sys.sql_modules mod ON mod.object_id = obj.object_id
 LEFT JOIN sys.parameters ret
 	 ON obj.object_id = ret.object_id
 	 AND ret.parameter_id = 0

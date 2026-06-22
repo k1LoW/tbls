@@ -551,6 +551,28 @@ dsn: sqlserver://DbUser:SQLServer-DbPassw0rd@hostname:1433/testdb
 dsn: ms://DbUser:SQLServer-DbPassw0rd@localhost:1433/testdb
 ```
 
+**Azure SQL / Microsoft Fabric Warehouse (Experimental):**
+
+Azure AD Service Principal authentication:
+```yaml
+# .tbls.yml
+dsn: azuresql://myworkspace.datawarehouse.fabric.microsoft.com?database=mydb&fedauth=ActiveDirectoryServicePrincipal&user+id=<client-id>@<tenant-id>&password=<client-secret>
+```
+
+`fedauth` defaults to `ActiveDirectoryServicePrincipal` if omitted:
+```yaml
+# .tbls.yml
+dsn: azuresql://myworkspace.datawarehouse.fabric.microsoft.com?database=mydb&user+id=<client-id>@<tenant-id>&password=<client-secret>
+```
+
+Supported query parameters:
+- `database` (**required**): database/warehouse name
+- `fedauth`: authentication type (default: `ActiveDirectoryServicePrincipal`)
+- `user+id`: Azure AD client ID (format: `<client-id>@<tenant-id>`)
+- `password`: Azure AD client secret
+
+See also: https://github.com/microsoft/go-mssqldb
+
 **Amazon DynamoDB:**
 
 ```yaml

@@ -1,0 +1,516 @@
+{
+  "name": "azuresqldb",
+  "desc": "Sample Azure SQL / Microsoft Fabric Warehouse document.",
+  "tables": [
+    {
+      "name": "users",
+      "type": "BASIC TABLE",
+      "comment": "Users table",
+      "columns": [
+        {
+          "name": "id",
+          "type": "int",
+          "nullable": false
+        },
+        {
+          "name": "username",
+          "type": "varchar(50)",
+          "nullable": false
+        },
+        {
+          "name": "email",
+          "type": "varchar(355)",
+          "nullable": false,
+          "comment": "ex. user@example.com"
+        },
+        {
+          "name": "created",
+          "type": "date",
+          "nullable": false
+        },
+        {
+          "name": "updated",
+          "type": "date",
+          "nullable": true
+        }
+      ],
+      "indexes": [
+        {
+          "name": "PK__users_*",
+          "def": "CLUSTERED, unique, part of a PRIMARY KEY constraint, [ id ]",
+          "table": "users",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "UQ__users_*",
+          "def": "NONCLUSTERED, unique, part of a UNIQUE constraint, [ email ]",
+          "table": "users",
+          "columns": [
+            "email"
+          ]
+        },
+        {
+          "name": "UQ__users_*",
+          "def": "NONCLUSTERED, unique, part of a UNIQUE constraint, [ username ]",
+          "table": "users",
+          "columns": [
+            "username"
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "name": "PK__users_*",
+          "type": "PRIMARY KEY",
+          "def": "CLUSTERED, unique, part of a PRIMARY KEY constraint, [ id ]",
+          "table": "users",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "UQ__users_*",
+          "type": "UNIQUE",
+          "def": "NONCLUSTERED, unique, part of a UNIQUE constraint, [ email ]",
+          "table": "users",
+          "columns": [
+            "email"
+          ]
+        },
+        {
+          "name": "UQ__users_*",
+          "type": "UNIQUE",
+          "def": "NONCLUSTERED, unique, part of a UNIQUE constraint, [ username ]",
+          "table": "users",
+          "columns": [
+            "username"
+          ]
+        },
+        {
+          "name": "CK__users__username_*",
+          "type": "CHECK",
+          "def": "CHECK(len([username])\u003e(4))",
+          "table": "users"
+        }
+      ]
+    },
+    {
+      "name": "user_options",
+      "type": "BASIC TABLE",
+      "comment": "User options table",
+      "columns": [
+        {
+          "name": "user_id",
+          "type": "int",
+          "nullable": false
+        },
+        {
+          "name": "show_email",
+          "type": "bit",
+          "nullable": false,
+          "default": "((0))"
+        },
+        {
+          "name": "created",
+          "type": "date",
+          "nullable": false
+        },
+        {
+          "name": "updated",
+          "type": "date",
+          "nullable": true
+        }
+      ],
+      "indexes": [
+        {
+          "name": "PK__user_opt_*",
+          "def": "CLUSTERED, unique, part of a PRIMARY KEY constraint, [ user_id ]",
+          "table": "user_options",
+          "columns": [
+            "user_id"
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "name": "PK__user_opt_*",
+          "type": "PRIMARY KEY",
+          "def": "CLUSTERED, unique, part of a PRIMARY KEY constraint, [ user_id ]",
+          "table": "user_options",
+          "columns": [
+            "user_id"
+          ]
+        },
+        {
+          "name": "user_options_user_id_fk",
+          "type": "FOREIGN KEY",
+          "def": "FOREIGN KEY(user_id) REFERENCES users(id) ON UPDATE NO_ACTION ON DELETE CASCADE",
+          "table": "user_options",
+          "referenced_table": "users",
+          "columns": [
+            "user_id"
+          ],
+          "referenced_columns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "products",
+      "type": "BASIC TABLE",
+      "comment": "Product catalog",
+      "columns": [
+        {
+          "name": "id",
+          "type": "int",
+          "nullable": false
+        },
+        {
+          "name": "name",
+          "type": "nvarchar(255)",
+          "nullable": false
+        },
+        {
+          "name": "price",
+          "type": "decimal",
+          "nullable": false,
+          "comment": "Unit price in USD"
+        },
+        {
+          "name": "stock_quantity",
+          "type": "int",
+          "nullable": false,
+          "default": "((0))"
+        },
+        {
+          "name": "created",
+          "type": "date",
+          "nullable": false
+        }
+      ],
+      "indexes": [
+        {
+          "name": "PK__products_*",
+          "def": "CLUSTERED, unique, part of a PRIMARY KEY constraint, [ id ]",
+          "table": "products",
+          "columns": [
+            "id"
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "name": "PK__products_*",
+          "type": "PRIMARY KEY",
+          "def": "CLUSTERED, unique, part of a PRIMARY KEY constraint, [ id ]",
+          "table": "products",
+          "columns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "orders",
+      "type": "BASIC TABLE",
+      "comment": "Customer orders",
+      "columns": [
+        {
+          "name": "id",
+          "type": "int",
+          "nullable": false
+        },
+        {
+          "name": "user_id",
+          "type": "int",
+          "nullable": false
+        },
+        {
+          "name": "total_amount",
+          "type": "decimal",
+          "nullable": false
+        },
+        {
+          "name": "status",
+          "type": "varchar(20)",
+          "nullable": false,
+          "default": "('pending')",
+          "comment": "pending/processing/shipped/delivered"
+        },
+        {
+          "name": "created",
+          "type": "date",
+          "nullable": false
+        },
+        {
+          "name": "updated",
+          "type": "date",
+          "nullable": true
+        }
+      ],
+      "indexes": [
+        {
+          "name": "PK__orders_*",
+          "def": "CLUSTERED, unique, part of a PRIMARY KEY constraint, [ id ]",
+          "table": "orders",
+          "columns": [
+            "id"
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "name": "PK__orders_*",
+          "type": "PRIMARY KEY",
+          "def": "CLUSTERED, unique, part of a PRIMARY KEY constraint, [ id ]",
+          "table": "orders",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "orders_user_id_fk",
+          "type": "FOREIGN KEY",
+          "def": "FOREIGN KEY(user_id) REFERENCES users(id) ON UPDATE NO_ACTION ON DELETE CASCADE",
+          "table": "orders",
+          "referenced_table": "users",
+          "columns": [
+            "user_id"
+          ],
+          "referenced_columns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "order_items",
+      "type": "BASIC TABLE",
+      "columns": [
+        {
+          "name": "id",
+          "type": "int",
+          "nullable": false
+        },
+        {
+          "name": "order_id",
+          "type": "int",
+          "nullable": false
+        },
+        {
+          "name": "product_id",
+          "type": "int",
+          "nullable": false
+        },
+        {
+          "name": "quantity",
+          "type": "int",
+          "nullable": false
+        },
+        {
+          "name": "unit_price",
+          "type": "decimal",
+          "nullable": false
+        },
+        {
+          "name": "created",
+          "type": "date",
+          "nullable": false
+        }
+      ],
+      "indexes": [
+        {
+          "name": "PK__order_it_*",
+          "def": "CLUSTERED, unique, part of a PRIMARY KEY constraint, [ id ]",
+          "table": "order_items",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "UQ__order_it_*",
+          "def": "NONCLUSTERED, unique, part of a UNIQUE constraint, [ order_id, product_id ]",
+          "table": "order_items",
+          "columns": [
+            "order_id",
+            "product_id"
+          ]
+        },
+        {
+          "name": "order_items_order_id_product_id_idx",
+          "def": "NONCLUSTERED, [ order_id, product_id ]",
+          "table": "order_items",
+          "columns": [
+            "order_id",
+            "product_id"
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "name": "PK__order_it_*",
+          "type": "PRIMARY KEY",
+          "def": "CLUSTERED, unique, part of a PRIMARY KEY constraint, [ id ]",
+          "table": "order_items",
+          "columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "UQ__order_it_*",
+          "type": "UNIQUE",
+          "def": "NONCLUSTERED, unique, part of a UNIQUE constraint, [ order_id, product_id ]",
+          "table": "order_items",
+          "columns": [
+            "order_id",
+            "product_id"
+          ]
+        },
+        {
+          "name": "order_items_order_id_fk",
+          "type": "FOREIGN KEY",
+          "def": "FOREIGN KEY(order_id) REFERENCES orders(id) ON UPDATE NO_ACTION ON DELETE CASCADE",
+          "table": "order_items",
+          "referenced_table": "orders",
+          "columns": [
+            "order_id"
+          ],
+          "referenced_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "order_items_product_id_fk",
+          "type": "FOREIGN KEY",
+          "def": "FOREIGN KEY(product_id) REFERENCES products(id) ON UPDATE NO_ACTION ON DELETE NO_ACTION",
+          "table": "order_items",
+          "referenced_table": "products",
+          "columns": [
+            "product_id"
+          ],
+          "referenced_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "CK__order_ite__quant_*",
+          "type": "CHECK",
+          "def": "CHECK([quantity]\u003e(0))",
+          "table": "order_items"
+        }
+      ]
+    },
+    {
+      "name": "order_summary",
+      "type": "VIEW",
+      "columns": [
+        {
+          "name": "id",
+          "type": "int",
+          "nullable": false
+        },
+        {
+          "name": "username",
+          "type": "varchar(50)",
+          "nullable": true
+        },
+        {
+          "name": "total_amount",
+          "type": "decimal",
+          "nullable": false
+        },
+        {
+          "name": "status",
+          "type": "varchar(20)",
+          "nullable": false
+        },
+        {
+          "name": "created",
+          "type": "date",
+          "nullable": false
+        }
+      ],
+      "def": "CREATE VIEW order_summary AS (\n  SELECT o.id, u.username, o.total_amount, o.status, o.created\n  FROM orders AS o\n  LEFT JOIN users AS u ON u.id = o.user_id\n)",
+      "referenced_tables": [
+        "orders",
+        "users"
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "table": "user_options",
+      "columns": [
+        "user_id"
+      ],
+      "cardinality": "zero_or_one",
+      "parent_table": "users",
+      "parent_columns": [
+        "id"
+      ],
+      "parent_cardinality": "exactly_one",
+      "def": ""
+    },
+    {
+      "table": "orders",
+      "columns": [
+        "user_id"
+      ],
+      "cardinality": "zero_or_more",
+      "parent_table": "users",
+      "parent_columns": [
+        "id"
+      ],
+      "parent_cardinality": "exactly_one",
+      "def": ""
+    },
+    {
+      "table": "order_items",
+      "columns": [
+        "order_id"
+      ],
+      "cardinality": "zero_or_more",
+      "parent_table": "orders",
+      "parent_columns": [
+        "id"
+      ],
+      "parent_cardinality": "exactly_one",
+      "def": ""
+    },
+    {
+      "table": "order_items",
+      "columns": [
+        "product_id"
+      ],
+      "cardinality": "zero_or_more",
+      "parent_table": "products",
+      "parent_columns": [
+        "id"
+      ],
+      "parent_cardinality": "exactly_one",
+      "def": ""
+    }
+  ],
+  "driver": {
+    "name": "sqlserver",
+    "database_version": "Microsoft Azure SQL Edge Developer (RTM) - 15.0.2000.1574 (ARM64) \n\tJan 25 2023 10:36:08 \n\tCopyright (C) 2019 Microsoft Corporation\n\tLinux (Ubuntu 18.04.6 LTS aarch64) \u003cARM64\u003e",
+    "meta": {
+      "dict": {
+        "Functions": "Stored procedures and functions"
+      }
+    }
+  },
+  "labels": [
+    {
+      "name": "sample",
+      "virtual": true
+    },
+    {
+      "name": "tbls",
+      "virtual": true
+    }
+  ]
+}
