@@ -7,7 +7,7 @@ import (
 	"github.com/k1LoW/tbls/schema"
 
 	// Import the Snowflake driver for side effects (database/sql driver registration).
-	_ "github.com/snowflakedb/gosnowflake"
+	_ "github.com/snowflakedb/gosnowflake/v2"
 )
 
 type Snowflake struct {

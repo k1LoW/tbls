@@ -175,7 +175,7 @@ lint:
 	golangci-lint run ./...
 
 build:
-	go build -tags "timetzdata sqlite_fts5 sqlite_json1" -ldflags="$(BUILD_LDFLAGS)"
+	go build -tags "timetzdata sqlite_fts5 sqlite_json1 minicore_disabled" -ldflags="$(BUILD_LDFLAGS)"
 
 depsdev:
 	go install github.com/linyows/git-semv/cmd/git-semv@latest
