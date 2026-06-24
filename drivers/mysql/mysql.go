@@ -514,17 +514,29 @@ ORDER BY t.table_name, c.constraint_name
 		}
 		parentTable, err := s.FindTableByName(strParentTable)
 		if err != nil {
-			return err
+			// If table not found (e.g. reference to another database), treat it as an external table
+			parentTable = &schema.Table{
+				Name:     strParentTable,
+				External: true,
+			}
+			// Don't look for a match in parentTable for external tables
+			for _, c := range strParentColumns {
+                              column := &schema.Column{
+                                      Name: c,
+                              }
+                              r.ParentColumns = append(r.ParentColumns, column)
+                      }
+		} else {
+			for _, c := range strParentColumns {
+				column, err := parentTable.FindColumnByName(c)
+				if err != nil {
+					return err
+				}
+				r.ParentColumns = append(r.ParentColumns, column)
+				column.ChildRelations = append(column.ChildRelations, r)
+			}
 		}
 		r.ParentTable = parentTable
-		for _, c := range strParentColumns {
-			column, err := parentTable.FindColumnByName(c)
-			if err != nil {
-				return err
-			}
-			r.ParentColumns = append(r.ParentColumns, column)
-			column.ChildRelations = append(column.ChildRelations, r)
-		}
 	}
 	s.Relations = relations
 
