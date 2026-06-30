@@ -579,9 +579,9 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 		}
 
 		data := []string{
-			c.Name,
-			c.Type,
-			c.Default.String,
+			mdEscRep.Replace(c.Name),
+			mdEscRep.Replace(c.Type),
+			mdEscRep.Replace(c.Default.String),
 			fmt.Sprintf("%v", c.Nullable),
 		}
 		adjustData(&data, t.ShowColumn(schema.ColumnExtraDef, hideColumns), mdEscRep.Replace(c.ExtraDef))
