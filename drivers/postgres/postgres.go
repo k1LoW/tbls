@@ -19,8 +19,9 @@ var reVersion = regexp.MustCompile(`([0-9]+(\.[0-9]+)*)`)
 
 // Postgres struct.
 type Postgres struct {
-	db     *sql.DB
-	rsMode bool
+	db            *sql.DB
+	rsMode        bool
+	tableExcludes []string
 }
 
 // New return new Postgres.
@@ -29,6 +30,14 @@ func New(db *sql.DB) *Postgres {
 		db:     db,
 		rsMode: false,
 	}
+}
+
+// SetTableExcludes pushes table-name exclude patterns into the table
+// listing query. Patterns use the same glob syntax as the --exclude flag;
+// only patterns that translate cleanly to SQL LIKE are pushed down, the
+// rest fall through to schema.Filter post-fetch.
+func (p *Postgres) SetTableExcludes(patterns []string) {
+	p.tableExcludes = patterns
 }
 
 // Analyze PostgreSQL database schema.
@@ -98,24 +107,7 @@ func (p *Postgres) Analyze(s *schema.Schema) (err error) {
 	fullTableNames := []string{}
 
 	// tables
-	tableRows, err := p.db.Query(`
-SELECT
-    cls.oid AS oid,
-    cls.relname AS table_name,
-    CASE
-        WHEN cls.relkind IN ('r', 'p') THEN 'BASE TABLE'
-        WHEN cls.relkind = 'v' THEN 'VIEW'
-        WHEN cls.relkind = 'm' THEN 'MATERIALIZED VIEW'
-        WHEN cls.relkind = 'f' THEN 'FOREIGN TABLE'
-    END AS table_type,
-    ns.nspname AS table_schema,
-    descr.description AS table_comment
-FROM pg_class AS cls
-INNER JOIN pg_namespace AS ns ON cls.relnamespace = ns.oid
-LEFT JOIN pg_description AS descr ON cls.oid = descr.objoid AND descr.objsubid = 0
-WHERE ns.nspname NOT IN ('pg_catalog', 'information_schema')
-AND cls.relkind IN ('r', 'p', 'v', 'f', 'm')
-ORDER BY oid`)
+	tableRows, err := p.db.Query(p.queryForTables())
 	if err != nil {
 		return errors.WithStack(err)
 	}
@@ -339,11 +331,30 @@ ORDER BY tgrelid
 	s.Tables = tables
 
 	// Relations
+	validRelations := []*schema.Relation{}
 	for _, r := range relations {
 		strColumns, strParentTable, strParentColumns, err := parseFK(r.Def)
 		if err != nil {
 			return err
 		}
+
+		dn, err := detectFullTableName(strParentTable, s.Driver.Meta.SearchPaths, fullTableNames)
+		if err != nil {
+			if len(p.tableExcludes) > 0 {
+				// Parent table was filtered out at the query stage; drop the relation.
+				continue
+			}
+			return err
+		}
+		strParentTable = dn
+		parentTable, err := s.FindTableByName(strParentTable)
+		if err != nil {
+			if len(p.tableExcludes) > 0 {
+				continue
+			}
+			return err
+		}
+
 		for _, c := range strColumns {
 			column, err := r.Table.FindColumnByName(c)
 			if err != nil {
@@ -353,15 +364,6 @@ ORDER BY tgrelid
 			column.ParentRelations = append(column.ParentRelations, r)
 		}
 
-		dn, err := detectFullTableName(strParentTable, s.Driver.Meta.SearchPaths, fullTableNames)
-		if err != nil {
-			return err
-		}
-		strParentTable = dn
-		parentTable, err := s.FindTableByName(strParentTable)
-		if err != nil {
-			return err
-		}
 		r.ParentTable = parentTable
 		for _, c := range strParentColumns {
 			column, err := parentTable.FindColumnByName(c)
@@ -371,9 +373,10 @@ ORDER BY tgrelid
 			r.ParentColumns = append(r.ParentColumns, column)
 			column.ChildRelations = append(column.ChildRelations, r)
 		}
+		validRelations = append(validRelations, r)
 	}
 
-	s.Relations = relations
+	s.Relations = validRelations
 
 	// referenced tables of view
 	for _, t := range s.Tables {
@@ -710,6 +713,68 @@ LEFT JOIN pg_description AS descr ON idx.indexrelid = descr.objoid
 WHERE idx.indrelid = $1::oid
 GROUP BY cls.relname, idx.indexrelid, descr.description
 ORDER BY idx.indexrelid`
+}
+
+func (p *Postgres) queryForTables() string {
+	baseQuery := `
+SELECT
+    cls.oid AS oid,
+    cls.relname AS table_name,
+    CASE
+        WHEN cls.relkind IN ('r', 'p') THEN 'BASE TABLE'
+        WHEN cls.relkind = 'v' THEN 'VIEW'
+        WHEN cls.relkind = 'm' THEN 'MATERIALIZED VIEW'
+        WHEN cls.relkind = 'f' THEN 'FOREIGN TABLE'
+    END AS table_type,
+    ns.nspname AS table_schema,
+    descr.description AS table_comment
+FROM pg_class AS cls
+INNER JOIN pg_namespace AS ns ON cls.relnamespace = ns.oid
+LEFT JOIN pg_description AS descr ON cls.oid = descr.objoid AND descr.objsubid = 0
+WHERE ns.nspname NOT IN ('pg_catalog', 'information_schema')
+AND cls.relkind IN ('r', 'p', 'v', 'f', 'm')`
+
+	for _, like := range tableExcludeLikes(p.tableExcludes) {
+		baseQuery += fmt.Sprintf("\nAND cls.relname NOT LIKE %s ESCAPE '\\' AND (ns.nspname || '.' || cls.relname) NOT LIKE %s ESCAPE '\\'", like, like)
+	}
+
+	baseQuery += `
+ORDER BY oid`
+	return baseQuery
+}
+
+// tableExcludeLikes converts each glob pattern that contains only `*` and
+// literal characters into a SQL-quoted LIKE pattern (with `_` and `%`
+// escaped). Patterns containing other wildcard characters are dropped;
+// schema.Filter will still exclude those tables post-fetch.
+func tableExcludeLikes(patterns []string) []string {
+	var out []string
+	for _, p := range patterns {
+		like, ok := globToLike(p)
+		if !ok {
+			continue
+		}
+		out = append(out, "'"+strings.ReplaceAll(like, "'", "''")+"'")
+	}
+	return out
+}
+
+func globToLike(pattern string) (string, bool) {
+	var b strings.Builder
+	for _, r := range pattern {
+		switch r {
+		case '*':
+			b.WriteByte('%')
+		case '?':
+			return "", false
+		case '%', '_', '\\':
+			b.WriteByte('\\')
+			b.WriteRune(r)
+		default:
+			b.WriteRune(r)
+		}
+	}
+	return b.String(), true
 }
 
 func detectFullTableName(name string, searchPaths, fullTableNames []string) (_ string, err error) {
