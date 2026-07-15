@@ -71,6 +71,9 @@ func Analyze(dsn config.DSN) (_ *schema.Schema, err error) {
 	if strings.HasPrefix(urlstr, "databricks://") {
 		return AnalyzeDatabricks(urlstr)
 	}
+	if strings.HasPrefix(urlstr, "azuresql://") {
+		return AnalyzeAzureSQL(urlstr)
+	}
 	s := &schema.Schema{}
 	u, err := dburl.Parse(urlstr)
 	if err != nil || !slices.Contains(supportDriversWithDburl, u.Driver) {
