@@ -409,6 +409,21 @@ comments:
 dsn: my://dbuser:dbpass@hostname:3306/dbname
 ```
 
+#### SSL/TLS
+
+For PostgreSQL, MySQL, MariaDB and Microsoft SQL Server, the generic "ssl-ca", "ssl-cert", "ssl-key" and "ssl-verify-identity" parameters configure SSL/TLS using certificate files:
+
+```yaml
+# .tbls.yml
+dsn: my://dbuser:dbpass@hostname:3306/dbname?ssl-ca=/path/to/ca.pem&ssl-cert=/path/to/client-cert.pem&ssl-key=/path/to/client-key.pem
+```
+
+- `ssl-ca` verifies the server certificate chain without hostname verification (like `mysql --ssl-mode=VERIFY_CA`).
+- `ssl-verify-identity=true` also verifies the hostname (like `mysql --ssl-mode=VERIFY_IDENTITY`). The explicit `=true` value is required.
+- `ssl-cert` and `ssl-key` present a client certificate, and must be set together. Without `ssl-ca` or `ssl-verify-identity=true` the connection is encrypted but the server is not verified.
+- Parameters with empty values are ignored, so DSN templates like `?ssl-ca=${MYSQL_SSL_CA}` work unchanged when the environment variables are not set. Paired variables (`ssl-cert`/`ssl-key`) must be set or unset together.
+- Explicit native TLS parameters that contradict these settings (e.g. `sslmode=disable`, `encrypt=disable`, `trustservercertificate=true`, `tls=preferred`) are rejected with an error instead of being silently overridden. `tls=true` keeps full verification, and `tls=skip-verify` is upgraded to the requested verification level.
+
 #### Support Datasource
 
 tbls supports the following databases/datasources.
@@ -431,6 +446,8 @@ For example:
 dsn: pg://dbuser:dbpass@hostname:5432/dbname?sslmode=disable
 ```
 
+The generic SSL/TLS parameters map to `sslrootcert`, `sslcert` and `sslkey`, with `sslmode=verify-ca` (or `sslmode=verify-full` when `ssl-verify-identity=true` is set). An explicit verifying `sslmode` (`require`, `verify-ca`, `verify-full`) is kept. Certificate paths containing spaces are not supported.
+
 **MySQL:**
 
 ```yaml
@@ -449,6 +466,16 @@ For example:
 ```yaml
 dsn: my://dbuser:dbpass@hostname:3306/dbname?hide_auto_increment
 ```
+
+Each `--ssl-mode` of the mysql client maps to DSN parameters (see the SSL/TLS section) as follows:
+
+| `--ssl-mode` | DSN parameters |
+| --- | --- |
+| `DISABLED` | `?tls=false` |
+| `PREFERRED` | `?tls=preferred` |
+| `REQUIRED` | `?tls=skip-verify` |
+| `VERIFY_CA` | `?ssl-ca=/path/to/ca.pem` |
+| `VERIFY_IDENTITY` | `?ssl-ca=/path/to/ca.pem&ssl-verify-identity=true` |
 
 **MariaDB:**
 
@@ -550,6 +577,8 @@ dsn: sqlserver://DbUser:SQLServer-DbPassw0rd@hostname:1433/testdb
 # .tbls.yml
 dsn: ms://DbUser:SQLServer-DbPassw0rd@localhost:1433/testdb
 ```
+
+The generic SSL/TLS `ssl-ca` parameter maps to `certificate` with `encrypt=true` and `trustservercertificate=false` (go-mssqldb always verifies the hostname when encryption is on). The certificate file must have a `.pem` or `.der` extension. An explicit `encrypt=strict` is kept. Client certificates (`ssl-cert`/`ssl-key`) are not supported by the driver.
 
 **Amazon DynamoDB:**
 
