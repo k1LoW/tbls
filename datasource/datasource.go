@@ -56,6 +56,14 @@ func Analyze(dsn config.DSN) (_ *schema.Schema, err error) {
 	if strings.HasPrefix(urlstr, "json://") {
 		return AnalyzeJSON(urlstr)
 	}
+	for _, prefix := range []string{"bq://", "bigquery://", "span://", "spanner://", "dynamodb://", "dynamo://", "mongodb://", "mongo://", "databricks://"} {
+		if strings.HasPrefix(urlstr, prefix) {
+			if err := rejectSSLParams(urlstr); err != nil {
+				return nil, err
+			}
+			break
+		}
+	}
 	if strings.HasPrefix(urlstr, "bq://") || strings.HasPrefix(urlstr, "bigquery://") {
 		return AnalyzeBigquery(urlstr)
 	}
@@ -83,6 +91,14 @@ func Analyze(dsn config.DSN) (_ *schema.Schema, err error) {
 	splitted := strings.Split(u.Short(), "/")
 	if len(splitted) < 2 {
 		return s, fmt.Errorf("invalid DSN: parse %s -> %#v", urlstr, u)
+	}
+
+	changed, err := applySSLParams(u)
+	if err != nil {
+		return nil, err
+	}
+	if changed {
+		urlstr = u.String()
 	}
 
 	opts := []drivers.Option{}
