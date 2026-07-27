@@ -9,48 +9,17 @@ import (
 	"crypto/x509/pkix"
 	"encoding/pem"
 	"math/big"
-	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
 	"time"
 
+	"github.com/k1LoW/tbls/config"
 	"github.com/xo/dburl"
 )
 
-func TestApplySSLParamsAbsent(t *testing.T) {
-	tests := []struct {
-		name        string
-		dsn         string
-		wantChanged bool
-	}{
-		{"no ssl params", "mysql://user:pass@hostname:3306/dbname?hide_auto_increment", false},
-		{"empty ssl params", "mysql://user:pass@hostname:3306/dbname?ssl-ca=&ssl-cert=&ssl-key=&ssl-verify-identity=", true},
-		{"empty ssl params on postgres", "postgres://user:pass@hostname:5432/dbname?ssl-ca=", true},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			u, err := dburl.Parse(tt.dsn)
-			if err != nil {
-				t.Fatal(err)
-			}
-			changed, err := applySSLParams(u)
-			if err != nil {
-				t.Fatalf("unexpected error: %v", err)
-			}
-			if changed != tt.wantChanged {
-				t.Errorf("changed = %v, want %v", changed, tt.wantChanged)
-			}
-			assertSSLParamsRemoved(t, u)
-			if got := u.Query().Get("tls"); got != "" {
-				t.Errorf("tls parameter should not be set, got %q", got)
-			}
-		})
-	}
-}
-
-func TestApplySSLParamsMySQL(t *testing.T) {
+func TestApplyTLSConfigMySQL(t *testing.T) {
 	dir := t.TempDir()
 	ca := writeTestCA(t, dir)
 	cert, key := writeTestKeyPair(t, dir)
@@ -58,22 +27,23 @@ func TestApplySSLParamsMySQL(t *testing.T) {
 	tests := []struct {
 		name    string
 		dsn     string
+		tls     config.TLS
 		wantErr bool
 	}{
-		{"ca only", "mysql://user:pass@hostname:3306/dbname?ssl-ca=" + ca, false},
-		{"ca with client cert", "mysql://user:pass@hostname:3306/dbname?ssl-ca=" + ca + "&ssl-cert=" + cert + "&ssl-key=" + key, false},
-		{"client cert only", "maria://user:pass@hostname:3306/dbname?ssl-cert=" + cert + "&ssl-key=" + key, false},
-		{"ca with verify identity", "mysql://user:pass@hostname:3306/dbname?ssl-ca=" + ca + "&ssl-verify-identity=true", false},
-		{"verify identity only", "mysql://user:pass@hostname:3306/dbname?ssl-verify-identity=true", false},
-		{"explicit tls=true keeps full verification", "mysql://user:pass@hostname:3306/dbname?tls=true&ssl-cert=" + cert + "&ssl-key=" + key, false},
-		{"explicit tls=skip-verify is upgraded", "mysql://user:pass@hostname:3306/dbname?tls=skip-verify&ssl-ca=" + ca, false},
-		{"explicit tls=preferred conflicts", "mysql://user:pass@hostname:3306/dbname?tls=preferred&ssl-ca=" + ca, true},
-		{"explicit tls=false conflicts", "mysql://user:pass@hostname:3306/dbname?tls=false&ssl-ca=" + ca, true},
-		{"invalid verify identity value", "mysql://user:pass@hostname:3306/dbname?ssl-ca=" + ca + "&ssl-verify-identity=yeah", true},
-		{"cert without key", "mysql://user:pass@hostname:3306/dbname?ssl-ca=" + ca + "&ssl-cert=" + cert, true},
-		{"key without cert", "mysql://user:pass@hostname:3306/dbname?ssl-key=" + key, true},
-		{"missing ca file", "mysql://user:pass@hostname:3306/dbname?ssl-ca=" + filepath.Join(dir, "missing.pem"), true},
-		{"invalid ca file", "mysql://user:pass@hostname:3306/dbname?ssl-ca=" + key, true},
+		{"ca only", "mysql://user:pass@hostname:3306/dbname", config.TLS{CA: ca}, false},
+		{"ca with client cert", "mysql://user:pass@hostname:3306/dbname", config.TLS{CA: ca, Cert: cert, Key: key}, false},
+		{"client cert only", "maria://user:pass@hostname:3306/dbname", config.TLS{Cert: cert, Key: key}, false},
+		{"ca with verify identity", "mysql://user:pass@hostname:3306/dbname", config.TLS{CA: ca, Verify: "identity"}, false},
+		{"verify identity only", "mysql://user:pass@hostname:3306/dbname", config.TLS{Verify: "identity"}, false},
+		{"explicit tls=true keeps full verification", "mysql://user:pass@hostname:3306/dbname?tls=true", config.TLS{Cert: cert, Key: key}, false},
+		{"explicit tls=skip-verify is upgraded", "mysql://user:pass@hostname:3306/dbname?tls=skip-verify", config.TLS{CA: ca}, false},
+		{"explicit tls=preferred conflicts", "mysql://user:pass@hostname:3306/dbname?tls=preferred", config.TLS{CA: ca}, true},
+		{"explicit tls=false conflicts", "mysql://user:pass@hostname:3306/dbname?tls=false", config.TLS{CA: ca}, true},
+		{"invalid verify value", "mysql://user:pass@hostname:3306/dbname", config.TLS{CA: ca, Verify: "yeah"}, true},
+		{"cert without key", "mysql://user:pass@hostname:3306/dbname", config.TLS{CA: ca, Cert: cert}, true},
+		{"key without cert", "mysql://user:pass@hostname:3306/dbname", config.TLS{Key: key}, true},
+		{"missing ca file", "mysql://user:pass@hostname:3306/dbname", config.TLS{CA: filepath.Join(dir, "missing.pem")}, true},
+		{"invalid ca file", "mysql://user:pass@hostname:3306/dbname", config.TLS{CA: key}, true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -81,7 +51,7 @@ func TestApplySSLParamsMySQL(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			changed, err := applySSLParams(u)
+			err = applyTLSConfig(u, tt.tls)
 			if tt.wantErr {
 				if err == nil {
 					t.Fatal("expected error, got nil")
@@ -91,10 +61,6 @@ func TestApplySSLParamsMySQL(t *testing.T) {
 			if err != nil {
 				t.Fatalf("unexpected error: %v", err)
 			}
-			if !changed {
-				t.Error("changed = false, want true")
-			}
-			assertSSLParamsRemoved(t, u)
 			if got := u.Query().Get("tls"); !strings.HasPrefix(got, "tbls-dsn-") {
 				t.Errorf("tls parameter should be a registered tbls-dsn config, got %q", got)
 			}
@@ -102,16 +68,16 @@ func TestApplySSLParamsMySQL(t *testing.T) {
 	}
 }
 
-func TestApplySSLParamsMySQLRegistersUniqueNames(t *testing.T) {
+func TestApplyTLSConfigMySQLRegistersUniqueNames(t *testing.T) {
 	dir := t.TempDir()
 	ca := writeTestCA(t, dir)
 	names := map[string]bool{}
 	for range 2 {
-		u, err := dburl.Parse("mysql://user:pass@hostname:3306/dbname?ssl-ca=" + ca)
+		u, err := dburl.Parse("mysql://user:pass@hostname:3306/dbname")
 		if err != nil {
 			t.Fatal(err)
 		}
-		if _, err := applySSLParams(u); err != nil {
+		if err := applyTLSConfig(u, config.TLS{CA: ca}); err != nil {
 			t.Fatal(err)
 		}
 		names[u.Query().Get("tls")] = true
@@ -121,7 +87,7 @@ func TestApplySSLParamsMySQLRegistersUniqueNames(t *testing.T) {
 	}
 }
 
-func TestApplySSLParamsPostgres(t *testing.T) {
+func TestApplyTLSConfigPostgres(t *testing.T) {
 	dir := t.TempDir()
 	ca := writeTestCA(t, dir)
 	cert, key := writeTestKeyPair(t, dir)
@@ -129,20 +95,21 @@ func TestApplySSLParamsPostgres(t *testing.T) {
 	tests := []struct {
 		name         string
 		dsn          string
+		tls          config.TLS
 		wantErr      bool
 		wantSSLMode  string
 		wantRootCert string
 		wantCert     string
 		wantKey      string
 	}{
-		{"ca only", "postgres://user:pass@hostname:5432/dbname?ssl-ca=" + ca, false, "verify-ca", ca, "", ""},
-		{"ca keeps explicit verify-full", "postgres://user:pass@hostname:5432/dbname?sslmode=verify-full&ssl-ca=" + ca, false, "verify-full", ca, "", ""},
-		{"ca keeps explicit require", "postgres://user:pass@hostname:5432/dbname?sslmode=require&ssl-ca=" + ca, false, "require", ca, "", ""},
-		{"ca with client cert", "postgres://user:pass@hostname:5432/dbname?ssl-ca=" + ca + "&ssl-cert=" + cert + "&ssl-key=" + key, false, "verify-ca", ca, cert, key},
-		{"ca with verify identity", "postgres://user:pass@hostname:5432/dbname?ssl-ca=" + ca + "&ssl-verify-identity=true", false, "verify-full", ca, "", ""},
-		{"redshift scheme", "rs://user:pass@hostname:5439/dbname?ssl-ca=" + ca, false, "verify-ca", ca, "", ""},
-		{"ca conflicts with sslmode=disable", "postgres://user:pass@hostname:5432/dbname?sslmode=disable&ssl-ca=" + ca, true, "", "", "", ""},
-		{"verify identity conflicts with explicit sslmode", "postgres://user:pass@hostname:5432/dbname?sslmode=require&ssl-verify-identity=true", true, "", "", "", ""},
+		{"ca only", "postgres://user:pass@hostname:5432/dbname", config.TLS{CA: ca}, false, "verify-ca", ca, "", ""},
+		{"ca keeps explicit verify-full", "postgres://user:pass@hostname:5432/dbname?sslmode=verify-full", config.TLS{CA: ca}, false, "verify-full", ca, "", ""},
+		{"ca keeps explicit require", "postgres://user:pass@hostname:5432/dbname?sslmode=require", config.TLS{CA: ca}, false, "require", ca, "", ""},
+		{"ca with client cert", "postgres://user:pass@hostname:5432/dbname", config.TLS{CA: ca, Cert: cert, Key: key}, false, "verify-ca", ca, cert, key},
+		{"ca with verify identity", "postgres://user:pass@hostname:5432/dbname", config.TLS{CA: ca, Verify: "identity"}, false, "verify-full", ca, "", ""},
+		{"redshift scheme", "rs://user:pass@hostname:5439/dbname", config.TLS{CA: ca}, false, "verify-ca", ca, "", ""},
+		{"ca conflicts with sslmode=disable", "postgres://user:pass@hostname:5432/dbname?sslmode=disable", config.TLS{CA: ca}, true, "", "", "", ""},
+		{"verify identity conflicts with explicit sslmode", "postgres://user:pass@hostname:5432/dbname?sslmode=require", config.TLS{Verify: "identity"}, true, "", "", "", ""},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -150,7 +117,7 @@ func TestApplySSLParamsPostgres(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			changed, err := applySSLParams(u)
+			err = applyTLSConfig(u, tt.tls)
 			if tt.wantErr {
 				if err == nil {
 					t.Fatal("expected error, got nil")
@@ -160,10 +127,6 @@ func TestApplySSLParamsPostgres(t *testing.T) {
 			if err != nil {
 				t.Fatalf("unexpected error: %v", err)
 			}
-			if !changed {
-				t.Error("changed = false, want true")
-			}
-			assertSSLParamsRemoved(t, u)
 			values := u.Query()
 			for param, want := range map[string]string{
 				"sslmode":     tt.wantSSLMode,
@@ -179,40 +142,35 @@ func TestApplySSLParamsPostgres(t *testing.T) {
 	}
 }
 
-func TestApplySSLParamsPostgresRejectsPathsWithSpaces(t *testing.T) {
+func TestApplyTLSConfigPostgresRejectsPathsWithSpaces(t *testing.T) {
 	dir := t.TempDir()
 	spacedDir := filepath.Join(dir, "with space")
 	if err := os.Mkdir(spacedDir, 0o700); err != nil {
 		t.Fatal(err)
 	}
 	ca := writeTestCA(t, spacedDir)
-	u, err := dburl.Parse("postgres://user:pass@hostname:5432/dbname?ssl-ca=" + url.QueryEscape(ca))
+	u, err := dburl.Parse("postgres://user:pass@hostname:5432/dbname")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if _, err := applySSLParams(u); err == nil {
+	if err := applyTLSConfig(u, config.TLS{CA: ca}); err == nil {
 		t.Fatal("expected error, got nil")
 	}
 }
 
-func TestApplySSLParamsSQLServer(t *testing.T) {
+func TestApplyTLSConfigSQLServer(t *testing.T) {
 	dir := t.TempDir()
 	ca := writeTestCA(t, dir)
 	cert, key := writeTestKeyPair(t, dir)
 
 	t.Run("ca only", func(t *testing.T) {
-		u, err := dburl.Parse("sqlserver://user:pass@hostname:1433/instance?ssl-ca=" + ca)
+		u, err := dburl.Parse("sqlserver://user:pass@hostname:1433/instance")
 		if err != nil {
 			t.Fatal(err)
 		}
-		changed, err := applySSLParams(u)
-		if err != nil {
+		if err := applyTLSConfig(u, config.TLS{CA: ca}); err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
-		if !changed {
-			t.Error("changed = false, want true")
-		}
-		assertSSLParamsRemoved(t, u)
 		values := u.Query()
 		if got := values.Get("encrypt"); got != "true" {
 			t.Errorf("encrypt = %q, want %q", got, "true")
@@ -225,11 +183,11 @@ func TestApplySSLParamsSQLServer(t *testing.T) {
 		}
 	})
 	t.Run("verify identity only", func(t *testing.T) {
-		u, err := dburl.Parse("sqlserver://user:pass@hostname:1433/instance?ssl-verify-identity=true")
+		u, err := dburl.Parse("sqlserver://user:pass@hostname:1433/instance")
 		if err != nil {
 			t.Fatal(err)
 		}
-		if _, err := applySSLParams(u); err != nil {
+		if err := applyTLSConfig(u, config.TLS{Verify: "identity"}); err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
 		values := u.Query()
@@ -241,11 +199,11 @@ func TestApplySSLParamsSQLServer(t *testing.T) {
 		}
 	})
 	t.Run("explicit encrypt=strict is kept", func(t *testing.T) {
-		u, err := dburl.Parse("sqlserver://user:pass@hostname:1433/instance?encrypt=strict&ssl-ca=" + ca)
+		u, err := dburl.Parse("sqlserver://user:pass@hostname:1433/instance?encrypt=strict")
 		if err != nil {
 			t.Fatal(err)
 		}
-		if _, err := applySSLParams(u); err != nil {
+		if err := applyTLSConfig(u, config.TLS{CA: ca}); err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
 		if got := u.Query().Get("encrypt"); got != "strict" {
@@ -253,50 +211,52 @@ func TestApplySSLParamsSQLServer(t *testing.T) {
 		}
 	})
 	t.Run("ca conflicts with encrypt=disable", func(t *testing.T) {
-		u, err := dburl.Parse("sqlserver://user:pass@hostname:1433/instance?encrypt=disable&ssl-ca=" + ca)
+		u, err := dburl.Parse("sqlserver://user:pass@hostname:1433/instance?encrypt=disable")
 		if err != nil {
 			t.Fatal(err)
 		}
-		if _, err := applySSLParams(u); err == nil {
+		if err := applyTLSConfig(u, config.TLS{CA: ca}); err == nil {
 			t.Fatal("expected error, got nil")
 		}
 	})
 	t.Run("ca conflicts with trustservercertificate=true", func(t *testing.T) {
-		u, err := dburl.Parse("sqlserver://user:pass@hostname:1433/instance?trustservercertificate=true&ssl-ca=" + ca)
+		u, err := dburl.Parse("sqlserver://user:pass@hostname:1433/instance?trustservercertificate=true")
 		if err != nil {
 			t.Fatal(err)
 		}
-		if _, err := applySSLParams(u); err == nil {
+		if err := applyTLSConfig(u, config.TLS{CA: ca}); err == nil {
 			t.Fatal("expected error, got nil")
 		}
 	})
 	t.Run("client cert unsupported", func(t *testing.T) {
-		u, err := dburl.Parse("sqlserver://user:pass@hostname:1433/instance?ssl-cert=" + cert + "&ssl-key=" + key)
+		u, err := dburl.Parse("sqlserver://user:pass@hostname:1433/instance")
 		if err != nil {
 			t.Fatal(err)
 		}
-		if _, err := applySSLParams(u); err == nil {
+		if err := applyTLSConfig(u, config.TLS{Cert: cert, Key: key}); err == nil {
 			t.Fatal("expected error, got nil")
 		}
 	})
 }
 
-func TestApplySSLParamsUnsupportedDriver(t *testing.T) {
-	u, err := dburl.Parse("clickhouse://user:pass@hostname:9000/dbname?ssl-ca=/path/to/ca.pem")
+func TestApplyTLSConfigUnsupportedDriver(t *testing.T) {
+	u, err := dburl.Parse("clickhouse://user:pass@hostname:9000/dbname")
 	if err != nil {
 		t.Fatal(err)
 	}
-	if _, err := applySSLParams(u); err == nil {
+	if err := applyTLSConfig(u, config.TLS{CA: "/path/to/ca.pem"}); err == nil {
 		t.Fatal("expected error, got nil")
 	}
 }
 
-func TestRejectSSLParams(t *testing.T) {
-	if err := rejectSSLParams("mongodb://user:pass@hostname:27017/dbname?ssl-ca=/path/to/ca.pem"); err == nil {
-		t.Error("expected error, got nil")
-	}
-	if err := rejectSSLParams("mongodb://user:pass@hostname:27017/dbname?tls=true"); err != nil {
-		t.Errorf("unexpected error: %v", err)
+func TestAnalyzeTLSUnsupportedDatasource(t *testing.T) {
+	for _, urlstr := range []string{
+		"mongodb://user:pass@hostname:27017/dbname",
+		"json://path/to/schema.json",
+	} {
+		if _, err := Analyze(config.DSN{URL: urlstr, TLS: config.TLS{CA: "/path/to/ca.pem"}}); err == nil {
+			t.Errorf("expected error for %s, got nil", urlstr)
+		}
 	}
 }
 
@@ -318,16 +278,6 @@ func TestVerifyServerCertificate(t *testing.T) {
 	}
 	if err := verify(tls.ConnectionState{}); err == nil {
 		t.Error("connection without server certificate accepted")
-	}
-}
-
-func assertSSLParamsRemoved(t *testing.T, u *dburl.URL) {
-	t.Helper()
-	values := u.Query()
-	for _, k := range sslParamKeys {
-		if _, ok := values[k]; ok {
-			t.Errorf("%s should be removed from the DSN", k)
-		}
 	}
 }
 

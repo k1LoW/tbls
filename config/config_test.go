@@ -718,6 +718,32 @@ func TestNeedToGenerateERImages(t *testing.T) {
 	}
 }
 
+func TestDSNTLSConfig(t *testing.T) {
+	c, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	in := []byte(`
+dsn:
+  url: my://dbuser:dbpass@hostname:3306/dbname
+  tls:
+    ca: /path/to/ca.pem
+    cert: /path/to/client-cert.pem
+    key: /path/to/client-key.pem
+    verify: identity
+`)
+	if err := c.LoadConfig(in); err != nil {
+		t.Fatal(err)
+	}
+	if want := "my://dbuser:dbpass@hostname:3306/dbname"; c.DSN.URL != want {
+		t.Errorf("got %v\nwant %v", c.DSN.URL, want)
+	}
+	want := TLS{CA: "/path/to/ca.pem", Cert: "/path/to/client-cert.pem", Key: "/path/to/client-key.pem", Verify: "identity"}
+	if c.DSN.TLS != want {
+		t.Errorf("got %#v\nwant %#v", c.DSN.TLS, want)
+	}
+}
+
 func TestDetectShowColumnsForER(t *testing.T) {
 	tests := []struct {
 		showColumnTypes   *ShowColumnTypes

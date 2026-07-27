@@ -11,107 +11,79 @@ import (
 	"sync/atomic"
 
 	mysqldriver "github.com/go-sql-driver/mysql"
+	"github.com/k1LoW/tbls/config"
 	"github.com/xo/dburl"
 )
 
 var mysqlTLSConfigCounter atomic.Uint64
 
-var sslParamKeys = []string{"ssl-ca", "ssl-cert", "ssl-key", "ssl-verify-identity"}
+// tlsSupportedDrivers are the dburl drivers that the dsn.tls configuration can
+// be applied to.
+var tlsSupportedDrivers = []string{"mysql", "postgres", "sqlserver"}
 
-type sslParams struct {
-	ca             string
-	cert           string
-	key            string
-	verifyIdentity bool
-}
+const tlsVerifyIdentity = "identity"
 
-// applySSLParams extracts the ssl-ca, ssl-cert, ssl-key and ssl-verify-identity
-// DSN parameters and applies them to the connection using each driver's own TLS
-// mechanism. Empty values are treated as absent. Explicit native TLS parameters
-// that contradict them (e.g. sslmode=disable, encrypt=disable,
+// applyTLSConfig applies the dsn.tls configuration to the connection using
+// each driver's own TLS mechanism, rewriting the DSN query accordingly.
+// Empty values are treated as absent. Native TLS DSN parameters that
+// contradict the configuration (e.g. sslmode=disable, encrypt=disable,
 // trustservercertificate=true) are rejected instead of silently overridden.
-// Reports whether the DSN query was rewritten.
-func applySSLParams(u *dburl.URL) (bool, error) {
+func applyTLSConfig(u *dburl.URL, t config.TLS) error {
+	if t.Verify != "" && t.Verify != tlsVerifyIdentity {
+		return fmt.Errorf("invalid dsn.tls.verify value: %s", t.Verify)
+	}
+	if (t.Cert == "") != (t.Key == "") {
+		return fmt.Errorf("dsn.tls.cert and dsn.tls.key must be set together")
+	}
+
 	values := u.Query()
-	present := false
-	for _, k := range sslParamKeys {
-		if _, ok := values[k]; ok {
-			present = true
-		}
-	}
-	if !present {
-		return false, nil
-	}
-	p := sslParams{
-		ca:   values.Get("ssl-ca"),
-		cert: values.Get("ssl-cert"),
-		key:  values.Get("ssl-key"),
-	}
-	if v := values.Get("ssl-verify-identity"); v != "" {
-		verifyIdentity, err := strconv.ParseBool(v)
-		if err != nil {
-			return false, fmt.Errorf("invalid ssl-verify-identity value: %s", v)
-		}
-		p.verifyIdentity = verifyIdentity
-	}
-	for _, k := range sslParamKeys {
-		values.Del(k)
-	}
-
-	if p.ca == "" && p.cert == "" && p.key == "" && !p.verifyIdentity {
-		u.RawQuery = values.Encode()
-		return true, nil
-	}
-	if (p.cert == "") != (p.key == "") {
-		return false, fmt.Errorf("ssl-cert and ssl-key must be set together")
-	}
-
 	var err error
 	switch u.Driver {
 	case "mysql":
-		err = registerMySQLTLS(p, values)
+		err = registerMySQLTLS(t, values)
 	case "postgres":
-		err = applyPostgresSSL(p, values)
+		err = applyPostgresTLS(t, values)
 	case "sqlserver":
-		err = applySQLServerSSL(p, values)
+		err = applySQLServerTLS(t, values)
 	default:
-		err = fmt.Errorf("ssl-ca/ssl-cert/ssl-key/ssl-verify-identity are not supported for driver '%s'", u.Driver)
+		err = fmt.Errorf("dsn.tls is not supported for driver '%s'", u.Driver)
 	}
 	if err != nil {
-		return false, err
+		return err
 	}
 	u.RawQuery = values.Encode()
-	return true, nil
+	return nil
 }
 
 // registerMySQLTLS registers a TLS config for MySQL/MariaDB connections and
 // rewrites the tls parameter to use it. An explicit tls=true is honored by
 // keeping full verification; tls=false and tls=preferred cannot be combined
-// with certificate files and are rejected.
-func registerMySQLTLS(p sslParams, values url.Values) error {
+// with dsn.tls and are rejected.
+func registerMySQLTLS(t config.TLS, values url.Values) error {
+	identity := t.Verify == tlsVerifyIdentity
 	switch explicit := values.Get("tls"); explicit {
 	case "", "skip-verify":
 	case "true":
-		p.verifyIdentity = true
+		identity = true
 	default:
-		return fmt.Errorf("cannot combine tls=%s with ssl-ca/ssl-cert/ssl-key", explicit)
+		return fmt.Errorf("cannot combine tls=%s with dsn.tls", explicit)
 	}
 
 	tlsConfig := &tls.Config{} //nolint:gosec // the verification level is set explicitly below
 	var pool *x509.CertPool
-	if p.ca != "" {
-		pem, err := os.ReadFile(p.ca)
+	if t.CA != "" {
+		pem, err := os.ReadFile(t.CA)
 		if err != nil {
-			return fmt.Errorf("failed to read ssl-ca: %w", err)
+			return fmt.Errorf("failed to read dsn.tls.ca: %w", err)
 		}
 		pool = x509.NewCertPool()
 		if !pool.AppendCertsFromPEM(pem) {
-			return fmt.Errorf("failed to parse CA certificate from ssl-ca: %s", p.ca)
+			return fmt.Errorf("failed to parse CA certificate from dsn.tls.ca: %s", t.CA)
 		}
 	}
 	switch {
-	case p.verifyIdentity:
-		// Full verification (chain + hostname) against ssl-ca, or the system roots when no ssl-ca is given.
+	case identity:
+		// Full verification (chain + hostname) against dsn.tls.ca, or the system roots when no ca is given.
 		tlsConfig.RootCAs = pool
 	case pool != nil:
 		// VERIFY_CA: chain verification without hostname verification.
@@ -121,10 +93,10 @@ func registerMySQLTLS(p sslParams, values url.Values) error {
 		// Encrypted without server verification, like tls=skip-verify.
 		tlsConfig.InsecureSkipVerify = true
 	}
-	if p.cert != "" {
-		pair, err := tls.LoadX509KeyPair(p.cert, p.key)
+	if t.Cert != "" {
+		pair, err := tls.LoadX509KeyPair(t.Cert, t.Key)
 		if err != nil {
-			return fmt.Errorf("failed to load ssl-cert/ssl-key: %w", err)
+			return fmt.Errorf("failed to load dsn.tls.cert/dsn.tls.key: %w", err)
 		}
 		// GetClientCertificate (instead of Certificates) sends the certificate
 		// even when the server's acceptable-CA list does not match its issuer.
@@ -141,9 +113,10 @@ func registerMySQLTLS(p sslParams, values url.Values) error {
 	return nil
 }
 
-// applyPostgresSSL maps the parameters to lib/pq's native ssl parameters.
-func applyPostgresSSL(p sslParams, values url.Values) error {
-	for _, path := range []string{p.ca, p.cert, p.key} {
+// applyPostgresTLS maps the dsn.tls configuration to lib/pq's native ssl
+// parameters.
+func applyPostgresTLS(t config.TLS, values url.Values) error {
+	for _, path := range []string{t.CA, t.Cert, t.Key} {
 		if strings.Contains(path, " ") {
 			return fmt.Errorf("certificate paths containing spaces are not supported for postgres DSNs: %s", path)
 		}
@@ -151,65 +124,49 @@ func applyPostgresSSL(p sslParams, values url.Values) error {
 	mode := values.Get("sslmode")
 	switch mode {
 	case "disable", "allow", "prefer":
-		return fmt.Errorf("ssl-ca/ssl-cert/ssl-key/ssl-verify-identity conflict with sslmode=%s", mode)
+		return fmt.Errorf("dsn.tls conflicts with sslmode=%s", mode)
 	}
-	if p.verifyIdentity {
+	if t.Verify == tlsVerifyIdentity {
 		if mode != "" && mode != "verify-full" {
-			return fmt.Errorf("ssl-verify-identity=true conflicts with sslmode=%s", mode)
+			return fmt.Errorf("dsn.tls.verify: identity conflicts with sslmode=%s", mode)
 		}
 		values.Set("sslmode", "verify-full")
-	} else if p.ca != "" && mode == "" {
+	} else if t.CA != "" && mode == "" {
 		values.Set("sslmode", "verify-ca")
 	}
-	if p.ca != "" {
-		values.Set("sslrootcert", p.ca)
+	if t.CA != "" {
+		values.Set("sslrootcert", t.CA)
 	}
-	if p.cert != "" {
-		values.Set("sslcert", p.cert)
-		values.Set("sslkey", p.key)
+	if t.Cert != "" {
+		values.Set("sslcert", t.Cert)
+		values.Set("sslkey", t.Key)
 	}
 	return nil
 }
 
-// applySQLServerSSL maps ssl-ca to go-mssqldb's certificate parameter (the file
-// must have a .pem or .der extension). go-mssqldb performs full verification
-// (chain + hostname) when encryption is on and trustservercertificate is
-// false, so ssl-verify-identity needs no extra mapping.
-func applySQLServerSSL(p sslParams, values url.Values) error {
-	if p.cert != "" {
-		return fmt.Errorf("ssl-cert/ssl-key are not supported for driver 'sqlserver'")
+// applySQLServerTLS maps dsn.tls.ca to go-mssqldb's certificate parameter (the
+// file must have a .pem or .der extension). go-mssqldb performs full
+// verification (chain + hostname) when encryption is on and
+// trustservercertificate is false, so verify: identity needs no extra mapping.
+func applySQLServerTLS(t config.TLS, values url.Values) error {
+	if t.Cert != "" {
+		return fmt.Errorf("dsn.tls.cert/dsn.tls.key are not supported for driver 'sqlserver'")
 	}
-	if t := values.Get("trustservercertificate"); t != "" {
-		trust, err := strconv.ParseBool(t)
-		if err == nil && trust && p.ca != "" {
-			return fmt.Errorf("ssl-ca conflicts with trustservercertificate=true")
+	if v := values.Get("trustservercertificate"); v != "" {
+		trust, err := strconv.ParseBool(v)
+		if err == nil && trust && t.CA != "" {
+			return fmt.Errorf("dsn.tls.ca conflicts with trustservercertificate=true")
 		}
 	}
 	switch strings.ToLower(values.Get("encrypt")) {
 	case "":
 		values.Set("encrypt", "true")
 	case "disable", "optional", "no", "0", "f", "false":
-		return fmt.Errorf("ssl-ca/ssl-verify-identity conflict with encrypt=%s", values.Get("encrypt"))
+		return fmt.Errorf("dsn.tls conflicts with encrypt=%s", values.Get("encrypt"))
 	}
-	if p.ca != "" {
-		values.Set("certificate", p.ca)
+	if t.CA != "" {
+		values.Set("certificate", t.CA)
 		values.Set("trustservercertificate", "false")
-	}
-	return nil
-}
-
-// rejectSSLParams returns an error when the DSN carries generic ssl parameters
-// for a datasource that does not support them, instead of silently ignoring
-// the requested security settings.
-func rejectSSLParams(urlstr string) error {
-	u, err := url.Parse(urlstr)
-	if err != nil {
-		return nil //nolint:nilerr // let the datasource report its own DSN parse error
-	}
-	for _, k := range sslParamKeys {
-		if _, ok := u.Query()[k]; ok {
-			return fmt.Errorf("ssl-ca/ssl-cert/ssl-key/ssl-verify-identity are not supported for datasource '%s://'", u.Scheme)
-		}
 	}
 	return nil
 }
@@ -230,7 +187,7 @@ func verifyServerCertificate(roots *x509.CertPool) func(tls.ConnectionState) err
 			opts.Intermediates.AddCert(cert)
 		}
 		if _, err := cs.PeerCertificates[0].Verify(opts); err != nil {
-			return fmt.Errorf("failed to verify server certificate against ssl-ca: %w", err)
+			return fmt.Errorf("failed to verify server certificate against dsn.tls.ca: %w", err)
 		}
 		return nil
 	}

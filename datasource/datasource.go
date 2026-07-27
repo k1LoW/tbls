@@ -47,6 +47,12 @@ func Analyze(dsn config.DSN) (_ *schema.Schema, err error) {
 		err = errors.WithStack(err)
 	}()
 	urlstr := dsn.URL
+	hasTLS := dsn.TLS != (config.TLS{})
+	if hasTLS {
+		if u, err := dburl.Parse(urlstr); err != nil || !slices.Contains(tlsSupportedDrivers, u.Driver) {
+			return nil, fmt.Errorf("dsn.tls is not supported for this datasource")
+		}
+	}
 	if strings.HasPrefix(urlstr, "https://") || strings.HasPrefix(urlstr, "http://") {
 		return AnalyzeHTTPResource(dsn)
 	}
@@ -55,14 +61,6 @@ func Analyze(dsn config.DSN) (_ *schema.Schema, err error) {
 	}
 	if strings.HasPrefix(urlstr, "json://") {
 		return AnalyzeJSON(urlstr)
-	}
-	for _, prefix := range []string{"bq://", "bigquery://", "span://", "spanner://", "dynamodb://", "dynamo://", "mongodb://", "mongo://", "databricks://"} {
-		if strings.HasPrefix(urlstr, prefix) {
-			if err := rejectSSLParams(urlstr); err != nil {
-				return nil, err
-			}
-			break
-		}
 	}
 	if strings.HasPrefix(urlstr, "bq://") || strings.HasPrefix(urlstr, "bigquery://") {
 		return AnalyzeBigquery(urlstr)
@@ -93,11 +91,10 @@ func Analyze(dsn config.DSN) (_ *schema.Schema, err error) {
 		return s, fmt.Errorf("invalid DSN: parse %s -> %#v", urlstr, u)
 	}
 
-	changed, err := applySSLParams(u)
-	if err != nil {
-		return nil, err
-	}
-	if changed {
+	if hasTLS {
+		if err := applyTLSConfig(u, dsn.TLS); err != nil {
+			return nil, err
+		}
 		urlstr = u.String()
 	}
 
