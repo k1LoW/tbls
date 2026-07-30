@@ -10,6 +10,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/google/go-cmp/cmp"
 	"github.com/k1LoW/tbls/schema"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/xo/dburl"
@@ -56,6 +57,28 @@ func TestInfo(t *testing.T) {
 	}
 	if d.DatabaseVersion == "" {
 		t.Errorf("got not empty string.")
+	}
+}
+
+// posts has multiple triggers in testdata/ddl/sqlite.sql, created in an order that differs from name order.
+func TestTriggersOrder(t *testing.T) {
+	driver := New(db)
+	sc := &schema.Schema{Name: "testdb.sqlite3"}
+	if err := driver.Analyze(sc); err != nil {
+		t.Fatal(err)
+	}
+
+	tbl, err := sc.FindTableByName("posts")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var got []string
+	for _, trig := range tbl.Triggers {
+		got = append(got, trig.Name)
+	}
+	want := []string{"update_posts_updated", "posts_fts_insert", "posts_fts_delete", "posts_fts_update"}
+	if diff := cmp.Diff(got, want); diff != "" {
+		t.Error(diff)
 	}
 }
 
