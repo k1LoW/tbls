@@ -70,6 +70,44 @@ func TestInfo(t *testing.T) {
 	}
 }
 
+func TestTriggersOrder(t *testing.T) {
+	if _, err := db.Exec(`DROP TABLE IF EXISTS tbls_trigger_order`); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := db.Exec(`CREATE TABLE tbls_trigger_order (a int)`); err != nil {
+		t.Fatal(err)
+	}
+	defer func() {
+		_, _ = db.Exec(`DROP TABLE IF EXISTS tbls_trigger_order`)
+	}()
+	// Create the triggers in descending name order so that creation order and name order differ.
+	if _, err := db.Exec(`CREATE TRIGGER trg_tbls_trigger_order_b AFTER INSERT ON tbls_trigger_order FOR EACH ROW EXECUTE PROCEDURE update_updated()`); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := db.Exec(`CREATE TRIGGER trg_tbls_trigger_order_a AFTER INSERT ON tbls_trigger_order FOR EACH ROW EXECUTE PROCEDURE update_updated()`); err != nil {
+		t.Fatal(err)
+	}
+
+	driver := New(db)
+	sc := &schema.Schema{Name: "testdb"}
+	if err := driver.Analyze(sc); err != nil {
+		t.Fatal(err)
+	}
+
+	tbl, err := sc.FindTableByName("public.tbls_trigger_order")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var got []string
+	for _, trig := range tbl.Triggers {
+		got = append(got, trig.Name)
+	}
+	want := []string{"trg_tbls_trigger_order_b", "trg_tbls_trigger_order_a"}
+	if diff := cmp.Diff(got, want); diff != "" {
+		t.Error(diff)
+	}
+}
+
 func TestParseFK(t *testing.T) {
 	tests := []struct {
 		in              string

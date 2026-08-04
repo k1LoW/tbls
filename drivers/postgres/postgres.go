@@ -218,7 +218,7 @@ FROM pg_trigger AS trig
 LEFT JOIN pg_description AS descr ON trig.oid = descr.objoid
 WHERE tgisinternal = false
 AND tgrelid = $1::oid
-ORDER BY tgrelid
+ORDER BY trig.oid
 `, tableOid)
 			if err != nil {
 				return errors.WithStack(err)
