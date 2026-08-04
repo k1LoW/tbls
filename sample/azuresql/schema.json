@@ -433,7 +433,7 @@
           "nullable": false
         }
       ],
-      "def": "CREATE VIEW order_summary AS (\n  SELECT o.id, u.username, o.total_amount, o.status, o.created\n  FROM orders AS o\n  LEFT JOIN users AS u ON u.id = o.user_id\n)",
+      "def": "CREATE VIEW order_summary AS (\n  SELECT o.id, u.username, o.total_amount, o.status, o.created\n  FROM orders AS o\n  LEFT JOIN users AS u ON u.id = o.user_id\n);",
       "referenced_tables": [
         "orders",
         "users"

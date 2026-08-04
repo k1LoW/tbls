@@ -100,7 +100,7 @@ SELECT definition FROM sys.sql_modules WHERE object_id = @p1
 				if err != nil {
 					return errors.WithStack(err)
 				}
-				table.Def = tableDef.String
+				table.Def = normalizeViewDefinition(tableDef.String)
 			}
 		}
 
@@ -549,6 +549,14 @@ func (m *Mssql) Info() (*schema.Driver, error) {
 		},
 	}
 	return d, nil
+}
+
+func normalizeViewDefinition(def string) string {
+	def = strings.TrimRight(def, " \t\n\r")
+	if def == "" || strings.HasSuffix(def, ";") {
+		return def
+	}
+	return def + ";"
 }
 
 func convertTableType(t string) string {

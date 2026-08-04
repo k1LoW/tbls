@@ -10,7 +10,7 @@ CREATE VIEW order_summary AS (
   SELECT o.id, u.username, o.total_amount, o.status, o.created
   FROM orders AS o
   LEFT JOIN users AS u ON u.id = o.user_id
-)
+);
 ```
 
 </details>
