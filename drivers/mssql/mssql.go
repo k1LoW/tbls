@@ -317,6 +317,7 @@ INNER JOIN sys.sql_modules AS sm
 ON sm.object_id = t.object_id
 WHERE type = 'TR'
 AND parent_id = object_id(@p1)
+ORDER BY t.object_id
 `, fmt.Sprintf("%s.%s", tableSchema, tableName))
 		if err != nil {
 			return errors.WithStack(err)

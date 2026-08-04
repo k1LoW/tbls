@@ -7,6 +7,7 @@ import (
 	"log"
 	"testing"
 
+	"github.com/google/go-cmp/cmp"
 	"github.com/k1LoW/tbls/schema"
 	_ "github.com/microsoft/go-mssqldb"
 	"github.com/xo/dburl"
@@ -58,6 +59,45 @@ func TestInfo(t *testing.T) {
 	}
 	if d.DatabaseVersion == "" {
 		t.Errorf("got not empty string.")
+	}
+}
+
+func TestTriggersOrder(t *testing.T) {
+	if _, err := db.Exec(`DROP TABLE IF EXISTS tbls_trigger_order`); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := db.Exec(`CREATE TABLE tbls_trigger_order (a int)`); err != nil {
+		t.Fatal(err)
+	}
+	defer func() {
+		_, _ = db.Exec(`DROP TABLE IF EXISTS tbls_trigger_order`)
+	}()
+	// Create the triggers in descending name order so that creation order and name order differ.
+	// CREATE TRIGGER must be the first statement in a batch, so each one is executed on its own.
+	if _, err := db.Exec(`CREATE TRIGGER trg_tbls_trigger_order_b ON tbls_trigger_order AFTER INSERT AS BEGIN SET NOCOUNT ON; END`); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := db.Exec(`CREATE TRIGGER trg_tbls_trigger_order_a ON tbls_trigger_order AFTER INSERT AS BEGIN SET NOCOUNT ON; END`); err != nil {
+		t.Fatal(err)
+	}
+
+	driver := New(db)
+	sc := &schema.Schema{Name: "testdb"}
+	if err := driver.Analyze(sc); err != nil {
+		t.Fatal(err)
+	}
+
+	tbl, err := sc.FindTableByName("tbls_trigger_order")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var got []string
+	for _, trig := range tbl.Triggers {
+		got = append(got, trig.Name)
+	}
+	want := []string{"trg_tbls_trigger_order_b", "trg_tbls_trigger_order_a"}
+	if diff := cmp.Diff(got, want); diff != "" {
+		t.Error(diff)
 	}
 }
 
