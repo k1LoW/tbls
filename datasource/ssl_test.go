@@ -263,9 +263,15 @@ func TestAnalyzeTLSUnsupportedDatasource(t *testing.T) {
 		"mongodb://user:pass@hostname:27017/dbname",
 		"json://path/to/schema.json",
 	} {
-		if _, err := Analyze(config.DSN{URL: urlstr, TLS: config.TLS{CA: "/path/to/ca.pem"}}); err == nil {
+		if _, err := Analyze(config.DSN{URL: urlstr, TLS: &config.TLS{CA: "/path/to/ca.pem"}}); err == nil {
 			t.Errorf("expected error for %s, got nil", urlstr)
 		}
+	}
+}
+
+func TestAnalyzeTLSEmptyBlock(t *testing.T) {
+	if _, err := Analyze(config.DSN{URL: "my://user:pass@hostname:3306/dbname", TLS: &config.TLS{}}); err == nil {
+		t.Fatal("expected error, got nil")
 	}
 }
 

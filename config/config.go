@@ -69,7 +69,7 @@ type Config struct {
 type DSN struct {
 	URL     string            `yaml:"url"`
 	Headers map[string]string `yaml:"headers,omitempty"`
-	TLS     TLS               `yaml:"tls,omitempty"`
+	TLS     *TLS              `yaml:"tls,omitempty"`
 }
 
 // TLS is the SSL/TLS configuration for the datasource connection.

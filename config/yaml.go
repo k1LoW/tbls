@@ -6,7 +6,7 @@ import (
 )
 
 func (d DSN) MarshalYAML() ([]byte, error) {
-	if len(d.Headers) == 0 && d.TLS == (TLS{}) {
+	if len(d.Headers) == 0 && d.TLS == nil {
 		dsn := d.URL
 		return yaml.Marshal(dsn)
 	}

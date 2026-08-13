@@ -739,8 +739,31 @@ dsn:
 		t.Errorf("got %v\nwant %v", c.DSN.URL, want)
 	}
 	want := TLS{CA: "/path/to/ca.pem", Cert: "/path/to/client-cert.pem", Key: "/path/to/client-key.pem", Verify: "identity"}
-	if c.DSN.TLS != want {
+	if c.DSN.TLS == nil || *c.DSN.TLS != want {
 		t.Errorf("got %#v\nwant %#v", c.DSN.TLS, want)
+	}
+}
+
+func TestDSNTLSConfigEmptyValues(t *testing.T) {
+	c, err := New()
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Setenv("TBLS_TEST_TLS_CA", "")
+	in := []byte(`
+dsn:
+  url: my://dbuser:dbpass@hostname:3306/dbname
+  tls:
+    ca: ${TBLS_TEST_TLS_CA}
+`)
+	if err := c.LoadConfig(in); err != nil {
+		t.Fatal(err)
+	}
+	if c.DSN.TLS == nil {
+		t.Fatal("DSN.TLS should not be nil when the tls block is present")
+	}
+	if *c.DSN.TLS != (TLS{}) {
+		t.Errorf("got %#v\nwant %#v", *c.DSN.TLS, TLS{})
 	}
 }
 
