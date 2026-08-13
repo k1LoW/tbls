@@ -154,8 +154,8 @@ func applySQLServerTLS(t config.TLS, values url.Values) error {
 	}
 	if v := values.Get("trustservercertificate"); v != "" {
 		trust, err := strconv.ParseBool(v)
-		if err == nil && trust && t.CA != "" {
-			return fmt.Errorf("dsn.tls.ca conflicts with trustservercertificate=true")
+		if err == nil && trust {
+			return fmt.Errorf("dsn.tls conflicts with trustservercertificate=true")
 		}
 	}
 	switch strings.ToLower(values.Get("encrypt")) {

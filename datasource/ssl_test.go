@@ -228,6 +228,15 @@ func TestApplyTLSConfigSQLServer(t *testing.T) {
 			t.Fatal("expected error, got nil")
 		}
 	})
+	t.Run("verify identity conflicts with trustservercertificate=true", func(t *testing.T) {
+		u, err := dburl.Parse("sqlserver://user:pass@hostname:1433/instance?trustservercertificate=true")
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err := applyTLSConfig(u, config.TLS{Verify: "identity"}); err == nil {
+			t.Fatal("expected error, got nil")
+		}
+	})
 	t.Run("client cert unsupported", func(t *testing.T) {
 		u, err := dburl.Parse("sqlserver://user:pass@hostname:1433/instance")
 		if err != nil {
