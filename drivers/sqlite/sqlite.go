@@ -335,7 +335,7 @@ WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
 
 		// triggers
 		triggerRows, err := l.db.Query(`
-SELECT name, sql FROM sqlite_master WHERE type = 'trigger' AND tbl_name = ?;
+SELECT name, sql FROM sqlite_master WHERE type = 'trigger' AND tbl_name = ? ORDER BY rowid;
 `, tableName)
 		if err != nil {
 			return errors.WithStack(err)

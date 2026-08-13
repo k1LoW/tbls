@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/google/go-cmp/cmp"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/xo/dburl"
 )
@@ -82,6 +83,48 @@ func TestInfo(t *testing.T) {
 	}
 	if d.DatabaseVersion == "" {
 		t.Errorf("got not empty string.")
+	}
+}
+
+func TestTriggersOrder(t *testing.T) {
+	if _, err := db.Exec(`DROP TABLE IF EXISTS tbls_trigger_order`); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := db.Exec(`CREATE TABLE tbls_trigger_order (a int)`); err != nil {
+		t.Fatal(err)
+	}
+	defer func() {
+		_, _ = db.Exec(`DROP TABLE IF EXISTS tbls_trigger_order`)
+	}()
+	// mysql orders triggers by name because information_schema has no stable creation-order key, so create
+	// them in descending name order to detect the creation order leaking into the output.
+	if _, err := db.Exec(`CREATE TRIGGER trg_tbls_trigger_order_b BEFORE INSERT ON tbls_trigger_order FOR EACH ROW SET NEW.a = NEW.a`); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := db.Exec(`CREATE TRIGGER trg_tbls_trigger_order_a BEFORE INSERT ON tbls_trigger_order FOR EACH ROW SET NEW.a = NEW.a`); err != nil {
+		t.Fatal(err)
+	}
+
+	driver, err := New(db)
+	if err != nil {
+		t.Fatal(err)
+	}
+	sc := &schema.Schema{Name: "testdb"}
+	if err := driver.Analyze(sc); err != nil {
+		t.Fatal(err)
+	}
+
+	tbl, err := sc.FindTableByName("tbls_trigger_order")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var got []string
+	for _, trig := range tbl.Triggers {
+		got = append(got, trig.Name)
+	}
+	want := []string{"trg_tbls_trigger_order_a", "trg_tbls_trigger_order_b"}
+	if diff := cmp.Diff(got, want); diff != "" {
+		t.Error(diff)
 	}
 }
 

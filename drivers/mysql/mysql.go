@@ -177,6 +177,7 @@ SELECT
   action_statement
 FROM information_schema.triggers
 WHERE event_object_schema = ?
+ORDER BY event_object_table, trigger_name
 `, s.Name)
 	if err != nil {
 		return errors.WithStack(err)
