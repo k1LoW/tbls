@@ -17,12 +17,15 @@ L:
 		for _, opt := range opts {
 			switch {
 			case a == opt:
+				if i+1 >= len(args) {
+					// The option has no value. Keep it in remains so that the caller can report it.
+					break
+				}
 				v = args[i+1]
 				skipNext = true
 				continue L
 			case strings.HasPrefix(a, fmt.Sprintf("%s=", opt)):
-				splited := strings.Split(a, "=")
-				v = splited[1]
+				_, v, _ = strings.Cut(a, "=")
 				continue L
 			}
 		}
