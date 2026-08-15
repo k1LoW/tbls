@@ -964,7 +964,7 @@ func adjustTable(data [][]string) [][]string {
 			if i == 1 {
 				data[i][j] = strings.Repeat("-", w[j])
 			} else {
-				data[i][j] = fmt.Sprintf(fmt.Sprintf("%%-%ds", w[j]), r.Replace(data[i][j]))
+				data[i][j] = runewidth.FillRight(r.Replace(data[i][j]), w[j])
 			}
 		}
 	}
