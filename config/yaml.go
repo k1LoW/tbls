@@ -6,7 +6,7 @@ import (
 )
 
 func (d DSN) MarshalYAML() ([]byte, error) {
-	if len(d.Headers) == 0 {
+	if len(d.Headers) == 0 && d.TLS == nil {
 		dsn := d.URL
 		return yaml.Marshal(dsn)
 	}
@@ -22,9 +22,13 @@ func (d *DSN) UnmarshalYAML(data []byte) error {
 	case string:
 		d.URL = raw
 	case interface{}:
-		if err := yaml.Unmarshal(data, d); err != nil {
+		// Unmarshal via an alias type to avoid recursing into this method.
+		type plain DSN
+		var p plain
+		if err := yaml.Unmarshal(data, &p); err != nil {
 			return err
 		}
+		*d = DSN(p)
 	}
 	return nil
 }

@@ -47,6 +47,15 @@ func Analyze(dsn config.DSN) (_ *schema.Schema, err error) {
 		err = errors.WithStack(err)
 	}()
 	urlstr := dsn.URL
+	hasTLS := dsn.TLS != nil
+	if hasTLS {
+		if *dsn.TLS == (config.TLS{}) {
+			return nil, fmt.Errorf("dsn.tls: at least one of ca, cert, key, verify must be set (check that env vars referenced under dsn.tls are set)")
+		}
+		if u, err := dburl.Parse(urlstr); err != nil || !slices.Contains(tlsSupportedDrivers, u.Driver) {
+			return nil, fmt.Errorf("dsn.tls is not supported for this datasource")
+		}
+	}
 	if strings.HasPrefix(urlstr, "https://") || strings.HasPrefix(urlstr, "http://") {
 		return AnalyzeHTTPResource(dsn)
 	}
@@ -86,6 +95,13 @@ func Analyze(dsn config.DSN) (_ *schema.Schema, err error) {
 	splitted := strings.Split(u.Short(), "/")
 	if len(splitted) < 2 {
 		return s, fmt.Errorf("invalid DSN: parse %s -> %#v", urlstr, u)
+	}
+
+	if hasTLS {
+		if err := applyTLSConfig(u, *dsn.TLS); err != nil {
+			return nil, err
+		}
+		urlstr = u.String()
 	}
 
 	opts := []drivers.Option{}
@@ -201,7 +217,7 @@ func AnalyzeGitHubContent(dsn config.DSN) (_ *schema.Schema, err error) {
 	}()
 	splitted := strings.SplitN(strings.TrimPrefix(dsn.URL, "github://"), "/", 3)
 	if len(splitted) != 3 {
-		return nil, fmt.Errorf("invalid dsn: %s", dsn)
+		return nil, fmt.Errorf("invalid dsn: %s", dsn.URL)
 	}
 	s := &schema.Schema{}
 	options := []factory.Option{factory.OwnerRepo(splitted[0] + "/" + splitted[1])}
