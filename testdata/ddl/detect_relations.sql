@@ -95,3 +95,10 @@ CREATE TABLE `hyphen-table` (
 CREATE TRIGGER update_posts_updated BEFORE UPDATE ON posts
   FOR EACH ROW
   SET NEW.updated = CURRENT_TIMESTAMP();
+
+-- Foreign key referencing a table in another database. `testdb` also has a `users` table,
+-- so this must resolve to `testdb.users` and not to the `users` table of this database.
+CREATE TABLE external_refs (
+  ref_id int NOT NULL,
+  CONSTRAINT external_refs_fk FOREIGN KEY (ref_id) REFERENCES testdb.users (id)
+);
