@@ -138,10 +138,10 @@ check_license:
 	--include_tests
 
 doc_azuresql: build
-	$(TBLS) doc "azuresql://$(AZURESQL_HOST)?database=$(AZURESQL_DB)&user+id=$(AZURESQL_CLIENT_ID)@$(AZURESQL_TENANT_ID)&password=$(AZURESQL_CLIENT_SECRET)" -c testdata/test_tbls_azuresql.yml -f sample/azuresql
+	$(TBLS) doc "azuresql://$(AZURESQL_CLIENT_ID)@$(AZURESQL_TENANT_ID):$(AZURESQL_CLIENT_SECRET)@$(AZURESQL_HOST)/$(AZURESQL_DB)" -c testdata/test_tbls_azuresql.yml -f sample/azuresql
 
 test_azuresql: build
-	$(TBLS) diff "azuresql://$(AZURESQL_HOST)?database=$(AZURESQL_DB)&user+id=$(AZURESQL_CLIENT_ID)@$(AZURESQL_TENANT_ID)&password=$(AZURESQL_CLIENT_SECRET)" -c testdata/test_tbls_azuresql.yml sample/azuresql
+	$(TBLS) diff "azuresql://$(AZURESQL_CLIENT_ID)@$(AZURESQL_TENANT_ID):$(AZURESQL_CLIENT_SECRET)@$(AZURESQL_HOST)/$(AZURESQL_DB)" -c testdata/test_tbls_azuresql.yml sample/azuresql
 
 doc_bigquery: build
 	$(TBLS) doc bq://bigquery-public-data/crypto_bitcoin?creds=client_secrets.json -c testdata/crypto_bitcoin_tbls.yml -f sample/bigquery_crypto_bitcoin

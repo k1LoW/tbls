@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"net/url"
+	"strings"
 
 	"github.com/k1LoW/errors"
 	mssqlDriver "github.com/k1LoW/tbls/drivers/mssql"
@@ -22,13 +23,25 @@ func prepareAzureSQLURL(urlstr string) (string, string, error) {
 	q := u.Query()
 
 	dbName := q.Get("database")
+	if dbName == "" && u.Path != "" && u.Path != "/" {
+		dbName = strings.TrimPrefix(u.Path, "/")
+		q.Set("database", dbName)
+	}
+	u.Path = ""
 	if dbName == "" {
 		return "", "", fmt.Errorf("no database name in azuresql connection string")
 	}
+
 	if q.Get("fedauth") == "" {
-		q.Set("fedauth", "ActiveDirectoryServicePrincipal")
+		if (u.User != nil && u.User.Username() != "") || q.Get("user id") != "" {
+			q.Set("fedauth", "ActiveDirectoryServicePrincipal")
+		} else {
+			q.Set("fedauth", "ActiveDirectoryDefault")
+		}
 	}
-	q.Set("encrypt", "true")
+	if q.Get("encrypt") == "" {
+		q.Set("encrypt", "true")
+	}
 	u.RawQuery = q.Encode()
 	u.Scheme = "sqlserver"
 
