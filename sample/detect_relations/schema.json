@@ -211,6 +211,43 @@
       "def": "CREATE TABLE `comments` (\n  `id` bigint NOT NULL AUTO_INCREMENT,\n  `post_id` bigint NOT NULL,\n  `user_id` int NOT NULL,\n  `comment` text NOT NULL COMMENT 'Comment\\nMulti-line\\r\\ncolumn\\rcomment',\n  `created` datetime NOT NULL,\n  `updated` datetime DEFAULT NULL,\n  PRIMARY KEY (`id`),\n  UNIQUE KEY `post_id` (`post_id`,`user_id`),\n  KEY `comments_post_id_user_id_idx` (`post_id`,`user_id`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Comments\\nMulti-line\\r\\ntable\\rcomment'"
     },
     {
+      "name": "external_refs",
+      "type": "BASE TABLE",
+      "columns": [
+        {
+          "name": "ref_id",
+          "type": "int",
+          "nullable": false
+        }
+      ],
+      "indexes": [
+        {
+          "name": "external_refs_fk",
+          "def": "KEY external_refs_fk (ref_id) USING BTREE",
+          "table": "external_refs",
+          "columns": [
+            "ref_id"
+          ]
+        }
+      ],
+      "constraints": [
+        {
+          "name": "external_refs_fk",
+          "type": "FOREIGN KEY",
+          "def": "FOREIGN KEY (ref_id) REFERENCES testdb.users (id)",
+          "table": "external_refs",
+          "referenced_table": "testdb.users",
+          "columns": [
+            "ref_id"
+          ],
+          "referenced_columns": [
+            "id"
+          ]
+        }
+      ],
+      "def": "CREATE TABLE `external_refs` (\n  `ref_id` int NOT NULL,\n  KEY `external_refs_fk` (`ref_id`),\n  CONSTRAINT `external_refs_fk` FOREIGN KEY (`ref_id`) REFERENCES `testdb`.`users` (`id`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci"
+    },
+    {
       "name": "hyphen-table",
       "type": "BASE TABLE",
       "columns": [
@@ -666,6 +703,19 @@
     }
   ],
   "relations": [
+    {
+      "table": "external_refs",
+      "columns": [
+        "ref_id"
+      ],
+      "cardinality": "zero_or_more",
+      "parent_table": "testdb.users",
+      "parent_columns": [
+        "id"
+      ],
+      "parent_cardinality": "exactly_one",
+      "def": "FOREIGN KEY (ref_id) REFERENCES testdb.users (id)"
+    },
     {
       "table": "user_options",
       "columns": [

@@ -565,7 +565,12 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 			if _, ok := cEncountered[r.Table.Name]; ok {
 				continue
 			}
-			childRelations = append(childRelations, fmt.Sprintf("[%s](%s%s.md)", r.Table.Name, m.config.BaseURL, mdurl.Encode(r.Table.Name)))
+			// For external tables, display the name without creating a link
+			if r.Table.External {
+				childRelations = append(childRelations, r.Table.Name)
+			} else {
+				childRelations = append(childRelations, fmt.Sprintf("[%s](%s%s.md)", r.Table.Name, m.config.BaseURL, mdurl.Encode(r.Table.Name)))
+			}
 			cEncountered[r.Table.Name] = true
 		}
 		parentRelations := []string{}
@@ -574,7 +579,12 @@ func (m *Md) makeTableTemplateData(t *schema.Table) map[string]interface{} {
 			if _, ok := pEncountered[r.ParentTable.Name]; ok {
 				continue
 			}
-			parentRelations = append(parentRelations, fmt.Sprintf("[%s](%s%s.md)", r.ParentTable.Name, m.config.BaseURL, mdurl.Encode(r.ParentTable.Name)))
+			// For external tables, display the name without creating a link
+			if r.ParentTable.External {
+				parentRelations = append(parentRelations, r.ParentTable.Name)
+			} else {
+				parentRelations = append(parentRelations, fmt.Sprintf("[%s](%s%s.md)", r.ParentTable.Name, m.config.BaseURL, mdurl.Encode(r.ParentTable.Name)))
+			}
 			pEncountered[r.ParentTable.Name] = true
 		}
 

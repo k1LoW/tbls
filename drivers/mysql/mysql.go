@@ -369,6 +369,7 @@ SELECT
   kcu.constraint_name,
   sub.constraint_type,
   GROUP_CONCAT(kcu.column_name ORDER BY kcu.ordinal_position, position_in_unique_constraint SEPARATOR ', ') AS column_name,
+  kcu.referenced_table_schema,
   kcu.referenced_table_name,
   GROUP_CONCAT(kcu.referenced_column_name ORDER BY kcu.ordinal_position, position_in_unique_constraint SEPARATOR ', ') AS referenced_column_name
 FROM information_schema.key_column_usage AS kcu
@@ -397,8 +398,8 @@ ON kcu.constraint_name = sub.constraint_name
   AND kcu.table_name = sub.table_name
   AND (kcu.referenced_table_name = sub.referenced_table_name OR (kcu.referenced_table_name IS NULL AND sub.referenced_table_name IS NULL))
 WHERE kcu.table_schema= ?
-GROUP BY kcu.table_name, kcu.constraint_name, sub.constraint_type, kcu.referenced_table_name
-ORDER BY kcu.table_name, kcu.constraint_name, sub.constraint_type, kcu.referenced_table_name`, s.Name)
+GROUP BY kcu.table_name, kcu.constraint_name, sub.constraint_type, kcu.referenced_table_schema, kcu.referenced_table_name
+ORDER BY kcu.table_name, kcu.constraint_name, sub.constraint_type, kcu.referenced_table_schema, kcu.referenced_table_name`, s.Name)
 	if err != nil {
 		return errors.WithStack(err)
 	}
@@ -406,17 +407,25 @@ ORDER BY kcu.table_name, kcu.constraint_name, sub.constraint_type, kcu.reference
 
 	for constraintRows.Next() {
 		var (
-			tableName               string
-			constraintName          string
-			constraintType          string
-			constraintColumnName    string
-			constraintRefTableName  sql.NullString
-			constraintRefColumnName sql.NullString
-			constraintDef           string
+			tableName                string
+			constraintName           string
+			constraintType           string
+			constraintColumnName     string
+			constraintRefTableSchema sql.NullString
+			constraintRefTableName   sql.NullString
+			constraintRefColumnName  sql.NullString
+			constraintDef            string
 		)
-		err = constraintRows.Scan(&tableName, &constraintName, &constraintType, &constraintColumnName, &constraintRefTableName, &constraintRefColumnName)
+		err = constraintRows.Scan(&tableName, &constraintName, &constraintType, &constraintColumnName, &constraintRefTableSchema, &constraintRefTableName, &constraintRefColumnName)
 		if err != nil {
 			return errors.WithStack(err)
+		}
+
+		// Qualify the referenced table with its database name when it lives in another database,
+		// otherwise it would be indistinguishable from a same-named table of the current one.
+		constraintRefTable := constraintRefTableName.String
+		if constraintRefTable != "" && constraintRefTableSchema.String != s.Name {
+			constraintRefTable = fmt.Sprintf("%s.%s", constraintRefTableSchema.String, constraintRefTable)
 		}
 
 		switch constraintType {
@@ -426,14 +435,14 @@ ORDER BY kcu.table_name, kcu.constraint_name, sub.constraint_type, kcu.reference
 			constraintDef = fmt.Sprintf("UNIQUE KEY %s (%s)", constraintName, constraintColumnName)
 		case "FOREIGN KEY":
 			constraintType = schema.TypeFK
-			constraintDef = fmt.Sprintf("FOREIGN KEY (%s) REFERENCES %s (%s)", constraintColumnName, constraintRefTableName.String, constraintRefColumnName.String)
+			constraintDef = fmt.Sprintf("FOREIGN KEY (%s) REFERENCES %s (%s)", constraintColumnName, constraintRefTable, constraintRefColumnName.String)
 			relation := &schema.Relation{
 				Table: tableMap[tableName],
 				Def:   constraintDef,
 			}
 			relations = append(relations, relation)
 		case "UNKNOWN":
-			constraintDef = fmt.Sprintf("UNKNOWN CONSTRAINT (%s) (%s) (%s)", constraintColumnName, constraintRefTableName.String, constraintRefColumnName.String)
+			constraintDef = fmt.Sprintf("UNKNOWN CONSTRAINT (%s) (%s) (%s)", constraintColumnName, constraintRefTable, constraintRefColumnName.String)
 		}
 
 		constraint := &schema.Constraint{
@@ -443,8 +452,8 @@ ORDER BY kcu.table_name, kcu.constraint_name, sub.constraint_type, kcu.reference
 			Table:   &tableName,
 			Columns: strings.Split(constraintColumnName, ", "),
 		}
-		if constraintRefTableName.String != "" {
-			constraint.ReferencedTable = &constraintRefTableName.String
+		if constraintRefTable != "" {
+			constraint.ReferencedTable = &constraintRefTable
 			constraint.ReferencedColumns = strings.Split(constraintRefColumnName.String, ", ")
 		}
 
@@ -515,17 +524,26 @@ ORDER BY t.table_name, c.constraint_name
 		}
 		parentTable, err := s.FindTableByName(strParentTable)
 		if err != nil {
-			return err
+			// A foreign key can reference a table in another database, which is out of the scope of this schema.
+			// Keep it as an external table with placeholder columns rather than failing the whole analysis.
+			parentTable = &schema.Table{
+				Name:     strParentTable,
+				External: true,
+			}
+			for _, c := range strParentColumns {
+				r.ParentColumns = append(r.ParentColumns, &schema.Column{Name: c})
+			}
+		} else {
+			for _, c := range strParentColumns {
+				column, err := parentTable.FindColumnByName(c)
+				if err != nil {
+					return err
+				}
+				r.ParentColumns = append(r.ParentColumns, column)
+				column.ChildRelations = append(column.ChildRelations, r)
+			}
 		}
 		r.ParentTable = parentTable
-		for _, c := range strParentColumns {
-			column, err := parentTable.FindColumnByName(c)
-			if err != nil {
-				return err
-			}
-			r.ParentColumns = append(r.ParentColumns, column)
-			column.ChildRelations = append(column.ChildRelations, r)
-		}
 	}
 	s.Relations = relations
 
