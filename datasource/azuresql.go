@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/k1LoW/errors"
+	"github.com/k1LoW/tbls/config"
 	mssqlDriver "github.com/k1LoW/tbls/drivers/mssql"
 	"github.com/k1LoW/tbls/schema"
 	_ "github.com/microsoft/go-mssqldb/azuread" // registers "azuresql" driver
@@ -15,7 +16,7 @@ import (
 // prepareAzureSQLURL swaps the scheme to sqlserver:// (the only scheme
 // go-mssqldb/azuread's msdsn.Parse URL-parses) and sets default query params.
 // Returns the rewritten URL string and the database name.
-func prepareAzureSQLURL(urlstr string) (string, string, error) {
+func prepareAzureSQLURL(urlstr string, t *config.TLS) (string, string, error) {
 	u, err := url.Parse(urlstr)
 	if err != nil {
 		return "", "", err
@@ -39,6 +40,17 @@ func prepareAzureSQLURL(urlstr string) (string, string, error) {
 			q.Set("fedauth", "ActiveDirectoryDefault")
 		}
 	}
+	// azuread shares the sqlserver TLS parameters, so dsn.tls is applied through
+	// the same helper. It runs before the encrypt default below so that its
+	// conflict checks see the value the user actually wrote.
+	if t != nil {
+		if err := validateTLSOptions(*t); err != nil {
+			return "", "", err
+		}
+		if err := applySQLServerTLS(*t, q); err != nil {
+			return "", "", err
+		}
+	}
 	if q.Get("encrypt") == "" {
 		q.Set("encrypt", "true")
 	}
@@ -48,10 +60,10 @@ func prepareAzureSQLURL(urlstr string) (string, string, error) {
 	return u.String(), dbName, nil
 }
 
-func AnalyzeAzureSQL(urlstr string) (_ *schema.Schema, err error) {
+func AnalyzeAzureSQL(urlstr string, t *config.TLS) (_ *schema.Schema, err error) {
 	defer func() { err = errors.WithStack(err) }()
 
-	connURL, dbName, err := prepareAzureSQLURL(urlstr)
+	connURL, dbName, err := prepareAzureSQLURL(urlstr, t)
 	if err != nil {
 		return nil, err
 	}

@@ -23,17 +23,26 @@ var tlsSupportedDrivers = []string{"mysql", "postgres", "sqlserver"}
 
 const tlsVerifyIdentity = "identity"
 
+// validateTLSOptions checks the dsn.tls fields that every driver shares, so
+// that the driver-specific appliers only deal with their own parameters.
+func validateTLSOptions(t config.TLS) error {
+	if t.Verify != "" && t.Verify != tlsVerifyIdentity {
+		return fmt.Errorf("invalid dsn.tls.verify value: %s", t.Verify)
+	}
+	if (t.Cert == "") != (t.Key == "") {
+		return fmt.Errorf("dsn.tls.cert and dsn.tls.key must be set together")
+	}
+	return nil
+}
+
 // applyTLSConfig applies the dsn.tls configuration to the connection using
 // each driver's own TLS mechanism, rewriting the DSN query accordingly.
 // Empty values are treated as absent. Native TLS DSN parameters that
 // contradict the configuration (e.g. sslmode=disable, encrypt=disable,
 // trustservercertificate=true) are rejected instead of silently overridden.
 func applyTLSConfig(u *dburl.URL, t config.TLS) error {
-	if t.Verify != "" && t.Verify != tlsVerifyIdentity {
-		return fmt.Errorf("invalid dsn.tls.verify value: %s", t.Verify)
-	}
-	if (t.Cert == "") != (t.Key == "") {
-		return fmt.Errorf("dsn.tls.cert and dsn.tls.key must be set together")
+	if err := validateTLSOptions(t); err != nil {
+		return err
 	}
 
 	values := u.Query()

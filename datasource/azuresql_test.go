@@ -4,6 +4,8 @@ import (
 	"net/url"
 	"strings"
 	"testing"
+
+	"github.com/k1LoW/tbls/config"
 )
 
 func TestPrepareAzureSQLURL(t *testing.T) {
@@ -17,6 +19,9 @@ func TestPrepareAzureSQLURL(t *testing.T) {
 		wantDB      string
 		wantUser    string
 		wantPass    string
+		tls         *config.TLS
+		wantCert    string
+		wantTrust   string
 	}{
 		{
 			name:    "no database param or path returns error",
@@ -116,11 +121,52 @@ func TestPrepareAzureSQLURL(t *testing.T) {
 			wantFedauth: "ActiveDirectoryDefault",
 			wantEncrypt: "true",
 		},
+		{
+			// dsn.tls must reach the connection, not be silently dropped.
+			name:        "dsn.tls.ca maps to certificate and disables trustservercertificate",
+			urlstr:      "azuresql://cid@tid:sec@myhost.example.com/mydb",
+			tls:         &config.TLS{CA: "/etc/ssl/azure.pem"},
+			wantScheme:  "sqlserver",
+			wantDB:      "mydb",
+			wantFedauth: "ActiveDirectoryServicePrincipal",
+			wantEncrypt: "true",
+			wantCert:    "/etc/ssl/azure.pem",
+			wantTrust:   "false",
+		},
+		{
+			name:        "dsn.tls keeps an explicit encrypt=strict",
+			urlstr:      "azuresql://cid@tid:sec@myhost.example.com/mydb?encrypt=strict",
+			tls:         &config.TLS{CA: "/etc/ssl/azure.pem"},
+			wantScheme:  "sqlserver",
+			wantDB:      "mydb",
+			wantFedauth: "ActiveDirectoryServicePrincipal",
+			wantEncrypt: "strict",
+			wantCert:    "/etc/ssl/azure.pem",
+			wantTrust:   "false",
+		},
+		{
+			name:    "dsn.tls conflicting with encrypt=disable returns error",
+			urlstr:  "azuresql://cid@tid:sec@myhost.example.com/mydb?encrypt=disable",
+			tls:     &config.TLS{CA: "/etc/ssl/azure.pem"},
+			wantErr: "dsn.tls conflicts with encrypt=disable",
+		},
+		{
+			name:    "dsn.tls client certificate is rejected",
+			urlstr:  "azuresql://cid@tid:sec@myhost.example.com/mydb",
+			tls:     &config.TLS{Cert: "/etc/ssl/c.pem", Key: "/etc/ssl/c.key"},
+			wantErr: "not supported for driver 'sqlserver'",
+		},
+		{
+			name:    "dsn.tls.cert without dsn.tls.key returns error",
+			urlstr:  "azuresql://cid@tid:sec@myhost.example.com/mydb",
+			tls:     &config.TLS{Cert: "/etc/ssl/c.pem"},
+			wantErr: "must be set together",
+		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gotURL, gotDB, err := prepareAzureSQLURL(tt.urlstr)
+			gotURL, gotDB, err := prepareAzureSQLURL(tt.urlstr, tt.tls)
 			if tt.wantErr != "" {
 				if err == nil {
 					t.Fatalf("expected error containing %q, got nil", tt.wantErr)
@@ -166,14 +212,18 @@ func TestPrepareAzureSQLURL(t *testing.T) {
 				}
 			}
 
-			// Verify password with ';' is not raw in the URL string
-			if strings.Contains(tt.urlstr, "%3B") {
-				if strings.Contains(gotURL, ";") {
-					rawQuery := u.RawQuery
-					if strings.Contains(rawQuery, "=sec;ret") {
-						t.Error("password ';' leaked unencoded into query string — ADO injection possible")
-					}
-				}
+			if tt.wantCert != "" && q.Get("certificate") != tt.wantCert {
+				t.Errorf("certificate = %q, want %q", q.Get("certificate"), tt.wantCert)
+			}
+			if tt.wantTrust != "" && q.Get("trustservercertificate") != tt.wantTrust {
+				t.Errorf("trustservercertificate = %q, want %q", q.Get("trustservercertificate"), tt.wantTrust)
+			}
+
+			// msdsn splits ADO key=value connection strings on ';', so a ';' that
+			// reaches the query unencoded could inject extra options. RawQuery is
+			// the encoded form, so it must never contain one.
+			if strings.Contains(u.RawQuery, ";") {
+				t.Errorf("raw query contains an unencoded ';': %q", u.RawQuery)
 			}
 		})
 	}
