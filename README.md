@@ -584,6 +584,8 @@ dsn: sqlserver://DbUser:SQLServer-DbPassw0rd@hostname:1433/testdb
 dsn: ms://DbUser:SQLServer-DbPassw0rd@localhost:1433/testdb
 ```
 
+SQL Server **2017 or later** is required. Schema introspection uses `STRING_AGG`, which is unavailable on SQL Server 2016 and earlier.
+
 **Azure SQL / Microsoft Fabric Warehouse (Experimental):**
 
 Azure AD Service Principal authentication (credentials in userinfo):
