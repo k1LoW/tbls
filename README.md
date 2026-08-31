@@ -584,6 +584,27 @@ dsn: sqlserver://DbUser:SQLServer-DbPassw0rd@hostname:1433/testdb
 dsn: ms://DbUser:SQLServer-DbPassw0rd@localhost:1433/testdb
 ```
 
+**Azure SQL / Microsoft Fabric Warehouse (Experimental):**
+
+Azure AD Service Principal authentication (credentials in userinfo):
+```yaml
+# .tbls.yml
+dsn: azuresql://<client-id>@<tenant-id>:<client-secret>@myworkspace.datawarehouse.fabric.microsoft.com/mydb
+```
+
+Azure AD Default authentication (picks up `AZURE_CLIENT_ID`, `AZURE_TENANT_ID`, `AZURE_CLIENT_SECRET`, Azure CLI, or Managed Identity):
+```yaml
+# .tbls.yml
+dsn: azuresql://myworkspace.datawarehouse.fabric.microsoft.com/mydb
+```
+
+Supported DSN formats and parameters:
+- Database name can be provided in the URL path (`/mydb`) or via the `database` query parameter (`?database=mydb`).
+- `fedauth`: authentication type. If omitted, defaults to `ActiveDirectoryServicePrincipal` when credentials are provided in userinfo, or `ActiveDirectoryDefault` otherwise.
+- Tenant ID in userinfo is optional (`azuresql://<client-id>:<client-secret>@host/mydb`), resolved from the server if omitted.
+- Other supported `fedauth` modes include `ActiveDirectoryPassword`, `ActiveDirectoryMSI`, etc.
+
+See also: https://github.com/microsoft/go-mssqldb
 The `dsn.tls.ca` setting maps to `certificate` with `encrypt=true` and `trustservercertificate=false` (go-mssqldb always verifies the hostname when encryption is on). The certificate file must have a `.pem` or `.der` extension. An explicit `encrypt=strict` is kept. Client certificates (`cert`/`key`) are not supported by the driver.
 
 **Amazon DynamoDB:**
