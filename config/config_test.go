@@ -392,6 +392,13 @@ func TestMaskedDSN(t *testing.T) {
 			"bq://project-id/dataset-id?creds=/path/to/google_application_credentials.json",
 			"bq://project-id/dataset-id?creds=/path/to/google_application_credentials.json",
 		},
+		{
+			// The azuresql client secret sits in the userinfo password, so it is
+			// masked. The '@' separating client id from tenant id is normalized
+			// to %40 by url.String() and must survive.
+			"azuresql://client-id@tenant-id:client-secret@myworkspace.datawarehouse.fabric.microsoft.com/mydb",
+			"azuresql://client-id%40tenant-id:*****@myworkspace.datawarehouse.fabric.microsoft.com/mydb",
+		},
 	}
 
 	for _, tt := range tests {
