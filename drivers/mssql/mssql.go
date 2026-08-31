@@ -350,7 +350,7 @@ SELECT
   i.is_unique,
   i.is_primary_key,
   i.is_unique_constraint,
-  STRING_AGG(CAST(COL_NAME(ic.object_id, ic.column_id) AS NVARCHAR(MAX)), ', ') WITHIN GROUP (ORDER BY ic.key_ordinal) AS column_names,
+  STRING_AGG(CAST(COL_NAME(ic.object_id, ic.column_id) AS NVARCHAR(MAX)), ', ') WITHIN GROUP (ORDER BY ic.key_ordinal, ic.index_column_id) AS column_names,
   c.is_system_named
 FROM sys.indexes AS i
 LEFT JOIN sys.key_constraints AS c

@@ -163,3 +163,76 @@ func containsStringHelper(s, substr string) bool {
 	}
 	return false
 }
+
+func TestFunctionArgumentsOrder(t *testing.T) {
+	if _, err := db.Exec(`DROP PROCEDURE IF EXISTS tbls_param_order`); err != nil {
+		t.Fatal(err)
+	}
+	// Parameter names sort as @alpha, @mid, @zeta, so declaration order and name
+	// order differ and an unordered aggregate would be visible.
+	if _, err := db.Exec(`CREATE PROCEDURE tbls_param_order @zeta int, @alpha nvarchar(10), @mid bit AS BEGIN SET NOCOUNT ON; END`); err != nil {
+		t.Fatal(err)
+	}
+	defer func() {
+		_, _ = db.Exec(`DROP PROCEDURE IF EXISTS tbls_param_order`)
+	}()
+
+	driver := New(db)
+	sc := &schema.Schema{Name: "testdb"}
+	if err := driver.Analyze(sc); err != nil {
+		t.Fatal(err)
+	}
+
+	var got string
+	for _, f := range sc.Functions {
+		if f.Name == "dbo.tbls_param_order" {
+			got = f.Arguments
+			break
+		}
+	}
+	want := "@zeta int, @alpha nvarchar, @mid bit"
+	if diff := cmp.Diff(got, want); diff != "" {
+		t.Error(diff)
+	}
+}
+
+func TestIndexIncludedColumnsOrder(t *testing.T) {
+	if _, err := db.Exec(`DROP TABLE IF EXISTS tbls_index_include`); err != nil {
+		t.Fatal(err)
+	}
+	// Three INCLUDE columns all carry key_ordinal = 0, so key_ordinal alone does
+	// not order them and index_column_id is what makes the aggregate total.
+	if _, err := db.Exec(`CREATE TABLE tbls_index_include (k int NOT NULL, z int, y int, x int)`); err != nil {
+		t.Fatal(err)
+	}
+	defer func() {
+		_, _ = db.Exec(`DROP TABLE IF EXISTS tbls_index_include`)
+	}()
+	if _, err := db.Exec(`CREATE INDEX ix_tbls_index_include ON tbls_index_include (k) INCLUDE (z, y, x)`); err != nil {
+		t.Fatal(err)
+	}
+
+	driver := New(db)
+	sc := &schema.Schema{Name: "testdb"}
+	if err := driver.Analyze(sc); err != nil {
+		t.Fatal(err)
+	}
+
+	tbl, err := sc.FindTableByName("tbls_index_include")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var got []string
+	for _, idx := range tbl.Indexes {
+		if idx.Name == "ix_tbls_index_include" {
+			got = idx.Columns
+			break
+		}
+	}
+	// key_ordinal = 0 sorts the included columns ahead of the key column; within
+	// them index_column_id follows the INCLUDE list.
+	want := []string{"z", "y", "x", "k"}
+	if diff := cmp.Diff(got, want); diff != "" {
+		t.Error(diff)
+	}
+}
