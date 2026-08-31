@@ -144,7 +144,7 @@ check_license:
 # text and is never re-scanned for expansion or command substitution.
 doc_azuresql: build
 	@TBLS_DSN="azuresql://$${AZURESQL_CLIENT_ID}@$${AZURESQL_TENANT_ID}:$${AZURESQL_CLIENT_SECRET}@$${AZURESQL_HOST}/$${AZURESQL_DB}" TBLS_DOC_PATH=dbdoc/azuresql \
-		$(TBLS) doc -c testdata/test_tbls_azuresql.yml
+		$(TBLS) doc -c testdata/test_tbls_azuresql.yml -f
 
 # Regenerates and diffs, so a second read of the same warehouse must match the
 # first. Catches introspection order that is not pinned down, as in #830/#851.
