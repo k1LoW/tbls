@@ -153,11 +153,38 @@ func applyPostgresTLS(t config.TLS, values url.Values) error {
 	return nil
 }
 
+// canonicalizeSQLServerKeys lowercases every query key, because go-mssqldb's
+// msdsn does the same before looking parameters up and then rejects two keys
+// that collide once lowercased. Without this a DSN written `?Encrypt=strict` is
+// invisible to Get("encrypt"), so the conflict checks below miss it and the
+// lowercase key this package adds turns into a duplicate the driver refuses.
+func canonicalizeSQLServerKeys(values url.Values) error {
+	keys := make([]string, 0, len(values))
+	for k := range values {
+		keys = append(keys, k)
+	}
+	for _, k := range keys {
+		lk := strings.ToLower(k)
+		if lk == k {
+			continue
+		}
+		if _, exists := values[lk]; exists {
+			return fmt.Errorf("connection string key %q provided more than once (keys are case-insensitive)", k)
+		}
+		values[lk] = values[k]
+		delete(values, k)
+	}
+	return nil
+}
+
 // applySQLServerTLS maps dsn.tls.ca to go-mssqldb's certificate parameter (the
 // file must have a .pem or .der extension). go-mssqldb performs full
 // verification (chain + hostname) when encryption is on and
 // trustservercertificate is false, so verify: identity needs no extra mapping.
 func applySQLServerTLS(t config.TLS, values url.Values) error {
+	if err := canonicalizeSQLServerKeys(values); err != nil {
+		return err
+	}
 	if t.Cert != "" {
 		return fmt.Errorf("dsn.tls.cert/dsn.tls.key are not supported for driver 'sqlserver'")
 	}

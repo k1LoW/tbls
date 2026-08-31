@@ -162,6 +162,44 @@ func TestPrepareAzureSQLURL(t *testing.T) {
 			tls:     &config.TLS{Cert: "/etc/ssl/c.pem"},
 			wantErr: "must be set together",
 		},
+		{
+			// msdsn lowercases keys and rejects two that collide once lowered, so
+			// an uppercase Encrypt must be seen here rather than duplicated.
+			name:        "uppercase Encrypt is honoured, not duplicated",
+			urlstr:      "azuresql://cid@tid:sec@myhost.example.com/mydb?Encrypt=strict",
+			wantScheme:  "sqlserver",
+			wantDB:      "mydb",
+			wantFedauth: "ActiveDirectoryServicePrincipal",
+			wantEncrypt: "strict",
+		},
+		{
+			name:        "uppercase Database is honoured",
+			urlstr:      "azuresql://cid@tid:sec@myhost.example.com?Database=mydb",
+			wantScheme:  "sqlserver",
+			wantDB:      "mydb",
+			wantFedauth: "ActiveDirectoryServicePrincipal",
+			wantEncrypt: "true",
+		},
+		{
+			name:        "uppercase FedAuth is not overwritten",
+			urlstr:      "azuresql://myhost.example.com/mydb?FedAuth=ActiveDirectoryMSI",
+			wantScheme:  "sqlserver",
+			wantDB:      "mydb",
+			wantFedauth: "ActiveDirectoryMSI",
+			wantEncrypt: "true",
+		},
+		{
+			// Uppercase forms must not slip past the dsn.tls conflict checks.
+			name:    "uppercase Encrypt=disable still conflicts with dsn.tls",
+			urlstr:  "azuresql://cid@tid:sec@myhost.example.com/mydb?Encrypt=disable",
+			tls:     &config.TLS{CA: "/etc/ssl/azure.pem"},
+			wantErr: "dsn.tls conflicts with encrypt=disable",
+		},
+		{
+			name:    "keys colliding only by case are rejected",
+			urlstr:  "azuresql://cid@tid:sec@myhost.example.com/mydb?Encrypt=strict&encrypt=true",
+			wantErr: "provided more than once",
+		},
 	}
 
 	for _, tt := range tests {

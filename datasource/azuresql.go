@@ -22,6 +22,11 @@ func prepareAzureSQLURL(urlstr string, t *config.TLS) (string, string, error) {
 		return "", "", err
 	}
 	q := u.Query()
+	// msdsn lowercases connection string keys, so `?Database=` and `?Encrypt=`
+	// have to be canonicalized before anything here reads or sets them.
+	if err := canonicalizeSQLServerKeys(q); err != nil {
+		return "", "", err
+	}
 
 	dbName := q.Get("database")
 	if dbName == "" && u.Path != "" && u.Path != "/" {
