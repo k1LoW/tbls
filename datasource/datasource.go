@@ -81,7 +81,7 @@ func Analyze(dsn config.DSN) (_ *schema.Schema, err error) {
 		return AnalyzeDatabricks(urlstr)
 	}
 	if strings.HasPrefix(urlstr, "azuresql://") {
-		return AnalyzeAzureSQL(urlstr, dsn.TLS)
+		return AnalyzeAzureSQL(dsn)
 	}
 	s := &schema.Schema{}
 	u, err := dburl.Parse(urlstr)

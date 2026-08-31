@@ -60,10 +60,10 @@ func prepareAzureSQLURL(urlstr string, t *config.TLS) (string, string, error) {
 	return u.String(), dbName, nil
 }
 
-func AnalyzeAzureSQL(urlstr string, t *config.TLS) (_ *schema.Schema, err error) {
+func AnalyzeAzureSQL(dsn config.DSN) (_ *schema.Schema, err error) {
 	defer func() { err = errors.WithStack(err) }()
 
-	connURL, dbName, err := prepareAzureSQLURL(urlstr, t)
+	connURL, dbName, err := prepareAzureSQLURL(dsn.URL, dsn.TLS)
 	if err != nil {
 		return nil, err
 	}
