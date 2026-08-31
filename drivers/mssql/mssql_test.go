@@ -4,7 +4,9 @@ package mssql
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
+	"strings"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -169,7 +171,9 @@ func TestFunctionArgumentsOrder(t *testing.T) {
 		t.Fatal(err)
 	}
 	// Parameter names sort as @alpha, @mid, @zeta, so declaration order and name
-	// order differ and an unordered aggregate would be visible.
+	// order differ and a wrong sort key such as p.name is caught. Removing the
+	// WITHIN GROUP clause altogether still passes: sys.parameters comes back in
+	// declaration order for a procedure this small and the plan cannot be forced.
 	if _, err := db.Exec(`CREATE PROCEDURE tbls_param_order @zeta int, @alpha nvarchar(10), @mid bit AS BEGIN SET NOCOUNT ON; END`); err != nil {
 		t.Fatal(err)
 	}
@@ -231,8 +235,115 @@ func TestIndexIncludedColumnsOrder(t *testing.T) {
 	}
 	// key_ordinal = 0 sorts the included columns ahead of the key column; within
 	// them index_column_id follows the INCLUDE list.
+	//
+	// This pins the expected order, so a wrong sort key is caught. It does not
+	// prove the tie-breaker is load-bearing: the server returns this order anyway
+	// for an object this small, and a test cannot force the plan that would
+	// reorder the included columns.
 	want := []string{"z", "y", "x", "k"}
 	if diff := cmp.Diff(got, want); diff != "" {
 		t.Error(diff)
+	}
+}
+
+// wideIdentifiers builds n identifiers of the given length, so that the
+// aggregated list is pushed past the 4000-character nvarchar limit that
+// STRING_AGG falls back to without an NVARCHAR(MAX) input.
+func wideIdentifiers(n, length int) []string {
+	names := make([]string, 0, n)
+	for i := 0; i < n; i++ {
+		suffix := fmt.Sprintf("%03d", i)
+		names = append(names, "c_"+strings.Repeat("x", length-2-len(suffix))+suffix)
+	}
+	return names
+}
+
+func TestIndexColumnsExceedingAggregateLimit(t *testing.T) {
+	if _, err := db.Exec(`DROP TABLE IF EXISTS tbls_wide_index`); err != nil {
+		t.Fatal(err)
+	}
+	cols := wideIdentifiers(40, 110)
+	defs := make([]string, 0, len(cols))
+	refs := make([]string, 0, len(cols))
+	for _, c := range cols {
+		defs = append(defs, "["+c+"] int")
+		refs = append(refs, "["+c+"]")
+	}
+	if _, err := db.Exec(`CREATE TABLE tbls_wide_index (k int NOT NULL, ` + strings.Join(defs, ", ") + `)`); err != nil {
+		t.Fatal(err)
+	}
+	defer func() {
+		_, _ = db.Exec(`DROP TABLE IF EXISTS tbls_wide_index`)
+	}()
+	if _, err := db.Exec(`CREATE INDEX ix_tbls_wide_index ON tbls_wide_index (k) INCLUDE (` + strings.Join(refs, ", ") + `)`); err != nil {
+		t.Fatal(err)
+	}
+
+	driver := New(db)
+	sc := &schema.Schema{Name: "testdb"}
+	// Without the NVARCHAR(MAX) cast this fails with error 9829, "STRING_AGG
+	// aggregation result exceeded the limit of 8000 bytes".
+	if err := driver.Analyze(sc); err != nil {
+		t.Fatal(err)
+	}
+
+	tbl, err := sc.FindTableByName("tbls_wide_index")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var got []string
+	for _, idx := range tbl.Indexes {
+		if idx.Name == "ix_tbls_wide_index" {
+			got = idx.Columns
+			break
+		}
+	}
+	want := append(append([]string{}, cols...), "k")
+	if diff := cmp.Diff(got, want); diff != "" {
+		t.Error(diff)
+	}
+	if n := len(strings.Join(got, ", ")); n <= 4000 {
+		t.Errorf("aggregated length = %d, want > 4000 so the unbounded aggregate is actually exercised", n)
+	}
+}
+
+func TestFunctionArgumentsExceedingAggregateLimit(t *testing.T) {
+	if _, err := db.Exec(`DROP PROCEDURE IF EXISTS tbls_wide_params`); err != nil {
+		t.Fatal(err)
+	}
+	names := wideIdentifiers(40, 110)
+	params := make([]string, 0, len(names))
+	wantParts := make([]string, 0, len(names))
+	for _, n := range names {
+		params = append(params, "@"+n+" int")
+		wantParts = append(wantParts, "@"+n+" int")
+	}
+	if _, err := db.Exec(`CREATE PROCEDURE tbls_wide_params ` + strings.Join(params, ", ") + ` AS BEGIN SET NOCOUNT ON; END`); err != nil {
+		t.Fatal(err)
+	}
+	defer func() {
+		_, _ = db.Exec(`DROP PROCEDURE IF EXISTS tbls_wide_params`)
+	}()
+
+	driver := New(db)
+	sc := &schema.Schema{Name: "testdb"}
+	// Without the NVARCHAR(MAX) cast this fails with error 9829.
+	if err := driver.Analyze(sc); err != nil {
+		t.Fatal(err)
+	}
+
+	var got string
+	for _, f := range sc.Functions {
+		if f.Name == "dbo.tbls_wide_params" {
+			got = f.Arguments
+			break
+		}
+	}
+	want := strings.Join(wantParts, ", ")
+	if diff := cmp.Diff(got, want); diff != "" {
+		t.Error(diff)
+	}
+	if len(want) <= 4000 {
+		t.Errorf("aggregated length = %d, want > 4000 so the unbounded aggregate is actually exercised", len(want))
 	}
 }

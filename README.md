@@ -584,7 +584,7 @@ dsn: sqlserver://DbUser:SQLServer-DbPassw0rd@hostname:1433/testdb
 dsn: ms://DbUser:SQLServer-DbPassw0rd@localhost:1433/testdb
 ```
 
-SQL Server **2017 or later** is required. Schema introspection uses `STRING_AGG`, which is unavailable on SQL Server 2016 and earlier.
+SQL Server **2017 or later** with a **database compatibility level of 110 or higher** is required. Schema introspection uses `STRING_AGG`, which is unavailable on SQL Server 2016 and earlier, and its `WITHIN GROUP (ORDER BY ...)` clause needs compatibility level 110+. A database migrated onto a newer server but left at level 100 fails with `Incorrect syntax near '('`; raise it with `ALTER DATABASE <name> SET COMPATIBILITY_LEVEL = 110` (or higher).
 
 **Azure SQL / Microsoft Fabric Warehouse (Experimental):**
 
