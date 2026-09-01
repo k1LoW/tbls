@@ -137,11 +137,20 @@ check_license:
 	--disallowed_types=permissive,forbidden,restricted \
 	--include_tests
 
+# Manual smoke test against a real Azure SQL / Fabric Warehouse endpoint.
+# Output goes to dbdoc/ (gitignored), not sample/azuresql: that directory is
+# generated from the local SQL Server container by `doc` and verified by `test`.
+# $${VAR} defers expansion to the shell, so the secret never enters the recipe
+# text and is never re-scanned for expansion or command substitution.
 doc_azuresql: build
-	$(TBLS) doc "azuresql://$(AZURESQL_CLIENT_ID)@$(AZURESQL_TENANT_ID):$(AZURESQL_CLIENT_SECRET)@$(AZURESQL_HOST)/$(AZURESQL_DB)" -c testdata/test_tbls_azuresql.yml -f sample/azuresql
+	@TBLS_DSN="azuresql://$${AZURESQL_CLIENT_ID}@$${AZURESQL_TENANT_ID}:$${AZURESQL_CLIENT_SECRET}@$${AZURESQL_HOST}/$${AZURESQL_DB}" TBLS_DOC_PATH=dbdoc/azuresql \
+		$(TBLS) doc -c testdata/test_tbls_azuresql.yml -f
 
-test_azuresql: build
-	$(TBLS) diff "azuresql://$(AZURESQL_CLIENT_ID)@$(AZURESQL_TENANT_ID):$(AZURESQL_CLIENT_SECRET)@$(AZURESQL_HOST)/$(AZURESQL_DB)" -c testdata/test_tbls_azuresql.yml sample/azuresql
+# Regenerates and diffs, so a second read of the same warehouse must match the
+# first. Catches introspection order that is not pinned down, as in #830/#851.
+test_azuresql: doc_azuresql
+	@TBLS_DSN="azuresql://$${AZURESQL_CLIENT_ID}@$${AZURESQL_TENANT_ID}:$${AZURESQL_CLIENT_SECRET}@$${AZURESQL_HOST}/$${AZURESQL_DB}" TBLS_DOC_PATH=dbdoc/azuresql \
+		$(TBLS) diff -c testdata/test_tbls_azuresql.yml
 
 doc_bigquery: build
 	$(TBLS) doc bq://bigquery-public-data/crypto_bitcoin?creds=client_secrets.json -c testdata/crypto_bitcoin_tbls.yml -f sample/bigquery_crypto_bitcoin
