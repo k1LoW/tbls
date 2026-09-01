@@ -163,7 +163,7 @@ SELECT
   i.is_unique,
   i.is_primary_key,
   i.is_unique_constraint,
-  STRING_AGG(COL_NAME(ic.object_id, ic.column_id), ', ') WITHIN GROUP (ORDER BY ic.key_ordinal) AS index_columns,
+  STRING_AGG(CAST(COL_NAME(ic.object_id, ic.column_id) AS NVARCHAR(MAX)), ', ') WITHIN GROUP (ORDER BY ic.key_ordinal) AS index_columns,
   c.is_system_named
 FROM sys.key_constraints AS c
 INNER JOIN sys.indexes AS i ON i.object_id = c.parent_object_id AND i.index_id = c.unique_index_id
@@ -224,8 +224,8 @@ SELECT
   OBJECT_NAME(f.parent_object_id) AS table_name,
   OBJECT_NAME(f.referenced_object_id) AS parent_table_name,
   OBJECT_SCHEMA_NAME(f.referenced_object_id) AS parent_schema_name,
-  STRING_AGG(COL_NAME(fc.parent_object_id, fc.parent_column_id), ', ') WITHIN GROUP (ORDER BY fc.constraint_column_id) AS column_names,
-  STRING_AGG(COL_NAME(fc.referenced_object_id, fc.referenced_column_id), ', ') WITHIN GROUP (ORDER BY fc.constraint_column_id) AS parent_column_names,
+  STRING_AGG(CAST(COL_NAME(fc.parent_object_id, fc.parent_column_id) AS NVARCHAR(MAX)), ', ') WITHIN GROUP (ORDER BY fc.constraint_column_id) AS column_names,
+  STRING_AGG(CAST(COL_NAME(fc.referenced_object_id, fc.referenced_column_id) AS NVARCHAR(MAX)), ', ') WITHIN GROUP (ORDER BY fc.constraint_column_id) AS parent_column_names,
   f.update_referential_action_desc,
   f.delete_referential_action_desc,
   f.is_system_named
@@ -350,7 +350,7 @@ SELECT
   i.is_unique,
   i.is_primary_key,
   i.is_unique_constraint,
-  STRING_AGG(COL_NAME(ic.object_id, ic.column_id), ', ') WITHIN GROUP (ORDER BY ic.key_ordinal) AS column_names,
+  STRING_AGG(CAST(COL_NAME(ic.object_id, ic.column_id) AS NVARCHAR(MAX)), ', ') WITHIN GROUP (ORDER BY ic.key_ordinal, ic.index_column_id) AS column_names,
   c.is_system_named
 FROM sys.indexes AS i
 LEFT JOIN sys.key_constraints AS c
@@ -482,7 +482,8 @@ const query = `SELECT SCHEMA_NAME(obj.schema_id) AS schema_name,
 		WHEN 'X' THEN 'Extended stored procedure'
 	END AS type,
 	TYPE_NAME(ret.user_type_id) AS return_type,
-	(SELECT STRING_AGG(p.name + ' ' + TYPE_NAME(p.user_type_id), ', ')
+	(SELECT STRING_AGG(CAST(p.name + ' ' + TYPE_NAME(p.user_type_id) AS NVARCHAR(MAX)), ', ')
+	             WITHIN GROUP (ORDER BY p.parameter_id)
 	 FROM sys.parameters p
 	 WHERE p.object_id = obj.object_id AND p.parameter_id != 0) AS parameters
 FROM sys.objects obj
