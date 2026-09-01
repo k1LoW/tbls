@@ -607,6 +607,7 @@ Supported DSN formats and parameters:
 - Other supported `fedauth` modes include `ActiveDirectoryPassword`, `ActiveDirectoryMSI`, etc.
 
 See also: https://github.com/microsoft/go-mssqldb
+
 The `dsn.tls.ca` setting maps to `certificate` with `encrypt=true` and `trustservercertificate=false` (go-mssqldb always verifies the hostname when encryption is on). The certificate file must have a `.pem` or `.der` extension. An explicit `encrypt=strict` is kept. Client certificates (`cert`/`key`) are not supported by the driver.
 
 **Amazon DynamoDB:**
