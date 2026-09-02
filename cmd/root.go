@@ -128,6 +128,12 @@ var rootCmd = &cobra.Command{
 
 		envs := os.Environ()
 		subCmd := args[0]
+		// The usage text advertises -h and --help, but DisableFlagParsing keeps cobra from
+		// handling them here, so they would otherwise be reported as unknown flags.
+		if subCmd == "-h" || subCmd == "--help" {
+			cmd.HelpFunc()(cmd, args)
+			return nil
+		}
 		bin, err := safeexec.LookPath(version.Name + "-" + subCmd)
 		if err != nil {
 			if strings.HasPrefix(subCmd, "-") {
