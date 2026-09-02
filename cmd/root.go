@@ -100,8 +100,8 @@ Use "{{.CommandPath}} [command] --help" for more information about a command.{{e
 
 var subCmds = []string{}
 
-// errReported carries the exit status for a failure whose message has already been
-// written, so that Execute does not print it a second time.
+// errReported marks a failure whose message has already been written, so that Execute
+// exits non-zero without printing it a second time.
 var errReported = errors.New("reported")
 
 // rootCmd represents the base command when called without any subcommands.
