@@ -64,7 +64,7 @@ func TestPrepareAzureSQLURL(t *testing.T) {
 			wantUser:    "cid@tid",
 			wantPass:    "sec",
 		},
-		{
+		{ //nolint:gosec // fake credentials in a test URL
 			name:        "userinfo without tenant defaults to ActiveDirectoryServicePrincipal",
 			urlstr:      "azuresql://cid:sec@myhost.example.com/mydb",
 			wantScheme:  "sqlserver",
