@@ -100,6 +100,10 @@ Use "{{.CommandPath}} [command] --help" for more information about a command.{{e
 
 var subCmds = []string{}
 
+// errReported marks a failure whose message has already been written, so that Execute
+// exits non-zero without printing it a second time.
+var errReported = errors.New("reported")
+
 // rootCmd represents the base command when called without any subcommands.
 var rootCmd = &cobra.Command{
 	Use:                "tbls",
@@ -128,16 +132,22 @@ var rootCmd = &cobra.Command{
 
 		envs := os.Environ()
 		subCmd := args[0]
+		// The usage text advertises -h and --help, but DisableFlagParsing keeps cobra from
+		// handling them here, so they would otherwise be reported as unknown flags.
+		if subCmd == "-h" || subCmd == "--help" {
+			cmd.HelpFunc()(cmd, args)
+			return nil
+		}
 		bin, err := safeexec.LookPath(version.Name + "-" + subCmd)
 		if err != nil {
 			if strings.HasPrefix(subCmd, "-") {
 				cmd.PrintErrf("Error: unknown flag: '%s'\n", subCmd)
 				cmd.HelpFunc()(cmd, args)
-				return nil
+				return errReported
 			}
 			cmd.PrintErrf("Error: unknown command \"%s\" for \"%s\"\n", subCmd, version.Name)
 			cmd.PrintErrf("Run '%s --help' for usage.\n", version.Name)
-			return nil
+			return errReported
 		}
 		args = args[1:]
 
@@ -190,7 +200,9 @@ func Execute() {
 	}
 
 	if err := rootCmd.Execute(); err != nil {
-		printError(err)
+		if !errors.Is(err, errReported) {
+			printError(err)
+		}
 		os.Exit(1)
 	}
 }
