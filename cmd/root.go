@@ -100,6 +100,10 @@ Use "{{.CommandPath}} [command] --help" for more information about a command.{{e
 
 var subCmds = []string{}
 
+// errReported carries the exit status for a failure whose message has already been
+// written, so that Execute does not print it a second time.
+var errReported = errors.New("reported")
+
 // rootCmd represents the base command when called without any subcommands.
 var rootCmd = &cobra.Command{
 	Use:                "tbls",
@@ -139,11 +143,11 @@ var rootCmd = &cobra.Command{
 			if strings.HasPrefix(subCmd, "-") {
 				cmd.PrintErrf("Error: unknown flag: '%s'\n", subCmd)
 				cmd.HelpFunc()(cmd, args)
-				return nil
+				return errReported
 			}
 			cmd.PrintErrf("Error: unknown command \"%s\" for \"%s\"\n", subCmd, version.Name)
 			cmd.PrintErrf("Run '%s --help' for usage.\n", version.Name)
-			return nil
+			return errReported
 		}
 		args = args[1:]
 
@@ -196,7 +200,9 @@ func Execute() {
 	}
 
 	if err := rootCmd.Execute(); err != nil {
-		printError(err)
+		if !errors.Is(err, errReported) {
+			printError(err)
+		}
 		os.Exit(1)
 	}
 }
