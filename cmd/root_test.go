@@ -18,6 +18,9 @@ func TestRootRunEReportsUnknownFlagAndCommand(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			// RunE looks for a tbls-<subcmd> plugin on PATH and runs it when one exists, so
+			// pin PATH to an empty directory to keep the lookup off the host.
+			t.Setenv("PATH", t.TempDir())
 			buf := &bytes.Buffer{}
 			rootCmd.SetOut(buf)
 			rootCmd.SetErr(buf)
