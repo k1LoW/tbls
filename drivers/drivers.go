@@ -12,3 +12,12 @@ type Driver interface {
 
 // Option is the type for change Config.
 type Option func(Driver) error
+
+// TableFilterer is implemented by drivers that can apply table-name
+// exclusion at the query stage as a perf optimization. The post-fetch
+// schema.Filter remains authoritative; drivers that under-fetch will
+// silently lose tables, so implementations must only push down patterns
+// they can faithfully translate.
+type TableFilterer interface {
+	SetTableExcludes(patterns []string)
+}
