@@ -31,6 +31,8 @@ db: db_sqlite # MySQL8 use ./testdata/ddl/mysql:/docker-entrypoint-initdb.d
 	usql maria://root:mypass@localhost:33309/testdb -f testdata/ddl/maria.sql
 	usql ms://SA:MSSQLServer-Passw0rd@localhost:11433/master -c "IF NOT EXISTS (SELECT * FROM sys.databases WHERE NAME = 'testdb') CREATE DATABASE testdb;"
 	usql ms://SA:MSSQLServer-Passw0rd@localhost:11433/testdb -f testdata/ddl/mssql.sql || true
+	usql ms://SA:MSSQLServer-Passw0rd@localhost:11433/master -c "IF NOT EXISTS (SELECT * FROM sys.databases WHERE NAME = 'mssqltestdb') CREATE DATABASE mssqltestdb;"
+	usql ms://SA:MSSQLServer-Passw0rd@localhost:11433/mssqltestdb -f testdata/ddl/mssql.sql || true
 	usql ms://SA:MSSQLServer-Passw0rd@localhost:11433/master -c "IF NOT EXISTS (SELECT * FROM sys.databases WHERE NAME = 'azuresqldb') CREATE DATABASE azuresqldb;"
 	usql ms://SA:MSSQLServer-Passw0rd@localhost:11433/azuresqldb -f testdata/ddl/azuresql.sql || true
 	./testdata/ddl/dynamodb.sh > /dev/null 2>&1

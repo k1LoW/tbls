@@ -21,9 +21,12 @@ var err error
 
 func TestMain(m *testing.M) {
 	s = &schema.Schema{
-		Name: "testdb",
+		Name: "mssqltestdb",
 	}
-	db, err = dburl.Open("ms://SA:MSSQLServer-Passw0rd@localhost:11433/instance?database=testdb")
+	// Not testdb: these tests create and drop objects, and `go test ./...` runs
+	// packages concurrently, so sharing testdb makes the table counts asserted by
+	// the datasource package flaky.
+	db, err = dburl.Open("ms://SA:MSSQLServer-Passw0rd@localhost:11433/instance?database=mssqltestdb")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -84,7 +87,7 @@ func TestTriggersOrder(t *testing.T) {
 	}
 
 	driver := New(db)
-	sc := &schema.Schema{Name: "testdb"}
+	sc := &schema.Schema{Name: "mssqltestdb"}
 	if err := driver.Analyze(sc); err != nil {
 		t.Fatal(err)
 	}
@@ -182,7 +185,7 @@ func TestFunctionArgumentsOrder(t *testing.T) {
 	}()
 
 	driver := New(db)
-	sc := &schema.Schema{Name: "testdb"}
+	sc := &schema.Schema{Name: "mssqltestdb"}
 	if err := driver.Analyze(sc); err != nil {
 		t.Fatal(err)
 	}
@@ -217,7 +220,7 @@ func TestIndexIncludedColumnsOrder(t *testing.T) {
 	}
 
 	driver := New(db)
-	sc := &schema.Schema{Name: "testdb"}
+	sc := &schema.Schema{Name: "mssqltestdb"}
 	if err := driver.Analyze(sc); err != nil {
 		t.Fatal(err)
 	}
@@ -280,7 +283,7 @@ func TestIndexColumnsExceedingAggregateLimit(t *testing.T) {
 	}
 
 	driver := New(db)
-	sc := &schema.Schema{Name: "testdb"}
+	sc := &schema.Schema{Name: "mssqltestdb"}
 	// Without the NVARCHAR(MAX) cast this fails with error 9829, "STRING_AGG
 	// aggregation result exceeded the limit of 8000 bytes".
 	if err := driver.Analyze(sc); err != nil {
@@ -326,7 +329,7 @@ func TestFunctionArgumentsExceedingAggregateLimit(t *testing.T) {
 	}()
 
 	driver := New(db)
-	sc := &schema.Schema{Name: "testdb"}
+	sc := &schema.Schema{Name: "mssqltestdb"}
 	// Without the NVARCHAR(MAX) cast this fails with error 9829.
 	if err := driver.Analyze(sc); err != nil {
 		t.Fatal(err)
