@@ -16,11 +16,9 @@ L:
 	for i, a := range args {
 		for _, opt := range opts {
 			switch {
-			case a == opt:
-				if i+1 >= len(args) {
-					// The option has no value. Keep it in remains so that the caller can report it.
-					break
-				}
+			// A trailing option has no value. Leave it in remains so that the caller can
+			// report it, rather than reading past the end of args.
+			case a == opt && i+1 < len(args):
 				v = args[i+1]
 				skipNext = true
 				continue L
