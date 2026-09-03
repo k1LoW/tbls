@@ -32,7 +32,7 @@ CREATE TABLE `comments` (
 
 ## カラム一覧
 
-| 名前           | タイプ      | デフォルト値       | Nullable | Extra Definition                               | 子テーブル                             | 親テーブル             | コメント                                             |
+| 名前         | タイプ   | デフォルト値 | Nullable | Extra Definition                               | 子テーブル                        | 親テーブル        | コメント                                         |
 | ------------ | -------- | ------------ | -------- | ---------------------------------------------- | --------------------------------- | ----------------- | ------------------------------------------------ |
 | id           | bigint   |              | false    | auto_increment                                 |                                   |                   |                                                  |
 | post_id      | bigint   |              | false    |                                                | [comment_stars](comment_stars.md) | [posts](posts.md) |                                                  |
@@ -44,7 +44,7 @@ CREATE TABLE `comments` (
 
 ## 制約一覧
 
-| 名前                  | タイプ         | 定義                                          |
+| 名前                | タイプ      | 定義                                        |
 | ------------------- | ----------- | ------------------------------------------- |
 | comments_post_id_fk | FOREIGN KEY | FOREIGN KEY (post_id) REFERENCES posts (id) |
 | comments_user_id_fk | FOREIGN KEY | FOREIGN KEY (user_id) REFERENCES users (id) |
@@ -53,7 +53,7 @@ CREATE TABLE `comments` (
 
 ## INDEX一覧
 
-| 名前                           | 定義                                                              |
+| 名前                         | 定義                                                            |
 | ---------------------------- | --------------------------------------------------------------- |
 | comments_post_id_user_id_idx | KEY comments_post_id_user_id_idx (post_id, user_id) USING BTREE |
 | comments_user_id_fk          | KEY comments_user_id_fk (user_id) USING BTREE                   |

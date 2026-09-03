@@ -9,6 +9,7 @@ import (
 	"github.com/k1LoW/tbls/config"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/k1LoW/tbls/testutil"
+	"github.com/mattn/go-runewidth"
 	"github.com/tenntenn/golden"
 )
 
@@ -253,4 +254,22 @@ func testdataDir() string {
 	wd, _ := os.Getwd()
 	dir, _ := filepath.Abs(filepath.Join(filepath.Dir(filepath.Dir(wd)), "testdata"))
 	return dir
+}
+
+func TestAdjustTableEastAsianWidth(t *testing.T) {
+	data := [][]string{
+		{"Name", "Comment"},
+		{"----", "-------"},
+		{"ユーザー", "a"},
+		{"id", "説明"},
+	}
+	got := adjustTable(data)
+	for j := range got[0] {
+		want := runewidth.StringWidth(got[0][j])
+		for i := range got {
+			if w := runewidth.StringWidth(got[i][j]); w != want {
+				t.Errorf("column %d row %d: got display width %d, want %d (%q)", j, i, w, want, got[i][j])
+			}
+		}
+	}
 }

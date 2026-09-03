@@ -23,7 +23,7 @@ CREATE TABLE `user_options` (
 
 ## カラム一覧
 
-| 名前         | タイプ        | デフォルト値       | Nullable | 子テーブル      | 親テーブル             | コメント     |
+| 名前       | タイプ     | デフォルト値 | Nullable | 子テーブル | 親テーブル        | コメント |
 | ---------- | ---------- | ------------ | -------- | ---------- | ----------------- | -------- |
 | user_id    | int        |              | false    |            | [users](users.md) |          |
 | show_email | tinyint(1) | 0            | false    |            |                   |          |
@@ -32,7 +32,7 @@ CREATE TABLE `user_options` (
 
 ## 制約一覧
 
-| 名前                      | タイプ         | 定義                                          |
+| 名前                    | タイプ      | 定義                                        |
 | ----------------------- | ----------- | ------------------------------------------- |
 | PRIMARY                 | PRIMARY KEY | PRIMARY KEY (user_id)                       |
 | user_id                 | UNIQUE      | UNIQUE KEY user_id (user_id)                |
@@ -40,7 +40,7 @@ CREATE TABLE `user_options` (
 
 ## INDEX一覧
 
-| 名前      | 定義                                       |
+| 名前    | 定義                                     |
 | ------- | ---------------------------------------- |
 | PRIMARY | PRIMARY KEY (user_id) USING BTREE        |
 | user_id | UNIQUE KEY user_id (user_id) USING BTREE |
