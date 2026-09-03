@@ -92,11 +92,10 @@ var coverageCmd = &cobra.Command{
 				return errors.WithStack(err)
 			}
 		default:
-			fmtName := fmt.Sprintf("%%-%ds", maxWidth)
-			fmt.Printf("%s  %s\n", color.White(fmt.Sprintf(fmtName, "Table"), color.B), color.White("Coverage", color.B))
-			fmt.Printf("%s  %g%%\n", fmt.Sprintf(fmtName, "All tables"), cover.Coverage)
+			fmt.Printf("%s  %s\n", color.White(runewidth.FillRight("Table", maxWidth), color.B), color.White("Coverage", color.B))
+			fmt.Printf("%s  %g%%\n", runewidth.FillRight("All tables", maxWidth), cover.Coverage)
 			for _, t := range cover.Tables {
-				fmt.Printf(" %s %g%%\n", fmt.Sprintf(fmtName, t.Name), t.Coverage)
+				fmt.Printf(" %s %g%%\n", runewidth.FillRight(t.Name, maxWidth), t.Coverage)
 			}
 		}
 		return nil
