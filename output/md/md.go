@@ -523,7 +523,7 @@ func (m *Md) makeSchemaTemplateData(s *schema.Schema) map[string]interface{} {
 	viewpointsData := m.viewpointsData(s.Viewpoints, number, adjust, showOnlyFirstParagraph)
 
 	// Enums
-	enumData := m.enumData(s.Enums)
+	enumData := m.enumData(s.Enums, number, adjust)
 
 	return map[string]interface{}{
 		"Schema":     s,
@@ -888,7 +888,7 @@ func (m *Md) functionsData(functions []*schema.Function, number, adjust bool) []
 	return data
 }
 
-func (m *Md) enumData(enums []*schema.Enum) [][]string {
+func (m *Md) enumData(enums []*schema.Enum, number, adjust bool) [][]string {
 	data := [][]string{}
 
 	if len(enums) == 0 {
@@ -912,6 +912,14 @@ func (m *Md) enumData(enums []*schema.Enum) [][]string {
 			strings.Join(e.Values, ", "),
 		}
 		data = append(data, d)
+	}
+
+	if number {
+		data = m.addNumberToTable(data)
+	}
+
+	if adjust {
+		data = adjustTable(data)
 	}
 
 	return data
