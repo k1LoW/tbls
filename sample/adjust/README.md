@@ -51,8 +51,8 @@ Sample PostgreSQL database document.
 
 ## Enums
 
-| Name | Values |
-| ---- | ------- |
+| Name              | Values                 |
+| ----------------- | ---------------------- |
 | public.post_types | draft, private, public |
 
 ## Relations
