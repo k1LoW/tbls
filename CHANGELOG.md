@@ -1,5 +1,29 @@
 # Changelog
 
+## [v1.96.0](https://github.com/k1LoW/tbls/compare/v1.95.0...v1.96.0) - 2026-09-03
+
+### Breaking Changes 🛠
+- fix: stabilize trigger introspection order in postgres/mysql/mssql/sqlite by @178inaba in https://github.com/k1LoW/tbls/pull/851
+- feat: add Microsoft Fabric Warehouse / Azure SQL support via Service Principal by @Germain-D in https://github.com/k1LoW/tbls/pull/838
+### New Features 🎉
+- feat: support ssl-ca, ssl-cert and ssl-key DSN parameters by @mtawil in https://github.com/k1LoW/tbls/pull/847
+- fix(mysql): handle foreign keys referencing tables from another database by @k1LoW in https://github.com/k1LoW/tbls/pull/705
+### Fix bug 🐛
+- fix: azuresql follow-ups from #838 (dsn.tls, tests) by @k1LoW in https://github.com/k1LoW/tbls/pull/860
+- fix: panic on a trailing --config, and value truncation at the first = by @VXNCXNX in https://github.com/k1LoW/tbls/pull/854
+- fix: exit non-zero when the root command rejects a flag or command by @k1LoW in https://github.com/k1LoW/tbls/pull/864
+- fix: --adjust-table and --number skip the Enums table by @VXNCXNX in https://github.com/k1LoW/tbls/pull/855
+- fix: --adjust-table misaligns columns containing East Asian characters by @VXNCXNX in https://github.com/k1LoW/tbls/pull/856
+- fix: tbls coverage misaligns table names containing East Asian characters by @k1LoW in https://github.com/k1LoW/tbls/pull/866
+### Other Changes
+- chore(deps): bump google.golang.org/grpc from 1.82.0 to 1.82.1 by @dependabot[bot] in https://github.com/k1LoW/tbls/pull/848
+- fix: repair the azuresql Makefile targets from #838 by @k1LoW in https://github.com/k1LoW/tbls/pull/858
+- fix(mssql): close out the STRING_AGG migration from #838 by @k1LoW in https://github.com/k1LoW/tbls/pull/859
+- chore(deps): bump the dependencies group across 1 directory with 14 updates by @dependabot[bot] in https://github.com/k1LoW/tbls/pull/862
+- chore(deps): bump actions/setup-go from 6 to 7 in the dependencies group across 1 directory by @dependabot[bot] in https://github.com/k1LoW/tbls/pull/861
+- fix: stop the mssql driver tests from racing the datasource counts by @k1LoW in https://github.com/k1LoW/tbls/pull/863
+- chore(deps): bump github.com/apache/thrift from 0.23.0 to 0.24.0 by @dependabot[bot] in https://github.com/k1LoW/tbls/pull/865
+
 ## [v1.95.0](https://github.com/k1LoW/tbls/compare/v1.94.5...v1.95.0) - 2026-07-11
 
 ### New Features 🎉
