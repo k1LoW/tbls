@@ -18,7 +18,7 @@ CREATE TABLE `hyphen-table` (
 
 ## カラム一覧
 
-| 名前            | タイプ      | デフォルト値       | Nullable | Extra Definition | 子テーブル      | 親テーブル      | コメント     |
+| 名前          | タイプ   | デフォルト値 | Nullable | Extra Definition | 子テーブル | 親テーブル | コメント |
 | ------------- | -------- | ------------ | -------- | ---------------- | ---------- | ---------- | -------- |
 | id            | bigint   |              | false    | auto_increment   |            |            |          |
 | hyphen-column | text     |              | false    |                  |            |            |          |
@@ -26,13 +26,13 @@ CREATE TABLE `hyphen-table` (
 
 ## 制約一覧
 
-| 名前      | タイプ         | 定義               |
+| 名前    | タイプ      | 定義             |
 | ------- | ----------- | ---------------- |
 | PRIMARY | PRIMARY KEY | PRIMARY KEY (id) |
 
 ## INDEX一覧
 
-| 名前      | 定義                           |
+| 名前    | 定義                         |
 | ------- | ---------------------------- |
 | PRIMARY | PRIMARY KEY (id) USING BTREE |
 

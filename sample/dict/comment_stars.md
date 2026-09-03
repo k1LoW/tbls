@@ -26,7 +26,7 @@ CREATE TABLE `comment_stars` (
 
 ## カラム一覧
 
-| 名前              | タイプ       | デフォルト値       | Nullable | Extra Definition | 子テーブル      | 親テーブル                                     | コメント     |
+| 名前            | タイプ    | デフォルト値 | Nullable | Extra Definition | 子テーブル | 親テーブル                                | コメント |
 | --------------- | --------- | ------------ | -------- | ---------------- | ---------- | ----------------------------------------- | -------- |
 | id              | bigint    |              | false    | auto_increment   |            |                                           |          |
 | user_id         | int       |              | false    |                  |            |                                           |          |
@@ -37,7 +37,7 @@ CREATE TABLE `comment_stars` (
 
 ## 制約一覧
 
-| 名前                               | タイプ         | 定義                                                                                    |
+| 名前                             | タイプ      | 定義                                                                                  |
 | -------------------------------- | ----------- | ------------------------------------------------------------------------------------- |
 | comment_stars_user_id_fk         | FOREIGN KEY | FOREIGN KEY (comment_user_id) REFERENCES users (id)                                   |
 | comment_stars_user_id_post_id_fk | FOREIGN KEY | FOREIGN KEY (comment_post_id, comment_user_id) REFERENCES comments (post_id, user_id) |
@@ -46,7 +46,7 @@ CREATE TABLE `comment_stars` (
 
 ## INDEX一覧
 
-| 名前                               | 定義                                                                                  |
+| 名前                             | 定義                                                                                |
 | -------------------------------- | ----------------------------------------------------------------------------------- |
 | comment_stars_user_id_fk         | KEY comment_stars_user_id_fk (comment_user_id) USING BTREE                          |
 | comment_stars_user_id_post_id_fk | KEY comment_stars_user_id_post_id_fk (comment_post_id, comment_user_id) USING BTREE |

@@ -26,7 +26,7 @@ CREATE TABLE `users` (
 
 ## カラム一覧
 
-| 名前       | タイプ          | デフォルト値       | Nullable | Extra Definition | 子テーブル                                                                                                       | 親テーブル      | コメント                 |
+| 名前     | タイプ       | デフォルト値 | Nullable | Extra Definition | 子テーブル                                                                                                  | 親テーブル | コメント             |
 | -------- | ------------ | ------------ | -------- | ---------------- | ----------------------------------------------------------------------------------------------------------- | ---------- | -------------------- |
 | id       | int          |              | false    | auto_increment   | [comment_stars](comment_stars.md) [comments](comments.md) [posts](posts.md) [user_options](user_options.md) |            |                      |
 | username | varchar(50)  |              | false    |                  |                                                                                                             |            |                      |
@@ -37,7 +37,7 @@ CREATE TABLE `users` (
 
 ## 制約一覧
 
-| 名前          | タイプ         | 定義                                    |
+| 名前        | タイプ      | 定義                                  |
 | ----------- | ----------- | ------------------------------------- |
 | email       | UNIQUE      | UNIQUE KEY email (email)              |
 | PRIMARY     | PRIMARY KEY | PRIMARY KEY (id)                      |
@@ -46,7 +46,7 @@ CREATE TABLE `users` (
 
 ## INDEX一覧
 
-| 名前       | 定義                                         |
+| 名前     | 定義                                       |
 | -------- | ------------------------------------------ |
 | PRIMARY  | PRIMARY KEY (id) USING BTREE               |
 | email    | UNIQUE KEY email (email) USING BTREE       |
