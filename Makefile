@@ -208,7 +208,7 @@ depsdev:
 
 credits:
 	go install github.com/Songmu/gocredits/cmd/gocredits@v1.0.0
-	gocredits -skip-missing . > CREDITS
+	gocredits . > CREDITS
 	cat _EXTRA_CREDITS >> CREDITS
 
 prerelease:
