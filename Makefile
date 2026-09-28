@@ -202,22 +202,25 @@ depsdev:
 	go install github.com/linyows/git-semv/cmd/git-semv@latest
 	go install github.com/Songmu/ghch/cmd/ghch@latest
 	go install github.com/xo/usql@v0.19.24
-	go install github.com/Songmu/gocredits/cmd/gocredits@latest
 	go install github.com/securego/gosec/v2/cmd/gosec@latest
 	go install github.com/santhosh-tekuri/jsonschema/cmd/jv@latest
 	go install github.com/google/go-licenses/v2@latest
 
+credits:
+	go install github.com/Songmu/gocredits/cmd/gocredits@v1.0.0
+	gocredits -skip-missing . > CREDITS
+	cat _EXTRA_CREDITS >> CREDITS
+
 prerelease:
 	git pull origin --tag
 	ghch -w -N ${VER}
-	gocredits -w -skip-missing .
-	cat _EXTRA_CREDITS >> CREDITS
+	$(MAKE) credits
 	git add CHANGELOG.md CREDITS
 	git commit -m'Bump up version number'
 	git tag ${VER}
 
-prerelease_for_tagpr: depsdev
-	gocredits -w .
+prerelease_for_tagpr:
+	$(MAKE) credits
 	git add CHANGELOG.md CREDITS go.mod go.sum
 
-.PHONY: default test
+.PHONY: default test credits
