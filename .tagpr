@@ -5,3 +5,4 @@
 	majorLabels = "tagpr:major"
 	minorLabels = "tagpr:minor"
 	release = draft
+	command = "make prerelease_for_tagpr"
