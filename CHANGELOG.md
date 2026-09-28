@@ -1,5 +1,12 @@
 # Changelog
 
+## [v1.96.1](https://github.com/k1LoW/tbls/compare/v1.96.0...v1.96.1) - 2026-09-28
+
+### Other Changes
+- ci: report the coverage of a pull request as well by @k1LoW in https://github.com/k1LoW/tbls/pull/867
+- chore(deps): bump go.opentelemetry.io/otel/sdk from 1.44.0 to 1.45.0 by @dependabot[bot] in https://github.com/k1LoW/tbls/pull/869
+- ci: regenerate CREDITS on every release pull request by @k1LoW in https://github.com/k1LoW/tbls/pull/870
+
 ## [v1.96.0](https://github.com/k1LoW/tbls/compare/v1.95.0...v1.96.0) - 2026-09-03
 
 ### Breaking Changes 🛠
