@@ -19,7 +19,7 @@ func getSchemaFromJSONorDSN(c *config.Config) (*schema.Schema, error) {
 		}
 		return s, nil
 	}
-	s, err := datasource.Analyze(c.DSN)
+	s, err := datasource.Analyze(c.DSN, datasource.WithTableExcludes(c.PushDownableTableExcludes()))
 	if err != nil {
 		return nil, err
 	}
