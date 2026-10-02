@@ -121,7 +121,7 @@ func (x *Xlsx) createSchemaSheet(w *excl.Workbook, s *schema.Schema) error {
 	})
 	n := 5
 	for i, t := range s.Tables {
-		setStringWithBorder(sheet, n+i, 1, t.Name)
+		setFormulaWithBorder(sheet, n+i, 1, hyperlinkToSheet(tableSheetName(t.Name), t.Name))
 		setNumberWithBorder(sheet, n+i, 2, len(t.Columns))
 		setStringWithBorder(sheet, n+i, 3, t.Comment)
 		setStringWithBorder(sheet, n+i, 4, t.Type)
@@ -145,11 +145,7 @@ func adjustData(hasData bool, sheet *excl.Sheet, row int, column int, value stri
 }
 
 func (x *Xlsx) createTableSheet(w *excl.Workbook, t *schema.Table) (e error) {
-	sheetName := t.Name
-	if utf8.RuneCountInString(sheetName) > 31 { // MS Excel assumes a maximum length of 31 characters for sheet name
-		r := []rune(sheetName)
-		sheetName = string(r[0:31])
-	}
+	sheetName := tableSheetName(t.Name)
 	sheet, err := w.OpenSheet(sheetName)
 	defer func() {
 		err := sheet.Close()
@@ -290,16 +286,41 @@ func setStringWithBorder(sheet *excl.Sheet, rowNo int, colNo int, v string) *exc
 	})
 }
 
-// func setFormula(sheet *excl.Sheet, rowNo int, colNo int, v string) *excl.Cell {
-// 	row := sheet.GetRow(rowNo)
-// 	return row.SetFormula(v, colNo)
-// }
+func setFormula(sheet *excl.Sheet, rowNo int, colNo int, v string) *excl.Cell {
+	row := sheet.GetRow(rowNo)
+	return row.SetFormula(v, colNo)
+}
 
-// func setFormulaWithBorder(sheet *excl.Sheet, rowNo int, colNo int, v string) *excl.Cell {
-// 	return setFormula(sheet, rowNo, colNo, v).SetBorder(excl.Border{
-// 		Left:   &excl.BorderSetting{Style: "thin"},
-// 		Right:  &excl.BorderSetting{Style: "thin"},
-// 		Top:    &excl.BorderSetting{Style: "thin"},
-// 		Bottom: &excl.BorderSetting{Style: "thin"},
-// 	})
-// }
+func setFormulaWithBorder(sheet *excl.Sheet, rowNo int, colNo int, v string) *excl.Cell {
+	return setFormula(sheet, rowNo, colNo, v).SetBorder(excl.Border{
+		Left:   &excl.BorderSetting{Style: "thin"},
+		Right:  &excl.BorderSetting{Style: "thin"},
+		Top:    &excl.BorderSetting{Style: "thin"},
+		Bottom: &excl.BorderSetting{Style: "thin"},
+	})
+}
+
+// tableSheetName returns the sheet name tbls uses for a table. Excel limits
+// sheet names to 31 characters, so longer table names are truncated.
+func tableSheetName(name string) string {
+	if utf8.RuneCountInString(name) > 31 {
+		r := []rune(name)
+		return string(r[0:31])
+	}
+	return name
+}
+
+// hyperlinkToSheet builds a HYPERLINK formula that jumps to cell A1 of the
+// given sheet while showing display as the link text. The sheet name is always
+// single quoted (which Excel accepts even when quoting is not required) so names
+// with spaces or other special characters still resolve, and any embedded quote
+// is doubled per Excel's escaping rules.
+func hyperlinkToSheet(sheetName, display string) string {
+	ref := "#'" + strings.ReplaceAll(sheetName, "'", "''") + "'!A1"
+	return "HYPERLINK(" + excelString(ref) + "," + excelString(display) + ")"
+}
+
+// excelString quotes s as an Excel string literal, doubling any double quote.
+func excelString(s string) string {
+	return `"` + strings.ReplaceAll(s, `"`, `""`) + `"`
+}
