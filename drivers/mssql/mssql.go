@@ -44,48 +44,13 @@ func (m *Mssql) Analyze(s *schema.Schema) error {
 	}
 	s.Driver = d
 
-	// tables and comments
-	tableRows, err := m.db.Query(`
-SELECT schema_name(schema_id) AS table_schema, o.name, o.object_id, o.type, cast(e.value as NVARCHAR(MAX)) AS table_comment
-FROM sys.objects AS o
-LEFT JOIN sys.extended_properties AS e ON
-e.major_id = o.object_id AND e.name = 'MS_Description' AND e.minor_id = 0
-WHERE type IN ('U', 'V')  ORDER BY OBJECT_ID
-`)
+	listed, err := m.listTables()
 	if err != nil {
-		return errors.WithStack(err)
+		return err
 	}
-	defer tableRows.Close()
-
-	tables := []*schema.Table{}
-	links := []relationLink{}
-
-	for tableRows.Next() {
-		var (
-			tableSchema  string
-			tableName    string
-			tableOid     string
-			tableType    string
-			tableComment sql.NullString
-		)
-		err := tableRows.Scan(&tableSchema, &tableName, &tableOid, &tableType, &tableComment)
-		if err != nil {
-			return errors.WithStack(err)
-		}
-		table, tableLinks, err := m.analyzeTable(tableSchema, tableName, tableOid, tableType, tableComment)
-		if err != nil {
-			return err
-		}
-		if table == nil {
-			// The table was dropped after it was listed (e.g. a transient
-			// replication table such as SYNC_*BulkCopyTable@...), so skip it.
-			continue
-		}
-		links = append(links, tableLinks...)
-		tables = append(tables, table)
-	}
-	if err := tableRows.Err(); err != nil {
-		return errors.WithStack(err)
+	tables, links, err := m.analyzeTables(listed)
+	if err != nil {
+		return err
 	}
 
 	functions, err := m.getFunctions()
@@ -149,6 +114,63 @@ WHERE type IN ('U', 'V')  ORDER BY OBJECT_ID
 	}
 
 	return nil
+}
+
+// listedTable is a table or view as listed by listTables.
+type listedTable struct {
+	schema  string
+	name    string
+	oid     string
+	typ     string
+	comment sql.NullString
+}
+
+// listTables lists the tables and views with their comments.
+func (m *Mssql) listTables() ([]listedTable, error) {
+	tableRows, err := m.db.Query(`
+SELECT schema_name(schema_id) AS table_schema, o.name, o.object_id, o.type, cast(e.value as NVARCHAR(MAX)) AS table_comment
+FROM sys.objects AS o
+LEFT JOIN sys.extended_properties AS e ON
+e.major_id = o.object_id AND e.name = 'MS_Description' AND e.minor_id = 0
+WHERE type IN ('U', 'V')  ORDER BY OBJECT_ID
+`)
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+	defer tableRows.Close()
+
+	listed := []listedTable{}
+	for tableRows.Next() {
+		var t listedTable
+		if err := tableRows.Scan(&t.schema, &t.name, &t.oid, &t.typ, &t.comment); err != nil {
+			return nil, errors.WithStack(err)
+		}
+		listed = append(listed, t)
+	}
+	if err := tableRows.Err(); err != nil {
+		return nil, errors.WithStack(err)
+	}
+	return listed, nil
+}
+
+// analyzeTables analyzes the listed tables, skipping those that no longer exist.
+func (m *Mssql) analyzeTables(listed []listedTable) ([]*schema.Table, []relationLink, error) {
+	tables := []*schema.Table{}
+	links := []relationLink{}
+	for _, t := range listed {
+		table, tableLinks, err := m.analyzeTable(t.schema, t.name, t.oid, t.typ, t.comment)
+		if err != nil {
+			return nil, nil, err
+		}
+		if table == nil {
+			// The table was dropped after it was listed (e.g. a transient
+			// replication table such as SYNC_*BulkCopyTable@...), so skip it.
+			continue
+		}
+		links = append(links, tableLinks...)
+		tables = append(tables, table)
+	}
+	return tables, links, nil
 }
 
 // analyzeTable reads the definition, columns, constraints, triggers and indexes of the table or view identified by tableOid.
