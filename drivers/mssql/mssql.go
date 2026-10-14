@@ -84,6 +84,9 @@ WHERE type IN ('U', 'V')  ORDER BY OBJECT_ID
 		links = append(links, tableLinks...)
 		tables = append(tables, table)
 	}
+	if err := tableRows.Err(); err != nil {
+		return errors.WithStack(err)
+	}
 
 	functions, err := m.getFunctions()
 	if err != nil {
@@ -185,6 +188,9 @@ SELECT definition FROM sys.sql_modules WHERE object_id = @p1
 			}
 			table.Def = normalizeViewDefinition(tableDef.String)
 		}
+		if err := viewDefRows.Err(); err != nil {
+			return nil, nil, errors.WithStack(err)
+		}
 	}
 
 	// columns and comments
@@ -233,6 +239,9 @@ ORDER BY c.column_id
 			Comment:  columnComment.String,
 		}
 		columns = append(columns, column)
+	}
+	if err := columnRows.Err(); err != nil {
+		return nil, nil, errors.WithStack(err)
 	}
 	table.Columns = columns
 	if len(columns) == 0 {
@@ -310,6 +319,9 @@ ORDER BY i.index_id
 		}
 		constraints = append(constraints, constraint)
 	}
+	if err := keyRows.Err(); err != nil {
+		return nil, nil, errors.WithStack(err)
+	}
 
 	/// foreign_keys
 	fkRows, err := m.db.Query(`
@@ -371,6 +383,9 @@ ORDER BY f.name
 
 		constraints = append(constraints, constraint)
 	}
+	if err := fkRows.Err(); err != nil {
+		return nil, nil, errors.WithStack(err)
+	}
 
 	/// check_constraints
 	checkRows, err := m.db.Query(`
@@ -399,6 +414,9 @@ WHERE parent_object_id = @p1
 			Table: &table.Name,
 		}
 		constraints = append(constraints, constraint)
+	}
+	if err := checkRows.Err(); err != nil {
+		return nil, nil, errors.WithStack(err)
 	}
 
 	table.Constraints = constraints
@@ -433,6 +451,9 @@ ORDER BY t.object_id
 			Def:  triggerDef,
 		}
 		triggers = append(triggers, trigger)
+	}
+	if err := triggerRows.Err(); err != nil {
+		return nil, nil, errors.WithStack(err)
 	}
 	table.Triggers = triggers
 
@@ -498,6 +519,9 @@ ORDER BY i.index_id
 
 		indexes = append(indexes, index)
 	}
+	if err := indexRows.Err(); err != nil {
+		return nil, nil, errors.WithStack(err)
+	}
 	table.Indexes = indexes
 
 	return table, links, nil
@@ -562,6 +586,9 @@ func (m *Mssql) getFunctions() ([]*schema.Function, error) {
 		}
 
 		functions = append(functions, function)
+	}
+	if err := functionsResult.Err(); err != nil {
+		return nil, errors.WithStack(err)
 	}
 	return functions, nil
 }
