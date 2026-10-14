@@ -350,3 +350,43 @@ func TestFunctionArgumentsExceedingAggregateLimit(t *testing.T) {
 		t.Errorf("aggregated length = %d, want > 4000 so the unbounded aggregate is actually exercised", len(want))
 	}
 }
+
+func TestAnalyzeTableDroppedAfterListing(t *testing.T) {
+	// A table listed by Analyze can be dropped, and even recreated under the
+	// same name, before its columns, constraints and indexes are read. This
+	// happens with transient SQL Server replication tables such as
+	// SYNC_*BulkCopyTable@... (https://github.com/k1LoW/tbls/issues/836).
+	const name = "tbls_transient_table"
+	exec := func(q string) {
+		t.Helper()
+		if _, err := db.Exec(q); err != nil {
+			t.Fatal(err)
+		}
+	}
+	exec(`DROP TABLE IF EXISTS ` + name)
+	t.Cleanup(func() {
+		_, _ = db.Exec(`DROP TABLE IF EXISTS ` + name)
+	})
+	exec(`CREATE TABLE ` + name + ` (id int PRIMARY KEY)`)
+
+	var oid string
+	if err := db.QueryRow(`SELECT OBJECT_ID(@p1)`, defaultSchemaName+"."+name).Scan(&oid); err != nil {
+		t.Fatal(err)
+	}
+
+	// Simulate the table being dropped and recreated after it was listed.
+	exec(`DROP TABLE ` + name)
+	exec(`CREATE TABLE ` + name + ` (other_id int PRIMARY KEY)`)
+
+	driver := New(db)
+	table, links, err := driver.analyzeTable(defaultSchemaName, name, oid, "U", sql.NullString{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if table != nil {
+		t.Errorf("got table %q with %d columns and %d indexes, want the dropped table to be skipped", table.Name, len(table.Columns), len(table.Indexes))
+	}
+	if len(links) != 0 {
+		t.Errorf("got %d relation links, want 0", len(links))
+	}
+}
