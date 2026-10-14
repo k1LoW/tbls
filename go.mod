@@ -26,7 +26,7 @@ require (
 	github.com/k1LoW/expand v0.16.7
 	github.com/k1LoW/ffff v0.3.0
 	github.com/k1LoW/ghfs v1.6.0
-	github.com/k1LoW/go-github-client/v67 v67.0.24
+	github.com/k1LoW/go-github-client/v90 v90.0.24
 	github.com/labstack/gommon v0.5.0
 	github.com/lib/pq v1.12.3
 	github.com/loadoff/excl v0.0.0-20171207172601-c6a9e4c4b4c4
@@ -133,7 +133,6 @@ require (
 	github.com/golang/groupcache v0.0.0-20241129210726-2c02b8208cf8 // indirect
 	github.com/golang/snappy v1.0.0 // indirect
 	github.com/google/flatbuffers v25.2.10+incompatible // indirect
-	github.com/google/go-github/v67 v67.0.0 // indirect
 	github.com/google/go-github/v88 v88.0.0 // indirect
 	github.com/google/go-github/v90 v90.0.0 // indirect
 	github.com/google/go-querystring v1.2.0 // indirect
@@ -149,7 +148,6 @@ require (
 	github.com/josharian/mapfs v0.0.0-20210615234106-095c008854e6 // indirect
 	github.com/josharian/txtarfs v0.0.0-20240408113805-5dc76b8fe6bf // indirect
 	github.com/k1LoW/fontdir v0.1.1 // indirect
-	github.com/k1LoW/go-github-client/v90 v90.0.24 // indirect
 	github.com/klauspost/asmfmt v1.3.2 // indirect
 	github.com/klauspost/compress v1.19.1 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.11 // indirect
