@@ -390,3 +390,89 @@ func TestAnalyzeTableDroppedAfterListing(t *testing.T) {
 		t.Errorf("got %d relation links, want 0", len(links))
 	}
 }
+
+func TestAnalyzeTablesSkipsDroppedTables(t *testing.T) {
+	const (
+		dropped = "tbls_transient_dropped"
+		kept    = "tbls_transient_kept"
+	)
+	exec := func(q string) {
+		t.Helper()
+		if _, err := db.Exec(q); err != nil {
+			t.Fatal(err)
+		}
+	}
+	oidOf := func(name string) string {
+		t.Helper()
+		var oid string
+		if err := db.QueryRow(`SELECT OBJECT_ID(@p1)`, defaultSchemaName+"."+name).Scan(&oid); err != nil {
+			t.Fatal(err)
+		}
+		return oid
+	}
+	for _, name := range []string{dropped, kept} {
+		exec(`DROP TABLE IF EXISTS ` + name)
+		t.Cleanup(func() {
+			_, _ = db.Exec(`DROP TABLE IF EXISTS ` + name)
+		})
+		exec(`CREATE TABLE ` + name + ` (id int PRIMARY KEY)`)
+	}
+	listed := []listedTable{
+		{schema: defaultSchemaName, name: dropped, oid: oidOf(dropped), typ: "U"},
+		{schema: defaultSchemaName, name: kept, oid: oidOf(kept), typ: "U"},
+	}
+
+	// Simulate the table being dropped and recreated after it was listed.
+	exec(`DROP TABLE ` + dropped)
+	exec(`CREATE TABLE ` + dropped + ` (other_id int PRIMARY KEY)`)
+
+	driver := New(db)
+	tables, _, err := driver.analyzeTables(listed)
+	if err != nil {
+		t.Fatal(err)
+	}
+	got := []string{}
+	for _, table := range tables {
+		got = append(got, table.Name)
+	}
+	if diff := cmp.Diff([]string{kept}, got); diff != "" {
+		t.Errorf("analyzed tables mismatch (-want +got):\n%s", diff)
+	}
+}
+
+func TestObjectExists(t *testing.T) {
+	const name = "tbls_object_exists"
+	if _, err := db.Exec(`DROP TABLE IF EXISTS ` + name); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() {
+		_, _ = db.Exec(`DROP TABLE IF EXISTS ` + name)
+	})
+	if _, err := db.Exec(`CREATE TABLE ` + name + ` (id int)`); err != nil {
+		t.Fatal(err)
+	}
+	var oid string
+	if err := db.QueryRow(`SELECT OBJECT_ID(@p1)`, defaultSchemaName+"."+name).Scan(&oid); err != nil {
+		t.Fatal(err)
+	}
+
+	driver := New(db)
+	exists, err := driver.objectExists(oid)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !exists {
+		t.Error("got false for an existing table, want true")
+	}
+
+	if _, err := db.Exec(`DROP TABLE ` + name); err != nil {
+		t.Fatal(err)
+	}
+	exists, err = driver.objectExists(oid)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if exists {
+		t.Error("got true for a dropped table, want false")
+	}
+}
