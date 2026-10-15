@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	_ "github.com/k1LoW/tbls/internal/dburlscheme"
 	"github.com/k1LoW/tbls/schema"
 	_ "github.com/lib/pq"
 	"github.com/xo/dburl"

@@ -269,6 +269,20 @@ func TestAnalyzeTLSUnsupportedDatasource(t *testing.T) {
 	}
 }
 
+func TestAnalyzeTLSAzureSQL(t *testing.T) {
+	// A cert without a key fails validation before any connection is made, so
+	// reaching that error shows the URL passed the dsn.tls support check.
+	for _, urlstr := range []string{
+		"azuresql://client-id:secret@myserver.database.windows.net/mydb",
+		"ms://user:pass@hostname:1433/dbname?fedauth=ActiveDirectoryDefault",
+	} {
+		_, err := Analyze(config.DSN{URL: urlstr, TLS: &config.TLS{Cert: "/path/to/cert.pem"}})
+		if err == nil || !strings.Contains(err.Error(), "dsn.tls.cert and dsn.tls.key must be set together") {
+			t.Errorf("%s: got %v, want the cert/key validation error", urlstr, err)
+		}
+	}
+}
+
 func TestAnalyzeTLSEmptyBlock(t *testing.T) {
 	if _, err := Analyze(config.DSN{URL: "my://user:pass@hostname:3306/dbname", TLS: &config.TLS{}}); err == nil {
 		t.Fatal("expected error, got nil")
