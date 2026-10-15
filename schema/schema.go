@@ -325,7 +325,10 @@ func (s *Schema) Sort() error {
 	for _, t := range s.Tables {
 		for _, c := range t.Columns {
 			sort.SliceStable(c.ParentRelations, func(i, j int) bool {
-				return c.ParentRelations[i].Table.Name < c.ParentRelations[j].Table.Name
+				// Sort by the referenced parent table. Relation.Table is the
+				// child (this column's table), so sorting on it is a no-op and
+				// leaves Parents column order non-deterministic across DBs.
+				return c.ParentRelations[i].ParentTable.Name < c.ParentRelations[j].ParentTable.Name
 			})
 			sort.SliceStable(c.ChildRelations, func(i, j int) bool {
 				return c.ChildRelations[i].Table.Name < c.ChildRelations[j].Table.Name
