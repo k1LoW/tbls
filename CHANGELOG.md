@@ -1,5 +1,16 @@
 # Changelog
 
+## [v1.96.2](https://github.com/k1LoW/tbls/compare/v1.96.1...v1.96.2) - 2026-10-15
+
+### New Features 🎉
+- feat(xlsx): link table names in the index sheet to their sheets by @ChrisJr404 in https://github.com/k1LoW/tbls/pull/857
+### Other Changes
+- fix(mssql): skip tables dropped while the schema is being read by @TastyHeadphones in https://github.com/k1LoW/tbls/pull/875
+- chore(deps): bump github.com/snowflakedb/gosnowflake/v2 from 2.1.0 to 2.2.0 by @dependabot[bot] in https://github.com/k1LoW/tbls/pull/873
+- fix(mssql): follow-ups from #875 (rows.Err, tests) by @k1LoW in https://github.com/k1LoW/tbls/pull/877
+- chore(deps): bump the dependencies group across 1 directory with 21 updates by @dependabot[bot] in https://github.com/k1LoW/tbls/pull/878
+- chore(deps): update github.com/xo/dburl to v0.53.0 by @k1LoW in https://github.com/k1LoW/tbls/pull/879
+
 ## [v1.96.1](https://github.com/k1LoW/tbls/compare/v1.96.0...v1.96.1) - 2026-09-28
 
 ### Other Changes
