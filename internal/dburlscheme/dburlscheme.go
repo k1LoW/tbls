@@ -20,21 +20,22 @@ func init() {
 
 	// The redshift generator of v0.53.0 also joins a repeated query key with
 	// commas, which lib/pq reads as one value, so keep the plain URL generator.
-	rs := dburl.Unregister("redshift")
-	genRedshift := dburl.GenFromURL("postgres://localhost:5439/")
-	rs.Generator = func(u *dburl.URL) (string, string, error) {
-		dsn, _, err := genRedshift(u)
-		return dsn, "postgres", err
-	}
-	dburl.Register(*rs)
+	// CockroachDB speaks the PostgreSQL protocol and is opened the same way.
+	registerLibPQ("redshift", "postgres://localhost:5439/")
+	registerLibPQ("cockroachdb", "postgres://localhost:26257/?sslmode=disable")
 
 	// dburl adds loc=Local, parseTime=true and sql_mode=ansi to every MySQL DSN
 	// unless the URL sets them. sql_mode=ansi makes the server return definitions
 	// with double-quoted identifiers, so drop the defaults and connect with what
 	// the user wrote, as tbls always has.
-	my := dburl.Unregister("mysql")
-	my.Defaults = nil
-	dburl.Register(*my)
+	// The same goes for the products that speak the MySQL protocol, and tidb
+	// also switched its default port from 3306 to 4000.
+	for _, name := range []string{"mysql", "memsql", "tidb", "vitess"} {
+		my := dburl.Unregister(name)
+		my.Defaults = nil
+		my.Generator = dburl.GenMysql
+		dburl.Register(*my)
+	}
 
 	// dburl no longer accepts ch+http:// and ch+https://, and stopped adding
 	// the native port 9000 to clickhouse://, so restore the generator tbls
@@ -58,6 +59,18 @@ func init() {
 	ms := dburl.Unregister("sqlserver")
 	ms.Generator = genSqlserver
 	dburl.Register(*ms)
+}
+
+// registerLibPQ registers the named scheme to generate a plain postgres:// URL
+// with the given defaults and to open it with lib/pq.
+func registerLibPQ(name, defaults string) {
+	s := dburl.Unregister(name)
+	gen := dburl.GenFromURL(defaults)
+	s.Generator = func(u *dburl.URL) (string, string, error) {
+		dsn, _, err := gen(u)
+		return dsn, "postgres", err
+	}
+	dburl.Register(*s)
 }
 
 func genSqlserver(u *dburl.URL) (string, string, error) {
