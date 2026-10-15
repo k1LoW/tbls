@@ -8500,8 +8500,8 @@ https://github.com/aws/aws-sdk-go-v2/feature/ec2/imds
 
 ================================================================
 
-github.com/aws/aws-sdk-go-v2/feature/s3/manager
-https://github.com/aws/aws-sdk-go-v2/feature/s3/manager
+github.com/aws/aws-sdk-go-v2/feature/s3/transfermanager
+https://github.com/aws/aws-sdk-go-v2/feature/s3/transfermanager
 ----------------------------------------------------------------
 
                                  Apache License
@@ -15523,8 +15523,8 @@ https://github.com/google/flatbuffers
 
 ================================================================
 
-github.com/google/go-github/v67
-https://github.com/google/go-github/v67
+github.com/google/go-github/v88
+https://github.com/google/go-github/v88
 ----------------------------------------------------------------
 Copyright (c) 2013 The go-github AUTHORS. All rights reserved.
 
@@ -15556,8 +15556,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ================================================================
 
-github.com/google/go-github/v88
-https://github.com/google/go-github/v88
+github.com/google/go-github/v90
+https://github.com/google/go-github/v90
 ----------------------------------------------------------------
 Copyright (c) 2013 The go-github AUTHORS. All rights reserved.
 
@@ -17213,8 +17213,8 @@ THE SOFTWARE.
 
 ================================================================
 
-github.com/k1LoW/go-github-client/v67
-https://github.com/k1LoW/go-github-client/v67
+github.com/k1LoW/go-github-client/v90
+https://github.com/k1LoW/go-github-client/v90
 ----------------------------------------------------------------
 The MIT License (MIT)
 
@@ -19765,7 +19765,7 @@ https://github.com/xo/dburl
 ----------------------------------------------------------------
 The MIT License (MIT)
 
-Copyright (c) 2015-2025 Kenneth Shaw
+Copyright (c) 2015-2026 Kenneth Shaw
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
