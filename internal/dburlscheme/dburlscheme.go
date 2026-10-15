@@ -3,6 +3,7 @@
 package dburlscheme
 
 import (
+	"net/url"
 	"strings"
 
 	"github.com/xo/dburl"
@@ -17,8 +18,10 @@ func init() {
 	pg.Generator = dburl.GenPq
 	dburl.Register(*pg)
 
+	// The redshift generator of v0.53.0 also joins a repeated query key with
+	// commas, which lib/pq reads as one value, so keep the plain URL generator.
 	rs := dburl.Unregister("redshift")
-	genRedshift := rs.Generator
+	genRedshift := dburl.GenFromURL("postgres://localhost:5439/")
 	rs.Generator = func(u *dburl.URL) (string, string, error) {
 		dsn, _, err := genRedshift(u)
 		return dsn, "postgres", err
@@ -48,6 +51,38 @@ func init() {
 	sf := dburl.Unregister("snowflake")
 	sf.Generator = genSnowflake
 	dburl.Register(*sf)
+
+	// dburl appends .database.windows.net to a host without a dot for
+	// azuresql:// and for any URL with fedauth, which changes the server a
+	// local or aliased host name points at, so keep the host as written.
+	ms := dburl.Unregister("sqlserver")
+	ms.Generator = genSqlserver
+	dburl.Register(*ms)
+}
+
+func genSqlserver(u *dburl.URL) (string, string, error) {
+	z := &url.URL{
+		Scheme:   "sqlserver",
+		Opaque:   u.Opaque,
+		User:     u.User,
+		Host:     u.Host,
+		Path:     u.Path,
+		RawQuery: u.RawQuery,
+		Fragment: u.Fragment,
+	}
+	if z.Host == "" {
+		z.Host = "localhost"
+	}
+	driver := "sqlserver"
+	if strings.Contains(strings.ToLower(u.Scheme), "azuresql") || u.Query().Get("fedauth") != "" {
+		driver = "azuresql"
+	}
+	v := strings.Split(strings.TrimPrefix(z.Path, "/"), "/")
+	if n, q := len(v), z.Query(); !q.Has("database") && n != 0 && len(v[0]) != 0 {
+		q.Set("database", v[n-1])
+		z.Path, z.RawQuery = "/"+strings.Join(v[:n-1], "/"), q.Encode()
+	}
+	return z.String(), driver, nil
 }
 
 var (

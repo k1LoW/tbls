@@ -38,6 +38,7 @@ var supportDriversWithDburl = []string{
 	"mysql",
 	"sqlite3",
 	"sqlserver",
+	"azuresql",
 	"snowflake",
 	"clickhouse",
 }
@@ -121,7 +122,7 @@ func Analyze(dsn config.DSN) (_ *schema.Schema, err error) {
 		}
 		u.RawQuery = values.Encode()
 		urlstr = u.String()
-	case "sqlserver":
+	case "sqlserver", "azuresql":
 		values := u.Query()
 		dbname := strings.TrimPrefix(u.Path, "/")
 		values.Add("database", dbname)
@@ -163,7 +164,7 @@ func Analyze(dsn config.DSN) (_ *schema.Schema, err error) {
 	case "sqlite3":
 		s.Name = splitted[len(splitted)-1]
 		driver = sqlite.New(db)
-	case "sqlserver":
+	case "sqlserver", "azuresql":
 		s.Name = splitted[1]
 		driver = mssql.New(db)
 	case "snowflake":

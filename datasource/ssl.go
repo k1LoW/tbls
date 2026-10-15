@@ -19,7 +19,7 @@ var mysqlTLSConfigCounter atomic.Uint64
 
 // tlsSupportedDrivers are the dburl drivers that the dsn.tls configuration can
 // be applied to.
-var tlsSupportedDrivers = []string{"mysql", "postgres", "sqlserver"}
+var tlsSupportedDrivers = []string{"mysql", "postgres", "sqlserver", "azuresql"}
 
 const tlsVerifyIdentity = "identity"
 
@@ -52,7 +52,7 @@ func applyTLSConfig(u *dburl.URL, t config.TLS) error {
 		err = registerMySQLTLS(t, values)
 	case "postgres":
 		err = applyPostgresTLS(t, values)
-	case "sqlserver":
+	case "sqlserver", "azuresql":
 		err = applySQLServerTLS(t, values)
 	default:
 		err = fmt.Errorf("dsn.tls is not supported for driver '%s'", u.Driver)
