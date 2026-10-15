@@ -9,6 +9,7 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/google/go-cmp/cmp"
+	_ "github.com/k1LoW/tbls/internal/dburlscheme"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/xo/dburl"
 )

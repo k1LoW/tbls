@@ -40,7 +40,7 @@ require (
 	github.com/snowflakedb/gosnowflake/v2 v2.3.0
 	github.com/spf13/cobra v1.10.2
 	github.com/tenntenn/golden v0.5.5
-	github.com/xo/dburl v0.24.2
+	github.com/xo/dburl v0.53.0
 	gitlab.com/golang-commonmark/mdurl v0.0.0-20191124015652-932350d1cb84
 	go.mongodb.org/mongo-driver v1.17.10
 	golang.org/x/image v0.47.0

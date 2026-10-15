@@ -28,6 +28,7 @@ import (
 	"github.com/k1LoW/tbls/drivers/redshift"
 	"github.com/k1LoW/tbls/drivers/snowflake"
 	"github.com/k1LoW/tbls/drivers/sqlite"
+	_ "github.com/k1LoW/tbls/internal/dburlscheme"
 	"github.com/k1LoW/tbls/schema"
 	"github.com/xo/dburl"
 )
