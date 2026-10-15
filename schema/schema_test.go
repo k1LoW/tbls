@@ -241,6 +241,34 @@ func TestSchema_Sort(t *testing.T) {
 	}
 }
 
+func TestSchema_SortParentRelationsByParentTable(t *testing.T) {
+	// format.sort must order the Parents column by the referenced parent
+	// table name. Relation.Table is the child; sorting on it is a no-op
+	// when every relation on a column shares the same child table (#876).
+	child := &Table{Name: "child"}
+	parentB := &Table{Name: "b"}
+	parentA := &Table{Name: "a"}
+	col := &Column{Name: "fk"}
+	child.Columns = []*Column{col}
+	relB := &Relation{Table: child, ParentTable: parentB, Columns: []*Column{col}, ParentColumns: []*Column{}}
+	relA := &Relation{Table: child, ParentTable: parentA, Columns: []*Column{col}, ParentColumns: []*Column{}}
+	// Intentionally out of name order (b before a), as OID/creation order often is.
+	col.ParentRelations = []*Relation{relB, relA}
+
+	s := &Schema{Name: "test", Tables: []*Table{child, parentB, parentA}, Relations: []*Relation{relB, relA}}
+	if err := s.Sort(); err != nil {
+		t.Fatal(err)
+	}
+	got := make([]string, len(col.ParentRelations))
+	for i, r := range col.ParentRelations {
+		got[i] = r.ParentTable.Name
+	}
+	want := []string{"a", "b"}
+	if diff := cmp.Diff(want, got); diff != "" {
+		t.Errorf("ParentRelations order (-want +got):\n%s", diff)
+	}
+}
+
 func TestRepair(t *testing.T) {
 	got := &Schema{}
 	f, err := os.Open(filepath.Join(testdataDir(), "test_repair.golden"))
