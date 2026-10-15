@@ -2,6 +2,7 @@ package snowflake
 
 import (
 	"database/sql"
+	"fmt"
 
 	"github.com/k1LoW/errors"
 	"github.com/k1LoW/tbls/schema"
@@ -74,7 +75,9 @@ func (sf *Snowflake) Analyze(s *schema.Schema) error {
 		}
 
 		// columns, comments
-		columnRows, err := sf.db.Query(`select column_name, column_default, is_nullable, data_type, comment
+		columnRows, err := sf.db.Query(`select column_name, column_default, is_nullable, data_type, comment,
+character_maximum_length, numeric_precision, numeric_scale,
+is_identity, identity_start, identity_increment
 from information_schema.columns
 where table_schema = ? and table_name = ? order by ordinal_position`, s.Name, tableName)
 		if err != nil {
@@ -84,11 +87,17 @@ where table_schema = ? and table_name = ? order by ordinal_position`, s.Name, ta
 		columns := []*schema.Column{}
 		for columnRows.Next() {
 			var (
-				columnName    string
-				columnDefault sql.NullString
-				isNullable    string
-				dataType      string
-				columnComment sql.NullString
+				columnName             string
+				columnDefault          sql.NullString
+				isNullable             string
+				dataType               string
+				columnComment          sql.NullString
+				characterMaximumLength sql.NullInt64
+				numericPrecision       sql.NullInt64
+				numericScale           sql.NullInt64
+				isIdentity             sql.NullString
+				identityStart          sql.NullString
+				identityIncrement      sql.NullString
 			)
 			err = columnRows.Scan(
 				&columnName,
@@ -96,9 +105,25 @@ where table_schema = ? and table_name = ? order by ordinal_position`, s.Name, ta
 				&isNullable,
 				&dataType,
 				&columnComment,
+				&characterMaximumLength,
+				&numericPrecision,
+				&numericScale,
+				&isIdentity,
+				&identityStart,
+				&identityIncrement,
 			)
 			if err != nil {
 				return errors.WithStack(err)
+			}
+			switch dataType {
+			case "NUMBER":
+				if numericPrecision.Valid && numericScale.Valid {
+					dataType = fmt.Sprintf("%s(%d,%d)", dataType, numericPrecision.Int64, numericScale.Int64)
+				}
+			case "TEXT":
+				if characterMaximumLength.Valid {
+					dataType = fmt.Sprintf("%s(%d)", dataType, characterMaximumLength.Int64)
+				}
 			}
 			column := &schema.Column{
 				Name:     columnName,
@@ -106,6 +131,12 @@ where table_schema = ? and table_name = ? order by ordinal_position`, s.Name, ta
 				Nullable: convertColumnNullable(isNullable),
 				Default:  columnDefault,
 				Comment:  columnComment.String,
+			}
+			if isIdentity.Valid && isIdentity.String == "YES" {
+				column.ExtraDef = "IDENTITY"
+				if identityStart.Valid && identityIncrement.Valid {
+					column.ExtraDef = fmt.Sprintf("IDENTITY START %s INCREMENT %s", identityStart.String, identityIncrement.String)
+				}
 			}
 			columns = append(columns, column)
 		}
