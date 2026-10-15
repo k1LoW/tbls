@@ -3,6 +3,7 @@ package dburlscheme
 import (
 	"testing"
 
+	sf "github.com/snowflakedb/gosnowflake/v2"
 	"github.com/xo/dburl"
 )
 
@@ -21,6 +22,13 @@ func TestDburlSchemes(t *testing.T) {
 		{"mysql://dbuser:dbpass@hostname:3306/dbname?hide_auto_increment", "mysql", "dbuser:dbpass@tcp(hostname:3306)/dbname?hide_auto_increment="},
 		{"maria://dbuser:dbpass@hostname:3306/dbname", "mysql", "dbuser:dbpass@tcp(hostname:3306)/dbname"},
 		{"mariadb://dbuser:dbpass@hostname:3306/dbname?parseTime=true", "mysql", "dbuser:dbpass@tcp(hostname:3306)/dbname?parseTime=true"},
+		{"clickhouse://default@localhost/testdb", "clickhouse", "clickhouse://default@localhost:9000/testdb"},
+		{"ch://u:p@h:9000/db", "clickhouse", "clickhouse://u:p@h:9000/db"},
+		{"ch+http://u:p@h:8123/db", "clickhouse", "http://u:p@h:8123/db"},
+		{"ch+https://u:p@h/db", "clickhouse", "https://u:p@h/db"},
+		{"sf://alice:secret@myaccount/mydb/myschema", "snowflake", "alice:secret@myaccount/mydb/myschema"},
+		{"sf://alice@myaccount/mydb/myschema?authenticator=externalbrowser", "snowflake", "alice@myaccount/mydb/myschema?authenticator=externalbrowser"},
+		{"snowflake://alice@myaccount/mydb/myschema?authenticator=SNOWFLAKE_JWT&privateKey=abc", "snowflake", "alice@myaccount/mydb/myschema?authenticator=SNOWFLAKE_JWT&privateKey=abc"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.dsn, func(t *testing.T) {
@@ -33,6 +41,32 @@ func TestDburlSchemes(t *testing.T) {
 			}
 			if u.DSN != tt.wantDSN {
 				t.Errorf("got DSN %q, want %q", u.DSN, tt.wantDSN)
+			}
+		})
+	}
+}
+
+func TestDburlSnowflakeCredentials(t *testing.T) {
+	tests := []struct {
+		dsn          string
+		wantUser     string
+		wantPassword string
+	}{
+		{"sf://alice:secret@myaccount/mydb/myschema", "alice", "secret"},
+		{"sf://alice@myaccount/mydb/myschema?authenticator=externalbrowser", "alice", ""},
+	}
+	for _, tt := range tests {
+		t.Run(tt.dsn, func(t *testing.T) {
+			u, err := dburl.Parse(tt.dsn)
+			if err != nil {
+				t.Fatal(err)
+			}
+			c, err := sf.ParseDSN(u.DSN)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if c.User != tt.wantUser || c.Password != tt.wantPassword {
+				t.Errorf("got user %q password %q, want user %q password %q", c.User, c.Password, tt.wantUser, tt.wantPassword)
 			}
 		})
 	}
