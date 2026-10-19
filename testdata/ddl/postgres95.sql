@@ -171,6 +171,9 @@ CREATE OR REPLACE FUNCTION update_updated () RETURNS trigger AS '
   END;
 ' LANGUAGE plpgsql;
 
+COMMENT ON FUNCTION update_updated()
+IS 'Trigger function that sets the updated column to the current timestamp whenever a row is updated.';
+
 CREATE CONSTRAINT TRIGGER update_posts_updated
   AFTER INSERT OR UPDATE ON posts FOR EACH ROW
   EXECUTE PROCEDURE update_updated();
