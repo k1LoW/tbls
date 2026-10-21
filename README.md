@@ -237,6 +237,16 @@ $ tbls diff postgres://dbuser:*****@local:5432/dbname postgres://dbuser:*****@pr
 
 > **Notice:** `tbls diff` shows the difference Markdown documents only.
 
+Use `--include` and `--exclude` to select the same tables as `tbls doc`:
+
+```console
+$ tbls doc --exclude 'temporary_*'
+$ tbls diff --exclude 'temporary_*'
+```
+
+When comparing two databases, these filters apply to both schemas. They override
+the corresponding `include` and `exclude` settings in the configuration file.
+
 ### Re-generating database documentation
 
 Existing documentation can re-generated using either `--force` or `--rm-dist` flag.

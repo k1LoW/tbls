@@ -93,7 +93,7 @@ var diffCmd = &cobra.Command{
 				docPath = ""
 			}
 		case 1:
-			if err := c.Load(configPath); err != nil {
+			if err := c.Load(configPath, options...); err != nil {
 				return err
 			}
 			if _, err := os.Lstat(args[0]); err == nil {
@@ -109,7 +109,7 @@ var diffCmd = &cobra.Command{
 			}
 		case 0:
 			// a:path in config and b:dsn in config
-			if err := c.Load(configPath); err != nil {
+			if err := c.Load(configPath, options...); err != nil {
 				return err
 			}
 			c2 = nil
@@ -163,6 +163,8 @@ func loadDiffOpts() []config.Option {
 		options = append(options, config.Sort(sort))
 	}
 	options = append(options, config.ERFormat(erFormat))
+	options = append(options, config.Include(includes))
+	options = append(options, config.Exclude(excludes))
 	return options
 }
 
@@ -173,6 +175,8 @@ func init() {
 	diffCmd.Flags().StringVarP(&erFormat, "er-format", "t", "", fmt.Sprintf("ER diagrams output format (png, svg, jpg, ...). default: %s", config.DefaultERFormat))
 	diffCmd.Flags().BoolVarP(&adjust, "adjust-table", "j", false, "adjust column width of table")
 	diffCmd.Flags().StringVarP(&when, "when", "", "", "command execute condition")
+	diffCmd.Flags().StringSliceVarP(&includes, "include", "", []string{}, "tables to include")
+	diffCmd.Flags().StringSliceVarP(&excludes, "exclude", "", []string{}, "tables to exclude")
 	if err := diffCmd.MarkZshCompPositionalArgumentFile(2); err != nil {
 		_, _ = fmt.Fprintf(os.Stderr, "%s\n", err)
 		os.Exit(1)
