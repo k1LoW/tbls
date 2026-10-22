@@ -246,8 +246,8 @@ ORDER BY c.column_id
 			columnName    string
 			dataType      string
 			maxLength     int
-			precision	  int
-			scale		  int
+			precision     int
+			scale         int
 			isNullable    bool
 			isIdentity    bool
 			columnDefault sql.NullString
