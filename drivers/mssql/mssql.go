@@ -221,6 +221,8 @@ SELECT
   c.name,
   t.name AS type,
   c.max_length,
+  c.precision,
+  c.scale,
   c.is_nullable,
   c.is_identity,
   object_definition(c.default_object_id),
@@ -244,18 +246,20 @@ ORDER BY c.column_id
 			columnName    string
 			dataType      string
 			maxLength     int
+			precision	  int
+			scale		  int
 			isNullable    bool
 			isIdentity    bool
 			columnDefault sql.NullString
 			columnComment sql.NullString
 		)
-		err = columnRows.Scan(&columnName, &dataType, &maxLength, &isNullable, &isIdentity, &columnDefault, &columnComment)
+		err = columnRows.Scan(&columnName, &dataType, &maxLength, &precision, &scale, &isNullable, &isIdentity, &columnDefault, &columnComment)
 		if err != nil {
 			return nil, nil, errors.WithStack(err)
 		}
 		column := &schema.Column{
 			Name:     columnName,
-			Type:     convertColumnType(dataType, maxLength),
+			Type:     convertColumnType(dataType, maxLength, precision, scale),
 			Nullable: isNullable,
 			Default:  columnDefault,
 			Comment:  columnComment.String,
@@ -661,7 +665,7 @@ func convertTableType(t string) string {
 	}
 }
 
-func convertColumnType(t string, maxLength int) string {
+func convertColumnType(t string, maxLength, precision, scale int) string {
 	switch t {
 	case "varchar":
 		var length = strconv.Itoa(maxLength)
@@ -669,6 +673,13 @@ func convertColumnType(t string, maxLength int) string {
 			length = "MAX"
 		}
 		return fmt.Sprintf("varchar(%s)", length)
+	case "char", "binary":
+		return fmt.Sprintf("%s(%d)", t, maxLength)
+	case "nchar":
+		//nchar length is 2 byte, return character length
+		return fmt.Sprintf("nchar(%d)", maxLength/2)
+	case "decimal", "numeric":
+		return fmt.Sprintf("%s(%d,%d)", t, precision, scale)
 	case "nvarchar":
 		//nvarchar length is 2 byte, return character length
 		var length = strconv.Itoa(maxLength / 2)
