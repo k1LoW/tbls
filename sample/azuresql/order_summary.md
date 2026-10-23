@@ -21,7 +21,7 @@ CREATE VIEW order_summary AS (
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
 | id | int |  | false |  |  |  |
 | username | varchar(50) |  | true |  |  |  |
-| total_amount | decimal |  | false |  |  |  |
+| total_amount | decimal(12,2) |  | false |  |  |  |
 | status | varchar(20) |  | false |  |  |  |
 | created | date |  | false |  |  |  |
 
