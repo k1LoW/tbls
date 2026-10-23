@@ -25,7 +25,7 @@
 <text text-anchor="start" x="119.34" y="-150.8" font-family="Arial" font-size="14.00" fill="#666666">[varchar(50)]</text>
 <polygon fill="none" stroke="black" points="46.2,-107.8 46.2,-138.6 248.84,-138.6 248.84,-107.8 46.2,-107.8"/>
 <text text-anchor="start" x="53.2" y="-120" font-family="Arial" font-size="14.00">total_amount </text>
-<text text-anchor="start" x="138.03" y="-120" font-family="Arial" font-size="14.00" fill="#666666">[decimal]</text>
+<text text-anchor="start" x="138.03" y="-120" font-family="Arial" font-size="14.00" fill="#666666">[decimal(12,2)]</text>
 <polygon fill="none" stroke="black" points="46.2,-77 46.2,-107.8 248.84,-107.8 248.84,-77 46.2,-77"/>
 <text text-anchor="start" x="53.2" y="-89.2" font-family="Arial" font-size="14.00">status </text>
 <text text-anchor="start" x="94.44" y="-89.2" font-family="Arial" font-size="14.00" fill="#666666">[varchar(20)]</text>

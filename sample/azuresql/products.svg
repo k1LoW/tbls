@@ -25,7 +25,7 @@
 <text text-anchor="start" x="101.1" y="-150.8" font-family="Arial" font-size="14.00" fill="#666666">[nvarchar(255)]</text>
 <polygon fill="none" stroke="black" points="55.19,-107.8 55.19,-138.6 260.33,-138.6 260.33,-107.8 55.19,-107.8"/>
 <text text-anchor="start" x="62.19" y="-120" font-family="Arial" font-size="14.00">price </text>
-<text text-anchor="start" x="96.43" y="-120" font-family="Arial" font-size="14.00" fill="#666666">[decimal]</text>
+<text text-anchor="start" x="96.43" y="-120" font-family="Arial" font-size="14.00" fill="#666666">[decimal(10,2)]</text>
 <polygon fill="none" stroke="black" points="55.19,-77 55.19,-107.8 260.33,-107.8 260.33,-77 55.19,-77"/>
 <text text-anchor="start" x="62.19" y="-89.2" font-family="Arial" font-size="14.00">stock_quantity </text>
 <text text-anchor="start" x="155.58" y="-89.2" font-family="Arial" font-size="14.00" fill="#666666">[int]</text>
@@ -56,7 +56,7 @@
 <text text-anchor="start" x="103.12" y="-435" font-family="Arial" font-size="14.00" fill="#666666">[int]</text>
 <polygon fill="none" stroke="black" points="43.2,-392 43.2,-422.8 272.33,-422.8 272.33,-392 43.2,-392"/>
 <text text-anchor="start" x="50.2" y="-404.2" font-family="Arial" font-size="14.00">unit_price </text>
-<text text-anchor="start" x="114.79" y="-404.2" font-family="Arial" font-size="14.00" fill="#666666">[decimal]</text>
+<text text-anchor="start" x="114.79" y="-404.2" font-family="Arial" font-size="14.00" fill="#666666">[decimal(10,2)]</text>
 <polygon fill="none" stroke="black" points="43.2,-361.2 43.2,-392 272.33,-392 272.33,-361.2 43.2,-361.2"/>
 <text text-anchor="start" x="50.2" y="-373.4" font-family="Arial" font-size="14.00">created </text>
 <text text-anchor="start" x="100.79" y="-373.4" font-family="Arial" font-size="14.00" fill="#666666">[date]</text>

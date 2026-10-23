@@ -10,7 +10,7 @@ Customer orders
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
 | id | int |  | false | [order_items](order_items.md) |  |  |
 | user_id | int |  | false |  | [users](users.md) |  |
-| total_amount | decimal |  | false |  |  |  |
+| total_amount | decimal(12,2) |  | false |  |  |  |
 | status | varchar(20) | ('pending') | false |  |  | pending/processing/shipped/delivered |
 | created | date |  | false |  |  |  |
 | updated | date |  | true |  |  |  |
