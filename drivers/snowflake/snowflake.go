@@ -2,6 +2,7 @@ package snowflake
 
 import (
 	"database/sql"
+	"strings"
 
 	"github.com/k1LoW/errors"
 	"github.com/k1LoW/tbls/schema"
@@ -58,7 +59,7 @@ func (sf *Snowflake) Analyze(s *schema.Schema) error {
 			getDDLObjectType = "view"
 		}
 		if getDDLObjectType != "" {
-			tableDefRows, err := sf.db.Query(`SELECT GET_DDL(?, ?)`, getDDLObjectType, tableName)
+			tableDefRows, err := sf.db.Query(`SELECT GET_DDL(?, ?)`, getDDLObjectType, quoteIdentifier(tableName))
 			if err != nil {
 				return errors.WithStack(err)
 			}
@@ -132,4 +133,10 @@ func (sf *Snowflake) Info() (*schema.Driver, error) {
 
 func convertColumnNullable(str string) bool {
 	return str != "NO"
+}
+
+// quoteIdentifier quotes name so that GET_DDL resolves it case-sensitively.
+// Without quotes, Snowflake resolves the name in uppercase and fails to find tables created with lowercase or mixed-case names.
+func quoteIdentifier(name string) string {
+	return `"` + strings.ReplaceAll(name, `"`, `""`) + `"`
 }
