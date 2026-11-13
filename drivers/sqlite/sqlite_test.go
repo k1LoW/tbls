@@ -165,3 +165,31 @@ func testdataDir() string {
 	dir, _ := filepath.Abs(filepath.Join(filepath.Dir(filepath.Dir(wd)), "testdata"))
 	return dir
 }
+
+func TestCompositePrimaryKey(t *testing.T) {
+	tdb, err := sql.Open("sqlite3", filepath.Join(t.TempDir(), "pk.sqlite3"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer tdb.Close()
+	if _, err := tdb.Exec(`CREATE TABLE user_roles (user_id INTEGER NOT NULL, role_id INTEGER NOT NULL, PRIMARY KEY (user_id, role_id));`); err != nil {
+		t.Fatal(err)
+	}
+	sc := &schema.Schema{Name: "pk.sqlite3"}
+	if err := New(tdb).Analyze(sc); err != nil {
+		t.Fatal(err)
+	}
+	tbl, err := sc.FindTableByName("user_roles")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var got []string
+	for _, c := range tbl.Constraints {
+		if c.Type == "PRIMARY KEY" {
+			got = append(got, c.Def)
+		}
+	}
+	if diff := cmp.Diff(got, []string{"PRIMARY KEY (user_id, role_id)"}); diff != "" {
+		t.Error(diff)
+	}
+}
