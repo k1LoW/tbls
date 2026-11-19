@@ -5,6 +5,7 @@ package postgres
 import (
 	"database/sql"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -137,6 +138,43 @@ func TestEnumsOrder(t *testing.T) {
 		}
 	}
 	want := []string{"pending", "paid", "shipped"}
+	if diff := cmp.Diff(got, want); diff != "" {
+		t.Error(diff)
+	}
+}
+
+func TestEnumTypesOrder(t *testing.T) {
+	const drop = `DROP TYPE IF EXISTS tbls_enum_type_order_c, tbls_enum_type_order_b, tbls_enum_type_order_a`
+	if _, err := db.Exec(drop); err != nil {
+		t.Fatal(err)
+	}
+	defer func() {
+		_, _ = db.Exec(drop)
+	}()
+	// Created in reverse name order so that the creation order and the name order differ.
+	for _, q := range []string{
+		`CREATE TYPE tbls_enum_type_order_c AS ENUM ('one', 'two')`,
+		`CREATE TYPE tbls_enum_type_order_b AS ENUM ('one', 'two')`,
+		`CREATE TYPE tbls_enum_type_order_a AS ENUM ('one', 'two')`,
+	} {
+		if _, err := db.Exec(q); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	driver := New(db)
+	sc := &schema.Schema{Name: "testdb"}
+	if err := driver.Analyze(sc); err != nil {
+		t.Fatal(err)
+	}
+
+	var got []string
+	for _, e := range sc.Enums {
+		if strings.HasPrefix(e.Name, "public.tbls_enum_type_order_") {
+			got = append(got, e.Name)
+		}
+	}
+	want := []string{"public.tbls_enum_type_order_c", "public.tbls_enum_type_order_b", "public.tbls_enum_type_order_a"}
 	if diff := cmp.Diff(got, want); diff != "" {
 		t.Error(diff)
 	}

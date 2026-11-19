@@ -512,7 +512,8 @@ func (p *Postgres) getEnums() ([]*schema.Enum, error) {
 											WHERE t.typcategory = 'E'
 											  AND t.oid = e.enumtypid
 											  AND n.oid = t.typnamespace
-											GROUP BY n.nspname, t.typname `)
+											GROUP BY n.nspname, t.typname, t.oid
+											ORDER BY t.oid`)
 
 	if err != nil {
 		return nil, errors.WithStack(err)
