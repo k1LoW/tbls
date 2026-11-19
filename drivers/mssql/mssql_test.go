@@ -532,3 +532,65 @@ func TestColumnTypePrecisionAndScale(t *testing.T) {
 		t.Errorf("column types mismatch (-want +got):\n%s", diff)
 	}
 }
+
+func TestColumnsOfTypesSharingSystemType(t *testing.T) {
+	const name = "tbls_alias_types"
+	drop := func() {
+		_, _ = db.Exec(`DROP TABLE IF EXISTS ` + name)
+		_, _ = db.Exec(`DROP TYPE IF EXISTS tbls_amount`)
+		_, _ = db.Exec(`DROP TYPE IF EXISTS tbls_short_name`)
+	}
+	drop()
+	t.Cleanup(drop)
+	for _, q := range []string{
+		`CREATE TYPE tbls_amount FROM decimal(12,3)`,
+		`CREATE TYPE tbls_short_name FROM nvarchar(20)`,
+		// plain_amount and plain_name use the base types of the alias types directly.
+		`CREATE TABLE ` + name + ` (
+  amount tbls_amount,
+  plain_amount decimal(10,2),
+  short_name tbls_short_name,
+  plain_name nvarchar(30),
+  sys_name sysname,
+  geom geometry,
+  geog geography,
+  hier hierarchyid
+)`,
+	} {
+		if _, err := db.Exec(q); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	driver := New(db)
+	sc := &schema.Schema{Name: "mssqltestdb"}
+	if err := driver.Analyze(sc); err != nil {
+		t.Fatal(err)
+	}
+
+	tbl, err := sc.FindTableByName(name)
+	if err != nil {
+		t.Fatal(err)
+	}
+	type column struct {
+		Name string
+		Type string
+	}
+	var got []column
+	for _, c := range tbl.Columns {
+		got = append(got, column{c.Name, c.Type})
+	}
+	want := []column{
+		{"amount", "tbls_amount (decimal(12,3))"},
+		{"plain_amount", "decimal(10,2)"},
+		{"short_name", "tbls_short_name (nvarchar(20))"},
+		{"plain_name", "nvarchar(30)"},
+		{"sys_name", "nvarchar(128)"},
+		{"geom", "geometry"},
+		{"geog", "geography"},
+		{"hier", "hierarchyid"},
+	}
+	if diff := cmp.Diff(want, got); diff != "" {
+		t.Errorf("columns mismatch (-want +got):\n%s", diff)
+	}
+}
