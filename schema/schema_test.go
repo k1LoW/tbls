@@ -269,6 +269,38 @@ func TestSchema_SortParentRelationsByParentTable(t *testing.T) {
 	}
 }
 
+func TestSchema_SortRelationsOfSameChildTable(t *testing.T) {
+	child := &Table{Name: "child"}
+	parentA := &Table{Name: "a"}
+	parentB := &Table{Name: "b"}
+	x, y := &Column{Name: "x"}, &Column{Name: "y"}
+	id, code := &Column{Name: "id"}, &Column{Name: "code"}
+	child.Columns = []*Column{x, y}
+	parentA.Columns = []*Column{id, code}
+	parentB.Columns = []*Column{id}
+
+	toB := &Relation{Table: child, Columns: []*Column{x}, ParentTable: parentB, ParentColumns: []*Column{id}}
+	yToA := &Relation{Table: child, Columns: []*Column{y}, ParentTable: parentA, ParentColumns: []*Column{id}}
+	xToAID := &Relation{Table: child, Columns: []*Column{x}, ParentTable: parentA, ParentColumns: []*Column{id}}
+	xToACode := &Relation{Table: child, Columns: []*Column{x}, ParentTable: parentA, ParentColumns: []*Column{code}}
+	want := []*Relation{xToACode, xToAID, yToA, toB}
+
+	for _, relations := range [][]*Relation{
+		{toB, yToA, xToAID, xToACode},
+		{xToAID, toB, xToACode, yToA},
+	} {
+		s := &Schema{Name: "test", Tables: []*Table{child, parentA, parentB}, Relations: relations}
+		if err := s.Sort(); err != nil {
+			t.Fatal(err)
+		}
+		for i, r := range s.Relations {
+			if r != want[i] {
+				t.Errorf("relations[%d]: got %s(%s) -> %s(%s)", i, r.Table.Name, r.Columns[0].Name, r.ParentTable.Name, r.ParentColumns[0].Name)
+			}
+		}
+	}
+}
+
 func TestRepair(t *testing.T) {
 	got := &Schema{}
 	f, err := os.Open(filepath.Join(testdataDir(), "test_repair.golden"))

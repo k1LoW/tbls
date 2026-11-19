@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"slices"
 	"sort"
 	"strconv"
 	"strings"
@@ -351,7 +352,7 @@ func (s *Schema) Sort() error {
 		return s.Tables[i].Name < s.Tables[j].Name
 	})
 	sort.SliceStable(s.Relations, func(i, j int) bool {
-		return s.Relations[i].Table.Name < s.Relations[j].Table.Name
+		return compareRelations(s.Relations[i], s.Relations[j]) < 0
 	})
 	sort.SliceStable(s.Functions, func(i, j int) bool {
 		if s.Functions[i].Name != s.Functions[j].Name {
@@ -363,6 +364,29 @@ func (s *Schema) Sort() error {
 		return s.Viewpoints[i].Name < s.Viewpoints[j].Name
 	})
 	return nil
+}
+
+// compareRelations orders relations by child table, parent table, child columns, then parent columns.
+// Def is not used as a key because its text depends on the driver, so the same schema would sort differently across databases.
+func compareRelations(a, b *Relation) int {
+	if c := strings.Compare(a.Table.Name, b.Table.Name); c != 0 {
+		return c
+	}
+	if c := strings.Compare(a.ParentTable.Name, b.ParentTable.Name); c != 0 {
+		return c
+	}
+	if c := slices.Compare(columnNames(a.Columns), columnNames(b.Columns)); c != 0 {
+		return c
+	}
+	return slices.Compare(columnNames(a.ParentColumns), columnNames(b.ParentColumns))
+}
+
+func columnNames(columns []*Column) []string {
+	names := make([]string, len(columns))
+	for i, c := range columns {
+		names[i] = c.Name
+	}
+	return names
 }
 
 // Repair column relations.
