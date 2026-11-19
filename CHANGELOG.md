@@ -1,5 +1,34 @@
 # Changelog
 
+## [v1.97.0](https://github.com/k1LoW/tbls/compare/v1.96.1...v1.97.0) - 2026-11-19
+
+### Breaking Changes 🛠
+- fix: output PostgreSQL enum values in their definition order by @onozaty in https://github.com/k1LoW/tbls/pull/881
+- fix: output PostgreSQL enum types in a deterministic order by @k1LoW in https://github.com/k1LoW/tbls/pull/897
+- fix(mssql): follow-ups from #883 (fractional seconds scale, tests) by @k1LoW in https://github.com/k1LoW/tbls/pull/898
+- fix(mssql): document a column once when its type shares a system type by @k1LoW in https://github.com/k1LoW/tbls/pull/899
+- fix: infer optional parents for nullable composite foreign keys by @christopherhwood in https://github.com/k1LoW/tbls/pull/887
+### New Features 🎉
+- feat(xlsx): link table names in the index sheet to their sheets by @ChrisJr404 in https://github.com/k1LoW/tbls/pull/857
+- feat(mssql): show precision/scale for decimal/numeric and length for char/nchar/binary by @Tokyohenjin in https://github.com/k1LoW/tbls/pull/883
+### Fix bug 🐛
+- fix(schema): sort ParentRelations by parent table name by @TastyHeadphones in https://github.com/k1LoW/tbls/pull/880
+- fix: reject a relation in the config that lists no columns by @k1LoW in https://github.com/k1LoW/tbls/pull/900
+- fix(sqlite): list a composite primary key once by @jayhemnani9910 in https://github.com/k1LoW/tbls/pull/888
+- fix(mysql): include referential actions in foreign key definitions by @clddup in https://github.com/k1LoW/tbls/pull/895
+### Other Changes
+- fix(mssql): skip tables dropped while the schema is being read by @TastyHeadphones in https://github.com/k1LoW/tbls/pull/875
+- chore(deps): bump github.com/snowflakedb/gosnowflake/v2 from 2.1.0 to 2.2.0 by @dependabot[bot] in https://github.com/k1LoW/tbls/pull/873
+- fix(mssql): follow-ups from #875 (rows.Err, tests) by @k1LoW in https://github.com/k1LoW/tbls/pull/877
+- chore(deps): bump the dependencies group across 1 directory with 21 updates by @dependabot[bot] in https://github.com/k1LoW/tbls/pull/878
+- chore(deps): update github.com/xo/dburl to v0.53.0 by @k1LoW in https://github.com/k1LoW/tbls/pull/879
+- chore(deps): bump go.opentelemetry.io/otel/sdk from 1.45.0 to 1.47.0 by @dependabot[bot] in https://github.com/k1LoW/tbls/pull/889
+- chore(deps): bump github.com/go-jose/go-jose/v4 from 4.1.4 to 4.1.6 by @dependabot[bot] in https://github.com/k1LoW/tbls/pull/886
+- fix(schema): order relations of the same child table deterministically by @k1LoW in https://github.com/k1LoW/tbls/pull/896
+- chore(deps): bump the dependencies group across 1 directory with 13 updates by @dependabot[bot] in https://github.com/k1LoW/tbls/pull/893
+- fix(snowflake): quote table names passed to GET_DDL by @ikoma-cci in https://github.com/k1LoW/tbls/pull/884
+- test(mysql): let TestForeignKeyActions run after an interrupted run by @k1LoW in https://github.com/k1LoW/tbls/pull/901
+
 ## [v1.96.1](https://github.com/k1LoW/tbls/compare/v1.96.0...v1.96.1) - 2026-09-28
 
 ### Other Changes
