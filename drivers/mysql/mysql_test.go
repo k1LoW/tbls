@@ -130,6 +130,16 @@ func TestTriggersOrder(t *testing.T) {
 }
 
 func TestForeignKeyActions(t *testing.T) {
+	// A run that is killed before its cleanup leaves these behind, and the CREATE statements below would
+	// then fail on every later run. The table goes first because it references the external database.
+	for _, q := range []string{
+		`DROP TABLE IF EXISTS tbls_fk_actions`,
+		`DROP DATABASE IF EXISTS tbls_fk_actions_external`,
+	} {
+		if _, err := db.Exec(q); err != nil {
+			t.Fatal(err)
+		}
+	}
 	if _, err := db.Exec(`CREATE DATABASE tbls_fk_actions_external`); err != nil {
 		t.Fatal(err)
 	}
