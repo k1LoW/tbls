@@ -676,14 +676,12 @@ func convertColumnType(t string, maxLength, precision, scale int) string {
 	case "char", "binary":
 		return fmt.Sprintf("%s(%d)", t, maxLength)
 	case "nchar":
-		//nchar length is 2 byte, return character length
 		return fmt.Sprintf("nchar(%d)", maxLength/2)
 	case "decimal", "numeric":
 		return fmt.Sprintf("%s(%d,%d)", t, precision, scale)
 	case "datetime2", "time", "datetimeoffset":
 		return fmt.Sprintf("%s(%d)", t, scale)
 	case "nvarchar":
-		//nvarchar length is 2 byte, return character length
 		var length = strconv.Itoa(maxLength / 2)
 		if maxLength == -1 {
 			length = "MAX"
