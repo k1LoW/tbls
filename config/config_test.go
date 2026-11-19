@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/k1LoW/tbls/schema"
@@ -421,6 +422,38 @@ func testdataDir() string {
 	wd, _ := os.Getwd()
 	dir, _ := filepath.Abs(filepath.Join(filepath.Dir(wd), "testdata"))
 	return dir
+}
+
+func TestModifySchemaRejectsRelationWithoutColumns(t *testing.T) {
+	tests := []struct {
+		name     string
+		relation AdditionalRelation
+	}{
+		{"no columns", AdditionalRelation{Table: "users", ParentTable: "categories", ParentColumns: []string{"id"}}},
+		{"no parentColumns", AdditionalRelation{Table: "users", ParentTable: "categories", Columns: []string{"id"}}},
+		{"neither", AdditionalRelation{Table: "users", ParentTable: "categories"}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			c, err := New()
+			if err != nil {
+				t.Fatal(err)
+			}
+			c.Relations = []AdditionalRelation{tt.relation}
+			s := newTestSchemaViaJSON(t)
+			want := len(s.Relations)
+			err = c.ModifySchema(s)
+			if err == nil {
+				t.Fatal("got nil, want an error")
+			}
+			if !strings.Contains(err.Error(), "columns and parentColumns are required") {
+				t.Errorf("got %q", err)
+			}
+			if got := len(s.Relations); got != want {
+				t.Errorf("got %d relations, want %d", got, want)
+			}
+		})
+	}
 }
 
 func Test_mergeDetectedRelations(t *testing.T) {
