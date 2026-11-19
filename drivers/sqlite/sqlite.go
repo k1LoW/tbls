@@ -123,6 +123,7 @@ WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
 		defer columnRows.Close()
 
 		columns := []*schema.Column{}
+		pkColumns := []string{}
 		for columnRows.Next() {
 			var (
 				columnID      string
@@ -145,15 +146,7 @@ WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
 			columns = append(columns, column)
 
 			if columnPk != "0" {
-				constraintDef := fmt.Sprintf("PRIMARY KEY (%s)", columnName)
-				constraint := &schema.Constraint{
-					Name:    columnName,
-					Type:    "PRIMARY KEY",
-					Def:     constraintDef,
-					Table:   &table.Name,
-					Columns: []string{columnName},
-				}
-				constraints = append(constraints, constraint)
+				pkColumns = append(pkColumns, columnName)
 			}
 		}
 
@@ -235,6 +228,7 @@ WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
 			constraints = append(constraints, constraint)
 		}
 
+		hasPkIndex := false
 		// indexes and constraints(UNIQUE, PRIMARY KEY)
 		indexRows, err := l.db.Query(fmt.Sprintf("PRAGMA index_list(`%s`)", tableName))
 		if err != nil {
@@ -313,6 +307,7 @@ WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
 				}
 				constraints = append(constraints, constraint)
 			case "pk":
+				hasPkIndex = true
 				indexDef = fmt.Sprintf("PRIMARY KEY (%s)", strings.Join(cols, ", "))
 				constraint := &schema.Constraint{
 					Name:    indexName,
@@ -331,6 +326,16 @@ WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
 				Columns: cols,
 			}
 			indexes = append(indexes, index)
+		}
+
+		if !hasPkIndex && len(pkColumns) > 0 {
+			constraints = append([]*schema.Constraint{{
+				Name:    strings.Join(pkColumns, ", "),
+				Type:    "PRIMARY KEY",
+				Def:     fmt.Sprintf("PRIMARY KEY (%s)", strings.Join(pkColumns, ", ")),
+				Table:   &table.Name,
+				Columns: pkColumns,
+			}}, constraints...)
 		}
 
 		// triggers
