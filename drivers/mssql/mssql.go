@@ -216,10 +216,13 @@ SELECT definition FROM sys.sql_modules WHERE object_id = @p1
 	}
 
 	// columns and comments
+	// sys.types is not joined on system_type_id alone: an alias type shares it with its base type, and
+	// geometry, geography and hierarchyid share one too, so every such column would come back once per type.
 	columnRows, err := m.db.Query(`
 SELECT
   c.name,
-  t.name AS type,
+  COALESCE(bt.name, ut.name) AS type,
+  CASE WHEN ut.is_user_defined = 1 AND bt.name IS NOT NULL THEN ut.name END AS alias_type,
   c.max_length,
   c.precision,
   c.scale,
@@ -228,11 +231,11 @@ SELECT
   object_definition(c.default_object_id),
   CAST(e.value AS NVARCHAR(MAX)) AS column_comment
 FROM sys.columns AS c
-LEFT JOIN sys.types AS t ON c.system_type_id = t.system_type_id
+INNER JOIN sys.types AS ut ON c.user_type_id = ut.user_type_id
+LEFT JOIN sys.types AS bt ON c.system_type_id = bt.user_type_id
 LEFT JOIN sys.extended_properties AS e ON
 e.major_id = c.object_id AND e.name = 'MS_Description' AND e.minor_id = c.column_id
 WHERE c.object_id = @p1
-and t.name != 'sysname'
 ORDER BY c.column_id
 `, tableOid)
 	if err != nil {
@@ -245,6 +248,7 @@ ORDER BY c.column_id
 		var (
 			columnName    string
 			dataType      string
+			aliasType     sql.NullString
 			maxLength     int
 			precision     int
 			scale         int
@@ -253,13 +257,17 @@ ORDER BY c.column_id
 			columnDefault sql.NullString
 			columnComment sql.NullString
 		)
-		err = columnRows.Scan(&columnName, &dataType, &maxLength, &precision, &scale, &isNullable, &isIdentity, &columnDefault, &columnComment)
+		err = columnRows.Scan(&columnName, &dataType, &aliasType, &maxLength, &precision, &scale, &isNullable, &isIdentity, &columnDefault, &columnComment)
 		if err != nil {
 			return nil, nil, errors.WithStack(err)
 		}
+		columnType := convertColumnType(dataType, maxLength, precision, scale)
+		if aliasType.Valid {
+			columnType = fmt.Sprintf("%s (%s)", aliasType.String, columnType)
+		}
 		column := &schema.Column{
 			Name:     columnName,
-			Type:     convertColumnType(dataType, maxLength, precision, scale),
+			Type:     columnType,
 			Nullable: isNullable,
 			Default:  columnDefault,
 			Comment:  columnComment.String,
