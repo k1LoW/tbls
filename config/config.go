@@ -5,6 +5,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 
 	wildcard "github.com/IGLOU-EU/go-wildcard/v2"
@@ -21,6 +22,8 @@ import (
 const DefaultDocPath = "dbdoc"
 
 var DefaultConfigFilePaths = []string{".tbls.yml", "tbls.yml", ".tbls.yaml", "tbls.yaml"}
+
+var matchFullTokens = regexp.MustCompile(`"(?:""|[^"])*"|(?i:\bMATCH\s+FULL\b)`)
 
 // DefaultERFormat is the default ER diagram format.
 const DefaultERFormat = "svg"
@@ -873,14 +876,16 @@ func detectCardinality(s *schema.Schema) error {
 
 		// parent
 		if r.ParentCardinality == schema.UnknownCardinality {
-			// whether the child columns are nullable or not.
-			nullable := true
+			anyNullable, allNullable := false, true
 			for _, c := range r.Columns {
-				if !c.Nullable {
-					nullable = false
-				}
+				anyNullable = anyNullable || c.Nullable
+				allNullable = allNullable && c.Nullable
 			}
 
+			nullable := anyNullable
+			if usesMatchFull(r.Def) {
+				nullable = allNullable
+			}
 			if nullable {
 				r.ParentCardinality = schema.ZeroOrOne
 			} else {
@@ -889,6 +894,15 @@ func detectCardinality(s *schema.Schema) error {
 		}
 	}
 	return nil
+}
+
+func usesMatchFull(def string) bool {
+	for _, token := range matchFullTokens.FindAllString(def, -1) {
+		if token[0] != '"' {
+			return true
+		}
+	}
+	return false
 }
 
 func detectPKFK(s *schema.Schema) error {
