@@ -493,7 +493,11 @@ func TestColumnTypePrecisionAndScale(t *testing.T) {
   d_default decimal,
   c char(5),
   nc nchar(5),
-  b binary(16)
+  b binary(16),
+  dt2 datetime2(3),
+  tm time(0),
+  dto datetimeoffset(2),
+  dt2_default datetime2
 )`); err != nil {
 		t.Fatal(err)
 	}
@@ -513,12 +517,16 @@ func TestColumnTypePrecisionAndScale(t *testing.T) {
 		got[c.Name] = c.Type
 	}
 	want := map[string]string{
-		"d":         "decimal(9,2)",
-		"n":         "numeric(18,4)",
-		"d_default": "decimal(18,0)",
-		"c":         "char(5)",
-		"nc":        "nchar(5)",
-		"b":         "binary(16)",
+		"d":           "decimal(9,2)",
+		"n":           "numeric(18,4)",
+		"d_default":   "decimal(18,0)",
+		"c":           "char(5)",
+		"nc":          "nchar(5)",
+		"b":           "binary(16)",
+		"dt2":         "datetime2(3)",
+		"tm":          "time(0)",
+		"dto":         "datetimeoffset(2)",
+		"dt2_default": "datetime2(7)",
 	}
 	if diff := cmp.Diff(want, got); diff != "" {
 		t.Errorf("column types mismatch (-want +got):\n%s", diff)
