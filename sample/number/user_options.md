@@ -36,7 +36,7 @@ CREATE TABLE `user_options` (
 | - | ---- | ---- | ---------- |
 | 1 | PRIMARY | PRIMARY KEY | PRIMARY KEY (user_id) |
 | 2 | user_id | UNIQUE | UNIQUE KEY user_id (user_id) |
-| 3 | user_options_user_id_fk | FOREIGN KEY | FOREIGN KEY (user_id) REFERENCES users (id) |
+| 3 | user_options_user_id_fk | FOREIGN KEY | FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE |
 
 ## Indexes
 

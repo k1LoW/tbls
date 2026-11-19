@@ -371,9 +371,16 @@ SELECT
   GROUP_CONCAT(kcu.column_name ORDER BY kcu.ordinal_position, position_in_unique_constraint SEPARATOR ', ') AS column_name,
   kcu.referenced_table_schema,
   kcu.referenced_table_name,
-  GROUP_CONCAT(kcu.referenced_column_name ORDER BY kcu.ordinal_position, position_in_unique_constraint SEPARATOR ', ') AS referenced_column_name
+  GROUP_CONCAT(kcu.referenced_column_name ORDER BY kcu.ordinal_position, position_in_unique_constraint SEPARATOR ', ') AS referenced_column_name,
+  MAX(rc.update_rule) AS update_rule,
+  MAX(rc.delete_rule) AS delete_rule
 FROM information_schema.key_column_usage AS kcu
 LEFT JOIN information_schema.columns AS c ON kcu.table_schema = c.table_schema AND kcu.table_name = c.table_name AND kcu.column_name = c.column_name
+LEFT JOIN information_schema.referential_constraints AS rc
+  ON rc.constraint_schema = kcu.constraint_schema
+  AND rc.table_name = kcu.table_name
+  AND rc.constraint_name = kcu.constraint_name
+  AND kcu.referenced_table_name IS NOT NULL
 INNER JOIN
   (
    SELECT
@@ -414,9 +421,11 @@ ORDER BY kcu.table_name, kcu.constraint_name, sub.constraint_type, kcu.reference
 			constraintRefTableSchema sql.NullString
 			constraintRefTableName   sql.NullString
 			constraintRefColumnName  sql.NullString
+			updateRule               sql.NullString
+			deleteRule               sql.NullString
 			constraintDef            string
 		)
-		err = constraintRows.Scan(&tableName, &constraintName, &constraintType, &constraintColumnName, &constraintRefTableSchema, &constraintRefTableName, &constraintRefColumnName)
+		err = constraintRows.Scan(&tableName, &constraintName, &constraintType, &constraintColumnName, &constraintRefTableSchema, &constraintRefTableName, &constraintRefColumnName, &updateRule, &deleteRule)
 		if err != nil {
 			return errors.WithStack(err)
 		}
@@ -441,6 +450,15 @@ ORDER BY kcu.table_name, kcu.constraint_name, sub.constraint_type, kcu.reference
 				Def:   constraintDef,
 			}
 			relations = append(relations, relation)
+
+			// Only enrich the constraint definition, not the existing relationship label.
+			// RESTRICT and NO ACTION are equivalent to omitting the action in MySQL.
+			if updateRule.Valid && updateRule.String != "RESTRICT" && updateRule.String != "NO ACTION" {
+				constraintDef += " ON UPDATE " + updateRule.String
+			}
+			if deleteRule.Valid && deleteRule.String != "RESTRICT" && deleteRule.String != "NO ACTION" {
+				constraintDef += " ON DELETE " + deleteRule.String
+			}
 		case "UNKNOWN":
 			constraintDef = fmt.Sprintf("UNKNOWN CONSTRAINT (%s) (%s) (%s)", constraintColumnName, constraintRefTable, constraintRefColumnName.String)
 		}

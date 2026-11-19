@@ -32,11 +32,11 @@ CREATE TABLE `user_options` (
 
 ## 制約一覧
 
-| 名前                    | タイプ      | 定義                                        |
-| ----------------------- | ----------- | ------------------------------------------- |
-| PRIMARY                 | PRIMARY KEY | PRIMARY KEY (user_id)                       |
-| user_id                 | UNIQUE      | UNIQUE KEY user_id (user_id)                |
-| user_options_user_id_fk | FOREIGN KEY | FOREIGN KEY (user_id) REFERENCES users (id) |
+| 名前                    | タイプ      | 定義                                                          |
+| ----------------------- | ----------- | ------------------------------------------------------------- |
+| PRIMARY                 | PRIMARY KEY | PRIMARY KEY (user_id)                                         |
+| user_id                 | UNIQUE      | UNIQUE KEY user_id (user_id)                                  |
+| user_options_user_id_fk | FOREIGN KEY | FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE |
 
 ## INDEX一覧
 

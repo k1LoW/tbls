@@ -471,7 +471,7 @@
         {
           "name": "posts_user_id_fk",
           "type": "FOREIGN KEY",
-          "def": "FOREIGN KEY (user_id) REFERENCES users (id)",
+          "def": "FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE",
           "table": "posts",
           "referenced_table": "users",
           "columns": [
@@ -576,7 +576,7 @@
         {
           "name": "user_options_user_id_fk",
           "type": "FOREIGN KEY",
-          "def": "FOREIGN KEY (user_id) REFERENCES users (id)",
+          "def": "FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE",
           "table": "user_options",
           "referenced_table": "users",
           "columns": [

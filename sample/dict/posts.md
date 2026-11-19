@@ -39,11 +39,11 @@ CREATE TABLE `posts` (
 
 ## 制約一覧
 
-| 名前             | タイプ      | 定義                                        |
-| ---------------- | ----------- | ------------------------------------------- |
-| posts_user_id_fk | FOREIGN KEY | FOREIGN KEY (user_id) REFERENCES users (id) |
-| PRIMARY          | PRIMARY KEY | PRIMARY KEY (id)                            |
-| user_id          | UNIQUE      | UNIQUE KEY user_id (user_id, title)         |
+| 名前             | タイプ      | 定義                                                          |
+| ---------------- | ----------- | ------------------------------------------------------------- |
+| posts_user_id_fk | FOREIGN KEY | FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE |
+| PRIMARY          | PRIMARY KEY | PRIMARY KEY (id)                                              |
+| user_id          | UNIQUE      | UNIQUE KEY user_id (user_id, title)                           |
 
 ## INDEX一覧
 

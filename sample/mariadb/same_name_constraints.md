@@ -27,7 +27,7 @@ CREATE TABLE `same_name_constraints` (
 
 | Name | Type | Definition |
 | ---- | ---- | ---------- |
-| same_name | FOREIGN KEY | FOREIGN KEY (user_id) REFERENCES users (id) |
+| same_name | FOREIGN KEY | FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE |
 | same_name | UNIQUE | UNIQUE KEY same_name (user_id, id) |
 
 ## Indexes
