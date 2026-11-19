@@ -109,6 +109,39 @@ func TestTriggersOrder(t *testing.T) {
 	}
 }
 
+func TestEnumsOrder(t *testing.T) {
+	if _, err := db.Exec(`DROP TYPE IF EXISTS tbls_enum_order`); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := db.Exec(`CREATE TYPE tbls_enum_order AS ENUM ('pending', 'shipped')`); err != nil {
+		t.Fatal(err)
+	}
+	defer func() {
+		_, _ = db.Exec(`DROP TYPE IF EXISTS tbls_enum_order`)
+	}()
+	// Add a value in the middle so that the order of the rows in pg_enum and the definition order differ.
+	if _, err := db.Exec(`ALTER TYPE tbls_enum_order ADD VALUE 'paid' BEFORE 'shipped'`); err != nil {
+		t.Fatal(err)
+	}
+
+	driver := New(db)
+	sc := &schema.Schema{Name: "testdb"}
+	if err := driver.Analyze(sc); err != nil {
+		t.Fatal(err)
+	}
+
+	var got []string
+	for _, e := range sc.Enums {
+		if e.Name == "public.tbls_enum_order" {
+			got = e.Values
+		}
+	}
+	want := []string{"pending", "paid", "shipped"}
+	if diff := cmp.Diff(got, want); diff != "" {
+		t.Error(diff)
+	}
+}
+
 func TestParseFK(t *testing.T) {
 	tests := []struct {
 		in              string

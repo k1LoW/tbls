@@ -507,7 +507,7 @@ func (p *Postgres) getEnums() ([]*schema.Enum, error) {
 		return enums, nil
 	}
 
-	enumsResult, err := p.db.Query(`SELECT n.nspname, t.typname AS enum_name, ARRAY_AGG(e.enumlabel) AS enum_values
+	enumsResult, err := p.db.Query(`SELECT n.nspname, t.typname AS enum_name, ARRAY_AGG(e.enumlabel ORDER BY e.enumsortorder) AS enum_values
 											FROM pg_type t, pg_enum e, pg_catalog.pg_namespace n
 											WHERE t.typcategory = 'E'
 											  AND t.oid = e.enumtypid

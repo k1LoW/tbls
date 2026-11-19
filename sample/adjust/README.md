@@ -53,7 +53,7 @@ Sample PostgreSQL database document.
 
 | Name              | Values                 |
 | ----------------- | ---------------------- |
-| public.post_types | draft, private, public |
+| public.post_types | public, private, draft |
 
 ## Relations
 

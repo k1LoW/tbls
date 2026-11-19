@@ -1353,9 +1353,9 @@
     {
       "name": "public.post_types",
       "values": [
-        "draft",
+        "public",
         "private",
-        "public"
+        "draft"
       ]
     }
   ],

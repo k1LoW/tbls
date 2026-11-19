@@ -7,7 +7,6 @@ import (
 	"io"
 	"os"
 	"path/filepath"
-	"sort"
 	"strconv"
 	"strings"
 	"text/template"
@@ -906,7 +905,6 @@ func (m *Md) enumData(enums []*schema.Enum, number, adjust bool) [][]string {
 	)
 
 	for _, e := range enums {
-		sort.Strings(e.Values)
 		d := []string{
 			e.Name,
 			strings.Join(e.Values, ", "),
