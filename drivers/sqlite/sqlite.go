@@ -116,7 +116,8 @@ WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
 		constraints := []*schema.Constraint{}
 
 		// columns
-		columnRows, err := l.db.Query(fmt.Sprintf("PRAGMA table_info(`%s`)", tableName))
+		// table_xinfo also lists generated columns, which table_info leaves out.
+		columnRows, err := l.db.Query(fmt.Sprintf("PRAGMA table_xinfo(`%s`)", tableName))
 		if err != nil {
 			return errors.WithStack(err)
 		}
@@ -132,10 +133,15 @@ WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
 				columnNotNull string
 				columnDefault sql.NullString
 				columnPk      string
+				columnHidden  int
 			)
-			err = columnRows.Scan(&columnID, &columnName, &dataType, &columnNotNull, &columnDefault, &columnPk)
+			err = columnRows.Scan(&columnID, &columnName, &dataType, &columnNotNull, &columnDefault, &columnPk, &columnHidden)
 			if err != nil {
 				return errors.WithStack(err)
+			}
+			// 1 is a hidden column of a virtual table; 2 and 3 are generated columns.
+			if columnHidden == 1 {
+				continue
 			}
 			column := &schema.Column{
 				Name:     columnName,
