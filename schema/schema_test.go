@@ -301,6 +301,26 @@ func TestSchema_SortRelationsOfSameChildTable(t *testing.T) {
 	}
 }
 
+func TestSchema_SortEnums(t *testing.T) {
+	s := &Schema{
+		Name: "test",
+		Enums: []*Enum{
+			{Name: "public.status", Values: []string{"pending", "paid", "shipped"}},
+			{Name: "public.kind", Values: []string{"b", "a"}},
+		},
+	}
+	if err := s.Sort(); err != nil {
+		t.Fatal(err)
+	}
+	want := []*Enum{
+		{Name: "public.kind", Values: []string{"b", "a"}},
+		{Name: "public.status", Values: []string{"pending", "paid", "shipped"}},
+	}
+	if diff := cmp.Diff(s.Enums, want); diff != "" {
+		t.Error(diff)
+	}
+}
+
 func TestRepair(t *testing.T) {
 	got := &Schema{}
 	f, err := os.Open(filepath.Join(testdataDir(), "test_repair.golden"))
