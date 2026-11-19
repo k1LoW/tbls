@@ -666,6 +666,9 @@ func mergeAdditionalRelations(s *schema.Schema, relations []AdditionalRelation) 
 		err = errors.WithStack(err)
 	}()
 	for _, r := range relations {
+		if len(r.Columns) == 0 || len(r.ParentColumns) == 0 {
+			return fmt.Errorf("failed to add relation: columns and parentColumns are required (table: %q, parentTable: %q)", r.Table, r.ParentTable)
+		}
 		c, err := schema.ToCardinality(r.Cardinality)
 		if err != nil {
 			return fmt.Errorf("failed to add relation: %w", err)
