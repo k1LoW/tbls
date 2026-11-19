@@ -651,7 +651,7 @@
         {
           "name": "user_option_user_id_fk",
           "type": "FOREIGN KEY",
-          "def": "FOREIGN KEY (user_id) REFERENCES user (id)",
+          "def": "FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE",
           "table": "user_option",
           "referenced_table": "user",
           "columns": [

@@ -45,7 +45,7 @@ CREATE TABLE `posts` (
 
 | Name | Type | Definition |
 | ---- | ---- | ---------- |
-| posts_user_id_fk | FOREIGN KEY | FOREIGN KEY (user_id) REFERENCES users (id) |
+| posts_user_id_fk | FOREIGN KEY | FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE |
 | PRIMARY | PRIMARY KEY | PRIMARY KEY (id) |
 | user_id | UNIQUE | UNIQUE KEY user_id (user_id, title) |
 
