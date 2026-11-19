@@ -363,6 +363,10 @@ func (s *Schema) Sort() error {
 	sort.SliceStable(s.Viewpoints, func(i, j int) bool {
 		return s.Viewpoints[i].Name < s.Viewpoints[j].Name
 	})
+	// Enum.Values is left as is because the order of the values is part of an enum's definition.
+	sort.SliceStable(s.Enums, func(i, j int) bool {
+		return s.Enums[i].Name < s.Enums[j].Name
+	})
 	return nil
 }
 
