@@ -10,7 +10,7 @@ Product catalog
 | ---- | ---- | ------- | -------- | -------- | ------- | ------- |
 | id | int |  | false | [order_items](order_items.md) |  |  |
 | name | nvarchar(255) |  | false |  |  |  |
-| price | decimal |  | false |  |  | Unit price in USD |
+| price | decimal(10,2) |  | false |  |  | Unit price in USD |
 | stock_quantity | int | ((0)) | false |  |  |  |
 | created | date |  | false |  |  |  |
 

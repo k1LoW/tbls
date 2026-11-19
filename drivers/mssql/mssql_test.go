@@ -476,3 +476,51 @@ func TestObjectExists(t *testing.T) {
 		t.Error("got true for a dropped table, want false")
 	}
 }
+
+func TestColumnTypePrecisionAndScale(t *testing.T) {
+	const name = "tbls_column_types"
+	if _, err := db.Exec(`DROP TABLE IF EXISTS ` + name); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() {
+		_, _ = db.Exec(`DROP TABLE IF EXISTS ` + name)
+	})
+	// d_default has no explicit precision, so SQL Server applies decimal(18,0);
+	// it checks that the values come from sys.columns, not the DDL text.
+	if _, err := db.Exec(`CREATE TABLE ` + name + ` (
+  d decimal(9,2),
+  n numeric(18,4),
+  d_default decimal,
+  c char(5),
+  nc nchar(5),
+  b binary(16)
+)`); err != nil {
+		t.Fatal(err)
+	}
+
+	driver := New(db)
+	sc := &schema.Schema{Name: "mssqltestdb"}
+	if err := driver.Analyze(sc); err != nil {
+		t.Fatal(err)
+	}
+
+	tbl, err := sc.FindTableByName(name)
+	if err != nil {
+		t.Fatal(err)
+	}
+	got := map[string]string{}
+	for _, c := range tbl.Columns {
+		got[c.Name] = c.Type
+	}
+	want := map[string]string{
+		"d":         "decimal(9,2)",
+		"n":         "numeric(18,4)",
+		"d_default": "decimal(18,0)",
+		"c":         "char(5)",
+		"nc":        "nchar(5)",
+		"b":         "binary(16)",
+	}
+	if diff := cmp.Diff(want, got); diff != "" {
+		t.Errorf("column types mismatch (-want +got):\n%s", diff)
+	}
+}

@@ -8,7 +8,7 @@
 | order_id | int |  | false |  | [orders](orders.md) |  |
 | product_id | int |  | false |  | [products](products.md) |  |
 | quantity | int |  | false |  |  |  |
-| unit_price | decimal |  | false |  |  |  |
+| unit_price | decimal(10,2) |  | false |  |  |  |
 | created | date |  | false |  |  |  |
 
 ## Constraints

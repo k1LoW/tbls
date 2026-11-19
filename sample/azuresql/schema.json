@@ -175,7 +175,7 @@
         },
         {
           "name": "price",
-          "type": "decimal",
+          "type": "decimal(10,2)",
           "nullable": false,
           "comment": "Unit price in USD"
         },
@@ -230,7 +230,7 @@
         },
         {
           "name": "total_amount",
-          "type": "decimal",
+          "type": "decimal(12,2)",
           "nullable": false
         },
         {
@@ -312,7 +312,7 @@
         },
         {
           "name": "unit_price",
-          "type": "decimal",
+          "type": "decimal(10,2)",
           "nullable": false
         },
         {
@@ -419,7 +419,7 @@
         },
         {
           "name": "total_amount",
-          "type": "decimal",
+          "type": "decimal(12,2)",
           "nullable": false
         },
         {
@@ -496,7 +496,7 @@
   ],
   "driver": {
     "name": "sqlserver",
-    "database_version": "Microsoft Azure SQL Edge Developer (RTM) - 15.0.2000.1574 (ARM64) \n\tJan 25 2023 10:36:08 \n\tCopyright (C) 2019 Microsoft Corporation\n\tLinux (Ubuntu 18.04.6 LTS aarch64) \u003cARM64\u003e",
+    "database_version": "Microsoft SQL Server 2019 (RTM-CU32-GDR) (KB5128494) - 15.0.4500.2 (X64) \n\tSep 26 2026 20:15:06 \n\tCopyright (C) 2019 Microsoft Corporation\n\tDeveloper Edition (64-bit) on Linux (Ubuntu 20.04.6 LTS) \u003cX64\u003e",
     "meta": {
       "dict": {
         "Functions": "Stored procedures and functions"
