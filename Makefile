@@ -155,11 +155,11 @@ test_azuresql: doc_azuresql
 		$(TBLS) diff -c testdata/test_tbls_azuresql.yml
 
 doc_bigquery: build
-	$(TBLS) doc bq://bigquery-public-data/crypto_bitcoin?creds=client_secrets.json -c testdata/crypto_bitcoin_tbls.yml -f sample/bigquery_crypto_bitcoin
+	$(TBLS) doc bq://bigquery-public-data/crypto_zcash?creds=client_secrets.json -c testdata/crypto_zcash_tbls.yml -f sample/bigquery_crypto_zcash
 	$(TBLS) doc bq://bigquery-public-data/census_bureau_international?creds=client_secrets.json -f sample/bigquery_census_bureau_international
 
 test_bigquery: build
-	$(TBLS) diff bq://bigquery-public-data/crypto_bitcoin?creds=client_secrets.json -c testdata/crypto_bitcoin_tbls.yml sample/bigquery_crypto_bitcoin
+	$(TBLS) diff bq://bigquery-public-data/crypto_zcash?creds=client_secrets.json -c testdata/crypto_zcash_tbls.yml sample/bigquery_crypto_zcash
 	$(TBLS) diff bq://bigquery-public-data/census_bureau_international?creds=client_secrets.json sample/bigquery_census_bureau_international
 
 doc_spanner: build
