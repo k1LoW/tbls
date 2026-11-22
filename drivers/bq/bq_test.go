@@ -23,7 +23,7 @@ func TestAnalyze(t *testing.T) {
 		Name: projectID,
 	}
 	defer client.Close()
-	driver, err := New(ctx, client, "crypto_bitcoin")
+	driver, err := New(ctx, client, "crypto_zcash")
 	if err != nil {
 		t.Errorf("%v", err)
 	}
