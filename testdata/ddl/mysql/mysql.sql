@@ -111,29 +111,30 @@ CREATE TRIGGER update_posts_updated BEFORE UPDATE ON posts
 
 DELIMITER //
 CREATE PROCEDURE GetAllComments()
+COMMENT 'Retrieves all rows from the comments table'
 BEGIN
-	SELECT * FROM comments;
+    SELECT * FROM comments;
 END//
 DELIMITER ;
 
 DELIMITER $$
 CREATE FUNCTION CustomerLevel(
-	credit DECIMAL(10,2)
+    credit DECIMAL(10,2)
 )
 RETURNS VARCHAR(20)
 DETERMINISTIC
+COMMENT 'Determines customer tier (PLATINUM, GOLD, SILVER) based on the credit amount'
 BEGIN
     DECLARE customerLevel VARCHAR(20);
 
     IF credit > 50000 THEN
-		SET customerLevel = 'PLATINUM';
-    ELSEIF (credit >= 50000 AND
-			credit <= 10000) THEN
+        SET customerLevel = 'PLATINUM';
+    ELSEIF credit >= 10000 AND credit <= 50000 THEN
         SET customerLevel = 'GOLD';
-    ELSEIF credit < 10000 THEN
+    ELSE
         SET customerLevel = 'SILVER';
     END IF;
-	-- return the customer level
-	RETURN (customerLevel);
+
+    RETURN customerLevel;
 END$$
 DELIMITER ;
