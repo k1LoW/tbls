@@ -165,7 +165,7 @@ WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
 				foreignKeySeq               string
 				foreignKeyForeignTableName  string
 				foreignKeyColumnName        string
-				foreignKeyForeignColumnName string
+				foreignKeyForeignColumnName sql.NullString
 				foreignKeyOnUpdate          string
 				foreignKeyOnDelete          string
 				foreignKeyMatch             string
@@ -184,20 +184,21 @@ WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
 				return errors.WithStack(err)
 			}
 
-			if f, ok := fkMap[foreignKeyID]; ok {
-				fkMap[foreignKeyID].ColumnNames = append(f.ColumnNames, foreignKeyColumnName)
-				fkMap[foreignKeyID].ForeignColumnNames = append(f.ForeignColumnNames, foreignKeyForeignColumnName)
-			} else {
-				f := &fk{
-					ID:                 foreignKeyID,
-					ForeignTableName:   foreignKeyForeignTableName,
-					ColumnNames:        []string{foreignKeyColumnName},
-					ForeignColumnNames: []string{foreignKeyForeignColumnName},
-					OnUpdate:           foreignKeyOnUpdate,
-					OnDelete:           foreignKeyOnDelete,
-					Match:              foreignKeyMatch,
+			f, ok := fkMap[foreignKeyID]
+			if !ok {
+				f = &fk{
+					ID:               foreignKeyID,
+					ForeignTableName: foreignKeyForeignTableName,
+					OnUpdate:         foreignKeyOnUpdate,
+					OnDelete:         foreignKeyOnDelete,
+					Match:            foreignKeyMatch,
 				}
 				fkMap[foreignKeyID] = f
+			}
+			f.ColumnNames = append(f.ColumnNames, foreignKeyColumnName)
+			// The parent column is NULL for `REFERENCES parent` without a column list.
+			if foreignKeyForeignColumnName.Valid {
+				f.ForeignColumnNames = append(f.ForeignColumnNames, foreignKeyForeignColumnName.String)
 			}
 		}
 		for _, f := range fkMap {
@@ -208,6 +209,17 @@ WHERE name != 'sqlite_sequence' AND (type = 'table' OR type = 'view');`)
 		})
 
 		for _, f := range fkSlice {
+			if len(f.ForeignColumnNames) == 0 {
+				// A foreign key without parent columns refers to the primary key of the parent table.
+				parentPKColumns, err := l.primaryKeyColumns(f.ForeignTableName)
+				if err != nil {
+					return errors.WithStack(err)
+				}
+				if len(parentPKColumns) != len(f.ColumnNames) {
+					return fmt.Errorf("can not resolve the parent key of foreign key (%s) on %s: the primary key of %s has %d columns", strings.Join(f.ColumnNames, ", "), tableName, f.ForeignTableName, len(parentPKColumns))
+				}
+				f.ForeignColumnNames = parentPKColumns
+			}
 			foreignKeyDef := fmt.Sprintf("FOREIGN KEY (%s) REFERENCES %s (%s) ON UPDATE %s ON DELETE %s MATCH %s",
 				strings.Join(f.ColumnNames, ", "), f.ForeignTableName, strings.Join(f.ForeignColumnNames, ", "), f.OnUpdate, f.OnDelete, f.Match) // #nosec
 			constraint := &schema.Constraint{
@@ -451,6 +463,24 @@ func (l *Sqlite) Info() (*schema.Driver, error) {
 		DatabaseVersion: v,
 	}
 	return d, nil
+}
+
+// primaryKeyColumns returns the primary key columns of the table in key order.
+func (l *Sqlite) primaryKeyColumns(tableName string) ([]string, error) {
+	rows, err := l.db.Query(`SELECT name FROM pragma_table_info(?) WHERE pk > 0 ORDER BY pk;`, tableName)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	columns := []string{}
+	for rows.Next() {
+		var name string
+		if err := rows.Scan(&name); err != nil {
+			return nil, err
+		}
+		columns = append(columns, name)
+	}
+	return columns, rows.Err()
 }
 
 func convertColumnNullable(str string) bool {
