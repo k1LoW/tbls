@@ -282,7 +282,7 @@ func AnalyzeJSONStringOrFile(strOrPath string) (s *schema.Schema, err error) {
 	if strings.HasPrefix(strOrPath, "{") {
 		buf = bytes.NewBufferString(strOrPath)
 	} else {
-		buf, err = os.Open(filepath.Clean(strOrPath))
+		buf, err = os.Open(filepath.Clean(strOrPath)) //nolint:gosec // the path is the JSON file the user asked tbls to read
 		if err != nil {
 			return nil, err
 		}
