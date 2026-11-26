@@ -201,6 +201,16 @@ func (r Relation) MarshalJSON() ([]byte, error) {
 	return json.Marshal(&rr)
 }
 
+// MarshalJSON return custom JSON byte.
+func (i Index) MarshalJSON() ([]byte, error) {
+	type index Index
+	if i.Columns == nil {
+		// Expression indexes have no column names, but the JSON schema requires an array.
+		i.Columns = []string{}
+	}
+	return json.Marshal(index(i))
+}
+
 // UnmarshalJSON unmarshal JSON to schema.Table.
 func (t *Table) UnmarshalJSON(data []byte) error {
 	s := struct {
