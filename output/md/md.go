@@ -832,7 +832,7 @@ func (m *Md) tablesData(tables []*schema.Table, number, adjust, showOnlyFirstPar
 		d := []string{
 			fmt.Sprintf("[%s](%s%s.md)", t.Name, m.config.BaseURL, mdurl.Encode(t.Name)),
 			fmt.Sprintf("%d", len(t.Columns)),
-			comment,
+			mdEscRep.Replace(comment),
 			t.Type,
 		}
 		if hasTableWithLabels {
