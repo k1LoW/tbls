@@ -189,6 +189,7 @@ func TestParseFK(t *testing.T) {
 	}{
 		{"FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE", []string{"user_id"}, "users", []string{"id"}},
 		{"FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL (user_id)", []string{"user_id"}, "users", []string{"id"}},
+		{"FOREIGN KEY (room_id, PERIOD during) REFERENCES room(id, PERIOD during)", []string{"room_id", "during"}, "room", []string{"id", "during"}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.in, func(t *testing.T) {

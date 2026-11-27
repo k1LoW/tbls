@@ -763,12 +763,14 @@ func parseFK(def string) (_ []string, _ string, _ []string, err error) {
 	}
 	strColumns := []string{}
 	for _, c := range strings.Split(result[0][1], ", ") {
-		strColumns = append(strColumns, strings.ReplaceAll(c, `"`, ""))
+		column := strings.TrimPrefix(strings.ReplaceAll(c, `"`, ""), "PERIOD ")
+		strColumns = append(strColumns, column)
 	}
 	strParentTable := strings.ReplaceAll(result[0][2], `"`, "")
 	strParentColumns := []string{}
 	for _, c := range strings.Split(result[0][3], ", ") {
-		strParentColumns = append(strParentColumns, strings.ReplaceAll(c, `"`, ""))
+		column := strings.TrimPrefix(strings.ReplaceAll(c, `"`, ""), "PERIOD ")
+		strParentColumns = append(strParentColumns, column)
 	}
 	return strColumns, strParentTable, strParentColumns, nil
 }
