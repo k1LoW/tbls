@@ -70,7 +70,7 @@
           "name": "PostedBy-index",
           "def": "LocalSecondaryIndex { [{ AttributeName: \"Id\", KeyType: \"HASH\" } { AttributeName: \"PostedBy\", KeyType: \"RANGE\" }], { ProjectionType: \"KEYS_ONLY\" } }",
           "table": null,
-          "columns": null
+          "columns": []
         }
       ],
       "constraints": [

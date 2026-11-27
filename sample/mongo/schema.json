@@ -46,7 +46,7 @@
           "name": "_id_",
           "def": "{\"_id\": {\"$numberInt\":\"1\"}}",
           "table": null,
-          "columns": null,
+          "columns": [],
           "comment": "Non-unique, Version 2"
         }
       ]

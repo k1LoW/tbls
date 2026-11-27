@@ -357,6 +357,20 @@ func TestRepair(t *testing.T) {
 	}
 }
 
+func TestIndexMarshalJSONColumns(t *testing.T) {
+	// An expression index has no column names; columns must still be an array.
+	table := "t"
+	b, err := json.Marshal(&Index{Name: "idx", Def: "CREATE INDEX idx ON t (lower(name))", Table: &table})
+	if err != nil {
+		t.Fatal(err)
+	}
+	got := string(b)
+	want := `{"name":"idx","def":"CREATE INDEX idx ON t (lower(name))","table":"t","columns":[]}`
+	if got != want {
+		t.Errorf("got %s\nwant %s", got, want)
+	}
+}
+
 func TestClone(t *testing.T) {
 	want := newTestSchema(t)
 	got, err := want.Clone()
