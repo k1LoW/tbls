@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -191,5 +192,75 @@ func TestCompositePrimaryKey(t *testing.T) {
 	}
 	if diff := cmp.Diff(got, []string{"PRIMARY KEY (user_id, role_id)"}); diff != "" {
 		t.Error(diff)
+	}
+}
+
+func TestForeignKeyWithoutParentColumns(t *testing.T) {
+	tests := []struct {
+		name              string
+		ddl               string
+		wantDef           string
+		wantParentColumns []string
+		wantErr           bool
+	}{
+		{
+			name:              "single column",
+			ddl:               `CREATE TABLE parent (id INTEGER PRIMARY KEY); CREATE TABLE child (id INTEGER PRIMARY KEY, parent_id INTEGER REFERENCES parent);`,
+			wantDef:           "FOREIGN KEY (parent_id) REFERENCES parent (id) ON UPDATE NO ACTION ON DELETE NO ACTION MATCH NONE",
+			wantParentColumns: []string{"id"},
+		},
+		{
+			name:              "composite key in primary key order",
+			ddl:               `CREATE TABLE parent (a INTEGER, b INTEGER, PRIMARY KEY (b, a)); CREATE TABLE child (x INTEGER, y INTEGER, FOREIGN KEY (x, y) REFERENCES parent);`,
+			wantDef:           "FOREIGN KEY (x, y) REFERENCES parent (b, a) ON UPDATE NO ACTION ON DELETE NO ACTION MATCH NONE",
+			wantParentColumns: []string{"b", "a"},
+		},
+		{
+			name:    "parent without primary key",
+			ddl:     `CREATE TABLE parent (id INTEGER); CREATE TABLE child (parent_id INTEGER REFERENCES parent);`,
+			wantErr: true,
+		},
+		{
+			name:    "fewer columns than the parent primary key",
+			ddl:     `CREATE TABLE parent (a INTEGER, b INTEGER, c INTEGER, PRIMARY KEY (a, b, c)); CREATE TABLE child (x INTEGER, y INTEGER, FOREIGN KEY (x, y) REFERENCES parent);`,
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tdb, err := sql.Open("sqlite3", filepath.Join(t.TempDir(), "fk.sqlite3"))
+			if err != nil {
+				t.Fatal(err)
+			}
+			defer tdb.Close()
+			if _, err := tdb.Exec(tt.ddl); err != nil {
+				t.Fatal(err)
+			}
+			sc := &schema.Schema{Name: "fk.sqlite3"}
+			err = New(tdb).Analyze(sc)
+			if tt.wantErr {
+				if err == nil || !strings.Contains(err.Error(), "can not resolve the parent key") {
+					t.Errorf("got %v, want an error about the parent key", err)
+				}
+				return
+			}
+			if err != nil {
+				t.Fatal(err)
+			}
+			if len(sc.Relations) != 1 {
+				t.Fatalf("got %d relations, want 1", len(sc.Relations))
+			}
+			r := sc.Relations[0]
+			if r.Def != tt.wantDef {
+				t.Errorf("got %q\nwant %q", r.Def, tt.wantDef)
+			}
+			var got []string
+			for _, c := range r.ParentColumns {
+				got = append(got, c.Name)
+			}
+			if diff := cmp.Diff(got, tt.wantParentColumns); diff != "" {
+				t.Error(diff)
+			}
+		})
 	}
 }
