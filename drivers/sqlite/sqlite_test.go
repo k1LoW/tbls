@@ -193,3 +193,29 @@ func TestCompositePrimaryKey(t *testing.T) {
 		t.Error(diff)
 	}
 }
+
+func TestGeneratedColumns(t *testing.T) {
+	tdb, err := sql.Open("sqlite3", filepath.Join(t.TempDir(), "gen.sqlite3"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer tdb.Close()
+	if _, err := tdb.Exec(`CREATE TABLE items (price INTEGER, qty INTEGER, total INTEGER GENERATED ALWAYS AS (price * qty) VIRTUAL, label TEXT GENERATED ALWAYS AS ('#' || price) STORED);`); err != nil {
+		t.Fatal(err)
+	}
+	sc := &schema.Schema{Name: "gen.sqlite3"}
+	if err := New(tdb).Analyze(sc); err != nil {
+		t.Fatal(err)
+	}
+	tbl, err := sc.FindTableByName("items")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var got []string
+	for _, c := range tbl.Columns {
+		got = append(got, c.Name)
+	}
+	if diff := cmp.Diff(got, []string{"price", "qty", "total", "label"}); diff != "" {
+		t.Error(diff)
+	}
+}
