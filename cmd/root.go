@@ -163,10 +163,16 @@ var rootCmd = &cobra.Command{
 			return err
 		}
 
+		envs = append(envs, fmt.Sprintf("TBLS_DSN=%s", cfg.DSN.URL))
+		envs = append(envs, fmt.Sprintf("TBLS_CONFIG_PATH=%s", cfg.Path))
+
 		s, err := getSchemaFromJSONorDSN(cfg)
-		if err == nil {
-			envs = append(envs, fmt.Sprintf("TBLS_DSN=%s", cfg.DSN.URL))
-			envs = append(envs, fmt.Sprintf("TBLS_CONFIG_PATH=%s", cfg.Path))
+		if err != nil {
+			// The subcommand still runs because some subcommands can work from the config
+			// and the DSN alone. Only the reason is reported, since a subcommand that needs
+			// the schema can only see that TBLS_SCHEMA is missing.
+			cmd.PrintErrf("Warning: TBLS_SCHEMA is not set because the schema could not be loaded: %v\n", err)
+		} else {
 			o := json.New(true)
 			tmpfile, err := os.CreateTemp("", "TBLS_SCHEMA")
 			if err != nil {
