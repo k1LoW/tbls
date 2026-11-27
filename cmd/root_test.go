@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 )
@@ -60,6 +61,11 @@ func TestRootRunEHandlesHelpFlags(t *testing.T) {
 }
 
 func TestRootRunEPassesConfigToSubcommandWithoutSchema(t *testing.T) {
+	// The fake subcommand is a shell script, which exec cannot start on Windows. CI runs
+	// go test only on Linux, so a portable helper binary would cost more than it covers.
+	if runtime.GOOS == "windows" {
+		t.Skip("the fake subcommand is a shell script")
+	}
 	dir := t.TempDir()
 	out := filepath.Join(dir, "env")
 	bin := filepath.Join(dir, "tbls-envdump")
